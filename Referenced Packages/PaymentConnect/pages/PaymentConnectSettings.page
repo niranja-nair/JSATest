@@ -1,0 +1,735 @@
+<apex:page standardcontroller="pymt__Settings__c" sidebar="false" extensions="pymt.AdvancedSettingsController" tabStyle="pymt__PaymentConnect_Admin__tab" action="{!reloadWithId}">
+<apex:sectionHeader title="Linvio PaymentConnect" subtitle="PaymentConnect Admin"  help="{!$Page.pymt__AdminGuide}" />
+<apex:pageMessage severity="INFO" 
+				strength="2" 
+				summary="PaymentConnect is currently in gateway simulation mode. In this mode PaymentConnect will simulate responses from your payment processor and by-pass actual credit card charges, refunds, etc. To run live transactions, have your Salesforce administrator turn gateway simulation mode off." 
+				rendered="{!simulationMode}"/>
+<apex:pageMessages id="messages"/>
+<style>
+.rich-tabpanel-content {
+	background:none;
+	padding-left:0px;
+	padding-right:0px;
+	border-left:none;
+	border-right:none;
+	border-bottom:none;
+	font-size:1.1em;
+}
+.rich-tab-header { 
+	font-size:1.1em;
+}
+.rich-tab-active {
+   background-image: url("/img/alohaSkin/opacity75.png");
+   
+}
+.rich-tab-inactive {
+	background: #e0e0e0;
+}
+
+.pageBlockSubtext {
+	padding:12px 15px 15px 15px;
+}
+.pageBlockSectionWrapperFrame {
+	margin-left:15px;
+	margin-right:15px;
+	padding:10px;
+	border:solid 1px #e0e0e0;
+	-moz-border-radius: 5px;
+	border-radius: 5px;
+}
+</style>
+<br/>
+<apex:form rendered="{!If(settingsRecord.Id == null,true,false)}">
+<apex:outputField value="{!pymt__Settings__c.pymt__Gateway_Simulation_Mode__c}" rendered="false" />
+<apex:pageBlock mode="maindetail">
+<p>A settings record is required to begin configuration of your PaymentConnect installation.  Please click "Configure PaymentConnect" to create the record and begin the configuration process.</p>
+<br/><apex:commandButton value="Configure PaymentConnect" action="{!createSettingsRecord}" />
+</apex:pageBlock>
+</apex:form>
+
+<apex:tabPanel rendered="{!If(settingsRecord.Id == null,false,true)}" value="{!currentTab}" switchType="apex">
+<apex:tab label="General" id="generalTab">
+<apex:form >
+<apex:detail relatedList="false" inlineedit="true" title="false"/>
+
+</apex:form>
+<apex:relatedList list="pymt__Log_Entries__r" pageSize="10"/>
+<apex:relatedList list="OpenActivities" pageSize="10"/>
+<apex:relatedList list="ActivityHistories" pageSize="10"/>
+</apex:tab>
+
+<apex:tab label="Processor Connections"  id="processorConnectionsTab">
+<apex:relatedList list="Processor_Connections__r" pageSize="20"/>
+</apex:tab>
+
+
+<apex:tab label="Categories" id="categoriesTab">
+<apex:form id="categorySettingsForm">
+<apex:pageBlock title="Category Split Settings" mode="maindetail">
+<div class="pageBlockSubtext">Category Split settings may be defined in PaymentConnect to help automate the process of assigning transactions
+ (or portions of transactions) to Categories using Category Splits.  After you have defined your split preferences here, they may be referred by 
+ name in the "Category Split Name" picklist fields on PaymentConnect Settings, Processor Connections, Recurring Payment Profile, 
+ Payment and other objects that support the Categories feature.  You will need to add the category split names you have created to these picklists in order to use them.
+Please see the PaymentConnect documentation on "PaymentConnect Categories" for more information. 
+ </div>
+
+<div class="pageBlockSectionWrapperFrame">
+<apex:pageBlockSection >
+
+<apex:pageBlockSectionItem helpText="Select an existing category split configuration, or create a new one.">
+<apex:outputLabel value="Category Split:"/>
+<apex:outputPanel layout="inline">
+<apex:selectList size="1" multiselect="false" value="{!selectedCatSplitExpression}"> 
+	<apex:actionSupport event="onchange" action="{!setCatSplitSelection}" status="catSplitSelectionStatus" rerender="messages, catSplitName, catSplitMethodSelect, catSplitDetailFields"/>
+	<apex:selectOptions value="{!catSplitExpressionOptions}"/>
+</apex:selectList>
+<apex:actionStatus id="catSplitSelectionStatus">
+	<apex:facet name="start">
+		<apex:image url="{!URLFOR($Resource.pymt__PaymentConnect, 'images/icon-spinner.gif')}"  style="margin-left:10px;vertical-align:top;" />
+	</apex:facet>
+	<apex:facet name="stop">
+	</apex:facet>
+</apex:actionStatus>
+</apex:outputPanel>
+</apex:pageBlockSectionItem>
+
+<apex:pageBlockSectionItem >
+<apex:outputText value=""/>
+<apex:outputText value=""/>
+</apex:pageBlockSectionItem>
+
+<apex:pageBlockSectionItem helpText="Assign a unique name to use when referencing this split configuration." >
+<apex:outputText value="Category Split Name"/>
+<apex:outputPanel >
+<apex:inputText value="{!catSplit.name}" id="catSplitName"/>
+</apex:outputPanel>
+</apex:pageBlockSectionItem>
+
+<apex:pageBlockSectionItem >
+<apex:outputText value=""/>
+<apex:outputText value=""/>
+</apex:pageBlockSectionItem>
+
+<apex:pageBlockSectionItem helpText="'Percentage Split' allows you to split payments across categories using percentages of payment amounts. 'Line Item Split' uses shopping cart line items to determine split amounts.">
+<apex:outputLabel value="Categorization Method:"/>
+<apex:outputPanel layout="inline" id="catSplitMethodSelect">
+<apex:selectList size="1" multiselect="false" value="{!catSplit.catSplitExpression.splitType}" >
+	<apex:selectOption itemValue="" itemLabel="-- Select A Method --"/>
+	<apex:selectOption itemValue="percentage_split" itemLabel="Percentage Split"/>
+	<apex:selectOption itemValue="line_item_split" itemLabel="Line Item Split"/>
+	<apex:actionSupport event="onchange" action="{!setCatSplitMethod}" rerender="messages, catSplitDetailFields" status="catSplitMethodStatus"/>
+</apex:selectList>
+<apex:actionStatus id="catSplitMethodStatus">
+	<apex:facet name="start">
+		<apex:image url="{!URLFOR($Resource.pymt__PaymentConnect, 'images/icon-spinner.gif')}"  style="margin-left:10px;vertical-align:top;" />
+	</apex:facet>
+	<apex:facet name="stop">
+	</apex:facet>
+</apex:actionStatus>
+</apex:outputPanel>
+</apex:pageBlockSectionItem>
+
+<apex:pageBlockSectionItem >
+<apex:outputText value=""/>
+<apex:outputText value=""/>
+</apex:pageBlockSectionItem>
+
+</apex:pageBlockSection>
+
+<apex:outputPanel layout="none" id="catSplitDetailFields">
+<apex:outputPanel layout="none">
+
+<apex:pageBlockSection columns="1" id="catSplitPercentageFields" rendered="{!catSplit.catSplitExpression.splitType == 'percentage_split'}">
+
+<apex:pageBlockSectionItem > 
+	<apex:outputLabel value="Tax Category"/>
+	<apex:inputField value="{!catSplit.taxCatLookup.pymt__Category__c}"/> 
+</apex:pageBlockSectionItem>
+
+
+
+<apex:pageBlockSectionItem > 
+	<apex:outputLabel value="Shipping Category"/>
+	<apex:inputField value="{!catSplit.shippingCatLookup.pymt__Category__c}"/> 
+</apex:pageBlockSectionItem>
+
+
+
+<apex:pageBlockSectionItem > 
+	<apex:outputLabel value="Discount Category"/>
+	<apex:inputField value="{!catSplit.discountCatLookup.pymt__Category__c}"/> 
+</apex:pageBlockSectionItem>
+
+<apex:pageBlockSectionItem id="catSplitPercentageLines">
+<apex:outputText value="Percentage Splits"/>
+<apex:outputPanel layout="inline">
+	<apex:panelGrid columns="3">
+	
+	<apex:selectList size="10" multiselect="true" value="{!selectedCategoryIds}">
+		<apex:selectOptions value="{!categoryOptions}"/>
+	</apex:selectList>
+	<apex:commandButton value="Add >>" action="{!addNewPercentageSplitLines}" rerender="percentageSplitsPanel, messages"/>
+	<apex:outputPanel id="percentageSplitsPanel">
+	<apex:pageBlockTable value="{!catSplit.percentageSplits}" var="split">
+		<apex:column headerValue="Category">
+			<apex:outputField value="{!split.categoryLookup.pymt__Category__c}"/>
+		</apex:column> 
+		<apex:column headerValue="Category ID">
+			<apex:outputText value="{!split.categoryId}"/>
+		</apex:column> 
+		<apex:column headerValue="Split">
+			<apex:outputPanel >
+			<apex:inputText value="{!split.value}" style="width:40px;"/>%
+			</apex:outputPanel>
+			
+		</apex:column>
+		<apex:column >
+			<apex:commandLink value="remove" action="{!removePercentageSplitLine}" rerender="percentageSplitsPanel, messages">
+				<apex:param id="percentSplitLineID" name="percentSplitLineID" 
+					value="{!split.categoryId}" assignTo="{!selectedPercentageSplitLine}"/> 
+			</apex:commandLink>
+		</apex:column>
+	</apex:pageBlockTable>
+	</apex:outputPanel>
+	</apex:panelGrid>
+</apex:outputPanel>
+
+</apex:pageBlockSectionItem>
+
+
+
+
+</apex:pageBlockSection>
+
+<apex:pageBlockSection id="catSplitLineFields" rendered="{!catSplit.catSplitExpression.splitType == 'line_item_split'}">
+
+<apex:pageBlockSectionItem helpText="Category to use if a shopping cart item does not have a product lookup, or the product has no Category value."> 
+	<apex:outputLabel value="Default Line Category"/>
+	<apex:inputField value="{!catSplit.defaultLineCatLookup.pymt__Category__c}"/> 
+</apex:pageBlockSectionItem>
+
+<apex:pageBlockSectionItem > 
+<apex:outputText value=""/>
+<apex:outputText value=""/>
+</apex:pageBlockSectionItem>
+
+<apex:pageBlockSectionItem > 
+	<apex:outputLabel value="Discount Amount"/> 
+	<apex:selectList size="1" multiselect="false" value="{!catSplit.catSplitExpression.lineItemSplit.discount_split}" >
+		<apex:selectOption itemValue="" itemLabel="-- Select A Method --"/>
+		<apex:selectOption itemValue="category" itemLabel="Assign to Category"/>
+		<apex:selectOption itemValue="across_lines" itemLabel="Split Across Lines"/>
+	</apex:selectList>
+</apex:pageBlockSectionItem>
+
+<apex:pageBlockSectionItem > 
+	<apex:outputLabel value="Discount Category"/>
+	<apex:inputField value="{!catSplit.discountCatLookup.pymt__Category__c}"/> 
+</apex:pageBlockSectionItem>
+
+<apex:pageBlockSectionItem > 
+	<apex:outputLabel value="Tax Amount"/> 
+	<apex:selectList size="1" multiselect="false" value="{!catSplit.catSplitExpression.lineItemSplit.tax_split}" >
+		<apex:selectOption itemValue="" itemLabel="-- Select A Method --"/>
+		<apex:selectOption itemValue="category" itemLabel="Assign to Category"/>
+		<apex:selectOption itemValue="across_lines" itemLabel="Split Across Lines"/>
+	</apex:selectList>
+</apex:pageBlockSectionItem>
+
+<apex:pageBlockSectionItem > 
+	<apex:outputLabel value="Tax Category"/>
+	<apex:inputField value="{!catSplit.taxCatLookup.pymt__Category__c}"/> 
+</apex:pageBlockSectionItem>
+
+<apex:pageBlockSectionItem > 
+	<apex:outputLabel value="Shipping Amount"/> 
+	<apex:selectList size="1" multiselect="false" value="{!catSplit.catSplitExpression.lineItemSplit.shipping_split}" >
+		<apex:selectOption itemValue="" itemLabel="-- Select A Method --"/>
+		<apex:selectOption itemValue="category" itemLabel="Assign to Category"/>
+		<apex:selectOption itemValue="across_lines" itemLabel="Split Across Lines"/>
+	</apex:selectList>
+</apex:pageBlockSectionItem>
+
+<apex:pageBlockSectionItem > 
+	<apex:outputLabel value="Shipping Category"/>
+	<apex:inputField value="{!catSplit.shippingCatLookup.pymt__Category__c}"/> 
+</apex:pageBlockSectionItem>
+
+
+</apex:pageBlockSection>
+
+<br/>
+</apex:outputPanel>
+</apex:outputPanel>
+
+<apex:pageBlockSection >
+<apex:pageBlockSectionItem >
+<apex:outputText value=""/>
+<apex:outputPanel layout="none">
+<apex:commandButton value="Remove" action="{!removeCategorySplitExpression}" rerender="messages, categorySettingsForm" status="catSplitButtonStatus"/>
+<apex:commandButton value="Save" action="{!saveCategorySplitExpression}" rerender="messages, categorySettingsForm" status="catSplitButtonStatus"/>
+&nbsp;&nbsp;&nbsp;
+<apex:commandLink value="View Split Expression" action="{!viewCategorySplitExpression}"  status="catSplitButtonStatus" rendered="false"/>
+
+<apex:actionStatus id="catSplitButtonStatus">
+	<apex:facet name="start">
+		<apex:image url="{!URLFOR($Resource.pymt__PaymentConnect, 'images/icon-spinner.gif')}"  style="margin-left:10px;vertical-align:top;" />
+	</apex:facet>
+	<apex:facet name="stop">
+	</apex:facet>
+</apex:actionStatus>
+</apex:outputPanel>
+</apex:pageBlockSectionItem>
+
+</apex:pageBlockSection>
+
+</div>
+
+
+
+<div class="pageBlockSubtext">NOTE: Make sure that either the Category Split Trigger or the Category Split batch script has been enabled if you would like these settings to be applied to payments in your account automatically.</div>
+</apex:pageBlock>
+
+</apex:form>
+</apex:tab>
+
+<apex:tab label="Terminal Settings" id="terminalSettingsTab">
+<apex:form >
+<apex:pageBlock title="Terminal Settings" mode="maindetail" >
+<apex:pageBlockButtons location="bottom" > 
+<apex:commandButton value="Cancel" action="{!returnToMainPage}" />
+<apex:commandButton value="Save" action="{!saveAndReturnToMainPage}" />
+</apex:pageBlockButtons>
+<div class="pageBlockSubtext">Manage your organization's PaymentConnect terminal page settings:</div>
+<apex:pageBlockSection title="General Settings">
+<apex:inputField value="{!terminalSettings.pymt__Auto_Check_Save_Payment_Method__c}"/>
+<apex:inputField value="{!applicationSettings.pymt__Enable_Sharing_Restrictions__c}"/>
+</apex:pageBlockSection>
+<apex:pageBlockSection title="Credit Card Terminal">
+<apex:inputField value="{!terminalSettings.pymt__Hide_Pmt_Term_Shipping_Address__c}"/>
+<apex:inputField value="{!terminalSettings.pymt__Hide_Pmt_Term_Shipping_Handling__c}"/>
+<apex:inputField value="{!terminalSettings.pymt__Auto_Check_Save_Payment_Method__c}"/>
+<apex:inputField value="{!terminalSettings.pymt__Hide_Pmt_Term_Cat_Split_Names__c}"/>
+</apex:pageBlockSection> 
+<apex:pageBlockSection title="Cash Entry Terminal">
+<apex:inputField value="{!terminalSettings.pymt__Hide_Cash_Entry_Shipping_Address_Fields__c}"/>
+<apex:inputField value="{!terminalSettings.pymt__Hide_Cash_Entry_Cat_Split_Names__c}"/>
+</apex:pageBlockSection> 
+<apex:pageBlockSection title="PayPal Recurring Billing Terminal">
+<apex:inputField value="{!terminalSettings.pymt__Hide_PayPal_Trial_Fields__c}"/>
+<apex:inputField value="{!terminalSettings.pymt__Hide_PayPal_Profile_Reference__c}"/>
+<apex:inputField value="{!terminalSettings.pymt__Hide_PayPal_Recurring_Tax__c}"/>
+<apex:inputField value="{!terminalSettings.pymt__Hide_PayPal_Recurring_Shipping__c}"/>
+<apex:inputField value="{!terminalSettings.pymt__Hide_PayPal_Recurring_Cat_Split_Names__c}"/>
+</apex:pageBlockSection>
+<apex:pageBlockSection title="AuthNet Recurring Billing Terminal">
+<apex:inputField value="{!terminalSettings.pymt__Hide_AuthNet_Trial_Fields__c}"/>
+<apex:inputField value="{!terminalSettings.pymt__Hide_ARB_Invoice_Number__c}"/>
+<apex:inputField value="{!terminalSettings.pymt__Hide_ARB_Shipping__c}"/>
+<apex:inputField value="{!terminalSettings.pymt__Hide_ARB_Cat_Split_Names__c}"/>
+</apex:pageBlockSection>
+<apex:pageBlockSection title="Native Scheduled Payments Terminal">
+<apex:inputField value="{!terminalSettings.pymt__Hide_Native_Recur_Trial_Fields__c}"/>
+<apex:inputField value="{!terminalSettings.pymt__Hide_Native_Recur_Shipping_Address__c}"/>
+<apex:inputField value="{!terminalSettings.pymt__Hide_Native_Recur_Cat_Split_Names__c}"/>
+</apex:pageBlockSection>
+</apex:pageBlock>
+
+</apex:form>
+
+</apex:tab>
+
+<apex:tab label="Sites Settings" id="sitesSettingsTab">
+<apex:form >
+<apex:pageBlock title="Sites Settings" mode="maindetail" >
+<apex:pageBlockButtons location="bottom" > 
+<apex:commandButton value="Cancel" action="{!returnToMainPage}" />
+<apex:commandButton value="Save" action="{!saveAndReturnToMainPage}" />
+</apex:pageBlockButtons>
+<div class="pageBlockSubtext">Manage your organization's PaymentConnect Sites settings:</div>
+<apex:pageBlockSection title="Default Portal Account">
+<apex:inputField value="{!applicationSettings.pymt__Default_Portal_Account_Id__c}"/>
+</apex:pageBlockSection>
+<apex:pageBlockSection title="Security">
+<apex:inputField value="{!applicationSettings.pymt__Verify_Access_Keys__c}"/>
+</apex:pageBlockSection>
+
+</apex:pageBlock>
+
+</apex:form>
+</apex:tab> 
+
+
+<apex:tab label="Feature Activation"  id="featureActivationTab">
+<apex:form >
+<apex:pageBlock title="Feature Activation" mode="maindetail" >
+<apex:pageBlockButtons location="bottom" > 
+</apex:pageBlockButtons>
+<div class="pageBlockSubtext">An activation key is required to enable each type of Processor Connection you intend to configure in your production Salesforce instance. Activation keys must be generated by a Linvio support representative.</div>
+<apex:pageBlockSection columns="1">
+
+<apex:pageBlockSectionItem >
+	<apex:outputText value="Enabled Processor Connections"/>
+	<apex:outputText value="{!enabledProcessors}"/>
+</apex:pageBlockSectionItem>
+
+<apex:pageBlockSectionItem >
+	<apex:outputText value="Salesforce Org Id"/>
+	<apex:outputText value="{!$Organization.Id}"/>
+</apex:pageBlockSectionItem>
+ 
+<apex:pageBlockSectionItem >
+	<apex:outputText value="Activation Key"/>
+	<apex:inputTextArea value="{!activationKey}" style="width:400px;" />
+</apex:pageBlockSectionItem>
+
+<apex:pageBlockSectionItem >
+	<apex:outputText value=""/>
+	<apex:commandButton value="Apply Activation Key" action="{!applyActivationKey}"/>
+</apex:pageBlockSectionItem>
+
+</apex:pageBlockSection>
+</apex:pageBlock>
+</apex:form>
+</apex:tab>
+
+<apex:tab label="Scheduling"  id="schedulingTab">
+<apex:form >
+<apex:pageBlock title="Native Scheduled Payments" mode="maindetail" >
+<div class="pageBlockSubtext">
+<apex:pageMessage severity="INFO" strength="2" title="Batch Processing Scheduled Payments in Salesforce" summary="PaymentConnect supports batch processing of scheduled payments and native scheduling for recurring payments using the following scripts.  
+Be sure you have read the documentation on these features and fully understand the process of creating and maintaining native scheduled payments prior to using them in your production environment.
+  Click the 'Help for this Page' link in the upper right to access the PaymentConnect user documentation."/>
+</div>
+<div class="pageBlockSectionWrapperFrame">
+<apex:pageBlockSection title="Batch Payment Processing" collapsible="false">
+</apex:pageBlockSection>
+<div class="pageBlockSubtext">
+This batch utility searches for Payment records configured for batch processing and processes them according to payment configuration settings on the scheduled payment date. </div>
+
+<apex:pageBlockSection >
+<apex:pageBlockSectionItem rendered="{!(processorIsScheduled)}">
+<apex:outputLabel value="Scheduled Batch Job Status:" />
+<apex:outputText value="Scheduled"/>
+</apex:pageBlockSectionItem> 
+
+<apex:pageBlockSectionItem rendered="{!(processorIsScheduled)}">
+<apex:outputLabel value="Next Scheduled Run:" />
+<apex:outputText value="{!processorNextFireTime}"/>
+</apex:pageBlockSectionItem>
+
+<apex:pageBlockSectionItem rendered="{!NOT(processorIsScheduled)}">
+<apex:outputLabel value="Schedule batch job to run:"/>
+<apex:selectList size="1" multiselect="false" value="{!processorSelectedFreqHour}">
+<apex:selectOption itemValue="*" itemLabel="Hourly"/>
+<apex:selectOption itemValue="0/2" itemLabel="Every 2 Hours"/>
+<apex:selectOption itemValue="0/4" itemLabel="Every 4 Hours"/>
+<apex:selectOption itemValue="0/6" itemLabel="Every 6 Hours"/>
+<apex:selectOption itemValue="0/12" itemLabel="Every 12 Hours"/>
+<apex:selectOption itemValue="0" itemLabel="0:30"/>
+<apex:selectOption itemValue="1" itemLabel="1:30"/>
+<apex:selectOption itemValue="2" itemLabel="2:30"/> 
+<apex:selectOption itemValue="3" itemLabel="3:30"/>
+<apex:selectOption itemValue="4" itemLabel="4:30"/>
+<apex:selectOption itemValue="5" itemLabel="5:30"/>
+<apex:selectOption itemValue="6" itemLabel="6:30"/>
+<apex:selectOption itemValue="7" itemLabel="7:30"/>
+<apex:selectOption itemValue="8" itemLabel="8:30"/>
+<apex:selectOption itemValue="9" itemLabel="9:30"/>
+<apex:selectOption itemValue="10" itemLabel="10:30"/>
+<apex:selectOption itemValue="11" itemLabel="11:30"/>
+<apex:selectOption itemValue="12" itemLabel="12:30"/>
+<apex:selectOption itemValue="13" itemLabel="13:30"/>
+<apex:selectOption itemValue="14" itemLabel="14:30"/>
+<apex:selectOption itemValue="14" itemLabel="14:30"/>
+<apex:selectOption itemValue="15" itemLabel="15:30"/>
+<apex:selectOption itemValue="16" itemLabel="16:30"/>
+<apex:selectOption itemValue="17" itemLabel="17:30"/>
+<apex:selectOption itemValue="18" itemLabel="18:30"/>
+<apex:selectOption itemValue="19" itemLabel="19:30"/>
+<apex:selectOption itemValue="20" itemLabel="20:30"/>
+<apex:selectOption itemValue="21" itemLabel="21:30"/>
+<apex:selectOption itemValue="22" itemLabel="22:30"/>
+<apex:selectOption itemValue="23" itemLabel="23:30"/>
+</apex:selectList>
+</apex:pageBlockSectionItem>
+
+<apex:pageBlockSectionItem >
+<apex:outputLabel value=""/>
+<apex:outputLabel value=""/>
+</apex:pageBlockSectionItem>
+
+<apex:pageBlockSectionItem rendered="{!NOT(processorIsScheduled)}">
+<apex:outputLabel value="Day of the week:"/>
+<apex:selectList size="1" multiselect="false" value="{!processorSelectedFreqDay}">
+<apex:selectOption itemValue="E" itemLabel="Every Day"/>
+<!-- 
+<apex:selectOption itemValue="1" itemLabel="Sun"/>
+<apex:selectOption itemValue="2" itemLabel="Mon"/>
+<apex:selectOption itemValue="3" itemLabel="Tue"/>
+<apex:selectOption itemValue="4" itemLabel="Wed"/>
+<apex:selectOption itemValue="5" itemLabel="Thu"/>
+<apex:selectOption itemValue="6" itemLabel="Fri"/>
+<apex:selectOption itemValue="7" itemLabel="Sat"/>
+ -->
+</apex:selectList>
+</apex:pageBlockSectionItem>
+
+<apex:pageBlockSectionItem >
+<apex:outputLabel value=""/>
+<apex:outputLabel value=""/>
+</apex:pageBlockSectionItem>
+
+<apex:pageBlockSectionItem rendered="{!NOT(processorIsScheduled)}">
+<apex:outputLabel value=""/>
+<apex:commandButton value="Schedule Batch Job" action="{!scheduleBatchProcessor}" />
+</apex:pageBlockSectionItem>
+<apex:pageBlockSectionItem rendered="{!(processorIsScheduled)}">
+<apex:outputLabel value=""/>
+<apex:outputPanel >
+<apex:commandButton value="Cancel Scheduled Batch Job" action="{!cancelBatchProcessor}" />
+</apex:outputPanel>
+</apex:pageBlockSectionItem>
+<apex:pageBlockSectionItem >
+<apex:outputLabel value=""/>
+<apex:commandButton value="Run Batch Job Once" action="{!runBatchProcessor}" />
+</apex:pageBlockSectionItem>
+
+</apex:pageBlockSection>
+<br/>
+<apex:pageBlockSection columns="1" title="Batch Profile Management"  collapsible="false">
+</apex:pageBlockSection>
+<div class="pageBlockSubtext">This batch utility finds native subscriptions (Scheduled Payments Profiles) that have missed a payment date and changes the 
+subscription status to "Suspended".  Or, if missed payments are allowed for a subscription, schedules the next payment in the series. If you have not created any Scheduled Payment Profiles (under "Recurring Payments") this feature does not need to be active.
+</div>
+<apex:pageBlockSection >
+<apex:pageBlockSectionItem rendered="{!(subscriptionCheckerIsScheduled)}">
+<apex:outputLabel value="Scheduled Batch Job Status:" />
+<apex:outputText value="Scheduled"/>
+</apex:pageBlockSectionItem> 
+
+<apex:pageBlockSectionItem rendered="{!(subscriptionCheckerIsScheduled)}">
+<apex:outputLabel value="Next Scheduled Run:" />
+<apex:outputText value="{!subscriptionCheckerNextFireTime}"/>
+</apex:pageBlockSectionItem>
+
+<apex:pageBlockSectionItem rendered="{!NOT(subscriptionCheckerIsScheduled)}">
+<apex:outputLabel value="Schedule batch job to run:"/>
+<apex:selectList size="1" multiselect="false" value="{!subscriptionCheckerSelectedFreqHour}">
+<apex:selectOption itemValue="*" itemLabel="Hourly"/>
+<apex:selectOption itemValue="0/2" itemLabel="Every 2 Hours"/>
+<apex:selectOption itemValue="0/4" itemLabel="Every 4 Hours"/>
+<apex:selectOption itemValue="0/6" itemLabel="Every 6 Hours"/>
+<apex:selectOption itemValue="0/12" itemLabel="Every 12 Hours"/>
+<apex:selectOption itemValue="0" itemLabel="0:00"/>
+<apex:selectOption itemValue="1" itemLabel="1:00"/>
+<apex:selectOption itemValue="2" itemLabel="2:00"/> 
+<apex:selectOption itemValue="3" itemLabel="3:00"/>
+<apex:selectOption itemValue="4" itemLabel="4:00"/>
+<apex:selectOption itemValue="5" itemLabel="5:00"/>
+<apex:selectOption itemValue="6" itemLabel="6:00"/>
+<apex:selectOption itemValue="7" itemLabel="7:00"/>
+<apex:selectOption itemValue="8" itemLabel="8:00"/>
+<apex:selectOption itemValue="9" itemLabel="9:00"/>
+<apex:selectOption itemValue="10" itemLabel="10:00"/>
+<apex:selectOption itemValue="11" itemLabel="11:00"/>
+<apex:selectOption itemValue="12" itemLabel="12:00"/>
+<apex:selectOption itemValue="13" itemLabel="13:00"/>
+<apex:selectOption itemValue="14" itemLabel="14:00"/>
+<apex:selectOption itemValue="14" itemLabel="14:00"/>
+<apex:selectOption itemValue="15" itemLabel="15:00"/>
+<apex:selectOption itemValue="16" itemLabel="16:00"/>
+<apex:selectOption itemValue="17" itemLabel="17:00"/>
+<apex:selectOption itemValue="18" itemLabel="18:00"/>
+<apex:selectOption itemValue="19" itemLabel="19:00"/>
+<apex:selectOption itemValue="20" itemLabel="20:00"/>
+<apex:selectOption itemValue="21" itemLabel="21:00"/>
+<apex:selectOption itemValue="22" itemLabel="22:00"/>
+<apex:selectOption itemValue="23" itemLabel="23:00"/>
+</apex:selectList>
+</apex:pageBlockSectionItem>
+
+<apex:pageBlockSectionItem >
+<apex:outputLabel value=""/>
+<apex:outputLabel value=""/>
+</apex:pageBlockSectionItem>
+
+
+<apex:pageBlockSectionItem rendered="{!NOT(subscriptionCheckerIsScheduled)}">
+<apex:outputLabel value="Day of the week:"/>
+<apex:selectList size="1" multiselect="false" value="{!subscriptionCheckerSelectedFreqDay}">
+<apex:selectOption itemValue="E" itemLabel="Every Day"/>
+<!-- <apex:selectOption itemValue="1" itemLabel="Sun"/>
+<apex:selectOption itemValue="2" itemLabel="Mon"/>
+<apex:selectOption itemValue="3" itemLabel="Tue"/>
+<apex:selectOption itemValue="4" itemLabel="Wed"/>
+<apex:selectOption itemValue="5" itemLabel="Thu"/>
+<apex:selectOption itemValue="6" itemLabel="Fri"/>
+<apex:selectOption itemValue="7" itemLabel="Sat"/>
+ -->
+</apex:selectList>
+</apex:pageBlockSectionItem>
+
+<apex:pageBlockSectionItem >
+<apex:outputLabel value=""/>
+<apex:outputLabel value=""/>
+</apex:pageBlockSectionItem>
+
+<apex:pageBlockSectionItem rendered="{!NOT(subscriptionCheckerIsScheduled)}">
+<apex:outputLabel value=""/>
+<apex:commandButton value="Schedule Batch Job" action="{!scheduleSubscriptionChecker}" />
+</apex:pageBlockSectionItem>
+<apex:pageBlockSectionItem rendered="{!(subscriptionCheckerIsScheduled)}">
+<apex:outputLabel value=""/>
+<apex:outputPanel >
+<apex:commandButton value="Cancel Scheduled Batch Job" action="{!cancelSubscriptionChecker}" />
+</apex:outputPanel>
+</apex:pageBlockSectionItem>
+<apex:pageBlockSectionItem >
+<apex:outputLabel value=""/>
+<apex:commandButton value="Run Batch Job Once" action="{!runSubscriptionChecker}" />
+</apex:pageBlockSectionItem>
+
+
+</apex:pageBlockSection>
+</div>
+
+</apex:pageBlock>
+
+<apex:pageBlock title="Payment Categorization" mode="maindetail" >
+<div class="pageBlockSubtext">
+<apex:pageMessage severity="INFO" strength="2" title="Batch Categorizing Payments" summary="PaymentConnect supports batch assignment of payments to Categories based on your Categorization settings.
+Scheduled batch categorization is provided as an alternative to using the Categorize Splits trigger (configured under the General Settings tab), so if you have 
+enabled this trigger, you will not need to schedule the batch script.  Click the 'Help for this Page' link in the upper right to access the PaymentConnect user documentation."/>
+</div>
+<div class="pageBlockSectionWrapperFrame">
+
+<apex:pageBlockSection title="Category Split Batch Script"  collapsible="false">
+</apex:pageBlockSection>
+<div class="pageBlockSubtext">
+This batch utility searches for Payment records that have not yet been categorized and applies current categorization rules. </div>
+
+<apex:pageBlockSection >
+<apex:pageBlockSectionItem rendered="{!(categorizerIsScheduled)}">
+<apex:outputLabel value="Scheduled Batch Job Status:" />
+<apex:outputText value="Scheduled"/>
+</apex:pageBlockSectionItem> 
+
+<apex:pageBlockSectionItem rendered="{!(categorizerIsScheduled)}">
+<apex:outputLabel value="Next Scheduled Run:" />
+<apex:outputText value="{!categorizerNextFireTime}"/>
+</apex:pageBlockSectionItem>
+
+<apex:pageBlockSectionItem rendered="{!NOT(categorizerIsScheduled)}">
+<apex:outputLabel value="Schedule batch job to run:"/>
+<apex:selectList size="1" multiselect="false" value="{!categorizerSelectedFreqHour}">
+<apex:selectOption itemValue="*" itemLabel="Hourly"/>
+<apex:selectOption itemValue="0/2" itemLabel="Every 2 Hours"/>
+<apex:selectOption itemValue="0/4" itemLabel="Every 4 Hours"/>
+<apex:selectOption itemValue="0/6" itemLabel="Every 6 Hours"/>
+<apex:selectOption itemValue="0/12" itemLabel="Every 12 Hours"/>
+<apex:selectOption itemValue="0" itemLabel="0:30"/>
+<apex:selectOption itemValue="1" itemLabel="1:30"/>
+<apex:selectOption itemValue="2" itemLabel="2:30"/> 
+<apex:selectOption itemValue="3" itemLabel="3:30"/>
+<apex:selectOption itemValue="4" itemLabel="4:30"/>
+<apex:selectOption itemValue="5" itemLabel="5:30"/>
+<apex:selectOption itemValue="6" itemLabel="6:30"/>
+<apex:selectOption itemValue="7" itemLabel="7:30"/>
+<apex:selectOption itemValue="8" itemLabel="8:30"/>
+<apex:selectOption itemValue="9" itemLabel="9:30"/>
+<apex:selectOption itemValue="10" itemLabel="10:30"/>
+<apex:selectOption itemValue="11" itemLabel="11:30"/>
+<apex:selectOption itemValue="12" itemLabel="12:30"/>
+<apex:selectOption itemValue="13" itemLabel="13:30"/>
+<apex:selectOption itemValue="14" itemLabel="14:30"/>
+<apex:selectOption itemValue="14" itemLabel="14:30"/>
+<apex:selectOption itemValue="15" itemLabel="15:30"/>
+<apex:selectOption itemValue="16" itemLabel="16:30"/>
+<apex:selectOption itemValue="17" itemLabel="17:30"/>
+<apex:selectOption itemValue="18" itemLabel="18:30"/>
+<apex:selectOption itemValue="19" itemLabel="19:30"/>
+<apex:selectOption itemValue="20" itemLabel="20:30"/>
+<apex:selectOption itemValue="21" itemLabel="21:30"/>
+<apex:selectOption itemValue="22" itemLabel="22:30"/>
+<apex:selectOption itemValue="23" itemLabel="23:30"/>
+</apex:selectList>
+</apex:pageBlockSectionItem>
+
+<apex:pageBlockSectionItem >
+<apex:outputLabel value=""/>
+<apex:outputLabel value=""/>
+</apex:pageBlockSectionItem>
+
+<apex:pageBlockSectionItem rendered="{!NOT(categorizerIsScheduled)}">
+<apex:outputLabel value="Day of the week:"/>
+<apex:selectList size="1" multiselect="false" value="{!categorizerSelectedFreqDay}">
+<apex:selectOption itemValue="E" itemLabel="Every Day"/>
+<!-- 
+<apex:selectOption itemValue="1" itemLabel="Sun"/>
+<apex:selectOption itemValue="2" itemLabel="Mon"/>
+<apex:selectOption itemValue="3" itemLabel="Tue"/>
+<apex:selectOption itemValue="4" itemLabel="Wed"/>
+<apex:selectOption itemValue="5" itemLabel="Thu"/>
+<apex:selectOption itemValue="6" itemLabel="Fri"/>
+<apex:selectOption itemValue="7" itemLabel="Sat"/>
+ -->
+</apex:selectList>
+</apex:pageBlockSectionItem>
+
+<apex:pageBlockSectionItem >
+<apex:outputLabel value=""/>
+<apex:outputLabel value=""/>
+</apex:pageBlockSectionItem>
+
+<apex:pageBlockSectionItem rendered="{!NOT(categorizerIsScheduled)}">
+<apex:outputLabel value=""/>
+<apex:commandButton value="Schedule Batch Job" action="{!schedulePaymentCategorization}" />
+</apex:pageBlockSectionItem>
+<apex:pageBlockSectionItem rendered="{!(categorizerIsScheduled)}">
+<apex:outputLabel value=""/>
+<apex:outputPanel >
+<apex:commandButton value="Cancel Scheduled Batch Job" action="{!cancelPaymentCategorization}" />
+</apex:outputPanel>
+</apex:pageBlockSectionItem>
+<apex:pageBlockSectionItem >
+<apex:outputLabel value=""/>
+<apex:commandButton value="Run Batch Job Once" action="{!runPaymentCategorization}" />
+</apex:pageBlockSectionItem>
+
+</apex:pageBlockSection>
+</div>
+
+<br/>
+</apex:pageBlock>
+
+</apex:form>
+
+</apex:tab>
+
+<apex:tab label="Blocked Notifications" id="blockedNotificationsTab"> 
+<apex:form id="blockedNotificationsForm">
+<p>Contents of the Blocked Notifications queue are shown in the table below.  Silent Post and IPN notifications with the following transaction Ids will be rejected by the PaymentConnect 
+relay scripts to prevent notifications from overwriting data on Payment records that have been processed successfully under a different transaction Id.
+</p>
+<apex:pageblock title="Blocked Transaction Ids" mode="maindetail">
+<apex:pageBlockTable value="{!BlockedNotifications}" var="item">
+<apex:column value="{!item.Name}"/> 
+<apex:column value="{!item.pymt__Transaction_Id__c}"/> 
+<apex:column value="{!item.CreatedDate}"/> 
+<apex:column >
+<apex:commandLink action="{!removeBlockedNotification}" value="Remove" rerender="blockedNotificationsForm" >
+	<apex:param id="blockedNotificationId" name="blockedNotificationId" value="{!item.Id}" assignTo="{!selectedBlockedNotification}" />
+</apex:commandLink> 
+</apex:column>
+</apex:pageBlockTable>
+</apex:pageblock>
+</apex:form>
+</apex:tab>
+
+
+
+
+</apex:tabPanel>
+
+</apex:page>

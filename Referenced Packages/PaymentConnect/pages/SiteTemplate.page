@@ -1,0 +1,66 @@
+<apex:page showHeader="false" id="SiteTemplate" standardStylesheets="false" language="{!$CurrentPage.Parameters.lang}">
+<link rel="stylesheet" type="text/css" href="{!URLFOR($Resource.pymt__PaymentConnect,'styles/sites_basic.css')}" />
+<style>
+/* Default template styling */
+body {
+    font-family:verdana;
+}
+.pc_frame {
+    width:960px;
+    margin-left:auto;
+    margin-right:auto;
+}
+.pc_page_content_inner {
+   /* padding:20px 20px 20px 40px; */
+}
+.pc_frame_top {
+    margin-bottom:20px;
+}
+.org_name {
+    font-size:3em;
+    color:#e0e0e0;
+}
+.footer {
+    width:100%;
+    text-align:center;
+    color:#A4A4A4;
+}
+.footer .contact_info {
+    font-size:.8em;
+}
+.footer .powered_by {
+    font-size:.5em;
+    font-weight:bold;
+}
+</style>
+    <div class="pc_frame">
+    <div class="pc_frame_inner">
+    
+    <apex:insert name="header">
+    <!--  Add custom banner and navigation here -->
+        <div class="pc_frame_top">
+            <img class="pc_logo" src="/s.gif" /><apex:outputText styleClass="org_name" value="{!$Organization.Name}"/>
+        </div>
+    </apex:insert>
+
+    <apex:insert name="body"/>
+
+    <apex:insert name="footer">
+    <!--  Add custom footer here -->
+    <div class="footer">
+    <div class="contact_info">
+    {!$Organization.Name}&nbsp;|&nbsp;
+    {!$Organization.Street},&nbsp;
+    {!$Organization.City},&nbsp;
+    {!$Organization.State}&nbsp;
+    {!$Organization.Country}&nbsp;
+    {!$Organization.PostalCode}&nbsp;|&nbsp;
+    {!$Organization.Phone}
+    </div>
+    <div class="powered_by">{!$Label.site.powered_by} Linvio PaymentConnect</div>
+    </div>
+    </apex:insert>
+    </div><!--  end pc_frame_inner -->
+    </div><!--  end pc_frame -->
+
+</apex:page>

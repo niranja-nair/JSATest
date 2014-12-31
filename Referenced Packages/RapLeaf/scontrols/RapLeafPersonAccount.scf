@@ -1,0 +1,9 @@
+<html> 
+<head>
+  <META HTTP-EQUIV="CACHE-CONTROL" CONTENT="NO-CACHE">
+  {!INCLUDE($SControl.css)}
+  {!INCLUDE($SControl.application_js, [parent_type='Account'])}
+</head>
+
+{!INCLUDE($SControl.body)}
+</html>

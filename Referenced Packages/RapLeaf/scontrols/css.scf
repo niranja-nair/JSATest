@@ -1,0 +1,112 @@
+<link href="/sCSS/13.0/1215462466000/Theme2/default/elements.css" media="handheld,print,projection,screen,tty,tv" rel="stylesheet" type="text/css" />
+<link  href="/sCSS/13.0/1215462466000/Theme2/default/common.css" media="handheld,print,projection,screen,tty,tv" rel="stylesheet" type="text/css" />
+<link  href="/sCSS/13.0/1215462466000/Theme2/default/rlHovers.css" media="handheld,print,projection,screen,tty,tv" rel="stylesheet" type="text/css" />
+<link  href="/sCSS/13.0/1215815326000/Theme2/dStandard.css" media="handheld,print,projection,screen,tty,tv" rel="stylesheet" type="text/css" />
+<link  href="/sCSS/13.0/1216062117000/Theme2/00D400000009l9j/00540000000zXK7/dCustom0.css" media="handheld,print,projection,screen,tty,tv" rel="stylesheet" type="text/css" />
+
+<style type="text/css">
+#navlist {
+	padding: 0;
+	margin: 1px;
+	border-bottom: 1px solid #133765;
+	font-weight: bold;
+	background: #F3F3EC;
+}
+
+#navlist li {
+	list-style: none;
+	margin: 0;
+	padding: 0;
+	display: inline;
+}
+
+#navlist li a {
+	padding: 0px 0.5em;
+	margin-left: 3px;
+	border: 1px solid #778;
+	border-bottom: none;
+	background: #133765;
+	text-decoration: none;
+}
+
+#navlist li a:link {
+	color: #CED3DE;
+}
+
+#navlist li a:visited {
+	color: #CED3DE;
+}
+
+#navlist li a:hover {
+	color: #fff;
+}
+
+#navlist li a#current {
+	background: #FFF;
+	color: #133765;
+	border-bottom: 1px solid #FFF;
+}
+
+#rapleaf_container {
+	background: none;
+	height: 200px;
+	width: 100%;
+	margin-top: 10px;
+	background:
+		url('https://www.rapleaf.com/images/sales_force/rapleaf_logo_blue.png')
+		right top no-repeat;
+	min-width: 650px;
+}
+
+div.active {
+	display: block;
+}
+
+div.inactive {
+	display: none;
+}
+
+#photo_nav {
+	margin: 3px 3px 0 0;
+}
+
+a.arrow {
+	padding: 0 3px;
+	text-decoration: none;
+	background: #133765;
+	color: #CED3DE;
+	margin-right: 5px;
+	position: absolute;
+}
+
+a.right_arrow {
+	margin-left: 5px;
+	position: relative;
+}
+
+.photo_nav_text {
+	margin-left: 18px;
+}
+
+#loading {
+	font-weight: bold;
+	width: 80%;
+	padding: 30px;
+	display: none;
+}
+
+/* For connections tab*/
+span.person_info {
+	float: left;
+	text-align: center;
+	margin: 10px 40px 0 10px;
+}
+
+.person_info a:link {
+	text-decoration: none;
+}
+
+.person_info a:visited {
+	text-decoration: none;
+}
+</style>

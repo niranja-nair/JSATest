@@ -1,0 +1,28 @@
+<apex:page showHeader="false" title="{!$Label.site.registration_confirmation}" standardStylesheets="false">
+  <apex:composition template="{!$Site.Template}">
+    <apex:define name="body">  
+
+  	<div class="pc_page_content_top"></div>
+  	<div class="pc_page_content"  id="pc_siteregisterconfirm_page">
+  	  <div class="pc_page_content_inner"> 
+
+  	    <apex:outputPanel styleclass="pc_siteregisterconfirm_panel">
+				<div class="pc_siteregisterconfirm_inner">
+                  <apex:outputText style="font-size: larger; font-weight: bold;" value="{!$Label.site.thank_you_for_registering}"/>
+                  <br/>
+                  <br/>
+                  <apex:outputLink value="{!$Page.pymt__SiteLogin}" rendered="{!$Site.LoginEnabled}">{!$Label.site.go_to_login_page}</apex:outputLink>
+                  <br/>              
+				</div>
+    	  </apex:outputPanel>
+
+    
+    	</div>
+  	</div>
+  
+      <br/>   
+          
+
+    </apex:define>
+  </apex:composition>
+</apex:page>

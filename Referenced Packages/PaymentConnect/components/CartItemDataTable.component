@@ -1,0 +1,23 @@
+<apex:component >
+    <apex:attribute name="cartItems" type="pymt__Shopping_Cart_Item__c[]" description="A list of PaymentConnect Shopping Cart Items"/>
+    <apex:dataTable styleClass="pc_cart_item_table"  id="cartItemTable" value="{!cartItems}" var="item" columnClasses="itemDescriptionColumn,itemQuantityColumn,currency_column,currency_column" rowClasses="evenRow,oddRow">
+        <apex:column headerClass="itemDescriptionColumn">
+            <apex:facet name="header">{!$Label.Label_ItemName}</apex:facet>
+            <apex:outputText value="{!item.name}" />&nbsp;<apex:outputText styleClass="product_code" value="({!item.pymt__Product_Code__c})" rendered="{!NOT(ISNULL(item.pymt__Product_Code__c))}" />
+        </apex:column>
+        <apex:column headerClass="itemQuantityColumn">
+            <apex:facet name="header">{!$Label.Label_Quantity}</apex:facet>
+            <apex:outputText value="{0}" >
+                <apex:param value="{!item.pymt__Quantity__c}" />
+            </apex:outputText>
+        </apex:column>
+        <apex:column headerClass="currency_column">
+            <apex:facet name="header">{!$Label.Label_UnitPrice}</apex:facet>
+            <apex:outputField value="{!item.pymt__Unit_Price__c}" />
+        </apex:column>
+        <apex:column headerClass="currency_column">
+            <apex:facet name="header">{!$Label.Label_TotalAmount}</apex:facet>
+            <apex:outputField value="{!item.pymt__Total__c}" />
+        </apex:column>
+    </apex:dataTable>
+</apex:component>

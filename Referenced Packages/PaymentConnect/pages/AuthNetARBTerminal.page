@@ -1,0 +1,822 @@
+<apex:page id="authNetARBTerminalPage" controller="pymt.AuthNetARBTerminalController" tabStyle="pymt__Payment_Profile__c" >
+<script type="text/javascript" src="{!URLFOR($Resource.PaymentConnect, 'includes/tooltip/wz_tooltip.js')}"></script>
+<style>
+
+
+.labelColumn {
+    text-align:right;
+    width:180px;
+	font-weight:bold;
+}
+
+
+.pc_shortinputfield { 
+    width:50px;
+}
+
+	.modalProgressBox {
+		display: block;
+		position: absolute;
+		z-index: 999;
+		text-align: center; 
+		width: 100%;
+		height: 100%;
+		background-color: #FFF;
+		padding-top:250px;
+		top: 0px;
+		left: 0px;
+		filter:alpha(opacity=50);
+		-moz-opacity:0.5;
+		-khtml-opacity: 0.5;
+		opacity: 0.5;
+		color: black;
+		font-size: 14pt;
+    }
+
+</style>
+
+<apex:outputPanel id="formsPanel">
+
+<apex:sectionHeader title="Linvio PaymentConnect" subtitle="AuthNet Recurring Payment Terminal" help="{!$Page.pymt__Help}" />
+
+
+  
+<apex:form id="terminalForm" onsubmit="return validateForm();" rendered="{!NOT(transactionCompleted)}">
+<apex:pageMessages id="pageMessages" />
+
+     <apex:actionStatus id="modalActionStatus" >
+         <apex:facet name="start" >
+           <apex:outputPanel styleClass="modalProgressBox">&nbsp; 
+           <br/><br/><br/>
+             <apex:image value="{!URLFOR($Resource.pymt__PaymentConnect, 'images/spinner_med.gif')}"  style="vertical-align:middle;" alt="busy..." />
+             </apex:outputPanel>
+         </apex:facet> 
+         <apex:facet name="stop"  >
+         </apex:facet>
+    </apex:actionStatus> 
+
+<script language="javascript">
+
+function addLoadEvent(func) {
+  var oldonload = window.onload;
+  if (typeof window.onload != 'function') {
+    window.onload = func;
+  } else {
+    window.onload = function() {
+      if (oldonload) {
+        oldonload();
+      }
+      func();
+    }
+  }
+}
+
+// Disable browser autocomplete for fields accepting sensitive data
+function disableAutoComplete() {
+	var el;
+	el = document.getElementById("{!$Component.terminalForm.terminalPageBlock.cardInfo.cardNumberSI.cardNumber}");
+	if (el) el.setAttribute("autocomplete","off");
+	el = document.getElementById("{!$Component.terminalForm.terminalPageBlock.cardInfo.cardCodeSI.cardCode}");
+	if (el) el.setAttribute("autocomplete","off");
+	el = document.getElementById("{!$Component.terminalForm.terminalPageBlock.echeckInfo.routingNumberSI.routingNumber}");
+	if (el) el.setAttribute("autocomplete","off");
+	el = document.getElementById("{!$Component.terminalForm.terminalPageBlock.echeckInfo.acctNumberSI.accountNumber}");
+	if (el) el.setAttribute("autocomplete","off");
+}
+
+addLoadEvent(disableAutoComplete);
+
+
+var enableValidation=false;
+function validateForm() {
+
+    if (!enableValidation) return true;
+    enableValidation=false;  
+    
+    // check required fields
+    var name = document.getElementById("{!$Component.terminalForm.terminalPageBlock.transactionDetailsSection.subscrNameSI.subscr_name}");
+    if (name.value == "") {
+        alert("Please provide name for this subscription profile.");
+        return false;
+    }
+    var freq = document.getElementById("{!$Component.terminalForm.terminalPageBlock.transactionDetailsSection.subscrFreqSI.subscr_frequency}");
+    if (freq.value == "") {
+        alert("Please specify a frequency of 1 more months (or 7 or more days) between each payment.");
+        return false;
+    }
+
+    var amount = document.getElementById("{!$Component.terminalForm.terminalPageBlock.transactionDetailsSection.amountSI.amount}");
+    if (amount.value == "") {
+        alert("Please specify the recurring amount.");
+        return false;
+    }
+
+    if ({!IF(hideTrialFields,'false','true')}) {
+    var trialOccur = document.getElementById("{!$Component.terminalForm.terminalPageBlock.transactionDetailsSection.trialOccurSI.trial_occurrences}");
+    if (trialOccur.value !== "") {
+        var trialAmount = document.getElementById("{!$Component.terminalForm.terminalPageBlock.transactionDetailsSection.trialAmountSI.trial_amount}");
+        if (trialAmount.value == "") {
+            alert("A trial amount must also be provided if the number of trial occurrences is set.");
+            return false;
+        }   
+    }
+    // var totOccur = document.getElementById("{!$Component.terminalForm.terminalPageBlock.transactionDetailsSection.totOccurSI.total_occurrences}");
+
+    }
+    
+   	var paymentTypeList = document.getElementById("{!$Component.terminalForm.terminalPageBlock.paymentTypeSection.paymentTypeSI.paymentType}");
+	var w = paymentTypeList.selectedIndex;
+	var paymentType = paymentTypeList.options[w].value;
+	    
+    if (paymentType == "creditcard") {
+        var cardNum = document.getElementById("{!$Component.terminalForm.terminalPageBlock.cardInfo.cardNumberSI.cardNumber}");
+        if (cardNum.value == "") {
+            alert("Please provide a credit card number.");
+            return false;
+        }
+    }
+
+    if (paymentType == "echeck" ) {
+        var routingNum = document.getElementById("{!$Component.terminalForm.terminalPageBlock.echeckInfo.routingNumberSI.routingNumber}");
+        if (routingNum.value == "") {
+            alert("Please provide a routing number.");
+            return false;
+        }
+        var accountNum = document.getElementById("{!$Component.terminalForm.terminalPageBlock.echeckInfo.acctNumberSI.accountNumber}");
+        if (accountNum.value == "") {
+            alert("Please provide an account number.");
+            return false;
+        }
+        var nameOnAcct = document.getElementById("{!$Component.terminalForm.terminalPageBlock.echeckInfo.nameOnAcctSI.nameOnAccount}");
+        if (nameOnAcct.value == "") {
+            alert("Please provide the name on this account.");
+            return false;
+        }
+    }
+    
+
+    return true;
+}
+</script> 
+<apex:inputHidden value="{!profile.pymt__On_Payment_Completed__c}"/>
+
+<apex:pageBlock id="terminalPageBlock" mode="edit">
+    <apex:pageBlockButtons >
+    <apex:commandButton id="cancel" value="Cancel" action="{!cancelFromTerminal}" onclick="enableValidation=false;" immediate="true"/>
+            <apex:commandButton id="continue" value="Create Subscription" action="{!createSubscription}" disabled="{!disableForm}" onclick="enableValidation=true;" status="modalActionStatus" rerender="formsPanel, modalActionStatus" />
+        &nbsp;<apex:actionStatus id="formActionStatus">
+                <apex:facet name="start">
+                    <apex:outputPanel >&nbsp;
+              <apex:image value="{!URLFOR($Resource.pymt__PaymentConnect, 'images/icon-spinner.gif')}"
+                            style="vertical-align:middle;" alt="busy..." />
+              &nbsp;Updating Page</apex:outputPanel>
+                </apex:facet>
+                <apex:facet name="stop">
+                    <apex:image value="{!URLFOR('/s.gif')}" alt="" style="height:17px;" />
+                </apex:facet>
+            </apex:actionStatus>          
+    </apex:pageBlockButtons>
+    
+            <apex:pageBlockSection id="transactionDetailsSection" showHeader="true" title="Transaction Details" collapsible="false">
+                <apex:pageBlockSectionItem id="subscrNameSI" helpText="Merchant-assigned name for the subscription">
+                <apex:outputLabel for="subscr_name">Subscription Name</apex:outputLabel>
+                <apex:inputField id="subscr_name" value="{!profile.Name}" >
+                </apex:inputField>
+                </apex:pageBlockSectionItem>
+
+ 			<apex:pageBlockSectionItem id="processorSelectionSI" helpText="Select the Processor Connection to use when processing this transaction." >
+ 			<apex:outputLabel value="Processor Connection"/>
+ 			<apex:selectList size="1" multiselect="false" value="{!processorConnectionId}" disabled="false">
+                    <apex:actionSupport event="onchange" rerender="cardType, paymentTypePanels, paymentTypeSection " status="modalActionStatus" oncomplete="disableAutoComplete();"/>
+                    <apex:selectOptions id="processorOptions" value="{!processorConnectionOptions}" />
+                </apex:selectList>
+ 			</apex:pageBlockSectionItem>
+
+
+                <apex:pageBlockSectionItem helpText="Description of the subscription (optional). The description will be associated with each payment in the subscription.">
+                <apex:outputLabel for="description">Description</apex:outputLabel>
+                <apex:inputField id="description" value="{!profile.pymt__Description__c}" style="height:22px;"></apex:inputField>
+                </apex:pageBlockSectionItem>
+
+                <apex:pageBlockSectionItem >
+                <apex:outputText value=""/>
+                <apex:outputText value=""/>
+                </apex:pageBlockSectionItem>
+
+                <apex:pageBlockSectionItem helpText="Merchant-assigned invoice number for the subscription (optional). The invoice number will be associated with each payment in the subscription." rendered="{!NOT(hideInvoiceNumber)}">
+                <apex:outputLabel for="invoiceNumber">Invoice Number</apex:outputLabel>
+                <apex:inputText id="invoiceNumber" value="{!profile.pymt__Invoice_Number__c}" />
+                </apex:pageBlockSectionItem>
+
+                <apex:pageBlockSectionItem rendered="{!NOT(hideInvoiceNumber)}">
+                <apex:outputText value=""/>
+                <apex:outputText value=""/>
+                </apex:pageBlockSectionItem>
+                
+                <apex:pageBlockSectionItem helpText="Date the subscription begins (also the date the initial billing occurs)" >
+                <apex:outputLabel for="startDate">Subscription Start Date</apex:outputLabel>
+                <apex:inputField id="startDate" value="{!profile.pymt__Subscription_Start_Date__c}" >
+                </apex:inputField>
+                </apex:pageBlockSectionItem>
+
+                <apex:pageBlockSectionItem >
+                <apex:outputText value=""/>
+                <apex:outputText value=""/>
+                </apex:pageBlockSectionItem>
+
+                <apex:pageBlockSectionItem id="subscrFreqSI" helpText="Up to 3 digits.  If the Interval Unit is 'months,' can be any number between one (1) and 12.  If the Interval Unit is 'days,' can be any number between seven (7) and 365.">
+                <apex:outputLabel for="subscr_frequency">Sched. Payments Every</apex:outputLabel>
+                <apex:outputPanel layout="inline">
+                    <apex:inputField id="subscr_frequency" value="{!profile.pymt__Frequency__c}" styleclass="pc_shortinputfield">
+                    </apex:inputField>&nbsp;
+                        <apex:selectList value="{!profile.pymt__Period__c}" size="1">
+                        <apex:selectOptions value="{!periodOptions}" />
+                    </apex:selectList>
+                </apex:outputPanel>
+                </apex:pageBlockSectionItem>
+
+                <apex:pageBlockSectionItem >
+                <apex:outputText value=""/>
+                <apex:outputText value=""/>
+                </apex:pageBlockSectionItem>
+
+                <apex:pageBlockSectionItem id="trialAmountSI" rendered="{!NOT(hideTrialFields)}" helpText="Amount to be charged for each payment during a trial period.  This value is required if trial occurrences is set. Once the number of trial occurrences for the subscription is complete, the regular amount will be charged for each remaining payment.">
+                <apex:outputLabel for="trial_amount">Trial Amount</apex:outputLabel>
+                <apex:inputField id="trial_amount" value="{!profile.pymt__Trial_Amount__c}"  styleclass="pc_shortinputfield" >
+                </apex:inputField>
+                </apex:pageBlockSectionItem>
+
+                <apex:pageBlockSectionItem id="trialOccurSI" rendered="{!NOT(hideTrialFields)}" helpText="Number of billing occurences or payments in the trial period (optional)">
+                <apex:outputLabel for="trial_occurrences">Trial Occurrences</apex:outputLabel>
+                <apex:inputField id="trial_occurrences" value="{!profile.pymt__Trial_Occurrences__c}" styleclass="pc_shortinputfield">
+                </apex:inputField>
+                </apex:pageBlockSectionItem>
+
+
+                <apex:pageBlockSectionItem id="amountSI" helpText="The amount to be billed for each payment in the subscription. If a trial period is specified, this is the amount that will be charged after the trial payments are completed.">
+                <apex:outputLabel for="amount">Recurring Amount</apex:outputLabel>
+                <apex:inputField id="amount" value="{!profile.pymt__Amount__c}"  styleclass="pc_shortinputfield" >&nbsp;
+                    <apex:selectList id="currencyCode" value="{!profile.pymt__Currency_ISO_Code__c}" size="1">
+                        <apex:selectOptions value="{!currencyOptions}" />
+                    </apex:selectList>
+                </apex:inputField>
+                </apex:pageBlockSectionItem>
+
+                <apex:pageBlockSectionItem id="totOccurSI" helpText="Total number of billing occurences or payments for the subscription.  This number should include both trial and regular occurences.  To indicate a subscription with no end date, leave this field empty.">
+                <apex:outputLabel for="total_occurrences">Total Occurrences</apex:outputLabel>
+                <apex:inputField id="total_occurrences" value="{!profile.pymt__Total_Occurrences__c}" styleclass="pc_shortinputfield" >
+                </apex:inputField>              
+                </apex:pageBlockSectionItem>
+
+
+            </apex:pageBlockSection>
+
+                
+            
+            <apex:pageBlockSection id="relatedObjectsSection" title="Related Standard Objects" showHeader="true" collapsible="false">
+
+                <apex:pageBlockSectionItem >
+                <apex:outputLabel for="contact">{!$ObjectType.Contact.Label}&nbsp;</apex:outputLabel>
+                <apex:inputField id="contact" value="{!profile.pymt__Contact__c}" >
+                    <apex:actionSupport event="onblur" action="{!loadContact}"  
+                        rerender="addresses, pageMessages, buttons" status="formActionStatus" />
+                </apex:inputField>
+                </apex:pageBlockSectionItem>
+
+
+                <apex:pageBlockSectionItem >
+                <apex:outputLabel for="account">{!$ObjectType.Account.Label}&nbsp;</apex:outputLabel>
+                <apex:inputField id="account" value="{!profile.pymt__Account__c}" >
+                    <apex:actionSupport event="onblur" action="{!loadAccount}" 
+                        rerender="addresses, pageMessages" status="formActionStatus" />
+                    </apex:inputField>
+                </apex:pageBlockSectionItem>
+
+                <apex:pageBlockSectionItem >
+                <apex:outputLabel for="opportunity">{!$ObjectType.Opportunity.Label}&nbsp;</apex:outputLabel>
+                <apex:inputField id="opportunity" value="{!profile.pymt__Opportunity__c}" />
+                </apex:pageBlockSectionItem>
+
+                
+
+            </apex:pageBlockSection>
+
+
+            
+            
+            <apex:pageBlockSection id="paymentTypeSection" title="Payment Information" columns="1" collapsible="false">
+
+ 			            
+            <apex:pageBlockSectionItem id="paymentTypeSI">
+            <apex:outputLabel for="paymentType" >Payment Type </apex:outputLabel>
+            
+			<apex:outputPanel layout="inline">
+			<table class="unformattedTable" ><tr><td style="vertical-align:top;">            
+            <apex:selectList size="1" id="paymentType" value="{!paymentType}" >
+                <apex:selectOptions value="{!paymentTypeOptions}" />
+                <apex:actionSupport event="onchange" id="selectPaymentType" 
+                	action="{!paymentTypeChanged}" rerender="paymentTypePanels, addresses, pageMessages" 
+                	status="paymentTypeSelectionStatus" 
+                	 oncomplete="disableAutoComplete();" 
+                	/>
+              </apex:selectList> 
+              </td><td style="vertical-align:top;">
+				    <apex:actionStatus id="paymentTypeSelectionStatus" >
+         				<apex:facet name="start" > 
+           					<apex:outputPanel >&nbsp; 
+             					<apex:image value="{!URLFOR($Resource.pymt__PaymentConnect, 'images/icon-spinner.gif')}"  style="vertical-align:top;" alt="busy..." />
+             				</apex:outputPanel>
+         				</apex:facet> 
+         				<apex:facet name="stop">
+           					<apex:image value="{!URLFOR('/s.gif')}"  alt="" style="height:12px;" />
+         				</apex:facet>
+    				</apex:actionStatus>             
+				</td></tr></table>
+				</apex:outputPanel>
+            </apex:pageBlockSectionItem>
+
+            </apex:pageBlockSection>
+
+
+                            
+        <apex:outputPanel id="paymentTypePanels">
+
+            <apex:pageBlockSection id="cardInfo" showHeader="false" title="Credit Card"  collapsible="false" columns="1" rendered="{!(paymentType == 'creditcard')}">
+ 
+ 			<apex:pageBlockSectionItem >
+			<apex:outputLabel for="cardTypeSelectList">Card Type</apex:outputLabel>
+			<apex:outputPanel layout="inline">
+			<apex:selectList size="1" id="cardTypeSelectList"
+                            multiselect="false" value="{!cardType}">
+                            <apex:selectOptions value="{!cardTypeOptions}" />
+                        </apex:selectList>
+                        <!-- img src="{!URLFOR($Resource.PaymentConnect,'/images/credit_card_logos_30.gif')}" style="height:16px;vertical-align:top;"/-->
+                        </apex:outputPanel>
+			</apex:pageBlockSectionItem>
+			           
+            <apex:pageBlockSectionItem id="cardNumberSI">
+            <apex:outputLabel for="cardNumber">Card Number</apex:outputLabel>
+            <apex:inputText id="cardNumber" value="{!cardNumber}" />
+            </apex:pageBlockSectionItem>
+            
+            <apex:pageBlockSectionItem id="expirationSI">
+            <apex:outputLabel for="expirationDate">Card Expiration </apex:outputLabel>
+            <apex:outputPanel layout="inline">
+                <apex:selectList id="expMonth" value="{!expirationMonth}" size="1"> 
+                    <apex:selectOptions value="{!expMonthOptions}" />
+                </apex:selectList> &nbsp;
+                <apex:selectList id="expYear" value="{!expirationYear}" size="1"> 
+                    <apex:selectOptions value="{!expYearOptions}" />
+                </apex:selectList> 
+            </apex:outputPanel>
+            </apex:pageBlockSectionItem>
+            
+            <apex:pageBlockSectionItem id="cardCodeSI" helpText="Card verfication or security code.  This value needs to be provided only when the merchant is using the Card Code Verification filter.">
+            <apex:outputLabel for="cardCode">Card Code</apex:outputLabel>
+            <apex:inputText id="cardCode" value="{!cardCode}" styleclass="pc_shortinputfield" />
+            </apex:pageBlockSectionItem>
+            
+            
+            </apex:pageBlockSection>
+
+            <apex:pageBlockSection id="storedCardInfo" showHeader="false" title="Credit Card Profile"  collapsible="false" columns="1" rendered="{!(paymentType == 'storedCreditCard')}">
+
+            <apex:pageBlockSectionItem id="paymentMethodSelectionSI">
+            <apex:outputLabel for="storedCardSelectList">Credit Card Profile</apex:outputLabel>
+            <apex:outputPanel >
+            	<apex:selectList id="storedCardSelectList" value="{!selectedPaymentMethodId}" size="1">
+            		<apex:selectOptions value="{!storedCreditCardOptions}" /> 
+            			<apex:actionSupport event="onchange" action="{!cardProfileSelectionChanged}" id="selectStoredCard"
+            				rerender="addresses, storedCardInfo, cardProfileSelectionStatus, pageMessages"             			
+            				status="cardProfileSelectionStatus" />
+            		
+            	</apex:selectList>
+                    &nbsp;
+                    <apex:actionStatus id="cardProfileSelectionStatus" >
+         				<apex:facet name="start" > 
+           					<apex:outputPanel >&nbsp; 
+             					<apex:image value="{!URLFOR($Resource.pymt__PaymentConnect, 'images/icon-spinner.gif')}"  style="vertical-align:top;" alt="busy..." />
+             				</apex:outputPanel>
+         				</apex:facet> 
+         				<apex:facet name="stop">
+           					<apex:image value="{!URLFOR('/s.gif')}"  alt="" style="height:12px;" />
+         				</apex:facet>
+    				</apex:actionStatus>  
+    		</apex:outputPanel>            
+            </apex:pageBlockSectionItem>
+            		            
+            <apex:pageBlockSectionItem id="storedCardNumberSI">
+            <apex:outputLabel for="maskedCardNumber">Card Number</apex:outputLabel>
+            <apex:outputText id="maskedCardNumber" value="************{!paymentMethodRecord.pymt__Last_4_Digits__c}" />
+            </apex:pageBlockSectionItem>
+            
+            <apex:pageBlockSectionItem id="storedCardTypeSI">
+            <apex:outputLabel for="storedCardType">Card Type</apex:outputLabel>
+            <apex:outputText id="storedCardType" value="{!paymentMethodRecord.pymt__Card_Type__c}" />
+            </apex:pageBlockSectionItem>
+            
+            <apex:pageBlockSectionItem id="storedCardExpirationSI">
+					<apex:outputText value="Expiration"/>
+					<apex:outputText value="{!expirationMonth}/{!expirationYear}"/>
+            </apex:pageBlockSectionItem>
+                        
+            </apex:pageBlockSection>
+
+            
+            <apex:pageBlockSection id="echeckInfo"  showHeader="false" title="eCheck"  collapsible="false" columns="1" rendered="{!IF(paymentType == 'echeck',true,false)}">
+            
+            <apex:pageBlockSectionItem id="bankNameSI">
+            <apex:outputLabel for="bankName">Bank Name</apex:outputLabel>
+            <apex:inputText id="bankName" value="{!bankName}" >
+            </apex:inputText>
+            </apex:pageBlockSectionItem>
+
+            <apex:pageBlockSectionItem >
+            <apex:outputLabel for="accountType">Account Type</apex:outputLabel>
+            <apex:selectList value="{!accountType}" size="1" id="accountType">
+                    <apex:selectOptions value="{!accountTypeOptions}" />
+              </apex:selectList>
+            </apex:pageBlockSectionItem>
+
+            <apex:pageBlockSectionItem >
+            <apex:outputLabel for="echeckType">eCheck Type</apex:outputLabel>
+             <apex:selectList value="{!echeckType}" size="1" id="echeckType">
+                    <apex:selectOptions value="{!echeckTypeOptions}" />
+              </apex:selectList>            
+            </apex:pageBlockSectionItem>
+
+            <apex:pageBlockSectionItem id="routingNumberSI">
+            <apex:outputLabel for="routingNumber">Routing Number</apex:outputLabel>
+            <apex:inputText id="routingNumber" value="{!routingNumber}" >
+            </apex:inputText>
+            </apex:pageBlockSectionItem>
+
+            <apex:pageBlockSectionItem id="acctNumberSI">
+            <apex:outputLabel for="accountNumber">Account Number</apex:outputLabel>
+            <apex:inputText id="accountNumber" value="{!accountNumber}" >
+            </apex:inputText>
+            </apex:pageBlockSectionItem>
+
+            <apex:pageBlockSectionItem id="nameOnAcctSI">
+            <apex:outputLabel for="nameOnAccount">Name on Account</apex:outputLabel>
+            <apex:inputText id="nameOnAccount" value="{!nameOnAccount}" >
+            </apex:inputText>
+            </apex:pageBlockSectionItem>
+
+
+
+            
+            </apex:pageBlockSection>
+            
+        </apex:outputPanel>                                     
+
+
+
+        <apex:pageBlockSection title="Address Information" collapsible="false" id="addresses">
+             
+                <apex:pageBlockSectionItem rendered="{!NOT(usePmtMethodBilling)}">
+                <apex:outputLabel for="loadBillingFrom">Billing Address Source:</apex:outputLabel>
+                <apex:selectList id="selectBillingFrom" size="1"
+                                    value="{!loadBillingFrom}">
+                                    <apex:selectOptions value="{!billingAddressFromOptions}" />
+                                    <apex:actionSupport event="onchange"
+                                        action="{!loadBillingAddressFields}"
+                                        rerender="billingname, billingstreet, billingcity, billingstate, billingpostalcode, billingcountry, pageMessages"
+                                        status="formActionStatus" />
+                                </apex:selectList>
+                </apex:pageBlockSectionItem>
+             	<apex:pageBlockSectionItem rendered="{!usePmtMethodBilling}">
+            	<apex:outputLabel value="Billing Address Source:"/>
+            	<apex:outputText value="Stored Payment Method"/>
+            	</apex:pageBlockSectionItem> 
+            	            
+                <apex:pageBlockSectionItem rendered="{!NOT(hideShippingAddress)}">
+                <apex:outputLabel for="loadBillingFrom">Shipping Address Source:</apex:outputLabel>
+                <apex:selectList id="selectShippingFrom" size="1"
+                                value="{!loadShippingFrom}">
+                                <apex:selectOptions value="{!shippingAddressFromOptions}" />
+                                <apex:actionSupport event="onchange"
+                                    action="{!loadShippingAddressFields}"
+                                    rerender="shippingname, shippingstreet, shippingcity, shippingstate, shippingpostalcode, shippingcountry, pageMessages"
+                                    status="formActionStatus" />
+
+                            </apex:selectList>
+                </apex:pageBlockSectionItem>
+                <apex:pageBlockSectionItem rendered="{!hideShippingAddress}">
+                <apex:outputText value=""/>
+                <apex:outputText value=""/>
+                </apex:pageBlockSectionItem>                
+            
+
+            
+                <apex:pageBlockSectionItem >
+                <apex:outputLabel for="billingname">Billing Name</apex:outputLabel>
+                <apex:inputText id="billingname"
+                                value="{!billingname}" disabled="{!usePmtMethodBilling}"/>
+                </apex:pageBlockSectionItem>
+            
+                <apex:pageBlockSectionItem rendered="{!NOT(hideShippingAddress)}">
+                <apex:outputLabel for="shippingname">Shipping Name</apex:outputLabel>
+                <apex:inputText id="shippingname"
+                                value="{!shippingname}" />
+                </apex:pageBlockSectionItem>
+                <apex:pageBlockSectionItem rendered="{!hideShippingAddress}">
+                <apex:outputText value=""/>
+                <apex:outputText value=""/>
+                </apex:pageBlockSectionItem>
+            
+                <apex:pageBlockSectionItem >
+                <apex:outputLabel for="billingstreet">Billing Address</apex:outputLabel>
+                <apex:inputText id="billingstreet"
+                                value="{!billingstreet}"  disabled="{!usePmtMethodBilling}"/>
+                </apex:pageBlockSectionItem>
+            
+                <apex:pageBlockSectionItem rendered="{!NOT(hideShippingAddress)}">
+                <apex:outputLabel for="shippingstreet">Shipping Address</apex:outputLabel>
+                <apex:inputText id="shippingstreet"
+                                value="{!shippingstreet}" />
+                </apex:pageBlockSectionItem>
+                <apex:pageBlockSectionItem rendered="{!hideShippingAddress}">
+                <apex:outputText value=""/>
+                <apex:outputText value=""/>
+                </apex:pageBlockSectionItem>
+            
+            
+                <apex:pageBlockSectionItem >
+                <apex:outputLabel for="billingcity">City</apex:outputLabel>
+                <apex:inputText id="billingcity" value="{!billingcity}"  disabled="{!usePmtMethodBilling}"/>
+                </apex:pageBlockSectionItem>
+            
+                <apex:pageBlockSectionItem rendered="{!NOT(hideShippingAddress)}">
+                <apex:outputLabel for="shippingcity">City</apex:outputLabel>
+                <apex:inputText id="shippingcity"
+                                value="{!shippingcity}" />
+                </apex:pageBlockSectionItem>
+                <apex:pageBlockSectionItem rendered="{!hideShippingAddress}">
+                <apex:outputText value=""/>
+                <apex:outputText value=""/>
+                </apex:pageBlockSectionItem>
+            
+            
+                <apex:pageBlockSectionItem >
+                <apex:outputLabel for="billingstate">State</apex:outputLabel>
+                <apex:inputText id="billingstate"
+                                value="{!billingstate}"  disabled="{!usePmtMethodBilling}"/>
+                </apex:pageBlockSectionItem>
+            
+                <apex:pageBlockSectionItem rendered="{!NOT(hideShippingAddress)}">
+                <apex:outputLabel for="shippingstate">State</apex:outputLabel>
+                <apex:inputText id="shippingstate"
+                                value="{!shippingstate}" />
+                </apex:pageBlockSectionItem>
+                <apex:pageBlockSectionItem rendered="{!hideShippingAddress}">
+                <apex:outputText value=""/>
+                <apex:outputText value=""/>
+                </apex:pageBlockSectionItem>
+                        
+                <apex:pageBlockSectionItem >
+                <apex:outputLabel for="billingpostalcode">Postal Code</apex:outputLabel>
+                <apex:inputText id="billingpostalcode"
+                                value="{!billingpostalcode}"  disabled="{!usePmtMethodBilling}"/>
+                </apex:pageBlockSectionItem>
+            
+                <apex:pageBlockSectionItem rendered="{!NOT(hideShippingAddress)}">
+                <apex:outputLabel for="shippingpostalcode">Postal Code</apex:outputLabel>
+                <apex:inputText id="shippingpostalcode"
+                                value="{!shippingpostalcode}" />
+                </apex:pageBlockSectionItem>
+                <apex:pageBlockSectionItem rendered="{!hideShippingAddress}">
+                <apex:outputText value=""/>
+                <apex:outputText value=""/>
+                </apex:pageBlockSectionItem>
+            
+                <apex:pageBlockSectionItem >
+                <apex:outputLabel for="billingcountry">Country</apex:outputLabel>
+                <apex:inputText id="billingcountry"
+                                value="{!billingcountry}"  disabled="{!usePmtMethodBilling}"/>
+                </apex:pageBlockSectionItem>
+            
+                <apex:pageBlockSectionItem rendered="{!NOT(hideShippingAddress)}">
+                <apex:outputLabel for="shippingcountry">Country</apex:outputLabel>
+                <apex:inputText id="shippingcountry"
+                                value="{!shippingcountry}" />
+                </apex:pageBlockSectionItem>
+                <apex:pageBlockSectionItem rendered="{!hideShippingAddress}">
+                <apex:outputText value=""/>
+                <apex:outputText value=""/>
+                </apex:pageBlockSectionItem>
+            
+                <apex:pageBlockSectionItem >
+                <apex:outputText value=""/>
+                <apex:commandButton value="Store Address"
+                                styleclass="btnSharing" action="{!saveBillingAddress}"
+                                rendered="true" 
+                                status="modalActionStatus"
+                                disabled="{!OR(NOT(OR(loadBillingFrom == 'mailing',loadBillingFrom == 'billing',loadBillingFrom == 'other')),usePmtMethodBilling)}"
+                                rerender="pageMessages" />
+                </apex:pageBlockSectionItem>
+            
+                <apex:pageBlockSectionItem rendered="{!NOT(hideShippingAddress)}">
+                <apex:outputText value=""/>
+                <apex:commandButton value="Store Address"
+                                styleclass="btnSharing" action="{!saveShippingAddress}"
+                                rendered="true" 
+                                status="modalActionStatus"
+                                disabled="{!NOT(OR(loadShippingFrom == 'mailing',loadShippingFrom == 'shipping',loadShippingFrom == 'other'))}"
+                                rerender="pageMessages" />
+                </apex:pageBlockSectionItem>
+                <apex:pageBlockSectionItem rendered="{!hideShippingAddress}">
+                <apex:outputText value=""/>
+                <apex:outputText value=""/>
+                </apex:pageBlockSectionItem>
+            
+
+            
+            </apex:pageBlockSection>                            
+                            
+          
+            <apex:pageBlockSection collapsible="false" title="Category Splits" columns="1" rendered="{!NOT(hideCatSplitNames)}">
+            
+                <apex:pageBlockSectionItem >
+		            <apex:outputLabel for="categorySplit" value="Category Split Name"/>
+        		    <apex:inputField id="categorySplit" value="{!profile.pymt__Category_Split_Name__c}" />
+				</apex:pageBlockSectionItem>
+            </apex:pageBlockSection> 
+    
+
+</apex:pageBlock>             
+</apex:form>
+
+<!--  =============================================================================== -->
+
+<apex:form id="terminalFormFinished"  rendered="{!transactionCompleted}">
+<apex:pageMessages id="finishedPageMessages" />
+
+     <apex:actionStatus id="modalActionStatus2" >
+         <apex:facet name="start" >
+           <apex:outputPanel styleClass="modalProgressBox">&nbsp; 
+           <br/><br/><br/>
+             <apex:image value="{!URLFOR($Resource.pymt__PaymentConnect, 'images/spinner_med.gif')}"  style="vertical-align:middle;" alt="busy..." />
+             </apex:outputPanel>
+         </apex:facet> 
+         <apex:facet name="stop"  >
+         </apex:facet>
+    </apex:actionStatus> 
+
+<apex:pageBlock >
+<apex:pageBlockButtons >
+
+	<apex:commandButton value="Continue" action="{!continueFromTerminal}"/>
+</apex:pageBlockButtons>
+ 
+<apex:panelGrid columns="2" columnClasses="labelColumn, valueColumn">
+
+<apex:outputLabel for="name">Profile Name:</apex:outputLabel>
+<apex:outputField id="name" value="{!profile.name}" />
+
+<apex:outputLabel for="amount">Subscription Amount:</apex:outputLabel>
+<apex:outputPanel layout="inline">
+<apex:outputText id="amount" value="{!profile.pymt__Amount__c}" />&nbsp;<apex:outputField id="currencyCode" value="{!profile.pymt__Currency_ISO_Code__c}" />
+&nbsp;every&nbsp;<apex:outputField id="frequency" value="{!profile.pymt__Frequency__c}" />
+&nbsp;<apex:outputField id="period" value="{!profile.pymt__Period__c}" />(s)&nbsp;
+<apex:outputPanel layout="inline"  rendered="{!NOT(OR(profile.pymt__Total_Occurrences__c == 0, profile.pymt__Total_Occurrences__c == null, profile.pymt__Total_Occurrences__c == 9999))}">
+ x&nbsp;<apex:outputText value="{!profile.pymt__Total_Occurrences__c}"/>
+</apex:outputPanel>
+</apex:outputPanel>
+
+<apex:outputPanel layout="inline"  rendered="{!NOT(OR(profile.pymt__Trial_Amount__c == null, profile.pymt__Trial_Amount__c == 0))}">
+<apex:outputLabel for="trialAmt" value="Trial Amount"/>
+</apex:outputPanel>
+<apex:outputPanel layout="inline" rendered="{!NOT(OR(profile.pymt__Trial_Amount__c == null, profile.pymt__Trial_Amount__c == 0))}">
+<apex:outputText value="{!profile.pymt__Trial_Amount__c}"/>&nbsp;{!profile.pymt__Currency_ISO_Code__c}
+&nbsp;for&nbsp;{!profile.pymt__Trial_Occurrences__c}&nbsp;cycle(s). 
+</apex:outputPanel>
+
+
+
+<apex:outputText value=""/>
+<apex:outputText value=""/>
+
+<apex:outputLabel for="contact">Contact:</apex:outputLabel>
+<apex:outputField id="contact" value="{!profile.pymt__Contact__c}" />
+
+<apex:outputLabel for="account">Account:</apex:outputLabel>
+<apex:outputField id="account" value="{!profile.pymt__Account__c}" />
+
+<apex:outputLabel for="opportunity">Opportunity:</apex:outputLabel>
+<apex:outputField id="opportunity" value="{!profile.pymt__Opportunity__c}" />
+
+<apex:outputText value="" styleClass="verticalSpacer"/>
+<apex:outputText value=""/>
+
+<apex:outputText value="Processor Connection:"/>
+<apex:outputText value="{!connection.Name}"/>
+
+<!--  Start Payment Type == creditcard -->
+<apex:outputText value="Payment Method:" rendered="{!(paymentType== 'creditcard')}"/>
+<apex:outputText value="Credit Card" rendered="{!(paymentType== 'creditcard')}"/>
+
+
+<apex:outputText value="Credit Card Number:" rendered="{!(paymentType== 'creditcard')}"/>
+<apex:outputText id="ccNumber" value="************{!profile.pymt__Last_4_Digits__c}" rendered="{!(paymentType== 'creditcard')}"/>
+
+<apex:outputText value="Card Type:" rendered="{!(paymentType== 'creditcard')}"/>
+<apex:outputText id="cardType" value="{!cardType}" rendered="{!(paymentType== 'creditcard')}"/>
+
+<apex:outputText value="CVV:" rendered="{!(paymentType== 'creditcard')}"/>
+<apex:outputText id="cvvNumberMasked" value="***"  rendered="{!paymentType== 'creditcard'}"/>
+
+<apex:outputText value="Card Expiration:" rendered="{!(paymentType== 'creditcard')}"/>
+<apex:outputPanel layout="inline" rendered="{!(paymentType== 'creditcard')}">
+<apex:outputText id="expMonth" value="{!expirationMonth}"/>/<apex:outputText id="expYear" value="{!expirationYear}"/>
+</apex:outputPanel>
+<!--  End Payment Type == creditcard -->
+
+
+<!--  Start Payment Type == storedCreditCard -->
+<apex:outputText value="Payment Method:" rendered="{!(paymentType== 'storedCreditCard')}"/>
+<apex:outputText value="Stored Credit Card" rendered="{!(paymentType== 'storedCreditCard')}"/>
+
+<apex:outputText value="Credit Card Number:" rendered="{!(paymentType== 'storedCreditCard')}"/>
+<apex:outputText id="pmCardNumber" value="************{!profile.pymt__Last_4_Digits__c}" rendered="{!(paymentType== 'storedCreditCard')}"/>
+
+<apex:outputText value="Card Type:" rendered="{!(paymentType== 'storedCreditCard')}"/>
+<apex:outputText id="pmCardType" value="{!cardType}" rendered="{!(paymentType== 'storedCreditCard')}"/>
+
+<apex:outputText value="CVV:" rendered="{!(paymentType== 'storedCreditCard')}"/>
+<apex:outputText id="pmCVVNumberMasked" value="***"  rendered="{!paymentType== 'storedCreditCard'}"/>
+
+<apex:outputText value="Card Expiration:" rendered="{!(paymentType== 'storedCreditCard')}"/>
+<apex:outputPanel layout="inline" rendered="{!(paymentType== 'storedCreditCard')}">
+<apex:outputText id="pmExpMonth" value="{!expirationMonth}"/>/<apex:outputText id="pmExpYear" value="{!expirationYear}"/>
+</apex:outputPanel>
+<!--  End Payment Type == storedCreditCard -->
+
+<!--  Start Payment Type == echeck -->
+<apex:outputText value="Payment Method:" rendered="{!(paymentType== 'echeck')}"/>
+<apex:outputText value="eCheck" rendered="{!(paymentType== 'echeck')}"/>
+
+<apex:outputText value="Account Type:" rendered="{!(paymentType== 'echeck')}"/>
+<apex:outputText id="accountType" value="{!accountType}"  rendered="{!(paymentType== 'echeck')}"/>
+
+<apex:outputText value="eCheck Type:" rendered="{!(paymentType== 'echeck')}"/>
+<apex:outputText id="echeckType" value="{!eCheckType}"  rendered="{!(paymentType== 'echeck')}"/>
+
+<apex:outputText value="Bank Name:" rendered="{!(paymentType== 'echeck')}"/>
+<apex:outputText id="bankName" value="{!bankName}"  rendered="{!(paymentType== 'echeck')}"/>
+
+<apex:outputText value="Bank Account Number:" rendered="{!(paymentType== 'echeck')}"/>
+<apex:outputText id="bankAccountNumber" value="{!accountNumber}"  rendered="{!(paymentType== 'echeck')}"/>
+
+<apex:outputText value="Bank Routing Number:" rendered="{!(paymentType== 'echeck')}"/>
+<apex:outputText id="bankRoutingNumber" value="{!routingNumber}"  rendered="{!(paymentType== 'echeck')}"/>
+
+<!--  End Payment Type == echeck -->
+
+
+<apex:outputText value="" styleClass="verticalSpacer"/>
+<apex:outputText value=""/>
+
+<!--  Start Billing address -->
+<apex:outputText value="Billing Name:" />
+<apex:outputText value="{!billingname}"  />
+
+<apex:outputText value="Billing Address:" />
+<apex:outputText value="{!billingStreet} "  />
+
+<apex:outputText value="" />
+<apex:outputText value="{!billingCity}, {!billingState} {!billingPostalCode} {!billingCountry}"  />
+
+
+
+<!--  Start Shipping Address -->
+<apex:outputText value="" styleClass="verticalSpacer"/>
+<apex:outputText value=""/>
+
+ 
+<apex:outputText value="Ship To Name:" rendered="{!NOT(hideShippingAddress)}"/>
+ <apex:outputText value="{!shippingname}"  rendered="{!NOT(hideShippingAddress)}"/>
+
+<apex:outputText value="Shipping Address:" rendered="{!NOT(hideShippingAddress)}"/>
+ <apex:outputText value="{!shippingstreet} "  rendered="{!NOT(hideShippingAddress)}"/>
+
+<apex:outputText value="" rendered="{!NOT(hideShippingAddress)}"/>
+ <apex:outputText value="{!shippingcity}, {!shippingstate} {!shippingpostalcode} {!shippingcountry}"  rendered="{!NOT(hideShippingAddress)}"/>
+  
+<apex:outputText value="" rendered="{!savePmtDetailsEnabled}"/>
+<apex:outputPanel layout="inline"  rendered="{!savePmtDetailsEnabled}">
+<apex:inputCheckbox value="{!savePmtDetails}"/>&nbsp;Save payment details to stored Credit Card Payment Method.
+</apex:outputPanel>
+
+<apex:outputText value="" rendered="{!savePmtDetailsEnabled}"/>
+<apex:outputPanel layout="inline"  rendered="{!savePmtDetailsEnabled}">
+<apex:inputCheckbox value="{!setPmtMethodAsDefault}"/>&nbsp;Mark as default Payment Method.
+</apex:outputPanel>
+
+</apex:panelGrid>
+</apex:pageBlock> 
+</apex:form>
+
+</apex:outputPanel>
+
+</apex:page>

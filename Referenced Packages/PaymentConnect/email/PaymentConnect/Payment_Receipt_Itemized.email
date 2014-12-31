@@ -1,0 +1,84 @@
+<messaging:emailTemplate subject="Your Receipt - Thank You!" recipientType="Contact" relatedToType="pymt__PaymentX__c">
+<messaging:htmlEmailBody >
+<html>
+<body>
+         <STYLE type="text/css">
+               TH {font-size: 11px; font-face: arial;background: #CCCCCC;   text-align: left; } 
+               TD  {font-size: 11px; font-face: verdana;  } 
+               TABLE { border: none; }
+               TR { }
+         </STYLE>
+
+<font size="6" face="arial" color="#e0e0e0">{!$Organization.Name}</font>
+<font face="arial" size="3">
+<hr/>
+    <h2>Receipt</h2>
+    <p>For: {!relatedTo.Name}<br/>
+    <apex:outputPanel rendered="{!relatedTo.pymt__Invoice_Number__c <> ''}">Invoice Number: {!relatedTo.pymt__Invoice_Number__c}<br/></apex:outputPanel>
+    Date: <apex:outputText value="{!relatedTo.pymt__Date__c}"/></p>
+    <p>Payment Received:&nbsp;<apex:outputText value="{!relatedTo.pymt__Amount__c}"/>&nbsp;{!relatedTo.pymt__Currency_ISO_Code__c}</p>
+    
+    <p>    Received From:<br/><br/>
+     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{!relatedTo.pymt__Contact__r.Name}<br/>
+     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{!relatedTo.pymt__Account__r.Name}<br/>
+     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{!relatedTo.pymt__Contact__r.MailingStreet}<br/>
+     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{!relatedTo.pymt__Contact__r.MailingCity},&nbsp;{!relatedTo.pymt__Contact__r.MailingState}&nbsp;{!relatedTo.pymt__Contact__r.MailingCountry}</p>
+     
+    <apex:outputPanel layout="block">
+    <p>Items:</p>
+    <table cellpadding="2" cellspacing="0" width="600px">
+        <tr>
+           <th>Qty</th>
+           <th>Description</th>
+           <th style="text-align:right;">Price Each</th>
+           <th style="text-align:right;">Total</th>
+        </tr>
+<!-- SF packaging limitation prevented including the following code in a managed package, so visualforce code has been commented out for deployment. Correct/uncomment the lines below: -->
+<!--    <apex:repeat value="{!relatedTo.pymt__R00N40000001tGNtEAM__r}" var="item" >
+       <tr>
+           <td>{ item.pymt__Quantity__c}</td>
+           <td>{ item.Name}</td>
+           <td style="text-align:right;"><apex:outputField value="{ item.pymt__Unit_Price__c}"/></td>
+           <td style="text-align:right;"><apex:outputField value="{ item.pymt__Total__c}"/></td>
+       </tr>
+    </apex:repeat>  -->
+    </table>
+    </apex:outputPanel> 
+    
+    <p>Thank you for your business!</p>
+   
+     <p>
+    If you have questions about this order, please contact us at {!$Organization.Phone}.
+    </p>
+    <p>Best Regards</p>
+    <p>&nbsp;</p>
+    <p>{!$Organization.Name}</p>
+</font>
+</body>
+</html>
+</messaging:htmlEmailBody>
+<messaging:plainTextEmailBody >
+    Receipt
+    =======
+    
+    For: {!relatedTo.Name}
+    Invoice Number: {!relatedTo.pymt__Invoice_Number__c}
+    Payment Received: {!relatedTo.pymt__Amount__c}
+    Date: {!relatedTo.pymt__Date__c}
+    
+    Received From:  {!relatedTo.pymt__Contact__r.Name}<br/>
+                    {!relatedTo.pymt__Account__r.Name}
+                    {!relatedTo.pymt__Contact__r.MailingStreet}
+                    {!relatedTo.pymt__Contact__r.MailingCity}, {!relatedTo.pymt__Contact__r.MailingState} {!relatedTo.pymt__Contact__r.MailingCountry}
+  
+    
+    Thank you for your business.  
+        
+    If you have questions about this order, please contact us at {!$Organization.Phone}.
+    
+    Regards,
+    The {!$Organization.Name} Team
+
+
+</messaging:plainTextEmailBody>
+</messaging:emailTemplate>

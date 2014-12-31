@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Package xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>FormAssembly for AppExchange</fullName>
+    <apiAccessLevel>Unrestricted</apiAccessLevel>
+    <description>With FormAssembly.com, you can easily create powerful web forms to collect and send data to your Salesforce account.  Capture new leads, update contacts, attach files or open cases with our easy to use Web Form Builder and Salesforce Connector.
+
+We support all Salesforce objects, including custom objects. You can create web forms from scratch or by importing objects and fields already defined in Salesforce.
+
+We also offer advanced features like input validation, conditional fields, section repetition, calculations, and more...</description>
+    <namespacePrefix>tfa</namespacePrefix>
+    <types>
+        <members>FormAssembly</members>
+        <name>CustomApplication</name>
+    </types>
+    <types>
+        <members>AboutFormAssemblycom</members>
+        <members>ManageWebForms</members>
+        <members>Support</members>
+        <members>ViewResponses</members>
+        <members>YourAccount</members>
+        <name>CustomTab</name>
+    </types>
+    <types>
+        <members>Images</members>
+        <name>Document</name>
+    </types>
+    <types>
+        <members>Welcome to FormAssembly for AppExchange</members>
+        <name>HomePageComponent</name>
+    </types>
+    <types>
+        <members>FormAssembly%2Ecom Home</members>
+        <name>HomePageLayout</name>
+    </types>
+    <version>31.0</version>
+</Package>

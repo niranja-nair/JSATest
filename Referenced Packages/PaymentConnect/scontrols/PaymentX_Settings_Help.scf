@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="en-us" xml:lang="en-us">
+<head>
+<meta http-equiv="REFRESH" content="0;url=/apex/pymt__Help">
+</head>
+<body>                    
+<h2>Content Moved</h2>
+<p>This page has been converted to visualforce and can be found <a href="/apex/pymt__Help">here</a>.  If this page does not redirect, please edit the custom object definition for this object and change the Help Settings to point to the visualforce page pymt__Help.</p>            
+</body>
+</html>

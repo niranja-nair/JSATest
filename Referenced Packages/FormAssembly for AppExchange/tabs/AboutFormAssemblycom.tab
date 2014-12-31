@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomTab xmlns="http://soap.sforce.com/2006/04/metadata">
+    <description>About FormAssembly.com</description>
+    <frameHeight>650</frameHeight>
+    <hasSidebar>false</hasSidebar>
+    <label>About FormAssembly.com</label>
+    <mobileReady>false</mobileReady>
+    <motif>Custom15: People</motif>
+    <url>https://app.formassembly.com/connector_salesforce/single_sign_on/?sid={!API.Session_ID}&amp;server={!API.Partner_Server_URL_110}&amp;redirect=about&amp;company={!User.CompanyName}&amp;username={!User.Username}&amp;email={!User.Email}&amp;address={!User.Address}&amp;ssl=1</url>
+    <urlEncodingKey>UTF-8</urlEncodingKey>
+</CustomTab>

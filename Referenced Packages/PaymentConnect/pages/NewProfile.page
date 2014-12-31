@@ -1,0 +1,68 @@
+<apex:page standardController="pymt__Payment_Profile__c" extensions="pymt.NewProfileController" >
+
+<apex:sectionHeader title="Linvio PaymentConnect" subtitle="Create a New Recurring Payment Profile"  help="{!$Page.pymt__Help}"/>
+<apex:form > 
+<apex:pageMessages id="messages"/>
+<apex:pageBlock title="New Recurring Payment Profile Options"  >
+<apex:pageBlockButtons >
+                <apex:commandButton value="Cancel" action="{!cancelFromPage}"/>
+
+</apex:pageBlockButtons>
+            <br/>
+            <table>
+            <apex:outputPanel layout="none" rendered="{!payPalTermEnabled}">
+            <tr>
+            <td>
+	            <apex:commandLink action="{!addPayPalARBProfile}">
+	            <apex:image value="{!URLFOR($Resource.pymt__PaymentConnect, '/images/PayPalARBTerminalButton.png')}"/>
+	            </apex:commandLink>
+            </td>
+            <td><br/>
+            	<strong>PayPal Recurring Payment Terminal</strong><br/>
+				<p><apex:outputText value="Create a PayPal Recurring Payment profile.   With PayPay recurring payments, charges are processes on PayPal's servers and 
+posted to PaymentConnect as they are completed.  The Recurring Payments service must be enabled in your PayPal merchant account to use this feature." rendered="{!paypalTermEnabled}"/>
+				<apex:outputText value="A PayPal Website Payments Pro processor connection with Recurring Billing support enabled must be configured to create PayPal Recurring Billing profiles." rendered="{!NOT(paypalTermEnabled)}"/>
+				</p>
+            </td>
+            </tr>
+            </apex:outputPanel>
+            <apex:outputPanel layout="none" rendered="{!authNetTermEnabled}">
+            <tr>
+            <td><apex:commandLink action="{!addAuthNetARBProfile}">
+	            <apex:image value="{!URLFOR($Resource.pymt__PaymentConnect, '/images/AuthNetARBTerminalButton.png')}"/>
+	            </apex:commandLink>
+            </td>
+            <td><br/>
+            	<strong>AuthNet Recurring Payment Terminal</strong><br/>
+            	<p><apex:outputText value="Create an Authorize.Net Automated Recurring Billing (ARB) Profile.  With ARB profiles, recurring charges are processed on Authorize.Net's servers 
+and posted to PaymentConnect as they are completed.  ARB support must be enabled in your merchant account at Authorize.net." rendered="{!authnetTermEnabled}"/>
+<apex:outputText value="An Authorize.Net processor connection with ARB (Automated Recurring Billing) support enabled must be configured to create ARB profiles."  rendered="{!NOT(authnetTermEnabled)}"/>
+
+            	</p>
+            </td>
+            </tr>
+            </apex:outputPanel>
+            <tr>
+            <td><apex:commandLink action="{!addScheduledPaymentProfile}">
+	            <apex:image value="{!URLFOR($Resource.pymt__PaymentConnect, '/images/ScheduledPaymentTerminalButton.png')}"/>
+	            </apex:commandLink>
+            </td>
+            <td><br/>
+            	<strong>Native Scheduled Payment Terminal</strong><br/>
+            	<p>Create a native Scheduled Payments Profile.  When using native Schedule Payment Profiles, payment records are created in Salesforce on a recurring basis and processed by a 
+            	scheduled Apex batch script.  Batch payment scheduling and payment processing scripts must be scheduled to run in your
+            	Salesforce instance, and a payment processor (PayPal, AuthNet, etc.) or invoicing workflow must be configured for scheduled payments to be processed automatically.
+            	</p>
+            </td>
+            </tr>
+            </table>
+            <p>&nbsp;</p>
+            <p>&nbsp;</p>
+            <p>&nbsp;</p>
+            <p>&nbsp;</p>
+            <apex:outputPanel rendered="{!genericProfileLinkEnabled}">
+			<p><apex:commandLink action="{!addGenericProfile}">Bypass terminal entry</apex:commandLink> and create a Recurring Payment Profile record manually.</p>
+			</apex:outputPanel>
+	</apex:pageBlock>           
+</apex:form>
+</apex:page>

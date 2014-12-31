@@ -1,0 +1,277 @@
+<apex:page id="ptlSubscribePRBPage" controller="pymt.PtlSubscribePRBController"  cache="false" tabStyle="pymt__Payment_Profile__c" language="{!$CurrentPage.Parameters.lang}">
+<title>Subscription Checkout</title>
+
+
+<apex:form id="checkoutForm" styleClass="pc_subscription_checkout_form" onsubmit="return validateForm();">
+<script language="javascript">
+
+function addLoadEvent(func) {
+  var oldonload = window.onload;
+  if (typeof window.onload != 'function') {
+    window.onload = func;
+  } else {
+    window.onload = function() {
+      if (oldonload) {
+        oldonload();
+      }
+      func();
+    }
+  }
+}
+
+// Disable browser autocomplete for fields accepting sensitive data
+function disableAutoComplete() {
+    var el;
+    el = document.getElementById("{!$Component.checkoutForm.ccNumber}");
+    if (el) el.setAttribute("autocomplete","off");
+    el = document.getElementById("{!$Component.checkoutForm.cvvNumber}");
+    if (el) el.setAttribute("autocomplete","off");
+}
+
+addLoadEvent(disableAutoComplete);
+  
+        
+    var enableValidation=false;
+    function validateForm() {
+
+        if (!enableValidation) return true;
+        enableValidation=false;
+          
+          // check required fields
+          if (document.getElementById('{!$Component.checkoutForm.createSubscription}').disabled==true) {
+             // validation done only on createSubscription action.  Skip if createSubscription button is disabled.
+             return true;
+          }
+          var fname = document.getElementById("{!$Component.checkoutForm.billingfirstname}");
+          var lname = document.getElementById("{!$Component.checkoutForm.billinglastname}");
+          if (fname.value == "" || lname.value == "") {
+              alert("Please provide the billing contact name.");
+              return false;
+          }
+      
+          var address = document.getElementById("{!$Component.checkoutForm.billingstreet}");
+          if (address.value == "") {
+              alert("Please provide the billing address.");
+              return false;
+          }
+      
+          var city = document.getElementById("{!$Component.checkoutForm.billingcity}");
+          if (city.value == "") {
+              alert("Please provide the billing city.");
+              return false;
+          }
+      
+          var state = document.getElementById("{!$Component.checkoutForm.billingstate}");
+          if (state.value == "") {
+              alert("Please provide the billing state/province.");
+              return false;
+          }
+      
+          var zip = document.getElementById("{!$Component.checkoutForm.billingpostalcode}");
+          if (zip.value == "") {
+              alert("Please provide the billing postal code.");
+              return false;
+          }
+      
+          var country = document.getElementById("{!$Component.checkoutForm.billingcountry}");
+          if (country.value == "") {
+              alert("Please provide a 2 character billing country code.");
+              return false;
+          } 
+      
+          var cardNumber = document.getElementById("{!$Component.checkoutForm.ccNumber}");
+          if (cardNumber.value == "") {
+              alert("Please enter your credit card number.");
+              return false;
+          }
+      
+          var cvvNumber = document.getElementById("{!$Component.checkoutForm.cvvNumber}");
+          if (cvvNumber.value == "") {
+              alert("Please enter your CVV number.");
+              return false;
+          }
+      
+          return true;
+      }
+      </script>
+      <apex:outputPanel id="cardEntryPanel" >
+        <apex:pageMessages />
+        <apex:outputPanel rendered="{!showPageContents}">
+        	<apex:sectionHeader subtitle="Subscription Checkout"/>
+        	<apex:pageBlock id="pageBlock" mode="detail" title="{!$Label.SiteSubscribePRB_CheckoutHeading}">
+            <apex:pageBlockSection title="Terms" collapsible="false" columns="1">
+	          	<apex:pageBlockSectionItem >	 
+	                <apex:outputLabel value="{!$Label.Label_SubscriptionFor}"/>
+    	            <apex:outputField value="{!profile.Name}"/>
+	          	</apex:pageBlockSectionItem>
+	          	
+	          	<apex:pageBlockSectionItem >	 
+	                <apex:outputLabel value="{!$Label.Label_Description}" rendered="{!NOT(ISNULL(profile.pymt__Description__c))}"/>
+	                <apex:outputField value="{!profile.pymt__Description__c}" rendered="{!NOT(ISNULL(profile.pymt__Description__c))}"/>
+	          	</apex:pageBlockSectionItem>
+	          	
+	          	<apex:pageBlockSectionItem >	 
+	                <apex:outputText value="{!$Label.Label_StartDate}"/>
+	                <apex:outputField value="{!profile.pymt__Subscription_Start_Date__c}"/>
+	          	</apex:pageBlockSectionItem>
+	          	
+	          	<apex:pageBlockSectionItem >	 
+	                <apex:outputLabel value="{!$Label.Label_InitialAmount}"  rendered="{!NOT(ISNULL(profile.pymt__Initial_Amount__c))}"/>          
+	                <apex:outputField value="{!profile.pymt__Initial_Amount__c}"  rendered="{!NOT(ISNULL(profile.pymt__Initial_Amount__c))}"/>
+	          	</apex:pageBlockSectionItem>
+	          	
+	          	<apex:pageBlockSectionItem >	 
+		             <apex:outputLabel value="{!$Label.Label_TrialAmount}"  rendered="{!NOT(ISNULL(profile.pymt__Trial_Occurrences__c))}"/> 
+		            <apex:outputPanel layout="inline" rendered="{!NOT(ISNULL(profile.pymt__Trial_Occurrences__c))}">
+		              <apex:outputField value="{!profile.pymt__Trial_Amount__c}"/> 
+		              every&nbsp;<apex:outputText value="{0}"><apex:param value="{!profile.pymt__Trial_Frequency__c}"/></apex:outputText>&nbsp;{!profile.Trial_Period__c} x&nbsp;
+		              <apex:outputField value="{!profile.pymt__Trial_Occurrences__c}"/>
+		            </apex:outputPanel>
+	          	</apex:pageBlockSectionItem>
+	          	
+	          	<apex:pageBlockSectionItem >	 
+		            <apex:outputLabel value="{!$Label.Label_SubscriptionAmount}"/> 
+		            <apex:outputPanel layout="inline">
+		                <apex:outputField value="{!profile.pymt__Total_Amount__c}"/>
+		                every&nbsp;<apex:outputText value="{0}"><apex:param value="{!profile.pymt__Frequency__c}"/></apex:outputText>&nbsp;{!profile.Period__c} {!IF(NOT(ISNULL(profile.Total_Occurrences__c)), "x "+TEXT(profile.Total_Occurrences__c),"")}
+		            </apex:outputPanel>
+	          	</apex:pageBlockSectionItem>
+	          	
+            </apex:pageBlockSection>                            
+
+              <h2>{!$Label.SiteSubscribePRB_BillingInfoHeading}</h2>
+              <apex:outputPanel rendered="{!NOT($Label.SiteSubscribePRB_BillingInfoInstructions == '-')}">
+                <p class="pc_billing_info_instructions">{!$Label.SiteSubscribePRB_BillingInfoInstructions}</p>
+              </apex:outputPanel>
+            <apex:pageBlockSection id="cardInfo" showHeader="false">
+				<apex:pageBlockSectionItem >
+				<apex:outputText value="{!$Label.Label_FirstName}"/>
+                <apex:inputText id="billingfirstname" value="{!fnameOnCard}"/>
+                </apex:pageBlockSectionItem>
+                
+                <apex:pageBlockSectionItem >
+				<apex:outputText value="{!$Label.Label_LastName}"/>
+                <apex:inputText id="billinglastname" value="{!lnameOnCard}"/>
+                </apex:pageBlockSectionItem>
+                
+                <apex:pageBlockSectionItem >
+				<apex:outputText value="{!$Label.Label_StreetAddress}"/>
+                <apex:inputText id="billingstreet" value="{!billingStreet}" styleClass="pc_long_input_field"/>
+                </apex:pageBlockSectionItem>
+                
+                <apex:pageBlockSectionItem >
+                <apex:outputText value="{!$Label.Label_City}"/>
+                <apex:inputText id="billingcity" value="{!billingCity}"/>
+                </apex:pageBlockSectionItem>
+                
+                <apex:pageBlockSectionItem >
+                <apex:outputText value="{!$Label.Label_StateProvince}"/>
+                <apex:inputText id="billingState" value="{!billingstate}" styleClass="pc_short_input_field"/>
+                </apex:pageBlockSectionItem>
+                
+                <apex:pageBlockSectionItem >
+                <apex:outputText value="{!$Label.Label_PostalCode}"/>
+                <apex:inputText id="billingpostalcode" value="{!billingPostalCode}" styleClass="pc_short_input_field"/>
+                </apex:pageBlockSectionItem>
+                
+                <apex:pageBlockSectionItem >
+                <apex:outputText value="{!$Label.Label_Country}"/>
+                <apex:inputText id="billingcountry"  value="{!billingCountry}" styleClass="pc_short_input_field"/>
+                </apex:pageBlockSectionItem>
+                
+                <apex:pageBlockSectionItem >
+                <apex:outputText value="{!$Label.Label_CardType}"/>
+                <apex:outputPanel layout="inline">
+                    <apex:selectList size="1" id="cardTypeSelectList" multiselect="false" value="{!cardType}">
+                      <apex:selectOptions value="{!cardTypeOptions}"/>
+                      <apex:actionSupport event="onchange" action="{!nullAction}" rerender="soloMaestroFields"/>
+                    </apex:selectList><img id="pc_accepted_card_logos" src="/s.gif"/>
+                </apex:outputPanel>
+                </apex:pageBlockSectionItem>
+                
+                <apex:pageBlockSectionItem >
+                <apex:outputText value="{!$Label.Label_CardNumber}"/>
+                <apex:inputText styleclass="pc_long_input_field" id="ccNumber" value="{!creditCardNumber}"/>
+                </apex:pageBlockSectionItem>
+                
+                <apex:pageBlockSectionItem >
+                <apex:outputText value="{!$Label.Label_SecurityCode}"/>
+                <apex:outputPanel layout="inline">
+                    <apex:inputText styleclass="pc_short_input_field" id="cvvNumber" value="{!cvv}"/>
+                    <img id="pc_cvv_icon" alt="Enter your card security code." src="/s.gif"/>
+                </apex:outputPanel>
+                </apex:pageBlockSectionItem>
+                
+                <apex:pageBlockSectionItem >
+                <apex:outputText value="{!$Label.Label_CardExpiration}"/>
+                <apex:outputPanel layout="inline">
+                    <apex:selectList id="expMonth" value="{!expirationMonth}" size="1">
+                      <apex:selectOptions value="{!expMonthOptions}"/>
+                    </apex:selectList>
+                    &nbsp;
+                    <apex:selectList id="expYear" value="{!expirationYear}" size="1">
+                      <apex:selectOptions value="{!expYearOptions}"/>
+                    </apex:selectList>
+                </apex:outputPanel>
+                </apex:pageBlockSectionItem>
+                
+            </apex:pageBlockSection>
+                
+         
+            <apex:outputPanel id="soloMaestroFields" >
+                <apex:pageBlockSection rendered="{!(cardType == 'Solo' || cardType=='Maestro')}">
+                	<apex:pageBlockSectionItem >
+                	<apex:outputText value="{!$Label.Label_CardIssueDate}"/>
+                    <apex:outputPanel layout="inline">
+                    <apex:selectList id="issueMonth" value="{!cardStartMonth}" size="1">
+                        <apex:selectOptions value="{!expMonthOptions}"/>
+                      </apex:selectList>
+                      &nbsp;
+                      <apex:selectList id="issueYear" value="{!cardStartYear}" size="1">
+                        <apex:selectOptions value="{!expYearOptions}"/>
+                      </apex:selectList>
+                    </apex:outputPanel>
+                    </apex:pageBlockSectionItem>
+                    
+                    <apex:pageBlockSectionItem >
+                	<apex:outputText value="{!$Label.Label_CardIssueNumber}"/>
+                    <apex:inputText styleclass="pc_short_input_field" id="issueNumber" value="{!cardIssueNumber}"/>
+                    </apex:pageBlockSectionItem>
+                    
+                </apex:pageBlockSection>
+                
+            </apex:outputPanel>
+
+	        <apex:outputPanel id="buttons">
+	        <apex:panelGrid columns="3" columnClasses="labelColumn,requiredFieldMarkerColumn,fieldColumn" id="button_panel_grid" styleClass="pc_button_panel_grid">
+	            <apex:outputText value=""/>
+	            <apex:image url="/s.gif"/>
+	            <apex:outputPanel layout="inline">
+	                <apex:commandButton id="cancel" value="{!$Label.SiteSubscribePRB_CancelButton}"
+	                        action="{!cancelTransaction}" onclick="document.getElementById('{!$Component.checkoutForm.createSubscription}').disabled=true;" rendered="{!(NOT(cancelURL==null) && NOT(ISNULL(cancelURL)))}"/>
+	                    <apex:commandButton id="createSubscription" value="{!$Label.SiteSubscribePRB_SubscribeButton}" status="formActionStatus"
+	                        action="{!createSubscription}"  onclick="enableValidation = true;" rerender="checkoutForm"/>
+	                 	  <apex:actionStatus id="formActionStatus" onstart="document.getElementById('{!$Component.checkoutForm.createSubscription}').disabled=true;" onstop="document.getElementById('{!$Component.checkoutForm.createSubscription}').disabled=false;">
+	                      <apex:facet name="start">
+	                        <apex:outputPanel >&nbsp;
+	                          <apex:image value="{!URLFOR($Resource.pymt__PaymentConnect, 'images/icon-spinner.gif')}"
+	                                    style="vertical-align:middle;" alt=""/>
+	                          &nbsp;Processing... </apex:outputPanel>
+	                      </apex:facet>
+	                      <apex:facet name="stop">
+	                        <apex:image value="{!URLFOR('/s.gif')}" alt="" style="height:17px;"/>
+	                      </apex:facet>
+	                </apex:actionStatus>
+	            </apex:outputPanel>
+	        </apex:panelGrid>    
+            </apex:outputPanel>
+            
+        </apex:pageBlock> 
+          </apex:outputPanel>
+          
+
+      </apex:outputPanel>
+        
+    </apex:form>
+
+</apex:page>

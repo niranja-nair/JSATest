@@ -1,0 +1,60 @@
+<messaging:emailTemplate subject="Your Receipt - Thank You!" recipientType="Contact" relatedToType="pymt__PaymentX__c">
+<messaging:htmlEmailBody >
+<html>
+<body>
+
+
+<font size="6" face="arial" color="#e0e0e0">{!$Organization.Name}</font>
+<font face="arial" size="3">
+<hr/>
+    <h2>Receipt</h2>
+    <p>For: {!relatedTo.Name}<br/>
+    <apex:outputPanel rendered="{!relatedTo.pymt__Invoice_Number__c <> ''}">Invoice Number: {!relatedTo.pymt__Invoice_Number__c}<br/></apex:outputPanel>
+    Date: <apex:outputText value="{!relatedTo.pymt__Date__c}"/></p>
+    <p>Payment Received:&nbsp;<apex:outputText value="{!relatedTo.pymt__Amount__c}"/>&nbsp;{!relatedTo.Currency_ISO_Code__c}</p>
+    
+    <p>    Received From:<br/><br/>
+     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{!relatedTo.pymt__Contact__r.Name}<br/>
+     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{!relatedTo.pymt__Account__r.Name}<br/>
+     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{!relatedTo.pymt__Account__r.BillingStreet}<br/>
+     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{!relatedTo.pymt__Account__r.BillingCity},&nbsp;{!relatedTo.pymt__Account__r.BillingState}&nbsp;{!relatedTo.pymt__Account__r.BillingCountry}</p>
+     
+
+    
+    <p>Thank you for your business!</p>
+   
+     <p>
+    If you have questions about this order, please contact us at {!$Organization.Phone}.
+    </p>
+    <p>Best Regards</p>
+    <p>&nbsp;</p>
+    <p>{!$Organization.Name}</p>
+</font>
+</body>
+</html>
+</messaging:htmlEmailBody>
+<messaging:plainTextEmailBody >
+    Receipt
+    =======
+    
+    For: {!relatedTo.Name}
+    Invoice Number: {!relatedTo.pymt__Invoice_Number__c}
+    Payment Received: {!relatedTo.pymt__Amount__c}
+    Date: {!relatedTo.pymt__Date__c}
+    
+    Received From:  {!relatedTo.pymt__Contact__r.Name}<br/>
+                    {!relatedTo.pymt__Account__r.Name}
+                    {!relatedTo.pymt__Account__r.BillingStreet}
+                    {!relatedTo.pymt__Account__r.BillingCity}, {!relatedTo.pymt__Account__r.BillingState} {!relatedTo.pymt__Account__r.BillingCountry}
+  
+    
+    Thank you for your business.  
+        
+    If you have questions about this order, please contact us at {!$Organization.Phone}.
+    
+    Regards,
+    The {!$Organization.Name} Team
+
+
+</messaging:plainTextEmailBody>
+</messaging:emailTemplate>

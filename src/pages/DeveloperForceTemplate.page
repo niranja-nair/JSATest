@@ -1,0 +1,1067 @@
+<apex:page showheader="false">
+
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html><head>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+<meta http-equiv="PRAGMA" content="NO-CACHE">
+<meta http-equiv="Expires" content="Mon, 01 Jan 1990 12:00:00 GMT">
+<title>developer.force.com - Force.com Platform Community -
+    salesforce.com</title>
+    <meta content="Force.com Platform - overview, membership, discussions, tech doc and sample code" name="Description">
+    <meta content="developer.force.com, Apex Developer Network, Apex, Developer, Platform, ADN, API, Apex Code" name="Keywords">
+    <link href="{!URLFOR($Resource.DevForceTemplateResources, 'developer_files/sfdc_standard.css')}" rel="stylesheet" type="text/css">
+    <link href="{!URLFOR($Resource.DevForceTemplateResources, 'developer_files/sfdc_adn.css')}" rel="stylesheet" type="text/css">
+    <!-- <script language="Javascript" src="{!URLFOR($Resource.DevForceTemplateResources, 'developer_files/global.js')}" type="text/javascript"></script> -->
+
+<style>
+.tilessection {
+    background: #FFFFFF
+        url(http://www.salesforce.com/common/assets/css/images/bg_tilesection.gif)
+        no-repeat scroll left top;
+    color: #000000;
+    font-family: Verdana, Arial;
+    font-size: 11px;
+    font-size-adjust: none;
+    font-stretch: normal;
+    font-style: normal;
+    font-variant: normal;
+    font-weight: bold;
+    height: 20px;
+    line-height: 11px;
+    margin: 0pt;
+    padding: 3px 10px 5px;
+    width: 520px;
+}
+
+.half3columns {
+    float: left;
+    margin: 0pt;
+    width: 260px;
+}
+
+.half3columns.right {
+    margin: 0pt 0pt 0pt 20px;
+}
+
+.half3columns p {
+    margin: 0pt 0pt 10px;
+}
+.half3columns img.date {float:left; border:0px; padding:0px 0px 0px 0px; }
+.half3columns p.adnindent { margin:5px 0px 4px 20px; width:200px;}
+#content .half3columns h2 {
+    font-family: Verdana, Arial;
+    font-size: 12px;
+    font-size-adjust: none;
+    font-stretch: normal;
+    font-style: normal;
+    font-variant: normal;
+    font-weight: bold;
+    line-height: 14px;
+    padding: 0pt;
+}
+
+#content .half3columns li {
+    list-style-image: none;
+    list-style-position: outside;
+    list-style-type: none;
+}
+
+#content .half3columns ul {
+    margin: 0pt;
+}
+</style><style type="text/css">
+.auxnav {
+    border-top: 1px #CCCCCC solid;
+}
+
+#adnsearchform {
+    /* background: transparent url(images/bg_extranav_center.gif) repeat-y scroll center bottom;*/
+    background-color: EEEEEE;
+    margin-top: 10px;
+}
+
+#adn-search-input {
+    height: 20px;
+    margin-bottom: 4px;
+    font-size: 13.3333px
+}
+
+#adn-search-input-image {
+    height: 22px;
+    width: 20px;
+}
+
+/*SUBNAV*/
+.subnavcontainer {
+    width: 176px;
+    text-align: left;
+    margin: 10px 4px 5px 9px;
+}
+
+.subnav_top {
+    width: 176px;
+    height: 7px;
+    background:
+        url(http://www.salesforce.com/common/assets/css/images/bg_subnav_top.gif)
+        top left no-repeat;
+}
+
+.subnav_bottom {
+    width: 176px;
+    height: 19px;
+    background:
+        url(http://www.salesforce.com/common/assets/css/images/bg_subnav_bottom_wh.gif)
+        top left no-repeat;
+}
+
+.subnav_bottom_bg {
+    width: 176px;
+    height: 19px;
+    background:
+        url(http://www.salesforce.com/common/assets/css/images/bg_subnav_bottom_tan.gif)
+        top left no-repeat;
+}
+
+.subnav {
+    background:
+        url(http://www.salesforce.com/common/assets/css/images/bg_subnav_center.gif)
+        top left repeat-y;
+    margin: 0px;
+}
+
+.subnav_top_nobg,#subnav_bottom.nobg,#subnav.nobg {
+    background: none;
+}
+
+.subnav h2 {
+    font: bold 14px/ 14px Verdana, Arial;
+    color: #000;
+    margin: 0px;
+    padding: 3px 10px 4px 15px;
+    border-bottom: 1px solid #CCC;
+}
+
+.subnav h3 {
+    font: normal 11px/ 13px Verdana, Arial;
+    margin: 0 1px 0 1px;
+}
+
+.subnav h3.on {
+    font: bold 12px/ 12px Verdana, Arial;
+    color: #000;
+    background: #FFF
+        url(http://www.salesforce.com/common/assets/css/images/bg_detailnav_center_on.gif)
+        top center repeat-x;
+    padding: 10px 1px 4px 1px;
+    border-top: 1px solid #CCC;
+}
+
+.subnav ul {
+    list-style: none;
+    margin: 0px 1px 0px 1px;
+    padding: 0px 0px 15px 0px;
+}
+
+.subnav ul.on {
+    background: #FFF
+        url(http://www.salesforce.com/common/assets/css/images/bg_detailnav_center_on.gif)
+        top center repeat-y;
+    padding: 3px 0px 15px 10px;
+    border-bottom: 1px solid #99908c;
+}
+
+.subnav li {
+    padding: 0px 0px 0px 10px;
+}
+
+.subnav a {
+    font: normal 11px/ 11px Verdana, Arial;
+}
+
+.subnav a:hover {
+    color: #F10;
+    text-decoration: none;
+    padding: 0px;
+}
+
+.subnav h1 span {
+    padding: 0px 0px 0px 0px;
+}
+
+.subnav li span {
+    padding: 3px 10px 3px 15px;
+}
+
+.subnav li.on span {
+    color: #F10;
+    padding: 0px 10px 0px 15px;
+}
+
+.subnav a span {
+    display: block;
+    padding: 3px 10px 3px 15px;
+}
+
+.subnav a.on span {
+    display: block;
+    padding: 3px 10px 3px 15px;
+    color: #F10;
+    background: #fff
+        url("http://www.salesforce.com/common/assets/css/images/arrow10x10.gif")
+        6px 5px no-repeat;
+}
+
+.subnav a:hover span {
+    color: #F10;
+    background-color: #FFF;
+}
+
+/* related */
+.related_top {
+    background: transparent
+        url(http://www.salesforce.com/common/assets/css/images/bg_related_top.gif)
+        no-repeat scroll left top;
+    height: 7px;
+    width: 176px;
+}
+
+.related_bottom {
+    background: transparent
+        url(http://www.salesforce.com/common/assets/css/images/bg_related_bottom_wh.gif)
+        no-repeat scroll left top;
+    height: 19px;
+    width: 176px;
+}
+
+.related_bottom_bg {
+    background: transparent
+        url(http://www.salesforce.com/common/assets/css/images/bg_related_bottom_tan.gif)
+        no-repeat scroll left top;
+    height: 19px;
+    width: 176px;
+}
+
+div.related ul {
+    list-style-image: none;
+    list-style-position: outside;
+    list-style-type: none;
+    margin: 0pt;
+    padding: 0px 1px 20px;
+}
+
+div.related li {
+    clear: both;
+    font-family: Verdana, Arial;
+    font-size: 11px;
+    font-size-adjust: none;
+    font-stretch: normal;
+    font-style: normal;
+    font-variant: normal;
+    font-weight: normal;
+    line-height: 11px;
+    list-style-image: none;
+    list-style-type: none;
+    padding: 4px 0px;
+}
+
+.relatedcontainer {
+    margin: 15px 9px 5px;
+    width: 176px;
+}
+
+.relatedcontainer_right {
+    float: right;
+}
+
+.related_top {
+    background: transparent
+        url(http://www.salesforce.com/common/assets/css/images/bg_related_top.gif)
+        no-repeat scroll left top;
+    height: 7px;
+    width: 176px;
+}
+
+.related p {
+    float: left;
+    margin: 0pt 0pt 0pt 5px;
+    width: 100px;
+}
+
+.related img.date {
+    border: 0px none;
+    float: left;
+    padding: 0px;
+}
+
+div .related ul {
+    margin: 0pt;
+    padding: 0px 1px 20px;
+}
+
+div .related li {
+    clear: both;
+    font-family: Verdana, Arial;
+    font-size: 11px;
+    font-size-adjust: none;
+    font-stretch: normal;
+    font-style: normal;
+    font-variant: normal;
+    font-weight: normal;
+    line-height: 11px;
+    list-style-image: none;
+    list-style-type: none;
+    padding: 4px 0px;
+}
+
+.related_bottom {
+    background: transparent
+        url(http://www.salesforce.com/common/assets/css/images/bg_related_bottom_wh.gif)
+        no-repeat scroll left top;
+    height: 19px;
+    width: 176px;
+}
+
+.related_bottom_bg {
+    background: transparent
+        url(http://www.salesforce.com/common/assets/css/images/bg_related_bottom_tan.gif)
+        no-repeat scroll left top;
+}
+
+.related {
+    background: transparent
+        url(http://www.salesforce.com/common/assets/css/images/bg_related_center.gif)
+        repeat-y scroll left top;
+}
+
+.related h3,.related h4 {
+    border-bottom: 1px solid #CCCCCC;
+    color: #000000;
+    font-family: Verdana, Arial;
+    font-size: 12px;
+    font-size-adjust: none;
+    font-stretch: normal;
+    font-style: normal;
+    font-variant: normal;
+    font-weight: bold;
+    line-height: 12px;
+    padding: 3px 3px 4px 10px;
+}
+
+.related img.icon {
+    border: 0pt none;
+    float: left;
+    padding: 3px 5px 4px 10px;
+    vertical-align: middle;
+}
+
+.related a:link,.related a:visited {
+    color: #333333;
+    line-height: 13px;
+    text-decoration: none;
+}
+
+.related a:hover {
+    color: #FF1100;
+    text-decoration: none;
+}
+
+.related li span {
+    padding: 4px 15px;
+}
+
+.related a span {
+    color: #333333;
+    display: block;
+    margin: 0pt 1px;
+    padding: 0pt 10px 0pt 15px;
+}
+
+.related a:hover span {
+    background-color: #FFFFFF;
+    color: #FF1100;
+    margin: 0pt 1px;
+    padding: 0pt 10px 0pt 15px;
+}
+
+.relatedvideo {
+    margin: 15px 9px 5px;
+    width: 176px;
+}
+
+.relatedobjects {
+    float: right;
+}
+</style><link href="http://sitesdemo1.force.com/services/xml/Featured_Content" rel="feed" title="A nice descriptive title" type="application/x.atom+xml"></head><body><span id="j_id0:j_id1">
+    
+
+
+
+
+    
+
+
+
+    
+
+
+    
+
+
+    
+    
+
+
+    
+
+
+    
+    </span> 
+    
+    
+    <div id="centerwrap"><span id="j_id0:j_id5">
+    <div id="hdrwrapper">
+
+    <div id="hdrcontaineradn">
+
+    <div id="globalnav">
+    <ul>
+        <li><a href="http://www.salesforce.com/"><span>Salesforce.com&nbsp; </span></a></li>
+        <li><a href="http://www.salesforce.com/appexchange/"><span>The
+        AppExchange&nbsp; </span></a></li>
+        <li><a href="http://www.successforce.com/"><span>Successforce.com</span></a></li>
+        
+
+    </ul>
+    </div>
+    
+
+    <div id="toolscontainer"><img name="sublogo" src="{!URLFOR($Resource.DevForceTemplateResources, 'developer_files/hdr_smsfdc.gif')}" width="211" height="48"></div>
+
+    
+
+    <div id="tabnavcontainer">
+    <div id="tabnav">
+	
+	<c:contentblock name="navigation bar"/>
+	<!-- Navigation Tab ************************************************************************************************************
+    <a class="on" href="http://www.salesforce.com/developer/"><span>Home</span></a>
+        <a href="http://wiki.apexdevnet.com/index.php/Getting_Started"><span class="on">Getting Started</span></a>
+        <a href="http://wiki.apexdevnet.com/"><span>Wiki</span></a>
+
+        <a href="http://blog.sforce.com/"><span>Blog</span></a>
+        <a href="http://ideas.salesforce.com/popular/force.com_platform?skin=adn"><span>Ideas</span></a>
+
+        <a href="http://community.salesforce.com/sforce?category.id=developers"><span>Discussion
+        Boards</span></a>
+
+        <li id="tabnavlogin"><a href="https://www.salesforce.com/developer/login.jsp"><span>Developer
+        Login</span></a>
+	-->
+
+
+    </div>
+    </div>
+    </div>
+    </div></span>
+
+    <div id="container">
+
+    <div id="bannerlanding"><a href="http://developer.force.com/sites">
+    <img alt="" src="{!URLFOR($Resource.DevForceTemplateResources, 'developer_files/ban5_plat_sites_980x125_lrnMr.gif')}"> </a></div>
+
+    <span id="j_id0:j_id13">
+    <div id="left"><br>
+
+
+
+    <div id="adnsearch" style="margin: 0px 0px 0px 22px; padding: 0px;">
+    <div id="adnsearchform"><img src="{!URLFOR($Resource.DevForceTemplateResources, 'developer_files/search_circle20_hov.gif')}" style="display: none;" width="0" height="0">
+    <form action="http://www.apexdevnet.com/search/search.php" method="get">
+    <input accesskey="f" id="adn-search-input" name="q" onclick="this.value=''" size="15" value="Search" type="text"> 
+        <!--********************************************************************************-->
+
+    <input id="searchgo" name="btnG" onmouseout="this.src='http://www.salesforce.com/common/assets/css/images/search_circle20.gif'" onmouseover="this.src='http://www.salesforce.com/common/assets/css/images/search_circle20_hov.gif'" src="{!URLFOR($Resource.DevForceTemplateResources, 'developer_files/search_circle20.gif')}" type="image"> <input name="site" value="All" type="hidden"> <input name="output" value="xml_no_dtd" type="hidden"> <input name="sort" value="date:D:L:d1" type="hidden"> <input name="client" value="google-csbe" type="hidden"> <input name="cx" value="005575733618104622983:0wh7r43n1fy" type="hidden">
+    </form>
+    </div>
+    <!--*******************--></div>
+    <!--*************-->
+
+
+    <div class="subnavcontainer">
+
+    <div class="promod"><a class="promob" href="http://www.apexdevnet.com/events/regular/registration.php?d=70150000000E5OZ" target="_new" title="Join ADN"><img alt="" id="Join ADN" name="Join ADN" src="{!URLFOR($Resource.DevForceTemplateResources, 'developer_files/cta_force_dev_account.gif')}"></a></div>
+
+
+    <br>
+    </div>
+    <!--*******************-->
+
+    <div class="subnavcontainer">
+
+    <div class="subnav_top"><img alt="" src="{!URLFOR($Resource.DevForceTemplateResources, 'developer_files/trans.gif')}"><br>
+    </div>
+    <div class="subnav"><a href="https://wiki.apexdevnet.com/">
+    <h2 style="padding-left: 0px;"><span>Wiki</span></h2>
+    </a> <a href="https://wiki.apexdevnet.com/index.php/Application_Framework">
+    <h3><span>Application Framework</span></h3>
+    </a> <a href="https://wiki.apexdevnet.com/index.php/Web_Services_API">
+    <h3><span>Web Services API</span></h3>
+    </a> <a href="https://wiki.apexdevnet.com/index.php/Apex_and_Visualforce">
+    <h3><span>Apex and Visualforce</span></h3>
+    </a> <a href="https://wiki.apexdevnet.com/index.php/Database_Services">
+    <h3><span>Database Services</span></h3>
+    </a>
+    <div class="auxnav"><a href="https://wiki.apexdevnet.com/index.php/Tools">
+    <h3><span>Tools</span></h3>
+    </a> <a href="https://wiki.apexdevnet.com/index.php/Packaging">
+    <h3><span>Packaging</span></h3>
+    </a> <a href="https://wiki.apexdevnet.com/index.php/Business%20Resources">
+    <h3><span>Business Resources</span></h3>
+    </a></div>
+    <!--**********-->
+    <div class="auxnav"><a href="https://wiki.apexdevnet.com/index.php/Membership">
+    <h3><span>Membership</span></h3>
+    </a> <a href="https://wiki.apexdevnet.com/index.php/Calendar">
+    <h3><span>Calendar</span></h3>
+    </a> <a href="https://wiki.apexdevnet.com/index.php/News">
+    <h3><span>News</span></h3>
+    </a> <a href="https://wiki.apexdevnet.com/index.php/Help">
+    <h3><span>Help</span></h3>
+    </a></div>
+    <!--**********--></div>
+
+    <!--**********-->
+    <div class="subnav_bottom_bg"><img alt="" src="{!URLFOR($Resource.DevForceTemplateResources, 'developer_files/trans.gif')}"><br>
+    </div>
+
+
+    <div class="subnav_top"><img alt="" src="{!URLFOR($Resource.DevForceTemplateResources, 'developer_files/trans.gif')}"><br>
+    </div>
+    <div class="subnav"><a href="https://wiki.apexdevnet.com/index.php/ADN_Feeds">
+    <h2 style="padding-left: 0px;"><span>RSS Feeds</span></h2>
+    </a> <a href="https://wiki.apexdevnet.com/index.php?title=Special:Newpages&amp;feed=rss">
+    <h3><span>New Wiki Pages</span></h3>
+    </a> <a href="https://wiki.apexdevnet.com/feeds/ADN_Featured_Content.xml">
+    <h3><span>Featured Content</span></h3>
+    </a> <a href="http://feeds.feedburner.com/SforceBlog">
+    <h3><span>Blog</span></h3>
+    </a> <a href="http://community.salesforce.com/rss/board?board.id=general_development">
+    <h3><span>Discussion Boards</span></h3>
+    </a></div>
+    <!--**********-->
+    <div class="subnav_bottom_bg"><img alt="" src="{!URLFOR($Resource.DevForceTemplateResources, 'developer_files/trans.gif')}"><br>
+    </div>
+
+    </div>
+    <!--*******************--> <br>
+
+    </div>
+    <!--********-->
+
+</span>
+
+    <div id="contentcontainer">
+
+    <div class="col3" id="content">
+		
+		<!-- MIDDLE COLUMN ********************************************************************************************************** -->
+		<c:contentblock name="middle column"/>
+
+    </div>
+    <!--***********-->
+
+    <div id="right">
+    <div id="ctacontainer">
+        <div class="promod"><a class="promob" href="http://wiki.apexdevnet.com/events/visualforce/registration.php" target="_new" title="Visualforce is Live with Summar 08 - Signup Now!!!"> <img alt="" id="Visualforce is Live with Summar 08 - Signup Now!!!" name="Visualforce is Live with Summar 08 - Signup Now!!!" src="{!URLFOR($Resource.DevForceTemplateResources, 'developer_files/vf_CTA_4a_signup.gif')}"></a></div>
+    
+        <div class="promod"><a class="promob" href="http://www.salesforce.com/events/tourdeforce/" target="_new" title="Tour de Force"> <img alt="" id="Tour de Force" name="Tour de Force" src="{!URLFOR($Resource.DevForceTemplateResources, 'developer_files/cta_tourdeforce_road.gif')}"></a></div>
+    
+        <div class="promod"><a class="promob" href="http://www.salesforce.com/platform/heroes/" target="_new" title="Force.com Customer Success"> <img alt="" id="Force.com Customer Success" name="Force.com Customer Success" src="{!URLFOR($Resource.DevForceTemplateResources, 'developer_files/cta_force_success_stories.gif')}"></a></div>
+    </div>
+    <!--****************-->
+
+    <div class="spacer"></div>
+
+    <div class="relatedcontainer">
+    <div class="related_top"><img alt="" src="{!URLFOR($Resource.DevForceTemplateResources, 'developer_files/trans.gif')}"><br>
+    </div>
+    <div class="related"><img class="icon" src="{!URLFOR($Resource.DevForceTemplateResources, 'developer_files/icon_datasheet_te.gif')}">
+    <h3>&nbsp;</h3>
+
+    <!--*****************************************************************************
+**********************************************************************
+***--> 
+
+    <p><img alt="" src="{!URLFOR($Resource.DevForceTemplateResources, 'developer_files/trans.gif')}"></p>
+
+    <br>
+    <br>
+    </div>
+    <!--***********-->
+    <div class="related_bottom"><img alt="" src="{!URLFOR($Resource.DevForceTemplateResources, 'developer_files/trans.gif')}"><br>
+    </div>
+    </div>
+
+    <!--********************-->
+
+    <div class="spacer"></div>
+    <br>
+    <br>
+
+
+    <div class="relatedcontainer">
+
+    <div class="related_top"><img alt="" src="{!URLFOR($Resource.DevForceTemplateResources, 'developer_files/trans.gif')}"></div>
+    <div id="related">
+
+
+<!--**************************************-->
+    <h4>Discussion Posts</h4>
+    <ul>
+
+        <li><a href="http://community.salesforce.com/sforce/board/message?board.id=apex&amp;thread.id=2331"><span>Anyone
+        know of free SOAP Services I can play with?<br>
+        by TehNrd on Wed, Jan 14, 2008 04:56 PM</span></a></li>
+
+        <li><a href="http://community.salesforce.com/sforce/board/message?board.id=JAVA_development&amp;thread.id=4818"><span>Example
+        code for object insertion with custom fields<br>
+        by Fco_Salazar on Tue, 08 Jan 2008 18:08:12 GMT</span></a></li>
+
+        <li><a href="http://community.salesforce.com/sforce/board/message?board.id=JAVA_development&amp;thread.id=4808"><span>Invalid
+        sessionid found in session header: session timedout<br>
+        by Anil Kumar Tue, Jan 08 2007 17:40:36 GMT</span></a></li>
+
+        <li><a href="http://community.salesforce.com/sforce/board/message?board.id=general_development&amp;message.id=15276#M15276"><span>comma
+        in number field<br>
+        by mahi Wed, Dec 05 2007 12:32:57 GMT</span></a></li>
+
+    </ul>
+    <br>
+
+    </div>
+    <!--***********-->
+
+    <div class="related_bottom"><img alt="" src="{!URLFOR($Resource.DevForceTemplateResources, 'developer_files/trans.gif')}"><br>
+    </div>
+    </div>
+    <!--********************-->
+
+    <div class="spacer"></div>
+    </div>
+    <!--**********--></div>
+    <!--*********************-->
+    <div class="spacer"></div>
+    </div>
+    <!--**************--></div>
+    <!--***************-->
+
+
+    <div class="spacer"></div>
+    <span id="j_id0:j_id65">
+    <!--***********************************-->
+    <div id="footer">
+    <div id="footertop">1-800-NO-SOFTWARE | <a href="http://www.salesforce.com/company/privacy.jsp">Privacy
+    Statement</a> | <a href="http://www.salesforce.com/company/security.jsp">Security
+    Statement</a></div>
+    <!--*************-->
+    <div id="footerbundlecontainer">
+
+
+
+
+
+    <div class="footerbundle">
+
+
+
+    <ul>
+        <li><a href="http://www.salesforce.com/products/sales-force-automation/"><strong>Sales
+        Force Automation</strong></a></li>
+
+
+
+
+        <li><a href="http://www.salesforce.com/products/sales-force-automation/sales-management/">Sales
+        Management</a></li>
+
+
+
+        <li><a href="http://www.salesforce.com/products/sales-force-automation/sales-management/lead-management.jsp">Lead
+        Management</a></li>
+
+
+
+        <li><a href="http://www.salesforce.com/products/sales-force-automation/sales-management/contact-management.jsp">Contact
+        Management</a></li>
+
+
+
+
+        <li><a href="http://www.salesforce.com/products/sales-force-automation/analytics-forecasting/">Sales
+        Forecasting &amp; Analytics</a></li>
+
+    </ul>
+    </div>
+    <!--****************-->
+
+
+
+
+    <div class="footerbundle">
+
+
+
+    <ul>
+        <li><a href="http://www.salesforce.com/products/service-support/"><strong>Service
+        and Support</strong></a></li>
+
+
+
+
+        <li><a href="http://www.salesforce.com/products/service-support/agent-productivity/">Call
+        Center Management</a></li>
+
+
+
+
+        <li><a href="http://www.salesforce.com/products/service-support/service_processes/">Customer
+        Service Automation</a></li>
+
+
+
+        <li><a href="http://www.salesforce.com/products/analytics/">Call
+        Center Analytics</a></li>
+
+
+
+        <li><a href="http://www.salesforce.com/products/service-support/agent-productivity/cti-integration.jsp">CTI
+        Integration</a></li>
+
+    </ul>
+    </div>
+    <!--****************-->
+
+
+
+
+    <div class="footerbundle">
+
+
+
+    <ul>
+        <li><a href="http://www.salesforce.com/products/marketing-automation/"><strong>Marketing
+        Automation</strong></a></li>
+
+
+
+
+
+        <li><a href="http://www.salesforce.com/products/marketing-automation/campaigns/search-marketing.jsp">Google
+        Adwords</a></li>
+
+
+
+        <li><a href="http://www.salesforce.com/products/marketing-automation/campaigns/campaign-management.jsp">Campaign
+        Management</a></li>
+
+
+
+        <li><a href="http://www.salesforce.com/products/marketing-automation/marketing-analytics/">Marketing
+        Analytics</a></li>
+
+
+
+        <li><a href="http://www.salesforce.com/products/marketing-automation/marketing-analytics/dashboards.jsp">Marketing
+        Dashboards</a></li>
+
+    </ul>
+    </div>
+    <!--****************-->
+
+
+
+
+    <div class="footerbundle">
+
+
+
+
+    <ul>
+        <li><a href="http://www.salesforce.com/products/partner-relationship-management/"><strong>PRM</strong></a></li>
+
+
+
+
+        <li><a href="http://www.salesforce.com/products/partner-relationship-management/recruitment/">Channel
+        Management</a></li>
+
+
+
+        <li><a href="http://www.salesforce.com/products/partner-relationship-management/recruitment/channel-plans.jsp">Channel
+        Strategy</a></li>
+
+
+
+        <li><a href="http://www.salesforce.com/products/partner-relationship-management/partner-marketing/">Channel
+        Marketing</a></li>
+
+
+
+        <li><a href="http://www.salesforce.com/products/partner-relationship-management/partner-selling/">Channel
+        Sales</a></li>
+
+
+    </ul>
+    </div>
+    <!--****************-->
+
+
+
+
+    <div class="footerbundle">
+
+
+
+    <ul>
+        <li><a href="http://www.salesforce.com/products/content-management/"><strong>Content
+        Management</strong></a></li>
+
+
+
+
+        <li><a href="http://www.salesforce.com/products/content-management/collaboration.jsp">Enterprise
+        Collaboration</a></li>
+
+
+
+        <li><a href="http://www.salesforce.com/products/content-management/subscriptions.jsp">Content
+        Analytics</a></li>
+
+
+
+        <li><a href="http://www.salesforce.com/products/content-management/workspaces.jsp">Collaboration
+        Workspaces</a></li>
+
+
+
+
+        <li><a href="http://www.salesforce.com/products/content-management/publishing.jsp">Content
+        Publishing</a></li>
+
+    </ul>
+    </div>
+    <!--****************-->
+
+
+
+    <div class="spacer">&nbsp;</div>
+    <div class="footerbundle">
+
+
+
+    <ul>
+        <li><a href="http://www.salesforce.com/products/analytics/"><strong>Sales
+        Analytics</strong></a></li>
+
+
+
+
+        <li><a href="http://www.salesforce.com/products/analytics/reports-dashboards/">Dashboards</a></li>
+
+
+
+
+        <li><a href="http://www.salesforce.com/products/analytics/reports-dashboards/packaged-reports.jsp">Sales
+        Reports</a></li>
+
+
+
+        <li><a href="http://www.salesforce.com/products/analytics/reports-dashboards/custom-reporting.jsp">Custom
+        Reporting</a></li>
+
+
+
+        <li><a href="http://www.salesforce.com/products/analytics/data-management/">Data
+        Management</a></li>
+
+    </ul>
+    </div>
+    <!--****************-->
+
+
+
+
+    <div class="footerbundle">
+
+
+
+    <ul>
+        <li><a href="http://www.salesforce.com/industries/"><strong>Industries</strong></a></li>
+
+
+
+
+
+        <li><a href="http://www.salesforce.com/industries/financial-services/">Financial
+        Services CRM</a></li>
+
+
+
+        <li><a href="http://www.salesforce.com/industries/high-tech/">High
+        Tech CRM</a></li>
+
+
+
+        <li><a href="http://www.salesforce.com/industries/public-sector/">Public
+        Sector CRM</a></li>
+
+
+
+        <li><a href="http://www.salesforce.com/industries/media-center/">Media
+        &amp; Communications</a></li>
+
+    </ul>
+    </div>
+    <!--****************-->
+
+
+
+
+    <div class="footerbundle">
+
+
+
+
+    <ul>
+        <li><a href="http://www.salesforce.com/services-training/"><strong>Training
+        and Education</strong></a></li>
+
+
+
+
+        <li><a href="http://www.salesforce.com/customers/">CRM
+        Success Stories</a></li>
+
+
+
+        <li><a href="http://www.salesforce.com/customers/case-studies.jsp">CRM
+        Case Studies</a></li>
+
+
+
+        <li><a href="http://www.salesforce.com/services-training/professional-services/">CRM
+        Services</a></li>
+
+
+
+        <li><a href="http://www.salesforce.com/services-training/education-services/public/">CRM
+        Training</a></li>
+
+
+    </ul>
+    </div>
+    <!--****************-->
+
+
+
+
+    <div class="footerbundle">
+
+
+
+    <ul>
+        <li><a href="http://www.salesforce.com/products/editions-pricing/feature-comparison/"><strong>Compare
+        Editions</strong></a></li>
+
+
+
+
+        <li><a href="http://www.salesforce.com/products/democenter-landing.jsp">Salesforce
+        Demo</a></li>
+
+
+
+        <li><a href="http://www.salesforce.com/form/signup/freetrial.jsp">Free
+        CRM Trial</a></li>
+
+
+
+        <li><a href="http://www.salesforce.com/products/editions-pricing/team-edition/">Small
+        Business CRM</a></li>
+
+
+
+
+        <li><a href="http://www.salesforce.com/partners/">Salesforce
+        Partners</a></li>
+
+    </ul>
+    </div>
+    <!--****************-->
+
+
+
+
+    <div class="footerbundle">
+
+
+
+    <ul>
+        <li><a href="http://www.salesforce.com/company/"><strong>About
+        Salesforce.com</strong></a></li>
+
+
+
+
+        <li><a href="http://www.salesforce.com/services-training/customer-support/">Salesforce
+        Customer Support</a></li>
+
+
+
+        <li><a href="http://www.salesforce.com/company/news-press/">Salesforce.com
+        News</a></li>
+
+
+
+
+        <li><a href="http://www.salesforce.com/company/careers/">Salesforce.com
+        Careers</a></li>
+
+
+
+        <li><a href="http://www.salesforce.com/events/">Salesforce.com
+        Events</a></li>
+
+    </ul>
+    </div>
+    <!--****************--></div>
+    <!--*************************-->
+
+    <div class="clearmb2">
+    <p>&nbsp;</p>
+    </div>
+    <div id="footerworldwide"><a href="http://www.salesforce.com/" onclick="this.href=this.href+'?Country=us'">USA</a> | <a href="http://www.salesforce.com/mx/">Latin America</a> | <a href="http://www.salesforce.com/fr/">France</a> | <a href="http://www.salesforce.com/de/">Germany</a> | <a href="http://www.salesforce.com/eu/">Europe</a> | <a href="http://www.salesforce.com/it/">Italy</a> | <a href="http://www.salesforce.com/es/">Spain</a> | <a href="http://www.salesforce.com/uk/">UK</a> | <a href="http://www.salesforce.com/jp/">Japan</a> | <a href="http://www.salesforce.com/au/">Australia</a></div>
+    <!--*******************--> ? Copyright 2000-2007 salesforce.com, inc.
+    Customer Relationship Management (CRM) All rights reserved Various
+    trademarks held by their respective owners.<br>
+    <br>
+    Salesforce.com, inc. The Landmark @ One Market, Suite 300, San
+    Francisco, CA, 94105, United States<br>
+    General Enquiries: 415-901-7000 | Fax: 415-901-7040 | Sales: <strong>1-800-NO-SOFTWARE</strong>
+    </div>
+    <!--**********-->
+
+</span>
+
+    <div class="spacer"></div>
+    <span id="j_id0:j_id69">
+
+<div id="footerJS" style="margin: -60px;">
+
+
+
+</div></span>
+
+</body></html>
+
+</apex:page>

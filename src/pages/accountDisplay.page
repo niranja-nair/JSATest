@@ -1,0 +1,22 @@
+<!-- another tutorial page -->
+<apex:page standardController="Account">
+  Hello {! $User.FirstName}!
+    <p>You are viewing the {! account.name} account.</p>
+    <p>Here's the API for the activity check: {! account.Active__c}</p>
+    <p>Here's the Owner of this account: {! account.owner.name}</p>
+    <p>Here are the details: </p>
+   <apex:detail relatedList="false"/> 
+   <apex:relatedList list="Cases" />   
+   <apex:pageBlock title="Custom Output">
+    <apex:pageBlockSection title="Custom Section Title">
+        <apex:outputField value="{!account.name}"/>
+        <apex:outputField value="{!account.owner.name}"/>
+    </apex:pageBlockSection>
+    </apex:pageBlock>
+    <apex:pageBlock title="My Account Contacts">
+        <apex:pageBlockTable value="{! account.contacts}" var="item">
+            <apex:column value="{! item.name}"/>
+            <apex:column value="{! item.phone}"/>
+        </apex:pageBlockTable>
+    </apex:pageBlock>
+</apex:page>

@@ -1,0 +1,262 @@
+<apex:page controller="opsync.OppSyncConfigController" tabstyle="pymt__Settings__c" title="Opportunity Sync Utility Configuration">
+<style>
+.fieldnamecolumn {  
+    padding: 2px 15px 2px 5px;
+} 
+.rounded-corners-5 {
+    border-radius: 5px;
+    -moz-border-radius: 5px;
+    -webkit-border-radius: 5px;
+}
+.odd {
+    background-color: white;
+}
+.even {
+    background-color:  #f8f8f8;
+}
+.fieldmappingtable {
+    padding-left:0px;
+    margin-left:0px;
+    border: 1px solid #c0c0c0;
+    width:600px;
+}
+.fieldmappingheader {
+ padding: 8px 15px 8px 5px;
+ background: url("/img/alohaSkin/grid_headerbg.gif") repeat-x;
+  background-position: 0px -25px;
+}
+</style>
+<apex:sectionHeader title="Linvio PaymentConnect" subtitle="Opportunity Sync Utility Configuration" help="{!URLFOR($Page.opsync__OppSyncHelp)}" />
+<apex:form id="mainForm">
+<apex:pageMessages id="generalSyncMsgs" />
+<p>Configure and schedule the Opportunity Sync utility to automatically create Opportunity records from completed PaymentConnect payments using the settings below:</p>
+<apex:pageBlock title="General Sync Settings" id="generalSyncPageBlock">
+<apex:pageBlockButtons location="bottom">
+<apex:commandButton value="Save Settings" action="{!saveSettings}"  reRender="generalSyncMsgs"/>
+</apex:pageBlockButtons>
+<apex:pageBlockSection >
+<apex:pageBlockSectionItem helpText="Enter a name to assign each new opportunity record. Standard Salesforce merge field tags can be used to insert most payment record field values dynamically." >
+<apex:outputLabel value="Opportunity Name" />
+<apex:outputPanel >
+<apex:inputTextArea style="width:250px;" rows="1" value="{!batchSettings.opsync__Opportunity_Name__c}"/>&nbsp;
+<apex:commandLink value="Insert Merge Fields" action="{!toggleMergeFieldPicklist}" rerender="mergeFieldPanel"/>
+<apex:outputPanel layout="none" id="mergeFieldPanel">
+<apex:outputPanel rendered="{!showMergeFieldPicklist}"><br/>
+<apex:selectList id="mergeFields" value="{!mergeFieldSelected}" size="1" >
+<apex:selectOptions value="{!mergeFieldList}"></apex:selectOptions>
+</apex:selectList>
+<apex:commandButton action="{!addMergeField}" value="Add" rerender="generalSyncPageBlock"/>
+</apex:outputPanel>
+</apex:outputPanel>
+</apex:outputPanel>
+</apex:pageBlockSectionItem>
+<apex:pageBlockSectionItem helpText="Stage Name to used for Opportunities created from Payment records.">
+<apex:outputText value="Stage Name"/>
+<apex:selectList id="oppStageList" value="{!batchSettings.opsync__Opportunity_Stage_Name__c}" size="1" >
+<apex:selectOptions value="{!OppStagePickList}"/>
+</apex:selectList>
+</apex:pageBlockSectionItem>
+<apex:pageBlockSectionItem helpText="Batch timeframe (in days).  The Opportunity Sync Utility will search for and process payments completed in the last N days.  Where 'N' is the number of days entered here.">
+<apex:outputLabel value="Batch Timeframe" />
+<apex:inputText value="{!batchSettings.opsync__Batch_Script_LastNDays__c}"/>
+</apex:pageBlockSectionItem>
+
+<apex:pageBlockSectionItem helptext="(Optional) Check this box to have the Sync Utility create opportunity line items when a payment has Shopping Cart Items associated with it.">
+<apex:outputLabel value="Build Opportunity Line Items" />
+<apex:inputCheckbox value="{!batchSettings.opsync__Build_Line_Items__c}"/>
+</apex:pageBlockSectionItem>
+
+<apex:pageBlockSectionItem helptext="Default product record to use when building Opportunity Line Items, if Shopping Cart Items are not already associated with a Salesforce Product.  Required if building opportunity line items.">
+<apex:outputLabel value="Default Line Item Product" />
+<apex:inputField value="{!defaultProduct.pymt__Product__c}">
+<apex:actionSupport event="onchange" action="{!nullAction}"  />
+</apex:inputField>
+</apex:pageBlockSectionItem>
+
+<apex:pageBlockSectionItem helptext="Required if building opportunity line items.">
+<apex:outputLabel value="Pricebook"/>
+<apex:selectList size="1" value="{!selectedPricebookId}">
+<apex:selectOptions value="{!pricebookOptions}" />
+</apex:selectList>
+</apex:pageBlockSectionItem>
+
+<apex:pageBlockSectionItem helptext="Product record to use when adding an opportunity line item representing the discount amount on a payment. Required if building opportunity line items.">
+<apex:outputLabel value="Discount Product" />
+<apex:inputField value="{!discountProduct.pymt__Product__c}">
+<apex:actionSupport event="onchange" action="{!nullAction}"  />
+</apex:inputField>
+</apex:pageBlockSectionItem>
+
+<apex:pageBlockSectionItem helptext="Remove completed tasks in the Sync Utility history log after N days.">
+<apex:outputLabel value="Clear History After" />
+<apex:outputPanel layout="inline" >
+<apex:inputField value="{!batchSettings.opsync__Clear_History_After__c}" style="width:40px;"/>
+&nbsp;days
+</apex:outputPanel>
+</apex:pageBlockSectionItem>
+
+<apex:pageBlockSectionItem helpText="Checking this box will indicate that no contact role will be created and associated to an opportunity.">
+<apex:outputLabel value="Disable Contact Role Creation"/>
+<apex:inputCheckbox value="{!batchSettings.opsync__Disable_Contact_Role_Creation__c}"/>
+</apex:pageBlockSectionItem>
+
+
+</apex:pageBlockSection>
+</apex:pageBlock>
+</apex:form>
+
+<apex:form id="mappingForm">
+<apex:pageBlock title="Field Mappings" >
+<apex:outputPanel id="fieldMappingsMsgs">
+<apex:pageMessage severity="INFO" summary="There are currenly no custom field mappings defined.  The sync utility will use default mappings." strength="1" rendered="{!NOT(hasFieldMappings)}"/>
+<apex:pageMessages />
+</apex:outputPanel>
+<p>The Sync Utility will automatically map fields values from your Payment records to Opportunity StageName, CloseDate, Amount, Account, and PaymentConnect Tax, Shipping and Total Amount fields. You can map additional fields (both custom and standard) using the form below.  Just select a source field (on the Payment object) and a target field of similar type on the Opportunity and click <strong>Add to List</strong>. </p>
+<br/>
+<apex:outputPanel id="fieldMappingTable" rendered="{!hasFieldMappings}">
+<apex:dataTable headerClass="fieldmappingheader" styleClass="fieldmappingtable" rowClasses="odd, even" columnClasses="fieldnamecolumn" value="{!fieldMappingList}" var="mapping">
+<apex:column headerValue="Payment Field(Source)">
+<apex:outputText rendered="{!IF((mapping.id == null), false,true)}" value="{!mapping.opsync__Payment_Field_Name__c}" />
+</apex:column>
+<apex:column headerValue="Opportunity Field(Target)">
+<apex:outputText rendered="{!IF((mapping.id == null), false,true)}" value="{!mapping.opsync__Opportunity_Field_Name__c}"  />
+</apex:column>
+<apex:column >
+<apex:commandLink action="{!deleteMapping}" title="Delete field mapping." rendered="{!IF((mapping.id == null), false,true)}" reRender="mappingForm">
+<apex:image url="{!URLFOR($Resource.pymt__PaymentConnect,'/images/delete.png')}"/>
+<apex:param name="itemRemove" value="{!mapping.id}"/>
+</apex:commandLink>
+</apex:column>
+</apex:dataTable>
+<br/>
+<br/>
+
+</apex:outputPanel>
+
+<apex:outputPanel id="addFieldMapping" layout="None">
+<apex:outputPanel id="logPanel">
+</apex:outputPanel>
+<span class="rounded-corners-5" style="margin-right:auto; border:solid 1px #c0c0c0;padding:10px" >
+<apex:selectList id="SourceList" value="{!sourceField}" size="1">
+<apex:selectOptions value="{!SourceMappingList}"/>
+<apex:actionSupport event="onchange" id="updateTargetFields"  action="{!refreshFields}" reRender="mappingForm, TargetList" status="addFieldMappingStatus"/>
+</apex:selectList>
+&nbsp;
+<apex:selectList disabled="{!IF((sourceField == ''), true, false)}" id="TargetList" value="{!targetField}" size="1" >
+<apex:selectOptions value="{!targetFieldOptions}"/></apex:selectList>
+&nbsp;
+<apex:commandButton disabled="{!IF((sourceField == ''), true, false)}" action="{!saveMapping}"  value="Add to List" status="addFieldMappingStatus" reRender="addFieldMapping, mappingForm, addFieldMappingStatus, fieldMappingMsgs">
+</apex:commandButton>
+<apex:actionStatus id="addFieldMappingStatus">
+             <apex:facet name="start" > 
+                <apex:outputPanel >&nbsp; 
+                  <apex:image value="{!URLFOR($Resource.pymt__PaymentConnect, 'images/icon-spinner.gif')}"  style="vertical-align:middle;" alt="busy..." />
+                 </apex:outputPanel>
+             </apex:facet> 
+             <apex:facet name="stop">
+                <apex:image value="{!URLFOR('/s.gif')}"  alt="" style="width:16px;height:16px;" />
+             </apex:facet>
+</apex:actionStatus>
+</span>
+</apex:outputPanel>
+</apex:pageBlock>
+<br/>
+</apex:form>
+
+
+<apex:form id="schedulingForm">
+
+<apex:pageBlock title="Batch Scheduling" >
+<apex:pageBlockSection >
+<apex:pageBlockSectionItem rendered="{!(isScheduled)}">
+<apex:outputLabel value="Scheduled Batch Job Status:" />
+<apex:outputText value="Scheduled"/>
+</apex:pageBlockSectionItem>
+<apex:pageBlockSectionItem rendered="{!(isScheduled)}">
+<apex:outputLabel value="Next Scheduled Run:" />
+<apex:outputText value="{!nextFireTime}"/>
+</apex:pageBlockSectionItem>
+<apex:pageBlockSectionItem rendered="{!NOT(isScheduled)}">
+<apex:outputLabel value="Schedule batch job to run:"/>
+<apex:selectList size="1" multiselect="false" value="{!selectedFreqHour}">
+<apex:selectOption itemValue="*" itemLabel="Hourly"/>
+<apex:selectOption itemValue="0/2" itemLabel="Every 2 Hours"/>
+<apex:selectOption itemValue="0/4" itemLabel="Every 4 Hours"/>
+<apex:selectOption itemValue="0/6" itemLabel="Every 6 Hours"/>
+<apex:selectOption itemValue="0/12" itemLabel="Every 12 Hours"/>
+<apex:selectOption itemValue="0" itemLabel="0:00"/>
+<apex:selectOption itemValue="1" itemLabel="1:00"/>
+<apex:selectOption itemValue="2" itemLabel="2:00"/> 
+<apex:selectOption itemValue="3" itemLabel="3:00"/>
+<apex:selectOption itemValue="4" itemLabel="4:00"/>
+<apex:selectOption itemValue="5" itemLabel="5:00"/>
+<apex:selectOption itemValue="6" itemLabel="6:00"/>
+<apex:selectOption itemValue="7" itemLabel="7:00"/>
+<apex:selectOption itemValue="8" itemLabel="8:00"/>
+<apex:selectOption itemValue="9" itemLabel="9:00"/>
+<apex:selectOption itemValue="10" itemLabel="10:00"/>
+<apex:selectOption itemValue="11" itemLabel="11:00"/>
+<apex:selectOption itemValue="12" itemLabel="12:00"/>
+<apex:selectOption itemValue="13" itemLabel="13:00"/>
+<apex:selectOption itemValue="14" itemLabel="14:00"/>
+<apex:selectOption itemValue="14" itemLabel="14:00"/>
+<apex:selectOption itemValue="15" itemLabel="15:00"/>
+<apex:selectOption itemValue="16" itemLabel="16:00"/>
+<apex:selectOption itemValue="17" itemLabel="17:00"/>
+<apex:selectOption itemValue="18" itemLabel="18:00"/>
+<apex:selectOption itemValue="19" itemLabel="19:00"/>
+<apex:selectOption itemValue="20" itemLabel="20:00"/>
+<apex:selectOption itemValue="21" itemLabel="21:00"/>
+<apex:selectOption itemValue="22" itemLabel="22:00"/>
+<apex:selectOption itemValue="23" itemLabel="23:00"/>
+</apex:selectList>
+</apex:pageBlockSectionItem>
+
+<apex:pageBlockSectionItem rendered="{!NOT(isScheduled)}">
+<apex:outputLabel value="Day of the week:"/>
+<apex:selectList size="1" multiselect="false" value="{!selectedFreqDay}">
+<apex:selectOption itemValue="E" itemLabel="Every Day"/>
+<apex:selectOption itemValue="1" itemLabel="Sun"/>
+<apex:selectOption itemValue="2" itemLabel="Mon"/>
+<apex:selectOption itemValue="3" itemLabel="Tue"/>
+<apex:selectOption itemValue="4" itemLabel="Wed"/>
+<apex:selectOption itemValue="5" itemLabel="Thu"/>
+<apex:selectOption itemValue="6" itemLabel="Fri"/>
+<apex:selectOption itemValue="7" itemLabel="Sat"/>
+</apex:selectList>
+</apex:pageBlockSectionItem>
+<apex:pageBlockSectionItem rendered="{!NOT(isScheduled)}">
+<apex:outputLabel value=""/>
+<apex:commandButton value="Schedule Batch Job" action="{!scheduleBatchJob}" reRender="generalSyncMsgs, schedulingForm" />
+</apex:pageBlockSectionItem>
+<apex:pageBlockSectionItem rendered="{!(isScheduled)}">
+<apex:outputLabel value=""/>
+<apex:outputPanel >
+<apex:commandButton value="Cancel Scheduled Batch Job" action="{!cancelBatchJob}" reRender="generalSyncMsgs, schedulingForm" />
+</apex:outputPanel>
+</apex:pageBlockSectionItem>
+<apex:pageBlockSectionItem >
+<apex:outputLabel value=""/>
+<apex:commandButton value="Run Batch Job Once" action="{!runBatchJob}" reRender="generalSyncMsgs, schedulingForm, batchActivity"/>
+</apex:pageBlockSectionItem>
+</apex:pageBlockSection>
+<br/>
+<apex:outputPanel id="batchActivity" rendered="{!hasBatchJobTasks}" >
+<h2>Batch Job History: Recent Activity</h2>
+<br/>
+<apex:pageBlockTable value="{!recentBatchJobTasks}" var="item"> 
+<apex:column headervalue="Actions">
+<apex:outputLink target="_self" value="/{!item.id}">View</apex:outputLink> &nbsp;|&nbsp;
+<apex:commandLink action="{!deleteTask}" value="Delete">
+<apex:param name="deleteTaskLink" id="deleteTaskLink" value="{!item.id}" assignTo="{!selectedTaskId}"/>
+</apex:commandLink>
+</apex:column>
+<apex:column value="{!item.ActivityDate}" headervalue="Entry Date"/>
+<apex:column value="{!item.Subject}"/>
+<apex:column value="{!item.Status}" headervalue="Task Status"/>
+<apex:column value="{!item.pymt__Event_Code__c}"/>
+</apex:pageBlockTable>
+</apex:outputPanel>
+</apex:pageBlock>
+</apex:form>
+</apex:page>

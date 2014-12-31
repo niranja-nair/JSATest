@@ -1,0 +1,62 @@
+<apex:page showHeader="false" sidebar="false" >
+<!-- This is a purchase token, for more information on the elements with in a purchase token see the supplied help section. -->
+<form action="https://select-test.worldpay.com/wcc/purchase" name="BuyForm" method="POST">
+<input type="hidden" name="instId"  value="237354"/>
+<input type="hidden" name="cartId" value="abc123"/>
+<input type="hidden" name="currency" value="GBP"/>
+<input type="hidden" name="amount"  value="0"/>
+<input type="hidden" name="desc" value=""/>
+<input type="hidden" name="testMode" value="100"/>
+<input type="hidden" name="MC_callback" value="http://pconnect-developer-edition.na2.force.com/dev/pymt__WorldPayRelay"/>
+
+<!-- JavaScript is used to give functionality to some of the pages elements. -->
+<script language="JavaScript">
+
+<!-- This function defines the price of each product. To add the product edit further down the page. -->
+function calc(productNo) 
+{
+    if (productNo==1)
+    {
+        document.BuyForm.amount.value = 5.00;
+        document.BuyForm.desc.value = "Product 1";
+    }
+    else if (productNo==2)
+    {
+        document.BuyForm.amount.value = 10.00;
+        document.BuyForm.desc.value = "Product 2";
+    }
+    <!-- To add a new product price, copy from here... -->
+    else if (productNo==3)
+    {
+        document.BuyForm.amount.value = 15.00;
+        document.BuyForm.desc.value = "Product 3";
+    }
+    <!-- ...to here, and paste directly below. You will need to alter the 'productNo' and its price value. -->
+} 
+
+</script> 
+
+<h1>One-Click Shop</h1>
+
+<!-- This table provides layout for the products listed on the webpage. -->
+<table align="center" cellpadding="3" border="2">
+<tr>
+    <td>Product 1</td> 
+    <td> Price: &pound;5.00</td>
+    <td><input type="image" src="buy_button.jpg" alt="Buy button" onClick="calc(1)"/></td>
+</tr>
+<tr>
+    <td>Product 2</td>
+    <td>Price: &pound;10.00</td>
+    <td><input type="image" src="buy_button.jpg" alt="Buy button" onClick="calc(2)"/></td>
+</tr>
+<!-- To add a new product, copy from here... -->
+<tr>
+    <td>Product 3</td> 
+    <td>Price: &pound;15.00</td>
+    <td><input type="image" src="buy_button.jpg" alt="Buy button" onClick="calc(3)"/></td>
+</tr>
+<!-- ...to here, and paste directly below. You will need to alter three things: the product number, price, and calc(put product number here) -->
+</table>
+</form>
+</apex:page>

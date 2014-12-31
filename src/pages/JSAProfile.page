@@ -1,0 +1,184 @@
+<apex:page showHeader="false" sidebar="false" controller="myJSAprofileController" action="{!initPage}">
+    <title>My Personal Data</title>
+
+    <c:NeatHeader profile="active" />
+
+    <!-- Breadcrumbs - START -->
+    <div class="background-clouds breadcrumbs-container">
+      <div class="container">
+        <ol class="breadcrumb">
+          <li><a href="/JSAHome">My JSA Home</a></li>
+          <li class="active">My Personal Data</li>
+        </ol>
+      </div>
+    </div>
+    <!-- Breadcrumbs - END -->
+
+   <section>
+      <div class="container">
+        <div class="row">
+          <div class="col-md-8">
+            <div class="content">
+                <h1>My Personal Data</h1>
+                <apex:form >
+                    <h2>My Information</h2>
+                    Fields marked with * are required. Fields marked with ** are required for Summer School applicants.
+                    <br/><br/>
+                    *** Mobile Phone is required for accepted Summer School students. By entering this number, you agree to allow us to send you text reminders; message and data rates apply.
+                    <br/><br/>
+                    <div class="col-md-6">
+                        <b>First Name *</b><br/>
+                        <apex:inputText value="{!contact.FirstName}" styleClass="col-xs-12 form-control" />
+                    </div>
+                    <div class="col-md-6">
+                        <b>Last Name *</b><br/>
+                        <apex:inputText value="{!contact.LastName}" styleClass="col-xs-12 form-control" />
+                    </div>
+                    <div class="col-md-6">
+                        <b>Mailing Street Address *</b><br/>
+                        <apex:inputText value="{!contact.MailingStreet}" styleClass="col-xs-12 form-control" />
+                    </div>
+                    <div class="col-md-6 contactdropdown">
+                        <b>Mailing Country *</b><br/>
+                        <apex:inputField value="{!contact.account.Countries__c}" required="true" styleClass="col-xs-12 form-control" />
+                    </div>
+                    <div class="col-md-6">
+                        <b>Mailing City *</b><br/>
+                        <apex:inputText value="{!contact.MailingCity}" styleClass="col-xs-12 form-control" />
+                    </div>
+                    <div class="col-md-6 contactdropdown">
+                        <b>Mailing State/Province *</b><br/>
+                        <apex:inputField value="{!contact.account.US_States__c}" styleClass="col-xs-12 form-control" />
+                    </div>
+                    <div class="col-md-6">
+                        <b>Mailing Zip/Postal Code *</b><br/>
+                        <apex:inputText value="{!contact.MailingPostalCode}" styleClass="col-xs-12 form-control" />
+                    </div>
+                    <div class="col-md-6">
+                        <b>Mobile Phone ***</b><br/>
+                        <apex:inputText value="{!contact.MobilePhone}" styleClass="col-xs-12 form-control" />
+                    </div>
+                    <div class="col-md-6">
+                        <b>Home Phone **</b><br/>
+                        <apex:inputText value="{!contact.Phone}" styleClass="col-xs-12 form-control" />
+                    </div>
+                    <div class="col-md-6 contactdropdown">
+                        <b>Gender *</b><br/>
+                        <apex:selectList value="{!contact.Gender__c}" size="1" styleClass="col-xs-12 form-control">
+                            <apex:selectOption itemValue="" itemLabel="-- Gender --" />
+                            <apex:selectOptions value="{!genderOptions}" />
+                        </apex:selectList>
+                    </div>
+                    <div class="col-md-6 contactdropdown">
+                        <b>Category *</b>
+                        <a rel="popover" id="categoryPopover" data-content="{!$ObjectType.Contact.fields.Category__c.inlineHelpText}"><img src="{!URLFOR($Resource.help2)}" style="display: inline; margin-left: 5px;" /></a><br/>
+                        <apex:inputField value="{!contact.Category__c}" required="true" styleClass="col-xs-12 form-control" />
+                    </div>
+                    <div class="col-md-6 contactdropdown">
+                        <b>JSA Role *</b>
+                        <a rel="popover" id="rolePopover" data-content="{!$ObjectType.Contact.fields.JSA_Role__c.inlineHelpText}"><img src="{!URLFOR($Resource.help2)}" style="display: inline; margin-left: 5px;" /></a><br/>
+                        <apex:inputField value="{!contact.JSA_Role__c}" required="true" styleClass="col-xs-12 form-control" />
+                    </div>
+                    <div class="col-md-6 contactdropdown">
+                        <b>High School State *</b><br/>
+                        <apex:selectList value="{!highSchoolState}" size="1" styleClass="col-xs-12 highSchoolState  form-control">
+                            <apex:selectOption itemValue="" itemLabel="-- State --" />
+                            <apex:selectOptions value="{!highSchoolStateOptions}" />
+                        </apex:selectList>
+                    </div>
+                    <div id="highscholarea" class="col-md-6 contactdropdown">
+                        <b>High School</b><br/>
+                        <apex:inputText styleClass="col-xs-12 highSchoolName typeahead form-control" value="{!contact.High_School_Text__c}" />
+                        <apex:inputText styleClass="highSchoolId" value="{!contact.High_School__c}" style="display: none;" />
+                    </div>
+                    <br/>&nbsp;<br/>
+                    <h2>Students Only</h2>
+                    Students, please fill out the following additional information.
+                    <br/><br/>
+                    <div class="col-md-6">
+                        <b>High School Graduation Year</b><br/>
+                        <apex:outputField value="{!contact.High_School_Graduation_Year__c}" />
+                    </div>
+                    <div class="col-md-6">
+                        <b>Birthdate *</b><br/>
+                        <apex:inputField value="{!contact.birthdate}" styleClass="col-xs-12 form-control" /><br clear="both" />
+                    </div>
+                    <div class="col-md-6">
+                        <b>Parent/Guardian First Name *</b>
+                        <a rel="popover" id="parentFirstPopover" data-content="{!$ObjectType.Contact.fields.Parent_Guardian_First_Name__c.inlineHelpText}"><img src="{!URLFOR($Resource.help2)}" style="display: inline; margin-left: 5px;" /></a><br/>
+                        <apex:inputText value="{!contact.Parent_Guardian_First_Name__c}" styleClass="col-xs-12 form-control" />
+                    </div>
+                    <div class="col-md-6">
+                        <b>Parent/Guardian Last Name *</b>
+                        <a rel="popover" id="parentLastPopover" data-content="{!$ObjectType.Contact.fields.Parent_Guardian_Last_Name__c.inlineHelpText}"><img src="{!URLFOR($Resource.help2)}" style="display: inline; margin-left: 5px;" /></a><br/>
+                        <apex:inputText value="{!contact.Parent_Guardian_Last_Name__c}" styleClass="col-xs-12 form-control" />
+                    </div>
+                    <div class="col-md-6">
+                        <b>Parent/Guardian Email *</b>
+                        <a rel="popover" id="parentEmailPopover" data-content="{!$ObjectType.Contact.fields.Parent_or_Guardian_s_Email__c.inlineHelpText}"><img src="{!URLFOR($Resource.help2)}" style="display: inline; margin-left: 5px;" /></a><br/>
+                        <apex:inputText value="{!contact.Parent_or_Guardian_s_Email__c}" styleClass="col-xs-12 form-control" />
+                    </div>
+                    <br clear="both" /><br/>
+                    * Required<br/>
+                    ** Required for Summer School Applicants<br/>
+                    <br/>
+                    <div class="bootbutton">
+                        <apex:commandButton value="Update Information" action="{!save}" styleClass="btn btn-primary btn-lg" />
+                    </div>
+                </apex:form>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <h3>JSA News and Updates</h3>
+            <script language="JavaScript" src="https://feed2js.org//feed2js.php?src=http%3A%2F%2Fjsa.org%2Fcategory%2Fmyjsa%2Ffeed%2F&num=3&desc=140>1&targ=y&utf=y"  charset="UTF-8" type="text/javascript"></script>
+            <h3>JSA Event Calendar</h3>
+            <script language="JavaScript" src="https://feed2js.org//feed2js.php?src=http%3A%2F%2Fevents.jsa.org%2Fevents%2Frss%2F&num=5&targ=y&utf=y"  charset="UTF-8" type="text/javascript"></script>
+            <a href="http://events.jsa.org/events/">View more events</a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <c:NeatFooter />
+
+    <script src="{!$Resource.typeahead_js}"></script>
+
+<script>
+
+$(document).ready(function() {
+
+    $("#categoryPopover").popover();
+    $("#rolePopover").popover();
+    $("#parentFirstPopover").popover();
+    $("#parentLastPopover").popover();
+    $("#parentEmailPopover").popover();
+
+    $(".highSchoolName").attr('placeholder', 'Start typing and select from list...');
+    $(".highSchoolName").typeahead({
+        /*hint: false*/
+    }, {
+        source: function(query, cb) {
+            myJSAprofileController.findSchools(query, $(".highSchoolState").val(), function(results, event){
+                cb(results);
+            });
+        },
+        name: 'value',
+        displayKey: 'label'
+    }).on('typeahead:selected', function(e, suggestion, name) {
+        $(".highSchoolId").val(suggestion.value);
+    });
+
+    $(".highSchoolState").on('change', function(){
+        $(".highSchoolId").val('');
+        $(".highSchoolName").val('');
+    })
+
+    $(".contactdropdown").bind('DOMNodeInserted', function() {
+        $(".contactdropdown select").addClass("form-control");
+    });
+
+});
+
+</script>
+
+</apex:page>

@@ -1,0 +1,1 @@
+<apex:page controller="pymt.WorldPayRelayController" action="{!processIPN}" showheader="false" sidebar="false"  contentType="text/plain">{!body}</apex:page>

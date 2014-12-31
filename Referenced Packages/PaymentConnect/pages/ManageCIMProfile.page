@@ -1,0 +1,383 @@
+<apex:page standardController="pymt__Payment_Method__c" extensions="pymt.ManageCIMProfileController" tabstyle="pymt__Payment_Method__c"  action="{!onLoad}">
+<style>
+	.modalProgressBox {
+		display: block;
+		position: absolute;
+		z-index: 999;
+		text-align: center; 
+		width: 100%;
+		height: 100%;
+		background-color: #FFF;
+		top: 0px;
+		left: 0px;
+		filter:alpha(opacity=50);
+		-moz-opacity:0.5;
+		-khtml-opacity: 0.5;
+		opacity: 0.5;
+		color: black;
+		font-size: 14pt;
+    }
+    
+
+
+#leftPanel {
+	float:left;
+	width:40%;
+	border: #e0e0e0 solid 1px;
+	margin-top: 20px;
+	
+}
+
+#middlePanel {
+	float:left;
+	height: 400px;
+	padding:100px 10px 10px 10px;
+	text-align:center;
+}
+
+#rightPanel {
+	float:left;
+	width:40%;
+	border: #e0e0e0 solid 1px;
+	margin-top: 20px;
+}
+
+
+</style>
+<apex:sectionHeader title="Authorize.Net CIM Profile" subtitle="{!pmtMethod.Name}"  help="{!$Page.pymt__Help}"/> 
+<apex:form id="cimMgtForm">
+<apex:pageMessages id="messages"/>
+
+        <apex:actionStatus id="modalActionStatus" >
+         <apex:facet name="start" > 
+           <apex:outputPanel styleClass="modalProgressBox">&nbsp; 
+           <br/><br/><br/>
+             <apex:image value="{!URLFOR($Resource.pymt__PaymentConnect, 'images/spinner_med.gif')}"  style="vertical-align:middle;" alt="busy..." />
+             &nbsp;Sending Request </apex:outputPanel>
+         </apex:facet> 
+         <apex:facet name="stop"  >
+         </apex:facet>
+    </apex:actionStatus>
+    
+<apex:pageBlock id="mainPageBlock"  mode="edit" >
+<apex:pageBlockButtons >
+<apex:commandButton value="Return" action="{!gotoReturnURL}"/>
+<apex:commandButton value="Delete Payment Method" action="{!deleteProfile}" onclick="return confirm('Deleting this payment method will remove both the local payment method record and the profile stored at Authorize.Net.  Would you like to continue?');" />
+</apex:pageBlockButtons>
+
+<apex:pageBlockSection columns="1" >
+<p>Use this CIM profile management utility to keep your local payment method record in sync with the CIM profile stored remotely at Authorize.Net:</p>
+</apex:pageBlockSection>
+
+
+<div class="panelContainer" style="margin-left:20px;margin-right:20px;">
+<div id="leftPanel">
+
+
+<apex:pageBlockSection title="Customer Info (Local Copy)"  id="localCustomerProfileSection" columns="1">
+<apex:pageBlockSectionItem labelStyle="width:40%;">
+<apex:outputLabel value="Profile Description"/>
+<apex:inputText value="{!localDescription}"/>
+</apex:pageBlockSectionItem>
+
+<apex:pageBlockSectionItem >
+<apex:outputLabel value="Profile Email"/>
+<apex:inputText value="{!localEmail}"/>
+</apex:pageBlockSectionItem>
+
+<apex:outputField value="{!pmtMethod.pymt__Customer_Profile_Id__c}" />
+</apex:pageBlockSection>
+
+
+<apex:pageBlockSection title="Payment Profile (Local Copy)"  id="localPmtProfileSection"  columns="1">
+<apex:outputField value="{!pmtMethod.pymt__Contact__c}" />
+
+<apex:outputField value="{!pmtMethod.pymt__Profile_Id__c}" />
+
+<apex:inputField value="{!pmtMethod.pymt__Billing_First_Name__c}" /> 
+<apex:inputField value="{!pmtMethod.pymt__Billing_Last_Name__c}" />
+<apex:inputField value="{!pmtMethod.pymt__Billing_Street__c}" />
+<apex:inputField value="{!pmtMethod.pymt__Billing_City__c}" />
+<apex:inputField value="{!pmtMethod.pymt__Billing_State__c}" />
+<apex:inputField value="{!pmtMethod.pymt__Billing_Postal_Code__c}" />
+<apex:inputField value="{!pmtMethod.pymt__Billing_Country__c}" />
+
+<apex:pageBlockSectionItem labelStyle="width:40%;">
+<apex:outputLabel value="Company" />
+<apex:inputText value="{!company}" />
+</apex:pageBlockSectionItem>
+
+<apex:pageBlockSectionItem >
+<apex:outputLabel value="Phone" />
+<apex:inputText value="{!phone}" />
+</apex:pageBlockSectionItem>
+
+<apex:pageBlockSectionItem >
+<apex:outputLabel value="Fax" />
+<apex:inputText value="{!fax}" />
+</apex:pageBlockSectionItem>
+
+<apex:pageBlockSectionItem >
+<apex:outputLabel value="Payment Type"/>
+<apex:outputPanel >
+<table><tr><td>
+<apex:selectList size="1" multiselect="false" value="{!localPaymentProfileType}">
+<apex:selectOption itemLabel="Credit Card" itemValue="Credit Card" />
+<apex:selectOption itemLabel="Bank Account" itemValue="Bank Account" />
+    <apex:actionSupport event="onchange" action="{!localPaymentProfileTypeChanged}" id="localPaymentProfileTypeChange" status="localProfilePaymentTypeStatus" rerender="localCustomerProfileSection, localPmtProfileSection"/>
+
+</apex:selectList>
+</td><td>
+    <apex:actionStatus id="localProfilePaymentTypeStatus" >
+         <apex:facet name="start" > 
+           <apex:outputPanel >&nbsp; 
+             <apex:image value="{!URLFOR($Resource.pymt__PaymentConnect, 'images/icon-spinner.gif')}"  style="vertical-align:top;" alt="busy..." />
+             </apex:outputPanel>
+         </apex:facet> 
+         <apex:facet name="stop">
+           <apex:image value="{!URLFOR('/s.gif')}"  alt="" style="height:12px;" />
+         </apex:facet>
+    </apex:actionStatus>
+</td></tr></table>
+</apex:outputPanel>
+</apex:pageBlockSectionItem>
+
+<apex:pageBlockSectionItem rendered="{!localPaymentProfileType == 'Credit Card'}">
+<apex:outputLabel value="Card Type" />
+<apex:selectList size="1" multiselect="false">
+    <apex:selectOption itemValue="Visa" itemLabel="Visa"/>
+    <apex:selectOption itemValue="Mastercard" itemLabel="Mastercard"/>
+    <apex:selectOption itemValue="Amex" itemLabel="American Express"/>
+    <apex:selectOption itemValue="Discover" itemLabel="Discover"/>
+</apex:selectList>
+</apex:pageBlockSectionItem>
+
+<apex:pageBlockSectionItem rendered="{!localPaymentProfileType == 'Credit Card'}">
+	<apex:outputLabel value="Card Number" />
+	<apex:inputText value="{!cardNumber}"/>
+</apex:pageBlockSectionItem>
+
+<apex:pageBlockSectionItem rendered="{!localPaymentProfileType == 'Credit Card'}" helpText="The three- or four-digit number on the back of a credit card (on the front for American Express).  This field is required if the merchant would like to use the Card Code Verification (CCV) security feature.">
+	<apex:outputLabel value="Card Code" />
+	<apex:inputText value="{!cardCode}"/>
+</apex:pageBlockSectionItem>
+
+
+<apex:pageBlockSectionItem rendered="{!localPaymentProfileType == 'Credit Card'}">
+<apex:outputLabel value="Card Expiration" />
+<apex:outputPanel layout="inline" >
+<apex:selectList size="1" multiselect="false" value="{!expMonth}">
+    <apex:selectOptions value="{!expMonthOptions}" />
+</apex:selectList>
+&nbsp;
+<apex:selectList size="1" multiselect="false" value="{!expYear}">
+    <apex:selectOptions value="{!expYearOptions}"/>
+</apex:selectList>
+
+</apex:outputPanel>
+</apex:pageBlockSectionItem>
+
+<apex:pageBlockSectionItem rendered="{!localPaymentProfileType == 'Bank Account'}">
+	<apex:outputLabel value="Bank Name" />
+	<apex:inputText value="{!bankName}" />
+</apex:pageBlockSectionItem>
+
+<apex:pageBlockSectionItem rendered="{!localPaymentProfileType == 'Bank Account'}">
+	<apex:outputLabel value="Name on Account" />
+	<apex:inputText value="{!nameOnAccount}" />
+</apex:pageBlockSectionItem>
+
+<apex:pageBlockSectionItem rendered="{!localPaymentProfileType == 'Bank Account'}" helpText="5-17 digital account number.  Can be masked (e.g. XXXX111). If value is masked, the last four digits must match the original value in the profile.
+If a masked value is submitted, the original value will not be updated.">
+	<apex:outputLabel value="Bank Account Number" />
+	<apex:inputText value="{!bankAccountNumber}" />
+</apex:pageBlockSectionItem>
+
+<apex:pageBlockSectionItem rendered="{!localPaymentProfileType == 'Bank Account'}" helpText="9 digit bank account routing number.  Can be masked (e.g. XXXX1111). If value is masked, the last four digits must match the original value in the profile.
+If a masked value is submitted, the original value will not be updated.">
+	<apex:outputLabel value="Routing Number" />
+	<apex:inputText value="{!routingNumber}" />
+</apex:pageBlockSectionItem>
+
+<apex:pageBlockSectionItem rendered="{!localPaymentProfileType == 'Bank Account'}">
+	<apex:outputLabel value="Account Type" />
+	<apex:selectList size="1" multiselect="false" value="{!bankAccountType}">
+	    <apex:selectOption itemValue="" itemLabel="-- select a bank account type --"/>
+	    <apex:selectOption itemValue="checking" itemLabel="Checking"/>
+	    <apex:selectOption itemValue="savings" itemLabel="Savings"/>
+	    <apex:selectOption itemValue="businessChecking" itemLabel="Business Checking"/>
+	</apex:selectList>
+</apex:pageBlockSectionItem> 
+
+<apex:pageBlockSectionItem rendered="{!localPaymentProfileType == 'Bank Account'}" helpText="(Optional) The type of electronic check transaction.  Currently, the CIM API does not support ARC or BOC transaction types.">
+	<apex:outputLabel value="eCheck Type" />
+	<apex:selectList size="1" multiselect="false" value="{!eCheckType}">
+	    <apex:selectOption itemValue="" itemLabel="-- select an eCheck type --"/>
+	    <apex:selectOption itemValue="CCD" itemLabel="CCD - Cash Concentration or Disbursement"/>
+	    <apex:selectOption itemValue="PPD" itemLabel="PPD - Prearranged Payment and Deposit Entry"/>
+	    <apex:selectOption itemValue="TEL" itemLabel="TEL - Telephone-Initiated Entry"/>
+	    <apex:selectOption itemValue="WEB" itemLabel="WEB - Internet-Initiated Entry"/>
+	</apex:selectList>
+</apex:pageBlockSectionItem>
+
+<apex:pageBlockSectionItem helpText="If selected, tells AuthNet to validate the payment profile information with a test authorization."> 
+	<apex:outputLabel value="" />
+	<apex:outputPanel >
+		<apex:inputCheckbox value="{!validate}" />&nbsp;Validate changes to this profile before saving.
+	</apex:outputPanel>
+</apex:pageBlockSectionItem>
+
+
+</apex:pageBlockSection>
+<span style="clear:both;">&nbsp;</span>
+</div>
+
+<div id="middlePanel">
+<apex:commandButton value="Save Changes to AuthNet >>" action="{!updateCIMPaymentProfile}" status="modalActionStatus" disabled="{!NOT(profileFound)}" rerender="modalActionStatus, messages"/>
+<br/><br/>
+<apex:commandButton value="<< Update Local Profile" action="{!updateLocalProfile}" disabled="{!NOT(profileFound)}"/>
+
+</div>
+<div id="rightPanel">
+<div style="background:steelblue;color:white;width:100%;font-weight:bold;">
+<div style="padding:5px;">
+Authorize.Net CIM Profile&nbsp;&nbsp;&nbsp;&nbsp;
+<apex:commandLink style="color:white;" value="Reload" action="{!retrieveCIMProfile}" status="modalActionStatus" rerender="modalActionStatus,  cimMgtForm, messages"/>
+</div>
+</div>
+
+<apex:pageBlockSection columns="1">
+<apex:pageBlockSectionItem labelStyle="width:40%;">
+<apex:outputLabel value="Processor Connection"/>
+<apex:outputField value="{!pmtMethod.pymt__Processor_Connection__c}" />
+</apex:pageBlockSectionItem>
+</apex:pageBlockSection>
+
+<apex:outputPanel rendered="{!NOT(profileFound)}">
+<div style="padding:20px;">
+<apex:pageMessage strength="2" severity="Warning" summary="AuthNet CIM Profile was not found." />
+</div>
+</apex:outputPanel>
+
+
+<apex:pageBlockSection title="Customer Profile"  id="remoteCustomerProfileSection" columns="1" rendered="{!(profileFound)}">
+
+
+<apex:pageBlockSectionItem labelStyle="width:40%;" >
+<apex:outputLabel value="Description" />
+<apex:outputText value="{!cpDescription}" />
+</apex:pageBlockSectionItem>
+
+<apex:pageBlockSectionItem >
+<apex:outputLabel value="Email" />
+<apex:outputText value="{!cpEmail}" />
+</apex:pageBlockSectionItem>
+
+</apex:pageBlockSection>
+
+
+<apex:pageBlockSection title="Payment Profile" id="remotePmtProfileSection" columns="1" rendered="{!(profileFound)}">
+<apex:pageBlockSectionItem labelStyle="width:40%;">
+<apex:outputLabel value="Payment Profile Id" /> 
+<apex:outputText value="{!pmtMethod.pymt__Profile_Id__c}" /> 
+</apex:pageBlockSectionItem>
+
+<apex:pageBlockSectionItem >
+<apex:outputLabel value="Billing Firstname" /> 
+<apex:outputText value="{!ppBillingFirstName}" /> 
+</apex:pageBlockSectionItem>
+
+<apex:pageBlockSectionItem >
+<apex:outputLabel value="Billing Lastname" />
+<apex:outputText value="{!ppBillingLastName}" />
+</apex:pageBlockSectionItem>
+
+<apex:pageBlockSectionItem >
+<apex:outputLabel value="Address" />
+<apex:outputText value="{!ppBillingStreet}" />
+</apex:pageBlockSectionItem>
+
+<apex:pageBlockSectionItem >
+<apex:outputLabel value="City" />
+<apex:outputText value="{!ppBillingCity}" />
+</apex:pageBlockSectionItem> 
+
+<apex:pageBlockSectionItem >
+<apex:outputLabel value="State" />
+<apex:outputText value="{!ppBillingState}" />
+</apex:pageBlockSectionItem>
+
+<apex:pageBlockSectionItem >
+<apex:outputLabel value="Postal Code" />
+<apex:outputText value="{!ppBillingPostalCode}" />
+</apex:pageBlockSectionItem>
+
+<apex:pageBlockSectionItem >
+<apex:outputLabel value="Country" />
+<apex:outputText value="{!ppBillingCountry}" />
+</apex:pageBlockSectionItem>
+
+<apex:pageBlockSectionItem >
+<apex:outputLabel value="Company" />
+<apex:outputText value="{!ppBillingCompany}" />
+</apex:pageBlockSectionItem>
+
+<apex:pageBlockSectionItem >
+<apex:outputLabel value="Phone" />
+<apex:outputText value="{!ppBillingPhone}" />
+</apex:pageBlockSectionItem>
+
+<apex:pageBlockSectionItem >
+<apex:outputLabel value="Fax" />
+<apex:outputText value="{!ppBillingFax}" />
+</apex:pageBlockSectionItem>
+
+<apex:pageBlockSectionItem >
+<apex:outputLabel value="Payment Type" />
+<apex:outputText value="{!ppPaymentType}" />
+</apex:pageBlockSectionItem>
+
+<apex:pageBlockSectionItem rendered="{!ppPaymentType == 'Credit Card'}">
+<apex:outputLabel value="Card Number" />
+<apex:outputText value="{!ppCardNumber}" />
+</apex:pageBlockSectionItem>
+
+<apex:pageBlockSectionItem rendered="{!ppPaymentType == 'Bank Account'}">
+<apex:outputLabel value="Bank Name" />
+<apex:outputText value="{!ppBankName}" />
+</apex:pageBlockSectionItem>
+
+<apex:pageBlockSectionItem rendered="{!ppPaymentType == 'Bank Account'}">
+<apex:outputLabel value="Name on Account" />
+<apex:outputText value="{!ppNameOnAccount}" />
+</apex:pageBlockSectionItem>
+
+
+<apex:pageBlockSectionItem rendered="{!ppPaymentType == 'Bank Account'}">
+<apex:outputLabel value="Account Number" />
+<apex:outputText value="{!ppBankAccountNumber}" />
+</apex:pageBlockSectionItem>
+
+<apex:pageBlockSectionItem rendered="{!ppPaymentType == 'Bank Account'}">
+<apex:outputLabel value="Routing Number" />
+<apex:outputText value="{!ppRoutingNumber}" />
+</apex:pageBlockSectionItem>
+
+<apex:pageBlockSectionItem rendered="{!ppPaymentType == 'Bank Account'}">
+<apex:outputLabel value="eCheck Type" />
+<apex:outputText value="{!ppEcheckType}" />
+</apex:pageBlockSectionItem>
+
+</apex:pageBlockSection>
+<span style="clear:both;">&nbsp;</span>
+
+</div>
+
+</div>
+<div style="clear:both;"/>
+
+
+</apex:pageBlock>
+
+</apex:form>
+</apex:page>

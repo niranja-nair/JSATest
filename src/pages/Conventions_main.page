@@ -1,0 +1,6 @@
+<!--PLEASE READ: If you override the automatically generated CSS, your Chatter Answers community might not function correctly.-->
+<apex:page language="en_US" showHeader="false" cache="true">
+   <body>
+         <chatteranswers:allfeeds communityId="09ae0000000CakY"/>
+   </body>
+</apex:page>

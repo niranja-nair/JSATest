@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Scontrol xmlns="http://soap.sforce.com/2006/04/metadata">
+    <contentSource>HTML</contentSource>
+    <description>PaymentConnect - Sets up scheduled installment payments using opportunity details.</description>
+    <encodingKey>UTF-8</encodingKey>
+    <fileName>Schedule_Payments</fileName>
+    <name>Schedule Payments</name>
+    <supportsCaching>true</supportsCaching>
+</Scontrol>

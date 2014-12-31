@@ -1,0 +1,161 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
+    <actionOverrides>
+        <actionName>Accept</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>CancelEdit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Clone</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Delete</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Edit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Follow</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>List</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>New</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>SaveEdit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Tab</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>View</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <compactLayoutAssignment>SYSTEM</compactLayoutAssignment>
+    <deploymentStatus>Deployed</deploymentStatus>
+    <description>The payments received against an invoice.</description>
+    <enableActivities>false</enableActivities>
+    <enableBulkApi>true</enableBulkApi>
+    <enableFeeds>false</enableFeeds>
+    <enableHistory>false</enableHistory>
+    <enableReports>true</enableReports>
+    <enableSharing>true</enableSharing>
+    <enableStreamingApi>true</enableStreamingApi>
+    <fields>
+        <fullName>Invoice_Number__c</fullName>
+        <description>The number of the invoice this payment was applied to.</description>
+        <externalId>false</externalId>
+        <inlineHelpText>The number of the invoice this payment was applied to.</inlineHelpText>
+        <label>Invoice Number</label>
+        <referenceTo>QB_Invoice__c</referenceTo>
+        <relationshipLabel>QuickBooks Payments</relationshipLabel>
+        <relationshipName>QuickBooks_Payments</relationshipName>
+        <relationshipOrder>0</relationshipOrder>
+        <reparentableMasterDetail>false</reparentableMasterDetail>
+        <trackTrending>false</trackTrending>
+        <type>MasterDetail</type>
+        <writeRequiresMasterRead>false</writeRequiresMasterRead>
+    </fields>
+    <fields>
+        <fullName>Payment_Amount__c</fullName>
+        <description>The amount paid.</description>
+        <externalId>false</externalId>
+        <inlineHelpText>The amount paid.</inlineHelpText>
+        <label>Payment Amount</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackTrending>false</trackTrending>
+        <type>Currency</type>
+    </fields>
+    <fields>
+        <fullName>Payment_Applied_Amount__c</fullName>
+        <description>The amount of the payment applied to this invoice.</description>
+        <externalId>false</externalId>
+        <inlineHelpText>The amount of the payment applied to this invoice.</inlineHelpText>
+        <label>Payment Applied Amount</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackTrending>false</trackTrending>
+        <type>Currency</type>
+    </fields>
+    <fields>
+        <fullName>Payment_Applied_Date__c</fullName>
+        <description>The date the payment applied amount was applied to the invoice.</description>
+        <externalId>false</externalId>
+        <inlineHelpText>The date the payment applied amount was applied to the invoice.</inlineHelpText>
+        <label>Payment Applied Date</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Date</type>
+    </fields>
+    <fields>
+        <fullName>Payment_Date__c</fullName>
+        <description>The date the payment was received.</description>
+        <externalId>false</externalId>
+        <inlineHelpText>The date the payment was received.</inlineHelpText>
+        <label>Payment Date</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Date</type>
+    </fields>
+    <fields>
+        <fullName>Payment_Method__c</fullName>
+        <description>The method used for this payment as recorded in QuickBooks.</description>
+        <externalId>false</externalId>
+        <inlineHelpText>The method used for this payment as recorded in QuickBooks.</inlineHelpText>
+        <label>Payment Method</label>
+        <length>45</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Payment_Number__c</fullName>
+        <description>The payment/reference number the user has assigned to the payment in QuickBooks.</description>
+        <externalId>false</externalId>
+        <inlineHelpText>The payment/reference number the user has assigned to the payment in QuickBooks.</inlineHelpText>
+        <label>Payment Number</label>
+        <length>80</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>QB_Paymnet_TXN_ID__c</fullName>
+        <description>The internal ID of the payment in QuickBooks.</description>
+        <externalId>false</externalId>
+        <inlineHelpText>The internal ID of the payment in QuickBooks.</inlineHelpText>
+        <label>QuickBooks Paymnet TXN ID</label>
+        <length>36</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <label>QuickBooks Payment</label>
+    <nameField>
+        <displayFormat>{00000}</displayFormat>
+        <label>Payment  ID</label>
+        <type>AutoNumber</type>
+    </nameField>
+    <pluralLabel>QuickBooks Payments</pluralLabel>
+    <searchLayouts/>
+    <sharingModel>ControlledByParent</sharingModel>
+</CustomObject>

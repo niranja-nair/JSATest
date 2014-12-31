@@ -1,0 +1,195 @@
+<apex:page showHeader="false" sidebar="false" controller="myJSAchapterController" action="{!initPage}">
+    <title>My Chapter</title>
+
+    <c:NeatHeader chapter="active" container="chatteronpage" />
+
+    <!-- Breadcrumbs - START -->
+    <div class="background-clouds breadcrumbs-container">
+      <div class="container">
+        <ol class="breadcrumb">
+          <li><a href="/JSAHome">My JSA Home</a></li>
+          <li class="active">My Chapter</li>
+        </ol>
+      </div>
+    </div>
+    <!-- Breadcrumbs - END -->
+
+    <section>
+      <div class="container">
+        <div class="row">
+          <div class="col-md-8">
+            <div class="content">
+                <h1><span>Chapter Details</span></h1>
+                <p><em>Note: To add new members, you must log out of your account (use Logout botton on upper right), go to <a href="http://www.jsa.org/myjsa" target="_blank">jsa.org/myjsa</a>, and select Register. Make sure the correct high school is selected on the second registration screen.</em></p>
+
+                <h2>
+                    {!contact.High_School__r.Name}
+                    <span class="printroster bootbutton"><a target="_blank" id="print_roster_bytype" class="btn btn-secondary btn-xs" href="/apex/JSAChapterPrintRoster?studentType=nongraduated">Print Roster</a></span>
+                </h2>
+
+                <div class="col-md-6 contactdropdown">
+                    <select id="viewTypeSelect">
+                        <option value="nongraduated"> Non-Graduated </option>
+                        <option value="all"> All </option>
+                        <option value="graduated"> Graduated </option>
+                        <option value="taxpaidmembers"> Tax-paid Members </option>
+                    </select>
+                </div>
+
+                <div class="col-md-6 bootbutton">
+                    <a href="#" class="btn btn-primary btn-xs" id="declareAsMember">Declare as Member</a>
+                    <a href="#" class="btn btn-primary btn-xs" id="markAsGraduated">Mark as Graduated</a>
+                </div>
+
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th></th>
+                            <th>Name</th>
+                            <th>JSA Role</th>
+                            <th>Grad Year</th>
+                            <th>Member Status</th>
+                        </tr>
+                    </thead>
+                    <tbody id="chapterRosterBody">
+                        <tr class="rosterTemplateRow template" style="display: none;">
+                            <td class="rosterStudentId"><input type="checkbox" class="studentId template"/></td>
+                            <td class="rosterName"></td>
+                            <td class="rosterRole"></td>
+                            <td class="rosterYear"></td>
+                            <td class="rosterStatus"></td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <h1><span>Chatter</span></h1>
+                <div class="chatterarea">
+                   <chatter:feed entityId="{!contact.Id}"/>
+                </div>
+
+            </div>
+          </div>
+          <div class="col-md-4">
+            <h3>JSA News and Updates</h3>
+            <script language="JavaScript" src="https://feed2js.org//feed2js.php?src=http%3A%2F%2Fjsa.org%2Fcategory%2Fmyjsa%2Ffeed%2F&num=3&desc=140>1&targ=y&utf=y"  charset="UTF-8" type="text/javascript"></script>
+            <h3>JSA Event Calendar</h3>
+            <script language="JavaScript" src="https://feed2js.org//feed2js.php?src=http%3A%2F%2Fevents.jsa.org%2Fevents%2Frss%2F&num=5&targ=y&utf=y"  charset="UTF-8" type="text/javascript"></script>
+            <a href="http://events.jsa.org/events/">View more events</a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <c:NeatFooter />
+
+<script>
+
+$(document).ready(function(){
+    
+    var userId = "{!$User.Id}",
+        jsaRole = "{!contact.JSA_Role__c}";
+        highSchoolId ="{!contact.High_School__c}",
+        studentType = $('#viewTypeSelect').val();
+        
+    //JSRemoting method fetches the data
+    var findStudents = function(school,type){
+        myJSAchapterController.findStudents(school,type, userId, function(contacts,event){
+            $('.studentRow').remove();
+            if(event.status){
+                //console.log('matching students', contacts);
+                for(var i=0; i< contacts.length; i++){
+                    var student = contacts[i],
+                        $row = $('tr.rosterTemplateRow').clone().removeClass('rosterTemplateRow').addClass('studentRow').appendTo('#chapterRosterBody').show();
+
+                    $row.children('.rosterStudentId').children('input').attr({'id':student.Id}).removeClass('template');
+                    $row.children('.rosterName').html(student.Name);
+                    $row.children('.rosterRole').html(student.JSA_Role__c);
+                    $row.children('.rosterYear').html(student.High_School_Graduation_Year__c);
+                    $row.children('.rosterStatus').html(student.Member_Status__c);
+
+                }
+            }
+        });
+    };
+    
+    findStudents(highSchoolId,studentType);
+
+    var filterByType = function(){
+        studentTypeSelected = $(this).val();              
+        console.log('changed type to', studentTypeSelected);
+        findStudents(highSchoolId, studentTypeSelected);  
+        $('#print_roster_bytype').attr('href','/apex/JSAChapterPrintRoster?studentType='+studentTypeSelected);      
+    }
+    
+    $('#viewTypeSelect').on('change', filterByType);
+
+    if(jsaRole == 'Chapter President' || jsaRole == 'JSA Advisor' ||  jsaRole == 'JSA Affiliate'){
+        $('#markAsGraduated').click(function(event){
+            event.preventDefault();
+
+            $('input.studentId').each(function(){
+                var $box = $(this),
+                    gradStudents = [];
+                if($box.is(':checked')){
+                    gradStudents.push($box.attr('id'));
+                }
+                console.log(gradStudents);
+                if(gradStudents.length > 0){
+    
+                    myJSAchapterController.graduateStudents(gradStudents, userId, function(result, event){
+                        
+                        if(event.status){
+                            if(result == 'ok'){
+                                studentType = $('#viewTypeSelect').val();
+                                findStudents(highSchoolId,studentType);
+                            }else{
+                                alert('Error: ' + result);
+                            }
+                        }else{
+                            alert('problem connecting to server');
+                        }
+                        
+                    });
+                }
+            });
+            
+        });
+        
+        $('#declareAsMember').click(function(event){
+            event.preventDefault();
+            $('input.studentId').each(function(){
+                console.log('declaring:');
+                var $box = $(this),
+                    memberStudents = [];
+                if($box.is(':checked')){
+                    memberStudents.push($box.attr('id'));
+                }
+                console.log('memberStudents',memberStudents);
+                if(memberStudents.length > 0){
+                    console.log('memberStudents2',memberStudents);
+                    myJSAchapterController.declareStudentMembers(memberStudents, userId, function(result, event){
+                        
+                        if(event.status){
+                            if(result == 'ok'){
+                                studentType = $('#viewTypeSelect').val();
+                                findStudents(highSchoolId,studentType);
+                            }else{
+                                alert('Error: ' + result);
+                            }
+                        }else{
+                            alert('problem connecting to server');
+                        }
+                        
+                    });
+                }
+            });
+        });
+        
+    }else{
+        $('#markAsGraduated,#declareAsMember').remove();
+    }
+});
+
+</script>
+
+</apex:page>

@@ -1,0 +1,207 @@
+<apex:page standardController="Opportunity" id="pg" extensions="extConvention" action="{!RegistrantCount}">
+    <script type="text/javascript">
+        function setleft(room_id) {
+            document.getElementById("pg:frm:pb:ihLeft").value = room_id;
+            //alert('Left room = ' +document.getElementById("pg:frm:pb:ihLeft").value);
+        }
+        function setright(room_id) {
+            document.getElementById("pg:frm:pb:ihRight").value = room_id;
+            //alert('Right room = ' +document.getElementById("pg:frm:pb:ihRight").value);
+        }
+    </script>
+  <apex:form id="frm">
+      <apex:pageBlock id="pb">
+          <apex:pageMessages ></apex:pageMessages>
+          <apex:actionStatus id="Status">
+              <apex:facet name="start"><c:enhancedActionStatus BackColor="#efefef" borderColor="#336699" borderSize="3" height="50px" width="120px" ImageUrl="{!$Resource.AjaxAnimation}" Message="Processing..." messageStyle="color:darkred;font-size:11pt;font-weight:bold;"/></apex:facet>
+          </apex:actionStatus>
+          <apex:inputhidden id="ihLeft" value="{!strLeftRoom}" />
+          <apex:inputhidden id="ihRight" value="{!strRightRoom}" />
+          <apex:pageBlockSection title="Convention to Manage">
+              <apex:inputField value="{!filter_opp.Convention__c}" required="true">
+                  <apex:actionSupport action="{!RegistrantCount}" event="onchange" reRender="pb"/>
+              </apex:inputField>
+              <apex:inputField value="{!filter_opp.CloseDate}" >
+                  <apex:actionSupport action="{!RegistrantCount}" event="onchange" reRender="pb"/>
+              </apex:inputField>
+              <apex:pageblockSectionItem >
+                  &nbsp;
+                  <apex:outputText rendered="{!Not(IsNull(intRegCount))}">There are {!intRegCount} students registered for this Convention. </apex:outputText>
+              </apex:pageblockSectionItem>
+              <apex:pageBlockSectionItem >
+                  &nbsp;
+              </apex:pageBlockSectionItem>
+              <apex:pageBlockSectionItem >
+                  Select a Utility
+                  <apex:selectList value="{!strTool}" size="1">
+                      <apex:selectOptions value="{!Tools}"/>
+                      <apex:actionSupport event="onchange" reRender="pb"/>
+                  </apex:selectList>
+              </apex:pageBlockSectionItem>
+              <apex:pageBlockSectionItem >
+                  Process registrations in Stages
+                  <apex:selectList value="{!Stages}" multiselect="true" size="5">
+                      <apex:selectOptions value="{!StageVals}"></apex:selectOptions>
+                  </apex:selectList>
+              </apex:pageBlockSectionItem>
+          </apex:pageBlockSection>
+          <apex:pageBlockSection id="pbsMatch" title="Match Roommates" rendered="{!(strTool = 'Match')}">
+              <apex:pageBlockSectionItem >
+                  Match Roommate Preferences to Registrant Records
+                  <apex:commandButton action="{!MatchRoommates}" rerender="pb" value="Go" status="Status"/>
+              </apex:pageBlockSectionItem>
+              <apex:pageBlockSectionItem rendered="{!Not(IsNull(intRoomieMatches))}">
+                  Matched {!intRoomieMatches} preferences out of {!intRoomieUnmatched + intRoomieMatches}. 
+                  <apex:outputText rendered="{!MorePreferences}">There were too many preferences to match at one time, please re-run to match remaining preferences</apex:outputText>
+              </apex:pageBlockSectionItem>
+          </apex:pageBlockSection>
+          <apex:pageBlockSection id="pbsCreate" title="Create Rooms (should be run after matching roommates)" rendered="{!(strTool = 'Create')}">
+              
+              <apex:pageBlockSectionItem >
+                  Select Hotel
+                  <apex:outputPanel >
+                      <div class="requiredInput"><div class="requiredBlock"/>
+                          <apex:inputfield required="false" value="{!dummy_room.Hotel__c}"/>
+                      </div>
+                  </apex:outputPanel>
+              </apex:pageBlockSectionItem>
+             
+              <apex:pageBlockSectionItem >
+                  Create Rooms
+                  <apex:commandButton action="{!GenerateRooms}" rerender="pb" value="Go" status="Status"/>
+              </apex:pageBlockSectionItem>
+              <apex:pageBlockSectionItem rendered="{!Not(IsNull(intRoomCount))}">
+              Created {!intRoomCount} rooms with {!intPeopleCount} people.
+              </apex:pageBlockSectionItem>
+          </apex:pageBlockSection>
+          <apex:outputPanel id="opMergePanel">
+              <apex:pageBlockSection id="pbsMerge" title="Merge Rooms" rendered="{!(And(strTool = 'Merge',Not(IsMerge)))}">
+                  <apex:pageBlockSectionItem >
+                      Filter Rooms by:
+                      <apex:outputText >&nbsp;</apex:outputText>
+                  </apex:pageBlockSectionItem>
+                  <apex:pageBlockSectionItem >
+                      &nbsp;
+                  </apex:pageBlockSectionItem>
+                  <apex:pageBlockSectionItem >
+                      Room Type:
+                      <apex:outputPanel >
+                          <div class="requiredInput"><div class="requiredBlock"/>
+                              <apex:inputField value="{!filter_opp.Male_Female__c}"/>
+                          </div>
+                      </apex:outputPanel>
+                  </apex:pageBlockSectionItem>
+                  <apex:pageBlockSectionItem >
+                      <apex:commandButton value="Filter Rooms" reRender="opMergePanel" status="Status"/>
+                  </apex:pageBlockSectionItem>
+              </apex:pageBlockSection>
+              <apex:outputPanel id="opMerge" rendered="{!(strTool = 'Merge')}">
+                  <apex:outputPanel id="opMergeSelect" rendered="{!Not(IsMerge)}">
+                      <table width="100%" cellspacing="0">
+                          <tr>
+                              <td class="labelCol first last" style="border-left:1px solid black;border-top:1px solid black">
+                                  <apex:outputLabel >Group&nbsp;</apex:outputLabel>
+                                  <apex:inputField value="{!filter_opp.Group__c}"/>
+                              </td>
+                              <td class="labelCol first last" style="border-right:1px solid black;border-top:1px solid black">
+                                  <apex:outputLabel >Number of Occupants&nbsp;</apex:outputLabel>
+                                  <apex:selectList value="{!strNum}" size="1">
+                                      <apex:selectOptions value="{!Numbers}"/>
+                                  </apex:selectList>
+                              </td>
+                              <td class="labelCol first last" style="border-top:1px solid black">
+                                  <apex:outputLabel >Group&nbsp;</apex:outputLabel>
+                                  <apex:inputField value="{!filter_opp2.Group__c}"/>
+                              </td>
+                              <td class="labelCol first last" style="border-right:1px solid black;border-top:1px solid black">
+                                  <apex:outputLabel >Number of Occupants&nbsp;</apex:outputLabel>
+                                  <apex:selectList value="{!strNum2}" size="1">
+                                      <apex:selectOptions value="{!Numbers}"/>
+                                  </apex:selectList>
+                              </td>
+                          </tr>
+                          <tr>
+                              <td colspan="2" style="border-right:1px solid black;border-left:1px solid black;border-bottom:1px solid black">
+                                  <div style="height: 300px; overflow: auto"> 
+                                      <apex:repeat value="{!LeftRooms}" var="r">
+                                          <input type="radio" name="leftroom" value="{!r.Id}" onclick="setleft('{!r.Id}')"/><a href="/{!r.Id}" target="_blank">{!r.Name}</a>: {!r.Convention_Group__r.Name} - {!r.Number_of_Occupants__c} Occupants<br/>
+                                          <apex:outputText rendered="{!Not(IsNull(r.Registrant_1__c))}">
+                                              &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{!r.Registrant_1__r.Primary_Contact__r.Name}<br/>
+                                          </apex:outputText>
+                                          <apex:outputText rendered="{!Not(IsNull(r.Registrant_2__c))}">
+                                              &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{!r.Registrant_2__r.Primary_Contact__r.Name}<br/>
+                                          </apex:outputText>
+                                          <apex:outputText rendered="{!Not(IsNull(r.Registrant_3__c))}">
+                                              &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{!r.Registrant_3__r.Primary_Contact__r.Name}<br/>
+                                          </apex:outputText>
+                                          <apex:outputText rendered="{!Not(IsNull(r.Registrant_4__c))}">
+                                              &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{!r.Registrant_4__r.Primary_Contact__r.Name}<br/>
+                                          </apex:outputText>
+                                      </apex:repeat>
+                                  </div>
+                              </td>
+                              <td colspan="2" style="border-right:1px solid black;border-bottom:1px solid black">
+                                  <div style="height: 300px; overflow: auto"> 
+                                      <apex:repeat value="{!RightRooms}" var="r">
+                                          <input type="radio" name="rightroom" value="{!r.Id}" onclick="setright('{!r.Id}')"/><a href="/{!r.Id}" target="_blank">{!r.Name}</a>: {!r.Convention_Group__r.Name} - {!r.Number_of_Occupants__c} Occupants<br/>
+                                          <apex:outputText rendered="{!Not(IsNull(r.Registrant_1__c))}">
+                                              &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{!r.Registrant_1__r.Primary_Contact__r.Name}<br/>
+                                          </apex:outputText>
+                                          <apex:outputText rendered="{!Not(IsNull(r.Registrant_2__c))}">
+                                              &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{!r.Registrant_2__r.Primary_Contact__r.Name}<br/>
+                                          </apex:outputText>
+                                          <apex:outputText rendered="{!Not(IsNull(r.Registrant_3__c))}">
+                                              &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{!r.Registrant_3__r.Primary_Contact__r.Name}<br/>
+                                          </apex:outputText>
+                                          <apex:outputText rendered="{!Not(IsNull(r.Registrant_4__c))}">
+                                              &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{!r.Registrant_4__r.Primary_Contact__r.Name}<br/>
+                                          </apex:outputText>
+                                      </apex:repeat>
+                                  </div>
+                              </td>
+                          </tr>
+                          <tr>
+                              <td colspan="4" align="center">
+                                  <apex:commandButton action="{!MergeRooms}" value="Merge" reRender="pb" status="Status"/>
+                                  <apex:outputText rendered="{!Not(IsNull(strMergeResult))}"><br/><b>{!strMergeResult}</b></apex:outputText>
+                              </td>
+                          </tr>
+                      </table>
+                  </apex:outputPanel><!--end MergeSelect panel-->
+                  <apex:outputPanel id="opMergeManual" rendered="{!IsMerge}">
+                      <table width="100%"cellspacing="0">
+                          <tr><td align="center">
+                              <table width="350"cellspacing="0">
+                                  <tr>
+                                      <td width="150" align="left" class="labelCol first last" style="border-right:1px solid black;border-left:1px solid black;border-top:1px solid black">
+                                          <apex:selectList value="{!LeftRegs}" multiselect="true">
+                                              <apex:selectOptions value="{!Room1}"></apex:selectOptions>
+                                          </apex:selectList>
+                                      </td>
+                                      <td width="50" align="center" class="labelCol first last" style="border-top:1px solid black">
+                                          <apex:outputPanel >
+                                              <apex:commandButton action="{!MoveRight}" value=">" reRender="pb"/><br/>
+                                              <apex:commandButton action="{!MoveLeft}" value="<" reRender="pb"/>
+                                          </apex:outputPanel>
+                                          
+                                      </td>
+                                      <td width="150" align="right" class="labelCol first last" style="border-right:1px solid black;border-left:1px solid black;border-top:1px solid black">
+                                          <apex:selectList value="{!RightRegs}" multiselect="true">
+                                              <apex:selectOptions value="{!Room2}"></apex:selectOptions>
+                                          </apex:selectList>
+                                      </td>
+                                  </tr>
+                                  <tr>
+                                      <td colspan="3" align="center" style="border-right:1px solid black;border-left:1px solid black;border-top:1px solid black;border-bottom:1px solid black">
+                                          <apex:commandButton action="{!ManualMergeRooms}" value="Update Rooms" reRender="pb" status="Status"/>
+                                      </td>
+                                  </tr>
+                              </table>
+                          </td></tr>
+                      </table>
+                  </apex:outputPanel><!--end MergeManual panel-->
+              </apex:outputPanel>
+          </apex:outputPanel>
+      </apex:pageBlock>
+  </apex:form>
+</apex:page>

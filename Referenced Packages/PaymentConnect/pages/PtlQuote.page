@@ -1,0 +1,192 @@
+<apex:page id="ptlQuotePage" controller="pymt.PtlQuoteController" tabStyle="pymt__PaymentX__c" cache="false"  >
+
+<title>{!$Organization.Name} Sales Quote: {!oppName}</title>
+<style>
+
+.address_heading {
+	font-weight:bold;
+	font-size:1.2em;
+}
+</style>
+    
+    <apex:form id="checkoutForm" styleClass="pc_quote_review_form">
+
+            <apex:pageMessages /> 
+            <apex:outputPanel rendered="{!NOT(showPageContents)}">
+            <div style="height:100px;">&nbsp;</div>
+            </apex:outputPanel>
+              
+            <apex:outputPanel id="quotebody" rendered="{!showPageContents}">
+            
+            <apex:sectionHeader title="Sales Quote: {!oppName}"/>
+            <apex:pageBlock mode="maindetail" title="Quote Detail">
+            <table style="width:100%;"><tr>
+            <td style="vertical-align:top;width:40%;">
+	            <div class="address_heading">Account Information</div>
+	            <p>{!account.name}<br/>
+	            {!account.billingstreet}<br/>
+	            {!account.billingcity},&nbsp;
+	            {!account.billingstate}&nbsp;{!account.billingpostalcode}<br/>
+	            {!account.billingcountry}</p>
+            </td>
+            <td style="width:20%;">
+            </td>
+            <td style="vertical-align:top;width:40%;">
+	            <div class="address_heading">Primary Contact</div>
+	            <p>{!contact.name}<br/>
+	            {!contact.mailingstreet}<br/>
+	            {!contact.mailingcity},&nbsp;
+	            {!contact.mailingstate}&nbsp;{!contact.mailingpostalcode}<br/>
+	            {!contact.mailingcountry}</p>
+            </td>
+            </tr></table>
+            <apex:outputPanel id="description" rendered="{!showDescription}" >
+            <h2>Description</h2>
+            <apex:outputText styleClass="pc_quote_description" value="{!oppDescription}"   />
+            <br/>
+            </apex:outputPanel>
+            <br/>
+            <apex:outputPanel id="lineItemTable" rendered="{!hasLineItems}">
+            <apex:pageBlockTable columnClasses="description_column, notes_column, quantity_column, currency_column, currency_column" styleClass="pc_opp_line_item_table" value="{!lineItems}" var="item">
+            	<apex:column value="{!item.description}" headerValue="{!$Label.Label_Description}"/>
+            	<apex:column value="{!item.notes}" headerValue="{!$Label.Label_Notes}"/>
+            	<apex:column headerValue="{!$Label.Label_Quantity}">
+							<apex:outputText value="{0, number, 0.00}">
+       							<apex:param value="{!item.quantity}" />
+ 							</apex:outputText>            	
+            	</apex:column>
+            	
+            	<apex:column headerValue="{!$Label.Label_UnitPrice}" headerClass="currency_column">
+					<apex:outputText value="{0} {1, number, 0.00}">
+						<apex:param value="{!oppCurrencyIsoCode}"/>
+						<apex:param value="{!item.unitprice}" />
+					</apex:outputText>            	
+            	</apex:column>
+            	<apex:column headerValue="{!$Label.Label_TotalAmount}" headerClass="currency_column">
+					<apex:outputText value="{0} {1, number, 0.00}">
+						<apex:param value="{!oppCurrencyIsoCode}"/>
+ 						<apex:param value="{!item.totalPrice}" />
+ 					</apex:outputText>            	
+            	</apex:column>
+            
+            </apex:pageBlockTable>
+
+            </apex:outputPanel> 
+            <div class="pc_quote_amount_box" id="pc_quote_amount_box">
+            <apex:panelGrid columns="2" columnClasses="labelCol,currency_column"  >
+            	<apex:outputLabel value="{!$Label.Label_TaxAmount}" rendered="{!NOT(OR(ISNULL(payment.pymt__Tax__c),payment.pymt__Tax__c==0))}"/>
+            	<apex:outputPanel rendered="{!NOT(OR(ISNULL(payment.pymt__Tax__c),payment.pymt__Tax__c==0))}">
+                    	<apex:outputPanel rendered="{!NOT(isMultiCurrencyOrg)}">
+                        	<apex:outputField value="{!payment.pymt__Tax__c}"  styleClass="taxAmount"/>  
+                    	</apex:outputPanel>
+                    	<apex:outputPanel rendered="{!(isMultiCurrencyOrg)}">
+							<apex:outputText value="{0} {1, number, 0.00}" styleClass="taxAmount">
+								<apex:param value="{!oppCurrencyIsoCode}"/>
+       							<apex:param value="{!payment.pymt__Tax__c}" />
+ 							</apex:outputText>
+                    	</apex:outputPanel>
+            	</apex:outputPanel>
+            	
+            	<apex:outputLabel value="{!$Label.Label_ShippingAmount}" rendered="{!NOT(OR(ISNULL(shipping.pymt__Amount__c),shipping.pymt__Amount__c==0))}"/>
+            	<apex:outputPanel rendered="{!NOT(OR(ISNULL(shipping.pymt__Amount__c),shipping.pymt__Amount__c==0))}">
+                    	<apex:outputPanel rendered="{!NOT(isMultiCurrencyOrg)}">
+                        	<apex:outputField value="{!shipping.pymt__Amount__c}"  styleClass="shippingAmount"/>  
+                    	</apex:outputPanel>
+                    	<apex:outputPanel rendered="{!(isMultiCurrencyOrg)}">
+							<apex:outputText value="{0} {1, number, 0.00}" styleClass="shippingAmount">
+								<apex:param value="{!oppCurrencyIsoCode}"/>
+       							<apex:param value="{!shipping.pymt__Amount__c}" />
+ 							</apex:outputText>
+                    	</apex:outputPanel>
+            	</apex:outputPanel>
+            	
+            	<apex:outputLabel value="{!$Label.Label_TotalAmount}"/>
+            	<apex:outputPanel >
+                    	<apex:outputPanel rendered="{!NOT(isMultiCurrencyOrg)}">
+                        	<apex:outputField value="{!payment.pymt__Amount__c}"  styleClass="totalAmount"/>  
+                    	</apex:outputPanel>
+                    	<apex:outputPanel rendered="{!(isMultiCurrencyOrg)}">
+							<apex:outputText value="{0} {1, number, 0.00}" styleClass="totalAmount">
+								<apex:param value="{!oppCurrencyIsoCode}"/>
+       							<apex:param value="{!payment.pymt__Amount__c}" />
+ 							</apex:outputText>
+                    	</apex:outputPanel>
+            	</apex:outputPanel>
+            	
+            </apex:panelGrid>
+
+            </div> 
+            
+            <apex:outputPanel rendered="{!hasRecurringAmount}" >          
+            
+               <p>
+               <apex:outputText value="Installment Payments:" rendered="{!recurringSetup = 'Installment'}"/>
+               <apex:outputText value="Additional recurring charges" rendered="{!recurringSetup = 'RecurringTackedOn'}"/>
+               <apex:outputPanel layout="inline" rendered="{!recurringSetup = 'FirstRecurringIncluded'}"  >     
+	               <apex:outputText value="Total includes initial recurring charge of " />
+
+                    	<apex:outputPanel >
+							<apex:outputText value="{0} {1, number, 0.00}" styleClass="initialRecurringAmount">
+								<apex:param value="{!oppCurrencyIsoCode}"/>
+       							<apex:param value="{!oppRecurringAmount}" />
+ 							</apex:outputText>
+                    	</apex:outputPanel>
+    	           <br/>
+    	           <apex:outputText value="Recurring payment terms:"/>
+               </apex:outputPanel>
+                &nbsp;
+                    	<apex:outputPanel >
+							<apex:outputText value="{0} {1, number, 0.00}" styleClass="recurringAmount">
+								<apex:param value="{!oppCurrencyIsoCode}"/>
+       							<apex:param value="{!oppRecurringAmount}" />
+ 							</apex:outputText>
+                    	</apex:outputPanel>
+                    	                
+            	
+            	every {!oppFrequency} {!oppPeriod} {!IF(NOT(ISNULL(oppOccurrences)), "x "+ oppOccurrences,"")}</p>
+          
+                </apex:outputPanel>
+          
+
+
+            
+            <br />
+            <div class="pc_quote_expiration">
+            <apex:outputPanel rendered="{!NOT(ISNULL(expirationDate.pymt__Date__c))}">
+            Quote Expiration Date:&nbsp;<apex:outputField value="{!expirationDate.pymt__Date__c}" />
+            </apex:outputPanel>
+            </div>
+        <apex:outputPanel id="buttons">
+            <table>
+                <tr>
+                    <td class="labelColumn">&nbsp;</td>
+                    <td><apex:commandButton id="cancel" value="Cancel"
+                        action="{!cancelTransaction}" onclick="" rendered="{!cancelURL <> null}"/>
+                        <apex:commandButton id="processCard" value="Pay Online" status="formActionStatus"
+                        action="{!processQuote}"  rerender="checkoutForm" />
+                    <apex:actionStatus id="formActionStatus">
+                        <apex:facet name="start">
+                            <apex:outputPanel >&nbsp;
+                                <apex:image value="{!URLFOR($Resource.pymt__PaymentConnect, 'images/icon-spinner.gif')}"
+                                    style="vertical-align:middle;" alt="" />
+                                    &nbsp;Processing...
+                            </apex:outputPanel>
+                        </apex:facet>
+                        <apex:facet name="stop">
+                            <apex:image value="{!URLFOR('/s.gif')}" alt="" style="height:17px;" /> 
+                        </apex:facet>
+                    </apex:actionStatus>
+                    </td>
+                    <td></td>
+                    <td></td>
+                </tr>
+            </table>
+        </apex:outputPanel>
+</apex:pageBlock>
+            
+        </apex:outputPanel> 
+
+
+    </apex:form>
+
+</apex:page>

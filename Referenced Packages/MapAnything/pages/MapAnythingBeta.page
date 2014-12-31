@@ -1,0 +1,3761 @@
+<apex:page sidebar="false" controller="sma.MapAnythingBeta" title="MapAnything" action="{!StartUpAction}" docType="html-5.0">
+
+    <script type="text/javascript" src="https://platform.linkedin.com/in.js">
+        api_key: qi7lfx50crv5
+        scope: r_basicprofile r_network w_messages r_contactinfo
+        authorize: true
+    </script>
+
+    <apex:includeScript value="{!URLFOR($Resource.sma__MapAnything, 'js/jquery-1.7.1.min.js')}"/>
+    <apex:includeScript value="{!URLFOR($Resource.sma__MapAnything, 'jstree/_lib/jquery.cookie.js')}"/>
+    <apex:includeScript value="{!URLFOR($Resource.sma__MapAnything, 'jstree/_lib/jquery.hotkeys.js')}"/>
+    <apex:includeScript value="{!URLFOR($Resource.sma__MapAnything, 'jstree/jquery.jstree2.js')}"/>
+
+    
+    <apex:includeScript value="{!URLFOR($Resource.sma__MapAnything, 'jscolor/jscolor.js')}"/>
+    <apex:includeScript value="{!URLFOR($Resource.sma__MapAnything, 'notify/jquery.notify.js')}"/>
+    <apex:includeScript value="{!URLFOR($Resource.sma__MapAnything, 'jquery/jquery-ui.min.js')}"/>
+    
+    <apex:includeScript value="{!URLFOR($Resource.sma__MapAnything, 'js/jquery.event.drag-2.2.js')}"/>
+    
+    <!-- Nokia Here API -->
+    <script type="text/javascript" charset="UTF-8" src="https://api.maps.nlp.nokia.com/2.2.3/jsl.js?with=all"></script>
+    
+    <apex:includeScript value="../../soap/ajax/18.0/connection.js"/>
+    <apex:includeScript value="/soap/ajax/18.0/apex.js"/>
+    <apex:includeScript value="/static/013008/js/functions.js"/>
+    
+    <apex:stylesheet value="{!URLFOR($Resource.sma__MapAnything, 'notify/ui.notify.css')}"/>
+    <apex:stylesheet value="{!URLFOR($Resource.sma__MapAnything, 'jquery/jquery-ui.css')}"/>
+    <apex:stylesheet value="{!URLFOR($Resource.sma__MapAnything, 'css/style.css')}"/>
+
+    <apex:stylesheet value="{!URLFOR($Resource.sma__MapAnything, 'style.css')}"/>
+    
+    <!-- Colorbox (overlay) -->
+    <script type="text/javascript" src="{!URLFOR($Resource.MapAnything, 'colorbox/jquery.colorbox-min.js')}"></script>
+    <link type="text/css" rel="stylesheet" href="{!URLFOR($Resource.MapAnything, 'colorbox/css4/colorbox.css')}" />
+    
+    <!-- Date JS--> 
+    <script src="{!URLFOR($Resource.QueryEditor, 'js/date.js')}" type="text/javascript"></script>
+    
+    <!-- Moment (date parsing) -->
+    <script src="{!URLFOR($Resource.MapAnything, 'js/moment.js')}" type="text/javascript"></script>
+    
+    <!-- jQuery Multiselect (depends on jQuery UI) -->
+    <script src="{!URLFOR($Resource.QueryEditor, 'js/multiselect/jquery.multiselect.min.js')}" type="text/javascript"></script>
+    <script src="{!URLFOR($Resource.QueryEditor, 'js/multiselect/jquery.multiselect.filter.js')}" type="text/javascript"></script>
+    <link rel="stylesheet" type="text/css" href="{!URLFOR($Resource.QueryEditor, 'js/multiselect/jquery.multiselect.css')}" />
+    <link rel="stylesheet" type="text/css" href="{!URLFOR($Resource.QueryEditor, 'js/multiselect/jquery.multiselect.filter.css')}" />
+    
+    <!-- Combobox -->
+    <script src="{!URLFOR($Resource.QueryEditor, 'js/combobox/jquery.combobox.js')}" type="text/javascript"></script>
+
+    <apex:includeScript value="{!URLFOR($Resource.sma__MapAnything, 'js/jquery.bxSlider.min.js')}"/>
+    <apex:includeScript value="{!URLFOR($Resource.sma__MapAnything, 'js/jquery.hotkeys.js')}"/>
+
+    <!-- CSS -->
+    <c:CSSMapAnything />
+    <c:CSSEditQuery />
+    <c:CSSHelperBlue />
+    <style type='text/css'>
+        /* Plotted Queries */
+        #PlottedQueriesContainer .PlottedRowUnit {
+            display: block;
+            position: relative;
+            width: 275px;
+            margin: 0 0 6px 0;
+            padding: 0;
+            text-align: left;
+            font-size: 11px;
+            background: #eee;
+            border: 1px solid #ddd;
+            border-radius: 2px;
+            box-shadow: none;
+        }
+        #PlottedQueriesContainer .PlottedRowUnit div {
+            margin: 0;
+            padding: 0;
+        }
+        #PlottedQueriesContainer .PlottedRowUnit .header {
+            float: none;
+            width: auto;
+            padding: 5px 5px 5px 25px;
+        }
+        
+        #PlottedQueriesContainer .PlottedRowUnit .basicinfo-name {
+            font-weight: bold;
+            margin-bottom: 4px;
+        }
+        #PlottedQueriesContainer .PlottedRowUnit .basicinfo-baseobjectname {
+            color: gray;
+        }
+        
+        #PlottedQueriesContainer .PlottedRowUnit .plottinginfo-wrapper {
+            padding: 5px;
+        }
+        #PlottedQueriesContainer .PlottedRowUnit .plottinginfo-wrapper .link.geocode {
+            font-size: 10px;
+        }
+        
+        #PlottedQueriesContainer .PlottedRowUnit .renderButtons {
+            position: absolute;
+            top: 2px;
+            right: 2px;
+            height: 20px;
+            padding: 0;
+            font-size: 0px;
+        }
+        #PlottedQueriesContainer .PlottedRowUnit .renderButtons-button {
+            display: none;
+            width: 28px;
+            height: 27px;
+            cursor: pointer;
+            border: none;
+            padding: 0;
+            background: transparent url("{!URLFOR($Resource.MapAnything, '/images/renderbuttons.png')}") no-repeat;
+        }
+        #PlottedQueriesContainer .PlottedRowUnit:hover .renderButtons-button, #PlottedQueriesContainer .PlottedRowUnit .renderButtons-button.on {
+            display: inline-block;
+        }
+        #PlottedQueriesContainer .PlottedRowUnit.error:hover .renderButtons-button, #PlottedQueriesContainer .PlottedRowUnit.error .renderButtons-button.on {
+        	display: none;
+        }
+        #PlottedQueriesContainer .PlottedRowUnit .renderButtons-button.heatmap { background-position: -85px -11px; }
+        #PlottedQueriesContainer .PlottedRowUnit .renderButtons-button.markers { background-position: -12px -11px; }
+        #PlottedQueriesContainer .PlottedRowUnit .renderButtons-button.cluster { background-position: -49px -11px; }
+        #PlottedQueriesContainer .PlottedRowUnit .renderButtons-button.heatmap.on { background-position: -85px -51px; }
+        #PlottedQueriesContainer .PlottedRowUnit .renderButtons-button.markers.on { background-position: -12px -51px; }
+        #PlottedQueriesContainer .PlottedRowUnit .renderButtons-button.cluster.on { background-position: -49px -51px; }
+        #PlottedQueriesContainer .PlottedRowUnit .renderButtons-spacer {
+            display: inline-block;
+            width: 8px;
+        }
+        
+        #PlottedQueriesContainer .PlottedRowUnit .btn-remove {
+            display: block;
+            position: absolute;
+            top: 10px;
+            left: 0;
+            width: 16px;
+            height: 16px;
+            cursor: pointer;
+            background: transparent url("{!URLFOR($Resource.MapAnything, '/images/close-button-x.png')}") center no-repeat;
+        }
+        #PlottedQueriesContainer .PlottedRowUnit.loading .btn-remove {
+            background: transparent url("{!URLFOR($Resource.MapAnything, 'ajax-loader.gif')}") center no-repeat;
+        }
+        #PlottedQueriesContainer .PlottedRowUnit.unloading .btn-remove {
+            background: transparent url("{!URLFOR($Resource.MapAnything, 'ajax-unloader.gif')}") center no-repeat;
+        }
+        
+        #PlottedQueriesContainer .PlottedRowUnit .loadMask {
+            display: none;
+            position: absolute;
+            top: 0;
+            left: 0;
+            z-index: 99;
+            width: 100%;
+            height: 100%;
+            padding: 0;
+            margin: 0;
+            background-color: #ffffff;
+            opacity: 0.4;
+            -ms-filter: progid:DXImageTransform.Microsoft.Alpha(Opacity = 40);
+            filter: alpha(opacity = 40);
+        }
+        #PlottedQueriesContainer .PlottedRowUnit.loading .loadMask, #PlottedQueriesContainer .PlottedRowUnit.unloading .loadMask {
+            display: block;
+        }
+        
+        #PlottedQueriesContainer .PlottedRowUnit .legend {
+            width: 100%;
+            font-weight: 10px;
+        }
+        #PlottedQueriesContainer .PlottedRowUnit .legend .legend-row td {
+            text-align: left;
+            padding: 3px;
+        }
+        #PlottedQueriesContainer .PlottedRowUnit .legend .legend-row td.legend-color {
+            text-align: right;
+            width: 20px;
+            border: 1px solid black;
+        }
+        #PlottedQueriesContainer .PlottedRowUnit .legend .legend-row td.legend-color.image {
+            text-align: center;
+            border: none;
+        }
+        
+        /* Proximity Layers */
+        #PlottedQueriesTable .layer.proximity {
+            display: block;
+            position: relative;
+            width: 275px;
+            margin: 0 0 6px 0;
+            padding: 3px 10px 5px 25px;
+            text-align: left;
+            font-size: 11px;
+            background: #eee;
+            border: 1px solid #ddd;
+            border-radius: 2px;
+            box-shadow: none;
+            overflow: hidden;
+            -webkit-box-sizing: border-box;
+            -moz-box-sizing: border-box;
+            box-sizing: border-box;
+        }
+        #PlottedQueriesTable .layer.proximity  div {
+            padding: 0;
+        }
+        #PlottedQueriesTable .layer.proximity .showoptions {
+            font-size: 10px;
+        }
+        #PlottedQueriesTable .layer.proximity .button-remove {
+            position: absolute;
+            top: 5px;
+            left: 3px;
+            width: 16px;
+            height: 16px;
+            cursor: pointer;
+            background: transparent url("{!URLFOR($Resource.MapAnything, '/images/close-button-x.png')}") center no-repeat;
+        }
+        
+        /* Permissions Popup */
+        #permissions-grid-wrapper .ui-combobox
+        {
+            padding-right: 0;
+        }
+        #permissions-grid-wrapper .ui-combobox input
+        {
+            background-color: white;
+            padding-right: 30px;
+            font-weight: bold;
+            width: 200px;
+        }
+        #permissions-grid-wrapper .ui-combobox a
+        {
+            background: transparent;
+            border: none;
+            position: absolute;
+            right: 0;
+        }
+        #permissions-grid-wrapper .ui-combobox a .ui-button-icon-primary
+        {
+            background: transparent url("{!URLFOR($Resource.QueryEditor, 'images/icons/combobox-arrow-16.png')}") no-repeat center;
+        }
+        #permissions-grid-wrapper.permissions-grid-loading #permissions-grid-loadmask {
+            display: none;
+            position: absolute;
+            top: 0;
+            left: 0;
+            z-index: 99;
+            width: 100%;
+            height: 100%;
+            padding: 0;
+            margin: 0;
+            background-color: #ffffff;
+            opacity: 0.4;
+            -ms-filter: progid:DXImageTransform.Microsoft.Alpha(Opacity = 40);
+            filter: alpha(opacity = 40);
+        }
+        #permissions-grid-wrapper.permissions-grid-loading #permissions-grid-loadmask {
+            display: block;
+        }
+        #permissions-grid-wrapper {
+            position: relative;
+            min-height: 150px;
+        }
+        #permissions-grid-wrapper.permissions-grid-loading #permissions-grid-loadmask {
+            display: none;
+            position: absolute;
+            top: 0;
+            left: 0;
+            z-index: 99;
+            width: 100%;
+            height: 100%;
+            padding: 0;
+            margin: 0;
+            background-color: #ffffff;
+            opacity: 0.4;
+            -ms-filter: progid:DXImageTransform.Microsoft.Alpha(Opacity = 40);
+            filter: alpha(opacity = 40);
+        }
+        #permissions-grid-wrapper.permissions-grid-loading #permissions-grid-loadmask {
+            display: block;
+        }
+        #permissions-grid-status {
+            display: none;
+            position: absolute;
+            width: 100%;
+            text-align: center;
+            z-index: 999999;
+            top: 100px;
+        }
+        #permissions-grid-wrapper.permissions-grid-loading #permissions-grid-status {
+            display: block;
+        }
+        #permissions-grid-status .status {
+            margin: 0 auto;
+            background-color: white;
+            display: inline-block;
+            padding: 15px;
+            font-size: 10px;
+            -moz-border-radius: 12px;
+            -webkit-border-radius: 12px;
+            border-radius: 12px;
+            -moz-box-shadow: 0px 0px 8px #000000;
+            -webkit-box-shadow: 0px 0px 8px #000000;
+            box-shadow: 0px 0px 8px #000000;
+        }
+        #permissions-grid-status * {
+            vertical-align: middle;
+        }
+        #permissions-grid-status img {
+            margin-right: 5px;
+        }        
+        #permissions-grid
+        {
+            width:100%;
+            font-size:13px;
+            text-align:center;
+            vertical-align:middle;
+            border-collapse: collapse;
+        }
+        
+        #permissions-grid thead
+        {
+            border-color: black;
+            border-style: solid;
+            border-width: 0 0 2px 0;
+        }
+        
+        #permissions-grid tbody tr.permissions-row td
+        {
+            border-bottom: 1px solid #CCCCCC;
+        }
+        
+        #permissions-grid tbody tr.permissions-row:hover
+        {
+            background-color: #E2F0FF;
+        }
+        #permissions-grid .permissions-row .permission-for input {
+            background-color: white;
+        }
+        
+        /* Missing Addresses Popup */
+        #MissingAddressesContent {
+            max-height: 400px;
+            overflow: auto;
+        }
+        #MissingAddressesContent .missingaddresses-wrapper {
+            margin-right: 10px;
+        }
+        #MissingAddressesContent .missingaddresses-header {
+            border-bottom: 3px solid silver;
+            color: #757575;
+            font-size: 12px;
+            font-weight: bold;
+            margin-top: 10px;
+        }
+        #MissingAddressesContent .missingaddresses-header a {
+            float: right;
+            color: #2265bb;
+            cursor: pointer;
+            text-decoration: none;
+        }
+        
+        /* Add to Campaign */
+        #addtocampaign-select-filters td.label, #addtocampaign-select-advanced-filters td.label {
+            font-size: 11px;
+            font-weight: bold;
+        }
+        #addtocampaign-select-filters td.data, #addtocampaign-select-advanced-filters td.data {
+            font-size: 10px;    
+        }
+        
+        /* Change Owner */
+        #ChangeOwnerPopup .changeowner-row:hover td {
+            filter: progid:DXImageTransform.Microsoft.gradient(startColorstr = '#d9fffa', endColorstr = '#f0fffe');
+            -ms-filter: "progid:DXImageTransform.Microsoft.gradient(startColorstr = '#d9fffa', endColorstr = '#f0fffe')";
+            background-image: -moz-linear-gradient(top, #d9fffa, #f0fffe);
+            background-image: -ms-linear-gradient(top, #d9fffa, #f0fffe);
+            background-image: -o-linear-gradient(top, #d9fffa, #f0fffe);
+            background-image: -webkit-gradient(linear, center top, center bottom, from(#d9fffa), to(#f0fffe));
+            background-image: -webkit-linear-gradient(top, #d9fffa, #f0fffe);
+            background-image: linear-gradient(top, #d9fffa, #f0fffe);
+            cursor: pointer;
+        }
+        
+        /* New Task/Event */
+        #NewTaskPopup .changeowner-row:hover td, #NewEventPopup .changeowner-row:hover td {
+            filter: progid:DXImageTransform.Microsoft.gradient(startColorstr = '#d9fffa', endColorstr = '#f0fffe');
+            -ms-filter: "progid:DXImageTransform.Microsoft.gradient(startColorstr = '#d9fffa', endColorstr = '#f0fffe')";
+            background-image: -moz-linear-gradient(top, #d9fffa, #f0fffe);
+            background-image: -ms-linear-gradient(top, #d9fffa, #f0fffe);
+            background-image: -o-linear-gradient(top, #d9fffa, #f0fffe);
+            background-image: -webkit-gradient(linear, center top, center bottom, from(#d9fffa), to(#f0fffe));
+            background-image: -webkit-linear-gradient(top, #d9fffa, #f0fffe);
+            background-image: linear-gradient(top, #d9fffa, #f0fffe);
+            cursor: pointer;
+        }
+        
+        /* Popups */
+        .popup_block .popup-instructions {
+            font-size: 11px;
+            font-family: "Helvetica Neue", Helvetica, arial, sans-serif;
+        }
+        
+        /* Menu Buttons */
+        .MAToolBar .menubutton {
+            margin-right: 10px;
+        }
+        
+        /* Fix jsTree checkbox images */
+        .jstree-default .jstree-unchecked > a > .jstree-checkbox:hover {
+            background-position: -2px -41px;
+        }
+        .jstree-default .jstree-checked > a > .jstree-checkbox {
+            background-position: -50px -19px;
+        }
+        .jstree-default .jstree-checked > a > .jstree-checkbox:hover {
+            background-position: -50px -41px;
+        }
+        .jstree-default .jstree-undetermined > a > .jstree-checkbox {
+            background-position: -26px -21px;
+        }
+        .jstree-default .jstree-undetermined > a > .jstree-checkbox:hover {
+            background-position: -26px -42px;
+        }
+        
+        /* LinkedIn Integration */ 
+        .IN-widget {
+            width: 100% !important;
+        }
+        .linkedin-cluster-table-wrapper {
+            max-height: 400px;
+            overflow: auto;
+        }
+        .linkedin-cluster-header {
+            font-weight: bold;
+            font-size: 12px;
+            color: #757575;
+        }
+        .linkedin-cluster-table {
+            border-spacing: 0;
+        }
+        .linkedin-row td {
+            border-bottom: 1px solid silver;
+            padding: 8px 4px;
+        }
+        .linkedin-picture {
+            vertical-align: top;
+        }
+        .linkedin-info {
+            width: 350px;
+            vertical-align: top;
+        }
+        .linkedin-info div {
+            white-space: pre-wrap;   
+            white-space: -moz-pre-wrap;    
+            white-space: -pre-wrap;   
+            white-space: -o-pre-wrap;    
+            word-wrap: break-word;
+        }
+        .linkedin-info .linkedin-name {
+            font-weight: bold;
+            font-size: 14px;
+        }
+        .linkedin-info .linkedin-name a {
+            text-decoration: none;
+            color: #2265bb;
+        }
+        .linkedin-info .linkedin-name span {
+            vertical-align: top;
+            margin-left: 5px;
+            padding: 1px;
+            background-color: #ededed;
+            border: 1px solid rgb(219, 219, 219);
+            -moz-border-radius: 8px;
+            -webkit-border-radius: 4px;
+            border-radius: 4px;
+            -moz-box-shadow: 0px 0px 2px #000000;
+            -webkit-box-shadow: 0px 0px 2px rgb(0, 0, 0);
+            box-shadow: 0px 0px 2px #000000;
+            font-size: 9px;
+        }
+        .linkedin-info .linkedin-name span b {
+            vertical-align: top;
+        }
+        .linkedin-info .linkedin-headline {
+            font-weight: bold;
+            font-size: 12px;
+        }
+        .linkedin-info .linkedin-industry {
+            font-size: 10px !important;
+        }
+        .linkedin-actions button {
+            display: block;
+            margin: 4px 0;
+            cursor: pointer;
+            width: 80px;
+        }
+        
+        /* Editable Tooltips */
+        .tooltips > table {
+        	width: 100%;
+        }
+        .tooltip-row .label {
+        	width: 1px;
+        	white-space: nowrap;
+        }
+        .tooltip-row .value.editable:hover {
+        	background-color: #EDF0F1;
+        }
+        .tooltip-row .value input, .tooltip-row .value textarea {
+        	width: 100%;
+        	-webkit-box-sizing: border-box;
+			-moz-box-sizing: border-box;
+			box-sizing: border-box;
+        }
+        .tooltip-row .value input[type="checkbox"] {
+        	width: auto;
+        }
+        .tooltip-row .value textarea {
+        	height: 65px;
+        }
+        .tooltip-row .tooltip-loader {
+        	width: 24px;
+        }
+        .tooltip-row .tooltip-loader img {
+        	display: none;
+        }
+        .tooltip-row.saving .tooltip-loader img.saving {
+        	display: inline;
+        }
+        .tooltip-row.error .tooltip-loader img.error {
+        	display: inline;
+        	width: 16px;
+        }
+        
+        /* Tooltip Actions */
+        .layout-tooltip .buttoncolumn {
+        	float: left;
+        	margin: 0 10px 0 0;
+        }
+        .layout-tooltip .buttonset-section {
+        	overflow: hidden;
+        }
+        .layout-tooltip .actionbutton {
+	        position: relative;
+			display: block;
+			background-color: #F5F5F5;
+			background: #F8F8F8;
+			background: url('images/white-button-bg.png');
+			background: -webkit-gradient(linear, 0% 0%, 0% 100%, from(#FFF), to(#F5F5F5));
+			background: -webkit-linear-gradient(top, #FFF, #F5F5F5);
+			background: -moz-linear-gradient(center top , #FFF 20%, #F5F5F5 100%) repeat scroll 0 0 rgba(0, 0, 0, 0);
+			background: -ms-linear-gradient(top, #FFF, #F5F5F5);
+			background: -o-linear-gradient(top, #FFF, #F5F5F5);
+			background-repeat: repeat-x;
+			border: medium none;
+			border-radius: 3px 3px 3px 3px;
+			border: 1px solid #BBB;
+			box-shadow: 0 1px 0 #FFF inset, 0 0 4px rgba(255, 255, 255, 0.5) inset, 0 1px 2px rgba(0, 0, 0, 0.1);
+			color: #555;
+			font-family: "Helvetica Neue", Helvetica, arial, sans-serif;
+			font-size: 10px;
+			font-weight: normal;
+			line-height: auto;
+			text-align: center;
+			margin: 5px 0;
+			padding: 4px 9px;
+			height: auto;
+			width: 100px;
+			cursor: pointer;
+		}
+		.layout-tooltip .actionbutton:hover {
+			background: #FFF;
+			box-shadow: 0 1px 0 rgba(255, 255, 255, 0.3) inset, 0 0 4px rgba(255, 255, 255, 0.2) inset, 0 1px 2px rgba(0, 0, 0, 0.2);
+			color: #666;
+			text-decoration: none;
+		}
+        
+        /* Stretch Forms */
+        .form-stretch, .form-stretch .ui-combobox, .form-stretch input, .form-stretch textarea {
+        	width: 100%;
+        	-webkit-box-sizing: border-box;
+			-moz-box-sizing: border-box;
+			box-sizing: border-box;
+        }
+        
+        /* Info Bubbles */
+        .nm_bubble_content {
+            margin: 0;
+        }
+    </style>
+    
+    <!-- JS -->
+    <apex:includeScript value="{!$Resource.sma__USStatesJSON}"/>
+    <script type='text/javascript'>
+        var securityToken = '{!securityToken}';
+        var pageSuffix = '{!pageSuffix}';
+        var namespace = '{!namespace}';
+        var LicenseType = '{!LicenseType}';
+        var currentState = '';
+        var $currentStateGrowl;
+        
+        //LinkedIn Vars
+        var linkedInClusterProvider;
+        var linkedInPeopleClusterProvider;
+        var linkedInCompanyClusterProvider;
+        
+        $(function () {
+        
+            //send a request to run quick queries on each base object in order to cache the tables
+            $.ajax({
+                url: 'MASavedQueryAJAXResources'+pageSuffix+'?action=runCacheQueries',
+                type: 'POST',
+                dataType: 'JSON',
+                data: {},
+                success: function (response) { Debug('Cache queries completed'); },
+                error: function (response) { Debug('Unable to run cache queries'); }
+            });
+        
+            //put the current version number as the default entry in the debug log
+            Debug('Running Version: {!versionNumber}');
+            
+            //handle clicking on plotted query render buttons
+            $('#PlottedQueriesContainer').on('click', '.PlottedRowUnit .renderButtons-button', function () {
+                var $plottedQuery = $(this).closest('.PlottedRowUnit').addClass('loading');
+                
+                var $button = $(this);
+                setTimeout(function () {
+                    if ($button.is('.on'))
+                    {
+                        unrenderQuery($plottedQuery, $button.attr('data-renderAs'), function () {
+                            $plottedQuery.removeClass('loading');
+                        });
+                    }
+                    else
+                    {
+                        renderQuery($plottedQuery, $button.attr('data-renderAs'), function () {
+                            $plottedQuery.removeClass('loading');
+                        }); 
+                    }
+                }, 100);
+            });
+            
+            //handle clicking query close buttons
+            $('#PlottedQueriesContainer').on('click', '.PlottedRowUnit .btn-remove', function () {
+				removeQuery($(this).closest('.PlottedRowUnit').addClass('unloading'));
+            });
+            
+            //handle clicking a bad address link
+            $('#PlottedQueriesContainer').on('click', '.PlottedRowUnit .plottinginfo-wrapper .link.geocode', function () {
+            
+                //hide all missing addresses except for this query
+                var savedQueryId = $(this).closest('.PlottedRowUnit').data('id');
+                $('#MissingAddressesContent .missingaddresses-wrapper').each(function () {
+                    if ($(this).attr('data-id') == savedQueryId) {
+                        if ($(this).find('.toggle').text() == 'Show') {
+                            $(this).find('.toggle').click();
+                        }
+                    }
+                    else if ($(this).find('.toggle').text() == 'Hide') {
+                        $(this).find('.toggle').click();
+                    }
+                });
+                
+                //show the missing address popup
+                ShowAddressNotFoundPopup();
+            });
+            
+            //handle clicking to show/hide the legend or empty legend rows
+            $('#PlottedQueriesContainer').on('click', '.legend-showhide', function () {
+                var $plottedQuery = $(this).closest('.PlottedRowUnit');
+                if ($(this).text() == '--Hide Legend--') {
+                    $(this).text('--Show Legend--');
+                    $plottedQuery.find('.legend, .legend-moreless').hide();
+                }
+                else {
+                    $(this).text('--Hide Legend--');
+                    $plottedQuery.find('.legend').show();
+                    if ($plottedQuery.find('.legend-row.empty').length > 0) {
+                        $plottedQuery.find('.legend-moreless').show();
+                    }
+                }
+            });
+            $('#PlottedQueriesContainer').on('click', '.legend-moreless', function () {
+                var $plottedQuery = $(this).closest('.PlottedRowUnit');
+                if ($(this).text() == '--Show More--') {
+                    $(this).text('--Show Less--');
+                    $plottedQuery.find('.legend-row.empty').show();
+                }
+                else {
+                    $(this).text('--Show More--');
+                    $plottedQuery.find('.legend-row.empty').hide();
+                }
+            });
+            
+            //handle clicking on plotted query legend items
+            $('#PlottedQueriesContainer').on('change', '.legend-checkbox', function () {
+            
+                //grab some basic info about this legend item
+                var $legendCheckbox = $(this);
+                var $plottedQuery = $(this).closest('.PlottedRowUnit');
+                var markerMetadata = $plottedQuery.data('markerMetadata');
+                
+                //get a list of any active prox circles (used to determine if each marker should be made visible)
+                var invertProximity = $('#InvertProximityCheckbox').is(':checked');
+                var proxObjects = [];
+                $('#PlottedQueriesTable .layer.proximity').each(function () {
+                    if ($(this).data('proxObject')) {
+                        proxObjects.push($(this).data('proxObject'));
+                    }
+                    if ($(this).data('proxObjects')) {
+		        		$.each($(this).data('proxObjects'), function (index, proxObject) {
+		        			proxObjects.push(proxObject);
+		        		});
+		        	}
+                });
+                $('#PlottedQueriesTable .PlottedRowUnit').each(function () {
+                    $.each($(this).data('proximityObjects'), function (index, proxObject) {
+                        proxObjects.push(proxObject);
+                    });
+                });
+                
+                //loop through all markers and build a list of those that need to be modified
+                var markers = [];
+                $.each($plottedQuery.data('records'), function (index, record) 
+                {
+                    //determine if our picklist value matches
+                    var picklistValueMatches = false;
+                    var picklistValue = extractValue(record.record, markerMetadata.PicklistField);
+                    if (markerMetadata.ColorAssignments[picklistValue]) 
+                    {
+                        //the picklist value has a color assignment, now check if it matches
+                        if (picklistValue == $legendCheckbox.attr('data-value')) 
+                        {
+                            //it does match
+                            picklistValueMatches = true;
+                        }
+                    }
+                    else if ($legendCheckbox.attr('data-value') == '<Other>') {
+                        //the picklist value does not have a color assignment and this legend item is <Other> so that's a match
+                        picklistValueMatches = true;
+                    }
+                
+                    //check this marker against all of our criteria to see if it should be added to the list
+                    if ($legendCheckbox.is(':checked'))
+                    {
+                        //this record must have a marker, be hidden, match, and not violate any prox layers
+                        if (record.marker && !record.isVisible && picklistValueMatches)
+                        {
+                            //check for proximity if needed, otherwise just add this marker to the list
+                            if (proxObjects.length > 0)
+                            {
+                                var markerPixel = map.geoToPixel(record.marker.coordinate);
+                                var isInsideProxObject = false;
+                                $.each(map.getObjectsAt(markerPixel.x, markerPixel.y), function (index, obj) {
+                                    if (obj.layerType == 'prox') {
+                                        isInsideProxObject = true;
+                                        return false;
+                                    }
+                                });
+                                
+                                //determine if we should continue based on whether or not prox visibility has been inverted
+                                if ((!invertProximity && isInsideProxObject) || (invertProximity && !isInsideProxObject))
+                                {
+                                    //add it to the list
+                                    record.isVisible = true;
+                                    markers.push(record.marker);
+                                }
+                            }
+                            else
+                            {
+                                //add it to the list
+                                record.isVisible = true;
+                                markers.push(record.marker);
+                            }
+                        }
+                    }
+                    else
+                    {
+                        //this record must have a marker, be visible, and match
+                        if (record.marker && record.isVisible && picklistValueMatches) {
+                            record.isVisible = false;
+                            markers.push(record.marker);
+                        }
+                    }
+                });
+                
+                //show/hide our markers
+                if ($legendCheckbox.is(':checked')) {
+                    map.objects.addAll(markers);
+                    $legendCheckbox.closest('.legend-row').find('.visiblemarkers').text(markers.length);
+                }
+                else {
+                    map.objects.removeAll(markers);
+                    $legendCheckbox.closest('.legend-row').find('.visiblemarkers').text('0');
+                }
+                
+                updateQueryInfo($plottedQuery);
+                
+            });
+            
+            /*****************
+             *  Prox Layer Handlers
+             ******************/
+             
+            //handle selecting a different prox type
+            $('#PlottedQueriesTable').on('change', '.proximity.layer .proximitytype', function () {
+                var $proxLayer = $(this).closest('.proximity.layer');
+                
+                if ($proxLayer.find('.link.showoptions').text() == 'Show Options') {
+                    $proxLayer.find('.link.showoptions').click();
+                }
+                
+                $proxLayer.find('.options-wrapper > div').slideUp(100);
+                $proxLayer.find('.options-'+$(this).val().toLowerCase()).slideDown(100);
+                
+                switch ($(this).val())
+                {
+                	case 'Circle':
+                		$proxLayer.find('.color-wrapper .fillcolor')[0].color.fromString('223388');
+                		$proxLayer.find('.color-wrapper .bordercolor')[0].color.fromString('882233');
+                		$proxLayer.find('.options-circle-address').val($proxLayer.find('.options-isoline-address').val());
+                		$proxLayer.find('.color-wrapper').slideDown(300);
+                		break;
+                	case 'Isoline':
+                		$proxLayer.find('.color-wrapper .fillcolor')[0].color.fromString('CCCC22');
+                		$proxLayer.find('.color-wrapper .bordercolor')[0].color.fromString('000000');
+                		$proxLayer.find('.options-isoline-address').val($proxLayer.find('.options-circle-address').val());
+                		$proxLayer.find('.color-wrapper').slideDown(300);
+                		break;
+                	case 'Polygon':
+                		$proxLayer.find('.color-wrapper .fillcolor')[0].color.fromString('22CC22');
+                		$proxLayer.find('.color-wrapper .bordercolor')[0].color.fromString('000000');
+                		$proxLayer.find('.color-wrapper').slideDown(300);
+                		break;
+                	case 'KML':
+                		$proxLayer.find('.color-wrapper').slideUp(300);
+                		break;
+                	default:
+                		$proxLayer.find('.color-wrapper .fillcolor')[0].color.fromString('22CC22');
+                		$proxLayer.find('.color-wrapper .bordercolor')[0].color.fromString('000000');
+                		$proxLayer.find('.color-wrapper').slideDown(300);
+                		break;
+                }
+            });
+            
+            //handle toggling prox layer options
+            $('#PlottedQueriesTable').on('click', '.proximity.layer .link.showoptions', function () {
+                if ($(this).text() == 'Show Options') {
+                	if ($(this).closest('.proximity.layer').find('.proximitytype').val() != 'KML') {
+                		$(this).closest('.proximity.layer').find('.color-wrapper').slideDown(300);
+                	}
+                    $(this).closest('.proximity.layer').find('.options-wrapper, .buttons-wrapper').slideDown(300);
+                    $(this).text('Hide Options');
+                }
+                else {
+                    $(this).closest('.proximity.layer').find('.options-wrapper, .buttons-wrapper, .color-wrapper').slideUp(300);
+                    $(this).text('Show Options');
+                }
+            });
+            
+            //handle selecting a different isoline unit type
+            $('#PlottedQueriesTable').on('change', '.proximity.layer .options-isoline-unit-type', function () {
+                if ($(this).val() == 'Distance') {
+                    $(this).closest('.proximity.layer').find('.options-isoline-unit').html('').append("<option value='MILES'>Miles</option><option value='KM'>Km</option><option value='METERS'>Meters</option><option value='YARDS'>Yards</option><option value='FEET'>Feet</option>");
+                }
+                else {
+                    $(this).closest('.proximity.layer').find('.options-isoline-unit').html('').append("<option value='MINUTES'>Minutes</option><option value='HOURS'>Hours</option>");
+                }
+            });
+            
+            //handle selecting a different state to filter counties by
+            $('#PlottedQueriesTable').on('change', '.proximity.layer .options-geography-county-states', function () {
+                
+                var $countyPicklist = $(this).closest('.proximity.layer').find('.options-geography-counties').empty();
+                $.each(stateGeometry[$(this).val()]['Counties'], function (countyName, county) {
+                    $countyPicklist.append($('<option></option>').attr('value', countyName).text(countyName));
+                });
+                
+                if ($countyPicklist.data('multiselect'))
+                {
+                    $countyPicklist.multiselect('refresh').multiselect('uncheckAll');
+                }
+                else
+                {
+                    $countyPicklist.multiselect({
+                        noneSelectedText: 'Click here to select options',
+                        selectedList: 2
+                    }).multiselectfilter().multiselect('uncheckAll');
+                }
+                
+            });
+            
+            //handle updating the prox options
+            $('#PlottedQueriesTable').on('click', '.proximity.layer .button-update', function () {
+                renderProximityLayer($(this).closest('.proximity.layer'));
+            });
+            
+            //handle clicking on a polygon select layer
+            $('#mapdiv').on('click', '.polygonselectlayer', function (event) {
+            
+                var $polygonSelectLayer = $(this);
+                var mapOffset = $polygonSelectLayer.offset();
+                var coord = map.pixelToGeo(event.pageX - mapOffset.left, event.pageY - mapOffset.top);
+                $polygonSelectLayer.data('PolygonPointsArray').push(new nokia.maps.geo.Coordinate(coord.latitude,coord.longitude));
+                $polygonSelectLayer.data('LastCoord', new nokia.maps.geo.Coordinate(coord.latitude,coord.longitude));
+                
+                if (!$polygonSelectLayer.data('PolylineStartCoord'))
+                {
+                    //this is the first click
+                    $polygonSelectLayer.data('PolylineStartCoord', new nokia.maps.geo.Coordinate(coord.latitude,coord.longitude));
+                    $polygonSelectLayer.data('PolylineStartX', event.pageX - mapOffset.left);
+                    $polygonSelectLayer.data('PolylineStartY', event.pageY - mapOffset.top);
+                }
+                else
+                {
+                    //check if this click completes the polygon by comparing the pixel distance between this click and the original click
+                    if (Math.sqrt(Math.pow((event.pageX - mapOffset.left) - $polygonSelectLayer.data('PolylineStartX'), 2) + Math.pow((event.pageY - mapOffset.top) - $polygonSelectLayer.data('PolylineStartY'), 2)) < 5)
+                    {
+                        //remove temporary polylines
+                        map.objects.remove($polygonSelectLayer.data('StaticPolyline'));
+                        map.objects.remove($polygonSelectLayer.data('Polyline'));
+                        
+                        //create a polygon based on the clicked points and store it with the prox layer
+                        $polygonSelectLayer.data('proxLayer').data('proxObject',
+                            $.extend(
+                                new nokia.maps.map.Polygon(
+                                    $polygonSelectLayer.data('PolygonPointsArray'),
+                                    {
+                                        pen: { strokeColor: ($polygonSelectLayer.data('borderColor') || '#000'), lineWidth: 1 },
+                                        brush: { color: ($polygonSelectLayer.data('fillColor') || '#2C2A') }
+                                    }
+                                ),
+                                { layerType: 'prox', layer: $polygonSelectLayer.data('proxLayer'), markers: {} }
+                            )
+                        );
+                        
+                        //add the polygon to the map and attach appropriate event handlers to it
+                        map.objects.add($polygonSelectLayer.data('proxLayer').data('proxObject'));
+                        $polygonSelectLayer.data('proxLayer').data('proxObject').addListener("click", proximityLayer_Click);
+                        
+                        //hide options for this prox layer
+                        $polygonSelectLayer.data('proxLayer').find('.loadmask').remove();
+                        $polygonSelectLayer.data('proxLayer').find('.link.showoptions').click();
+                        
+                        console.log($polygonSelectLayer.data());
+                        
+                        //remove the polygon select layer
+                        $('#mapdiv .polygonselectlayer').remove();
+                        
+                        //update map visibility
+                        ChangeVisibilityWhenCircleIsAdded();
+                    }
+                    else if (!$polygonSelectLayer.data('StaticPolyline'))
+                    {
+                        //this is the second click so we need to create a static polyline to represent the path
+                        $polygonSelectLayer.data(
+                            'StaticPolyline', 
+                            new nokia.maps.map.Polyline(
+                                [$polygonSelectLayer.data('PolylineStartCoord'), new nokia.maps.geo.Coordinate(coord.latitude,coord.longitude)], 
+                                { 
+                                    pen: { strokeColor: "#F00", lineWidth: 4 } 
+                                }
+                            )
+                        );
+                        map.objects.add($polygonSelectLayer.data('StaticPolyline'));
+                    }
+                    else
+                    {
+                        //this is after the second click so just add this coordinate to our static path
+                        $polygonSelectLayer.data('StaticPolyline').path.add(coord);
+                    }
+                }
+            });
+            
+            //handle the mouse moving on a polygon select layer
+            $('#mapdiv').on('mousemove', '.polygonselectlayer', function (event) { 
+                
+                var mapOffset = $(this).offset();
+                var coord = map.pixelToGeo(event.pageX - mapOffset.left, event.pageY - mapOffset.top);
+                    
+                if ($(this).data('LastCoord'))
+                {
+                    //remove the existing polyline
+                    map.objects.remove($(this).data('Polyline'));
+                    
+                    //check if clicking here would complete the polygon
+                    var overFirstCoord = Math.sqrt(Math.pow((event.pageX - mapOffset.left) - $(this).data('PolylineStartX'), 2) + Math.pow((event.pageY - mapOffset.top) - $(this).data('PolylineStartY'), 2)) < 5
+                    
+                    //add a new polyline from the last coordinate to this coordinate
+                    $(this).data('Polyline', 
+                        new nokia.maps.map.Polyline(
+                            [$(this).data('LastCoord'), new nokia.maps.geo.Coordinate(coord.latitude,coord.longitude)], 
+                            { pen: { strokeColor: (overFirstCoord ? '#F00' : '#00F8'), lineWidth: 4 } }
+                        )
+                    );
+                    map.objects.add($(this).data('Polyline'));
+                }
+            });
+            
+            //handle removing a prox layer
+            $('#PlottedQueriesTable').on('click', '.proximity.layer .button-remove', function () {
+                removeProximityLayer($(this).closest('.proximity.layer'));
+            });
+            
+            /********************************
+             *  LinkedIn Event Handlers
+             ***********************************/
+            
+            $('.menubutton.social').on('change', '.linkedin-myconnections', function () {
+                if ($(this).is(':checked')) {
+                    $('.linkedin-myconnections').hide();
+                    $('.linkedin-myconnections-loader').show();
+                    LinkedIn_ShowMyConnections();
+                }
+                else {
+                    try { linkedInClusterProvider.destroy(); } catch (err) { }
+                }
+            });
+            
+            $('.menubutton.social').on('change', '.linkedin-search', function () {
+                if ($(this).is(':checked')) {
+                    $('.linkedin-filters-wrapper').show();
+                }
+                else {
+                    $('.linkedin-filters-wrapper').hide();
+                    try { linkedInPeopleClusterProvider.destroy(); } catch (err) { }
+                }
+            });
+            
+            $('.menubutton.social').on('change', '.linkedin-companysearch', function () {
+                if ($(this).is(':checked')) {
+                    $('.linkedin-companyfilters-wrapper').show();
+                }
+                else {
+                    $('.linkedin-companyfilters-wrapper').hide();
+                    try { linkedInCompanyClusterProvider.destroy(); } catch (err) { }
+                }
+            });
+            
+            $('.menubutton.social').on('click', '.linkedin-filters-wrapper .addfilter', function () {
+                $('#templates .linkedin-filter').clone().appendTo($('.linkedin-filters'));
+            });
+        }); //onready
+        
+        /**************************
+         *  LinkedIn Integration
+         **************************/
+        
+        function linkedInCluster_Click()
+        {
+            var marker = this;
+            
+            //create the tooltip content
+            var $tooltipContent = $('#templates .linkedin-cluster-tooltip').clone();
+            var connectionCount = 0;
+            $.each(marker.connectionsMap, function (id, connection) {
+                connectionCount++;
+                $tooltipContent.find('.linkedin-cluster-table').append(
+                    populateLinkedInRow($('#templates .linkedin-row').clone(), connection)
+                );
+            });
+            $tooltipContent.find('.linkedin-cluster-header').text(connectionCount + ' Connections');
+            
+            //create info bubble
+            InfoBubbles.addBubble(
+                $tooltipContent.wrap('<div/>').parent().html(),
+                marker.coordinate
+            );
+            
+            //link the tooltip to this marker
+            $('.linkedin-cluster-tooltip:visible').data('marker', marker);
+        }
+        
+        function populateLinkedInRow($row, connection)
+        {
+            if (connection.type == 'Company')
+            {
+                $row.attr('data-id', connection.id);
+                $row.find('.linkedin-picture').html('<img src="'+(connection.squareLogoUrl || connection.logoUrl || "{! URLFOR($Resource.MapAnything, 'images/LinkedIn-NoPicture.png') }")+'" style="width: 80px;" />');
+                $row.find('.linkedin-name').html('<a href="http://linkedin.com/company/'+connection.id+'" target="_blank">'+connection.name+'</a>');
+                $row.find('.linkedin-headline').html('<a href="'+(connection.websiteUrl || '')+'">'+(connection.websiteUrl ? 'Company Website' : '')+'</a>');
+                $row.find('.linkedin-industry').html(connection.markerAddress);
+                
+                //show actions for companies instead of connections
+                $row.find('.linkedin-actions').hide();
+                $row.find('.linkedin-companyactions').show();
+            }
+            else
+            {
+                var distanceMap = {
+                    1   : '<span><b>1</b>st</span>',
+                    2   : '<span><b>2</b>nd</span>',
+                    3   : '<span><b>3</b>rd</span>'
+                };
+            
+                $row.attr('data-id', connection.id);
+                $row.find('.linkedin-picture').html('<img src="'+(connection.pictureUrl || "{! URLFOR($Resource.MapAnything, 'images/LinkedIn-NoPicture.png') }")+'" style="width: 80px;" />');
+                $row.find('.linkedin-name').html('<a href="'+connection.siteStandardProfileRequest.url+'" target="_blank">'+connection.firstName + ' ' + connection.lastName+'</a>' + (distanceMap[connection.distance] || ''));
+                $row.find('.linkedin-headline').html(connection.headline);
+                $row.find('.linkedin-industry').html(connection.markerAddress + ' | ' + connection.industry);
+                
+                if (connection.distance == 1) {
+                    $row.find('.linkedin-actions-inmail, .linkedin-actions-connect, .linkedin-actions-getintroduced').hide();
+                }
+                else {
+                    $row.find('.linkedin-actions-message').hide();
+                }
+            }
+            
+            return $row;
+        }
+        
+        function linkedIn_CreateAccount($linkedInRow)
+        {
+            var $growl = growlLoading($('#growl-wrapper'), 'Creating Account...');
+            var company = $('.linkedin-cluster-tooltip:visible').data('marker').connectionsMap[$linkedInRow.attr('data-id')];
+            console.log(company);
+            
+            
+            var requestData = { name: company.name };
+            try {
+                $.extend(requestData, company.locations.values[0].address);
+            }
+            catch (err) { }
+            
+            //send request to create an account from this company
+            $.getJSON("/apex/MATooltipAJAXResources?action=create_account_from_linkedin&securityToken="+securityToken, requestData, function(response)
+            { 
+                if(response.success)
+                {
+                    growlSuccess($growl, '<a href="/'+response.data.Id+'" target="_blank">Account Created</a>', 3000);
+                }
+                else
+                {
+                    growlError($growl, 'Unable to create account', 3000);
+                }
+            })
+            .error(function() { 
+                growlError($growl, 'Unable to create account', 3000); 
+            });
+        }
+        
+        function linkedIn_CreateLead($linkedInRow)
+        {
+            var $growl = growlLoading($('#growl-wrapper'), 'Creating Lead...');
+            
+            var connection = $('.linkedin-cluster-tooltip:visible').data('marker').connectionsMap[$linkedInRow.attr('data-id')];
+            
+            console.log(connection);
+            
+            var requestData = {
+                firstName       : connection.firstName,
+                lastName        : connection.lastName,
+                company         : connection.company || 'Not Supported Yet'
+            };
+            
+            //send request to create lead from this connection
+            $.getJSON("/apex/MATooltipAJAXResources?action=create_lead_from_linkedin&securityToken="+securityToken, requestData, function(response)
+            { 
+                if(response.success)
+                {
+                    growlSuccess($growl, '<a href="/'+response.data.Id+'" target="_blank">Lead Created</a>', 3000);
+                }
+                else
+                {
+                    growlError($growl, 'Unable to create lead', 3000);
+                }
+            })
+            .error(function() { 
+                growlError($growl, 'Unable to create lead', 3000); 
+            });
+        }
+        function linkedIn_SendInMail($linkedInRow)
+        {
+            var connection = $('.linkedin-cluster-tooltip:visible').data('marker').connectionsMap[$linkedInRow.attr('data-id')];
+            
+            //try to build the inmail url
+            var inMailURL = '';
+            try {
+                var queryStringMap = {};
+                $.each(connection.siteStandardProfileRequest.url.substring(connection.siteStandardProfileRequest.url.indexOf('?') + 1).split('&'), function (index, keyValuePair) {
+                    var keyValueParts = keyValuePair.split('=');
+                    queryStringMap[keyValueParts[0]] = keyValueParts[1];
+                });
+                
+                inMailURL = 'http://www.linkedin.com/requestList?displayProposal=&destID='+queryStringMap['id']+'&creationType=DC&authToken='+queryStringMap['authToken']+'&authType=NAME_SEARCH';
+            }
+            catch (err) {
+                console.log(err);
+            }
+            
+            //if we were able to build a url, open it in a new window, otherwise show an error
+            if (inMailURL == '') {
+                growlError($('#growl-wrapper'), 'Unable to generate InMail url');
+            }
+            else {
+                window.open(inMailURL);
+            }
+        }
+        function linkedIn_SendMessage($linkedInRow)
+        {
+            //launch the linked in message popup and keep track of the connection to send to
+            CreatePopupWindow("LinkedInMessagePopup", 600);
+            $('#LinkedInMessagePopup').data('connection', $('.linkedin-cluster-tooltip:visible').data('marker').connectionsMap[$linkedInRow.attr('data-id')]);
+        }
+        function linkedIn_SendMessage_Send()
+        {
+            //show loading message
+            showLoading($('#LinkedInMessagePopup .loadmask-wrapper'), 'Sending...');
+        
+            //grab the connection that we need to send to
+            var connection = $('#LinkedInMessagePopup').data('connection');
+        
+            //build a request body to send to the LinkedIn API
+            var requestBody = {
+                recipients: {
+                    values: [{
+                        person: {
+                            _path: '/people/' + connection.id
+                        }
+                    }]
+                },
+                subject: $('.linkedin-message-subject').val(),
+                body: $('.linkedin-message-body').val()
+            };
+            
+            //send the request
+            IN.API.Raw('/people/~/mailbox')
+                .method('POST')
+                .body(JSON.stringify(requestBody))
+                .result(function () { 
+                    showSuccess($('#LinkedInMessagePopup .loadmask-wrapper'), 'Message Sent', 1500, function () {
+                        ClosePopupWindow();
+                    }); 
+                })
+                .error(function () { 
+                    showError($('#LinkedInMessagePopup .loadmask-wrapper'), 'Unknown Error');
+                });
+        }
+        function linkedIn_AddToTrip($linkedInRow)
+        {
+            var connection = $('.linkedin-cluster-tooltip:visible').data('marker').connectionsMap[$linkedInRow.attr('data-id')];
+            var title = connection.type == 'Company' ? connection.name : connection.firstName + ' ' + connection.lastName;
+            
+            $(WayPointLI)
+                .attr('Lat', connection.latitude)
+                .attr('Long', connection.longitude)
+                .attr('Address', connection.markerAddress)
+                .attr('WayPointTitle', title)
+                .appendTo('#sortable')
+                .find('input').val(title).prop('disabled', true).addClass('DisabledWaypoint');
+            
+            OrderNumbersOnWaypoints();
+            
+            ShowDirectionsTab();
+            HideBubbles();
+        }
+        function linkedIn_Connect($linkedInRow)
+        {
+            var connection = $('.linkedin-cluster-tooltip:visible').data('marker').connectionsMap[$linkedInRow.attr('data-id')];
+            
+            //try to build the connect url
+            var connectURL = '';
+            try {
+                var queryStringMap = {};
+                $.each(connection.siteStandardProfileRequest.url.substring(connection.siteStandardProfileRequest.url.indexOf('?') + 1).split('&'), function (index, keyValuePair) {
+                    var keyValueParts = keyValuePair.split('=');
+                    queryStringMap[keyValueParts[0]] = keyValueParts[1];
+                });
+                
+                connectURL = 'http://www.linkedin.com/people/invite?from=profile&key='+queryStringMap['id']+'&firstName=Cole&lastName=Adams&authToken='+queryStringMap['authToken']+'&authType=OUT_OF_NETWORK';
+            }
+            catch (err) {
+                console.log(err);
+            }
+            
+            //if we were able to build a url, open it in a new window, otherwise show an error
+            if (connectURL == '') {
+                growlError($('#growl-wrapper'), 'Unable to generate url');
+            }
+            else {
+                window.open(connectURL);
+            }
+        }
+        function linkedIn_GetIntroduced($linkedInRow)
+        {
+            var connection = $('.linkedin-cluster-tooltip:visible').data('marker').connectionsMap[$linkedInRow.attr('data-id')];
+            
+            //try to build the inmail url
+            var introURL = '';
+            try {
+                var queryStringMap = {};
+                $.each(connection.siteStandardProfileRequest.url.substring(connection.siteStandardProfileRequest.url.indexOf('?') + 1).split('&'), function (index, keyValuePair) {
+                    var keyValueParts = keyValuePair.split('=');
+                    queryStringMap[keyValueParts[0]] = keyValueParts[1];
+                });
+                
+                introURL = 'http://www.linkedin.com/requestList?displayProposal=&destID='+queryStringMap['id']+'&creationType=REFERRAL&authToken='+queryStringMap['authToken']+'&authType=OUT_OF_NETWORK';
+            }
+            catch (err) {
+                console.log(err);
+            }
+            
+            //if we were able to build a url, open it in a new window, otherwise show an error
+            if (introURL == '') {
+                growlError($('#growl-wrapper'), 'Unable to generate url');
+            }
+            else {
+                window.open(introURL);
+            }
+        }
+         
+        var linkedInClusterTheme = {
+            getClusterPresentation: function (dataPoints) {
+            
+                //create a map of ids to connections so we can get back to the appropriate connection from a row
+                var connectionsMap = {};
+                $.each(dataPoints.Pd, function (index, connection) {
+                    connectionsMap[connection.id] = connection;
+                });
+            
+                //create and return a marker for this cluster
+                return new nokia.maps.map.Marker (dataPoints.getBounds().getCenter(), {
+                    connectionsMap: connectionsMap,  
+                    //text:  dataPoints.getSize(),  
+                    //brush: {color: '#FF0000'},
+                    icon: "{! URLFOR($Resource.MapAnything, 'images/LinkedIn-Cluster.png') }",
+                    anchor: new nokia.maps.util.Point(16, 16),
+                    eventListener: {
+                        "click": [linkedInCluster_Click, false, null],
+                        "tap": [linkedInCluster_Click, false, null]
+                    }       
+                });
+            },
+            getNoisePresentation: function (dataPoint) {
+            
+                //create a map of ids to connections so we can get back to the appropriate connection from a row
+                var connectionsMap = {};
+                connectionsMap[dataPoint.id] = dataPoint;
+            
+                //return an image marker or a standard marker depending on if we have a 
+                if (dataPoint.pictureUrl) {
+                    return new nokia.maps.map.Marker ([dataPoint.latitude, dataPoint.longitude], {
+                        connectionsMap: connectionsMap,
+                        //icon: (dataPoint.pictureUrl || ''),
+                        //anchor: new nokia.maps.util.Point(30, 30),
+                        icon: "{! URLFOR($Resource.MapAnything, 'images/LinkedIn-Marker.png') }",
+                        anchor: new nokia.maps.util.Point(20, 40),
+                        eventListener: {
+                            "click": [linkedInCluster_Click, false, null],
+                            "tap": [linkedInCluster_Click, false, null]
+                        } 
+                    });
+                }
+                else {
+                    return new nokia.maps.map.Marker ([dataPoint.latitude, dataPoint.longitude], {
+                        connectionsMap: connectionsMap,  
+                        //text:  '1',  
+                        //brush: {color: '#00FF00'},
+                        icon: "{! URLFOR($Resource.MapAnything, 'images/LinkedIn-Marker.png') }",
+                        anchor: new nokia.maps.util.Point(20, 40),
+                        eventListener: {
+                            "click": [linkedInCluster_Click, false, null],
+                            "tap": [linkedInCluster_Click, false, null]
+                        }
+                    });
+                }
+            }
+        };
+        
+        function LinkedIn_ShowMyConnections()
+        { 
+            IN.API.Connections("me").fields('id', 'headline', 'first-name', 'last-name', 'distance', 'industry', 'main-address', 'location:(name,country)', 'picture-url', 'site-standard-profile-request', 'positions', 'relation-to-viewer:(related-connections:(distance,id,first-name,last-name))').result(function (connections) {
+            
+                console.log(connections.values);
+            
+                //geocode all connections
+                var linkedInConnections = connections.values;
+                var linkedInRequestsOut = 0;
+                var linkedInRequestsSuccess = 0;
+                var linkedInRequestsFail = 0;
+                
+                //loop through the connections and create a list of those to geocode, along with the markerAddress to use
+                var linkedInConnectionsToGeocode = [];
+                $.each((linkedInConnections || []), function (index, connection) {
+                    connection.isGeocoded = false;
+                    if (connection.mainAddress) {
+                        connection.markerAddress = connection.mainAddress;
+                    }
+                    else if (connection.location) {
+                        connection.markerAddress = (connection.location.name || '');
+                        if (connection.location.country) {
+                            connection.markerAddress += ', ' + (connection.location.country.code || '').toUpperCase(); 
+                        }
+                    }
+                    else {
+                        connection.isGeocoded = true;
+                        connection.isBadAddress = true;
+                        return;
+                    }
+                    
+                    linkedInConnectionsToGeocode.push(connection);
+                });
+                
+                //function to be called when geocoding is complete
+                function geocodingComplete() {
+                    var clusterDataPoints = [];
+                    $.each((linkedInConnections || []), function (index, connection) {
+                        if (connection.latitude && connection.longitude) {
+                            clusterDataPoints.push(connection);
+                        }
+                    });
+                    
+                    var whatever = nokia.maps.clustering.ClusterProvider;
+                    linkedInClusterProvider = new whatever(map, {
+                        eps: 16,
+                        minPts: 1,
+                        dataPoints: clusterDataPoints,
+                        theme : linkedInClusterTheme
+                    });
+                    linkedInClusterProvider.cluster();
+                    
+                    $('.linkedin-myconnections-loader').hide();
+                    $('.linkedin-myconnections').show();
+                }
+                
+                //keep sending requests until we're up to 200 or there's nothing left to geocode
+                var initialRequestCounter = 0;
+                if (linkedInConnectionsToGeocode.length == 0)
+                {
+                    geocodingComplete();
+                }
+                else
+                {
+                    while (linkedInConnectionsToGeocode.length > 0 && initialRequestCounter < 200)
+                    {
+                        initialRequestCounter++;
+                        var recordsToSend = linkedInConnectionsToGeocode.splice(0, 10);
+                        linkedInRequestsOut += recordsToSend.length;
+                        geocodeMultiple(recordsToSend, function handleGeocode (numSuccess, numFail) {
+                            linkedInRequestsOut -= numSuccess + numFail;
+                            linkedInRequestsSuccess += numSuccess;
+                            linkedInRequestsFail += numFail;
+                            
+                            //send out a new request if there are any.  move on to rendering if we're done
+                            if (linkedInConnectionsToGeocode.length > 0) {
+                                var nextRecordsToSend = linkedInConnectionsToGeocode.splice(0, 10);
+                                linkedInRequestsOut += nextRecordsToSend.length;
+                                geocodeMultiple(nextRecordsToSend, handleGeocode);
+                            }
+                            else if (linkedInRequestsOut == 0) {
+                                geocodingComplete();
+                            }
+                        });//end geocode record
+                    }//end while
+                }
+            });
+        }
+        
+        function LinkedIn_PeopleSearch()
+        {
+            try { linkedInPeopleClusterProvider.destroy(); } catch (err) { }
+        
+            $('.linkedin-search').hide();
+            $('.linkedin-search-loader').show();
+                    
+            var searchParams = {};
+            $('.linkedin-filters .linkedin-filter').each(function () {
+                searchParams[$(this).find('select').val()] = $(this).find('input').val();
+            });
+            
+            IN.API.PeopleSearch().fields('id', 'headline', 'first-name', 'last-name', 'distance', 'industry', 'main-address', 'location:(name,country)', 'picture-url', 'site-standard-profile-request', 'positions', 'relation-to-viewer:(related-connections:(distance,id,first-name,last-name))').params(searchParams).result(function (results) {
+            
+                console.log(results.people.values);
+                
+                //get distance filters
+                var validDistances = $('.linkedin-filters-distance:checked').map(function () {
+                    return $(this).attr('data-value'); 
+                }).get();
+                
+                //geocode all connections
+                var linkedInConnections = [];
+                $.each(results.people.values, function (index, connection) {    
+                    if ($.inArray(connection.distance + '', validDistances) != -1) {
+                        linkedInConnections.push(connection);
+                    }
+                });
+                var linkedInRequestsOut = 0;
+                var linkedInRequestsSuccess = 0;
+                var linkedInRequestsFail = 0;
+                
+                //loop through the connections and create a list of those to geocode, along with the markerAddress to use
+                var linkedInConnectionsToGeocode = [];
+                $.each((linkedInConnections || []), function (index, connection) {
+                    connection.isGeocoded = false;
+                    if (connection.mainAddress) {
+                        connection.markerAddress = connection.mainAddress;
+                    }
+                    else if (connection.location) {
+                        connection.markerAddress = (connection.location.name || '');
+                        if (connection.location.country) {
+                            connection.markerAddress += ', ' + (connection.location.country.code || '').toUpperCase(); 
+                        }
+                    }
+                    else {
+                        connection.isGeocoded = true;
+                        connection.isBadAddress = true;
+                        return;
+                    }
+                    
+                    linkedInConnectionsToGeocode.push(connection);
+                });
+                
+                //function to be called when geocoding is complete
+                function geocodingComplete() {
+                    var clusterDataPoints = [];
+                    $.each((linkedInConnections || []), function (index, connection) {
+                        if (connection.latitude && connection.longitude) {
+                            clusterDataPoints.push(connection);
+                        }
+                    });
+                    
+                    linkedInPeopleClusterProvider = new nokia.maps.clustering.ClusterProvider(map, {
+                        eps: 16,
+                        minPts: 1,
+                        dataPoints: clusterDataPoints,
+                        theme : linkedInClusterTheme
+                    });
+                    linkedInPeopleClusterProvider.cluster();
+                    
+                    $('.linkedin-search-loader').hide();
+                    $('.linkedin-search').show();
+                }
+                
+                //keep sending requests until we're up to 200 or there's nothing left to geocode
+                var initialRequestCounter = 0;
+                if (linkedInConnectionsToGeocode.length == 0)
+                {
+                    geocodingComplete();
+                }
+                else
+                {
+                    while (linkedInConnectionsToGeocode.length > 0 && initialRequestCounter < 200)
+                    {
+                        initialRequestCounter++;
+                        var recordsToSend = linkedInConnectionsToGeocode.splice(0, 10);
+                        linkedInRequestsOut += recordsToSend.length;
+                        geocodeMultiple(recordsToSend, function handleGeocode (numSuccess, numFail) {
+                            linkedInRequestsOut -= numSuccess + numFail;
+                            linkedInRequestsSuccess += numSuccess;
+                            linkedInRequestsFail += numFail;
+                            
+                            //send out a new request if there are any.  move on to rendering if we're done
+                            if (linkedInConnectionsToGeocode.length > 0) {
+                                var nextRecordsToSend = linkedInConnectionsToGeocode.splice(0, 10);
+                                linkedInRequestsOut += nextRecordsToSend.length;
+                                geocodeMultiple(nextRecordsToSend, handleGeocode);
+                            }
+                            else if (linkedInRequestsOut == 0) {
+                                geocodingComplete();
+                            }
+                        });//end geocode record
+                    }//end while
+                }
+            });
+        }
+        
+        function LinkedIn_CompanySearch()
+        {
+            try { linkedInCompanyClusterProvider.destroy(); } catch (err) { }
+        
+            $('.linkedin-companysearch').hide();
+            $('.linkedin-companysearch-loader').show();
+            
+            IN.API.Raw('/company-search:(companies:(id,name,logo-url,square-logo-url,locations:(address:(street1,street2,city,state,postal-code))))?keywords='+encodeURI($('.linkedin-companysearch-keywords').val())).result(function (results) {
+            
+                //geocode all connections
+                var linkedInConnections = results.companies.values;
+                var linkedInRequestsOut = 0;
+                var linkedInRequestsSuccess = 0;
+                var linkedInRequestsFail = 0;
+                
+                //loop through the connections and create a list of those to geocode, along with the markerAddress to use
+                var linkedInConnectionsToGeocode = [];
+                $.each((linkedInConnections || []), function (index, connection) {
+                    connection.isGeocoded = false;
+                    connection.type = 'Company';
+                    
+                    try {
+                        var addressObj = connection.locations.values[0].address;
+                        var addressParts = [addressObj.street1, addressObj.street2, addressObj.city, addressObj.state, addressObj.postalCode];
+                        connection.markerAddress = addressParts.join(',');
+                    }
+                    catch (err) {
+                        connection.isGeocoded = true;
+                        connection.isBadAddress = true;
+                        return;
+                    }
+                    
+                    linkedInConnectionsToGeocode.push(connection);
+                });
+                
+                //function to be called when geocoding is complete
+                function geocodingComplete() {
+                    var clusterDataPoints = [];
+                    $.each((linkedInConnections || []), function (index, connection) {
+                        if (connection.latitude && connection.longitude) {
+                            clusterDataPoints.push(connection);
+                        }
+                    });
+                    
+                    linkedInCompanyClusterProvider = new nokia.maps.clustering.ClusterProvider(map, {
+                        eps: 16,
+                        minPts: 1,
+                        dataPoints: clusterDataPoints,
+                        theme : linkedInClusterTheme
+                    });
+                    linkedInCompanyClusterProvider.cluster();
+                    
+                    $('.linkedin-companysearch-loader').hide();
+                    $('.linkedin-companysearch').show();
+                }
+                
+                //keep sending requests until we're up to 200 or there's nothing left to geocode
+                var initialRequestCounter = 0;
+                if (linkedInConnectionsToGeocode.length == 0)
+                {
+                    geocodingComplete();
+                }
+                else
+                {
+                    while (linkedInConnectionsToGeocode.length > 0 && initialRequestCounter < 200)
+                    {
+                        initialRequestCounter++;
+                        var recordsToSend = linkedInConnectionsToGeocode.splice(0, 10);
+                        linkedInRequestsOut += recordsToSend.length;
+                        geocodeMultiple(recordsToSend, function handleGeocode (numSuccess, numFail) {
+                            linkedInRequestsOut -= numSuccess + numFail;
+                            linkedInRequestsSuccess += numSuccess;
+                            linkedInRequestsFail += numFail;
+                            
+                            //send out a new request if there are any.  move on to rendering if we're done
+                            if (linkedInConnectionsToGeocode.length > 0) {
+                                var nextRecordsToSend = linkedInConnectionsToGeocode.splice(0, 10);
+                                linkedInRequestsOut += nextRecordsToSend.length;
+                                geocodeMultiple(nextRecordsToSend, handleGeocode);
+                            }
+                            else if (linkedInRequestsOut == 0) {
+                                geocodingComplete();
+                            }
+                        });//end geocode record
+                    }//end while
+                }
+            });
+        }
+        
+        function drawState(state, options)
+        {
+            var polygons = [];
+            
+            try
+            {
+                var coordinates = [];
+                var currentLongitude = null;
+                $.each(stateGeometry[state].Geometry, function (index, stateBoundary) {
+                    $.each(stateBoundary, function (index, coordinate) {
+                        
+                        if (currentLongitude == null) {
+                            currentLongitude = coordinate;
+                        }
+                        else {
+                            coordinates.push(new nokia.maps.geo.Coordinate(coordinate, currentLongitude));
+                            currentLongitude = null;    
+                        }
+                        
+                    });
+                    
+                    polygons.push(drawPolygon(coordinates, options || {}));
+                    coordinates = [];
+                });
+            }
+            catch (err)
+            {
+                console.log('problem');
+            }
+            
+            return polygons;
+        }
+        
+        function drawCounty(state, county, options)
+        {
+            var polygons = [];
+            
+            try
+            {
+                var coordinates = [];
+                var currentLongitude = null;
+                $.each(stateGeometry[state]['Counties'][county].Geometry, function (index, boundary) {
+                    $.each(boundary, function (index, coordinate) {
+                        
+                        if (currentLongitude == null) {
+                            currentLongitude = coordinate;
+                        }
+                        else {
+                            coordinates.push(new nokia.maps.geo.Coordinate(coordinate, currentLongitude));
+                            currentLongitude = null;    
+                        }
+                        
+                    });
+                    
+                    polygons.push(drawPolygon(coordinates, options || {}));
+                    coordinates = [];
+                });
+            }
+            catch (err)
+            {
+                console.log('problem');
+            }
+            
+            return polygons;
+        }
+        
+        function drawPolygon(coordinates, options)
+        {
+            var polygon = new nokia.maps.map.Polygon(
+                coordinates,
+                {
+                    pen: { strokeColor: (options.borderColor || '#000'), lineWidth: 1 },
+                    brush: { color: (options.fillColor || '#2C2A') }
+                }
+            );
+            polygon.layerType = 'prox';
+            
+            map.objects.add(polygon);
+            return polygon;
+        }
+        
+        /***********************************
+        *	Route Optimization
+        **********************************/
+        
+        function optimizeRouteForVisible()
+        {
+        	//build a list of all visible records
+        	var records = [];
+        	$('#PlottedQueriesContainer .PlottedRowUnit').each(function() { 
+	            
+                //loop through the visible markers for this query
+                $.each($(this).data('records'), function(index, record) { 
+                    if (record.isVisible)
+                    {
+                        records.push(record);
+                    }
+                });
+            });
+            
+            //make sure there are 250 records or less
+            if (records.length > 250) {
+            	showError($('#mapdiv').parent(), 'A maximium of 250 locations are supported for route optimization');
+            	return;
+            }
+            
+            ClearDirections();
+            ShowDirectionsTab();
+            $('#DirectionsInputTab').click();
+            currentState = 'Optimize Directions Step 1';
+            $currentStateGrowl = growlWarning($('#growl-wrapper'), 'Pick a starting location by clicking a marker, using the directions tab, or use your <span style="color: blue; cursor: pointer;" onclick="optimizeRoute_UseHome();">home location<span>', false);
+            $.each(records, function (index, record) { 
+            	AddMarkerToTrip(record.marker);
+            });
+        }
+        
+        function optimizeRoute_UseHome()
+        {
+        	if (currentState == 'Optimize Directions Step 1') 
+            {
+            	//set 
+            	try {
+	            	$(WayPointLI)
+		                .attr('Lat', userSettings.defaultMapSettings.latitude)
+		                .attr('Long', userSettings.defaultMapSettings.longitude)
+		                .attr('Address', 'Home')
+		                .attr('WayPointTitle','Home')
+		                .prependTo('#sortable')
+		                .find('input').val('Home').prop('disabled', true).addClass('DisabledWaypoint');
+		            OrderNumbersOnWaypoints();
+		            $currentStateGrowl = growlWarning($currentStateGrowl, 'Pick an ending location by clicking a marker, using the directions tab, or use your <span style="color: blue; cursor: pointer;" onclick="optimizeRoute_UseHome();">home location<span>', false);
+            		currentState = 'Optimize Directions Step 2';
+	            }
+	            catch (err) { }
+            	return;
+            }
+            else if (currentState == 'Optimize Directions Step 2')
+            {
+            	try {
+	            	$(WayPointLI)
+		                .attr('Lat', userSettings.defaultMapSettings.latitude)
+		                .attr('Long', userSettings.defaultMapSettings.longitude)
+		                .attr('Address', 'Home')
+		                .attr('WayPointTitle','Home')
+		                .appendTo('#sortable')
+		                .find('input').val('Home').prop('disabled', true).addClass('DisabledWaypoint');
+		            OrderNumbersOnWaypoints();
+		            optimizeRoute();
+	            }
+	            catch (err) { }
+            	return;
+            }
+        }
+        
+        function optimizeRoute()
+        {
+        	geocodeWaypoints(function (response) {
+        		
+        		//check for errors
+        		if (!response.success)
+			    {
+			    	currentState = '';
+			    	$currentStateGrowl = growlError($currentStateGrowl, 'Unable to optimize route: bad geocode');
+			    	return;
+			    }
+			    
+			    var waypointElements = $('#sortable').clone().children().toArray();
+			    var startWaypoint = waypointElements.shift();
+			    var lastWaypoint = waypointElements.pop();
+			    $('#sortable').empty();
+			    
+			    optimizeWaypoints({
+			    	startWaypoint		: startWaypoint,
+			    	lastWaypoint		: lastWaypoint,
+			    	waypointElements	: waypointElements, 
+			    	success				: function (response) {
+			    		$.each(response.optimizedWaypointElements, function (index, waypointElement) { $('#sortable').append(waypointElement); });
+			    		OrderNumbersOnWaypoints();
+			    		currentState = '';
+						$currentStateGrowl.remove();
+						GetDirections();
+			    	},
+			    	error				: function (response) {
+			    		currentState = '';
+			    		$currentStateGrowl = growlError($currentStateGrowl, 'Unable to optimize route');
+			    	}
+			    });
+        	});
+        }
+        
+        function geocodeWaypoints(callback)
+        {
+        	$currentStateGrowl = growlLoading($currentStateGrowl, 'Geocoding...');
+			$('#sortable').children().each(function () { 
+        
+        		if ($(this).find('input').val() == "")
+		        {
+		            //Remove Element
+		            $(this).remove();
+		        }
+		        else if ($(this).attr('Lat') == undefined)
+		        {
+		        	var $waypoint = $(this).attr('data-status', 'geocoding');
+		            var $AddressInput = $(this).find('input').removeClass();
+		            
+				    $.ajax({
+				    	url: '/apex/MAGeoCodeAJAXResources?action=GeoCode&geocodetype=MarkerGeoCode',
+					    type: 'POST',
+					    dataType: 'JSON',
+					    data: {
+					    	searchtext: encodeURIComponent(unescape($AddressInput.val()))
+					    },
+				    	success: function (response) 
+				    	{
+					    	if (response.success)
+					    	{
+					    		$AddressInput.val(response.Label).addClass('GoodGeocodeForWaypoint')
+					    		$waypoint.attr({
+				    				Lat: response.Latitude,
+				    				Long: response.Longitude,
+				    				WayPointTitle: response.Label,
+				    				Address: response.Label,
+				    				'data-status': 'geocoded'
+				    			});
+					    	}
+					    	else
+					    	{
+					    		//there was a problem so just show an error message
+					    		$waypoint.attr('data-status', 'error');
+					    	}
+					    },
+					    error: function () 
+					    {
+					    	$waypoint.attr('data-status', 'error');
+					    }
+				    });
+		        }
+		        else
+		        {
+		        	$(this).attr('data-status', 'geocoded');
+		        }
+		    });
+		    
+		    //start a poller to check for completion
+		    $('#sortable').data(
+		    	'geocodeInterval',
+		    	setInterval(function () {
+		    		
+		    		//if there is nothing being geocoded, check for errors and either return success or failure
+		    		if ($('#sortable > li[data-status="geocoding"]').length == 0) {
+		    			if ($('#sortable > li[data-status="error"]').length == 0) {
+		    				clearInterval($('#sortable').data('geocodeInterval'));
+							callback({success: true});		    				
+		    			}
+		    			else {
+		    				clearInterval($('#sortable').data('geocodeInterval'));
+		    				callback({success: false});
+		    			}
+		    		}
+		    		else {
+		    			$currentStateGrowl = growlLoading($currentStateGrowl, 'Geocoding...' + $('#sortable > li[data-status="geocoding"]').length + ' remaining');
+		    		}
+		    		
+		    	}, 1000) 
+		    );
+        }
+        
+        function optimizeWaypoints(options)
+        {
+        	var currentWaypointElement = options.startWaypoint;
+        	var waypointElements = options.waypointElements;
+        	var optimizedWaypointElements = [currentWaypointElement];
+        	
+        	$currentStateGrowl = growlLoading($currentStateGrowl, 'Optimizing...');
+        	setTimeout(function getNextWaypoint () {
+        		
+        		//if we're down to the last element then just add it to the list and return success
+        		if (waypointElements.length == 1)
+				{
+					optimizedWaypointElements.push(waypointElements.shift());
+					optimizedWaypointElements.push(options.lastWaypoint);
+					options.success({ optimizedWaypointElements: optimizedWaypointElements });
+					return;
+				}
+				
+				//this is not the last marker so we need to send a request to figure out which one is next.  start by building a string of potential destinations
+				var coordinateString = 'start0=' +$(currentWaypointElement).attr('Lat')+ ',' +$(currentWaypointElement).attr('Long')+ '&';
+				coordinateString += $.map(waypointElements, function (waypointElement, index) {
+					return 'destination' +index+ '=' +$(waypointElement).attr('Lat')+ ',' +$(waypointElement).attr('Long');
+				}).join('&');
+				
+				//send a request to get travel time information from the current marker to each of the remaining markers
+				$.ajax({
+				    url: '/apex/MATooltipAJAXResources?action=get_route_matrix&securityToken={!securityToken}',
+				    type: 'POST',
+				    dataType: 'JSON',
+				    data: { coordinateString: coordinateString },
+				    success: function(response) 
+				    { 
+				    	try {
+				    		$currentStateGrowl = growlLoading($currentStateGrowl, 'Optimizing...' + waypointElements.length + ' remaining');
+				    	
+				    		var routeMatrix = JSON.parse(response.response).Response.MatrixEntry;
+				    		
+				    		var nearestDestinationIndex = 0;
+				    		var nearestDestinationDistance = -1;
+				    		$.each(routeMatrix, function (index, destination) {
+				    			if (nearestDestinationDistance == -1 || destination.Route.Summary.Distance < nearestDestinationDistance)
+				    			{
+				    				nearestDestinationIndex = destination.DestinationIndex;
+				    				nearestDestinationDistance = destination.Route.Summary.Distance;
+				    			}
+				    		});
+				    		
+				    		var nextWaypointElement = waypointElements.splice(nearestDestinationIndex, 1)[0];
+				    		optimizedWaypointElements.push(nextWaypointElement);
+				    		currentWaypointElement = nextWaypointElement;
+				    		getNextWaypoint();
+				    	}
+				        catch (err) {
+				        	options.error({ details: err });
+				        }
+				    },
+				    error: function (response) {
+				    	options.error({ details: err });
+				    }
+				});
+        		
+        	}, 50);
+        }
+        
+        /*****************************
+        *	Map Tools
+        ******************************/
+        
+        function moveToAddress_geocode(options)
+        {
+        	//put a loadmask over the popup
+        	showLoading($('#MoveToAddressPopup .loadmask-wrapper'), 'Geocoding Address...');
+        
+        	//attempt to geocode the supplied address
+        	geocode({
+        		address: $('#MoveToAddressPopup .movetoaddress-address').val(),
+        		complete: function (response) 
+        		{
+        			//check for errors
+        			if (!response.success) {
+        				showError($('#MoveToAddressPopup .loadmask-wrapper'), 'Unable to geocode address.');
+        				return;
+        			}
+        			
+        			//pan the map to the new location
+        			map.setCenter(new nokia.maps.geo.Coordinate(response.response.Latitude, response.response.Longitude));
+        			
+        			//hide the loading message and remove the popup
+        			hideMessage($('#MoveToAddressPopup .loadmask-wrapper'));
+        			ClosePopupWindow();
+        			
+        			//set this new location as home if needed
+		        	if (options && options.setAsHome)
+		        	{
+		        		SetDefaultMapLocation();
+		        	}
+        		}
+        	});
+        }
+        
+    </script>
+    <c:JSHelperFunctions />
+    <c:JSActionFramework />
+    <c:JSMapAnythingBeta />
+    <c:JSMapAnythingPlottingBeta />
+
+
+            
+    <!-- Controller Communication -->
+    <apex:form >
+        <apex:inputHidden id="serializedDefaultQueries" value="{!serializedDefaultQueries}" />
+        
+        <apex:actionFunction name="PopulateMAExportsAF" reRender="MAExportsRepeat,ExportPageMessages" action="{!PopulateMAExports}"/>
+        <apex:actionFunction name="DeleteExportsAF" reRender="MAExportsRepeat,ExportPageMessages" action="{!DeleteExports}"/>
+    </apex:form>
+
+    <!-- Toolbar (top) -->
+    <div class="MAToolBar" style="border:none;width:99%;">
+ 
+        <table style='width: 100%'>
+            <tr>
+                <td style='white-space: nowrap; vertical-align: top;'>
+                    <div id="logo-mapanything"></div>
+                </td>
+                <td style='white-space: nowrap; text-align: right; vertical-align: top;'>
+                
+                    <!-- Toolbar Standard Buttons -->
+                    <a class="btn lightgray" onclick="ShowHidePosition();" id="ShowPositionButton">Show Position</a>
+                    <a class="btn lightgray" onclick="GoToHomePosition();" id="ShowPositionButton">Default View</a>
+                    <a class="btn lightgray" onclick="EnableDisableZoombox();" style="cursor:pointer;" id="ZoomBoxButton">Enable Zoombox</a>
+                    <a class="btn lightgray" id="ZoomToFitButton">Zoom to Fit</a>
+                    <a class="btn lightgray" id="ShowTrafficButton" style="width:60px;text-align:center;">Show Traffic</a>
+                    
+                    <!-- Divider -->
+                    <div class="btn-divider"></div>
+                    
+                    <!-- Social Integrations -->
+                    <div class="menubutton social">
+                        <span>Social</span>
+                        <div class="arrow-down"></div>
+
+                        <div class='menu persistent'>
+                        
+                            <!-- LinkedIn -->
+                            <div class="header" style='font-weight: 14px; font-weight: bold;'><img src="{! URLFOR($Resource.MapAnything, 'images/LinkedIn-32.png') }" style='vertical-align: middle;' /> LinkedIn</div>
+                            <div class="indent">
+                                <script type="in/Login">
+                                    <div><input type='checkbox' class='linkedin-myconnections' /><img class='linkedin-myconnections-loader' src="{!URLFOR($Resource.MapAnything, 'images/chatterstatus-loader.gif')}" style='display: none;' /> My Connections</div>
+                                    <div>
+                                        <input type='checkbox' class='linkedin-search' /><img class='linkedin-search-loader' src="{!URLFOR($Resource.MapAnything, 'images/chatterstatus-loader.gif')}" style='display: none;' /> People Search
+                                        <div class='linkedin-filters-wrapper' style='display: none; padding-left: 25px;'>
+                                            <div style='margin: 5px 0;'><input type='checkbox' class='linkedin-filters-distance first' data-value='1' checked='checked' />1st <input type='checkbox' class='linkedin-filters-distance second' data-value='2' checked='checked' />2nd <input type='checkbox' class='linkedin-filters-distance third' data-value='3' checked='checked' />3rd <input type='checkbox' class='linkedin-filters-distance out' data-value='-1' checked='checked' />Out </div>
+                                            <div class='linkedin-filters'>
+                                            </div>
+                                            <span class='link blue addfilter'>Add Filter</span>
+
+                                            <div style='margin-top: 10px; text-align: right;'><button onclick='LinkedIn_PeopleSearch();'>Plot Results</button></div>
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <input type='checkbox' class='linkedin-companysearch' /><img class='linkedin-companysearch-loader' src="{!URLFOR($Resource.MapAnything, 'images/chatterstatus-loader.gif')}" style='display: none;' /> Company Search
+                                        <div class='linkedin-companyfilters-wrapper' style='display: none; padding-left: 25px;'>
+                                            <b>Keywords: </b> <input type='text' class='linkedin-companysearch-keywords' />
+
+                                            <div style='margin-top: 10px; text-align: right;'><button onclick='LinkedIn_CompanySearch();'>Plot Results</button></div>
+                                        </div>
+                                    </div>
+                                    <div style='margin-top: 10px;'><button onclick='IN.User.logout();'>Logout</button></div>
+                                    
+                                </script>
+                            </div>
+                            
+                        </div>
+                    </div>
+                    
+                    <!-- Map Views -->
+                    <div class="menubutton">
+                        <span id='mapviewtext'>Normal View</span>
+                        <div class="arrow-down"></div>
+
+                        <div class='menu'>
+                            <div class='bulletlink mapview-button' data-baseMapType='NORMAL' data-label='Normal View'>
+                                <div class='arrow-right'></div>
+                                Normal View
+                            </div>
+                            <div class='bulletlink mapview-button' data-baseMapType='TERRAIN' data-label='Terrain View'>
+                                <div class='arrow-right'></div>
+                                Terrain View
+                            </div>
+                            <div class='bulletlink mapview-button' data-baseMapType='SATELLITE' data-label='Satellite View'>
+                                <div class='arrow-right'></div>
+                                Satellite View
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Proximity -->
+                    <div class="menubutton">
+                        <span>Proximity</span>
+                        <div class="arrow-down"></div>
+
+                        <div class='menu persistent'>
+                        
+                            <!-- Options -->
+                            <div class="header">Options</div>
+                            <div class="indent">
+                                <div style='clear: both; text-align: left;'>
+                                    <input type='checkbox' id='mapit-proximity-on' class='mapit-proximity-on' onclick='StoreMASettings();' />
+                                    <label for='mapit-proximity-on'>"Map It" Proximity On</label>
+                                </div>
+                                <div style='clear: both; text-align: left;'>
+                                    <input type='checkbox' id='InvertProximityCheckbox' onclick='ChangeVisibilityWhenCircleIsAdded();' />
+                                    <label for='InvertProximityCheckbox'>Invert Proximity</label>
+                                </div>
+                            </div>
+                            
+                            <!-- Defaults -->
+                            <div class='header'>Defaults</div>
+                            <div class='indent'>
+                                <div style='overflow: hidden;'>
+                                    Radius:
+                                    <input type="text" id="ProximityRadius" style="margin-right:10px;" size="5" />
+                                    <select id="ProximityRadiusMeasurementType">
+                                        <option value="MILES">Miles</option>
+                                        <option value="KM">Km</option>
+                                        <option value="METERS">Meters</option>
+                                        <option value="YARDS">Yards</option>
+                                        <option value="FEET">Feet</option>
+                                    </select>
+                                </div>
+                            </div>
+                            
+                            <!-- Update Button -->
+                            <a class="button1-blue" style="float:right; margin-top: 15px;" onclick="StoreMASettings();">Update</a>
+
+                        </div>
+                    </div>
+                    
+                    <!-- Map Tools -->
+                    <div class="menubutton">
+                        <span>Map Tools</span>
+                        <div class="arrow-down"></div>
+
+                        <div class='menu'>
+                        
+                            <!-- Map View Tools -->
+                            <div class='header'>Map View Tools</div>
+                            <div class='indent'>
+                                <div id='SetAsHomeButton' class='bulletlink'>
+                                    <div class='arrow-right'></div>
+                                    Set as Default View
+                                </div>
+                                <div id='MoveToAddressButton' class='bulletlink' onclick='CreatePopupWindow("MoveToAddressPopup", 600);'>
+                                	<div class='arrow-right'></div>
+                                	Move to Address
+                                </div>
+                            </div>
+                            
+                            <!-- Map Utilities -->
+                            <div class='header'>Map Utilities</div>
+                            <div class='indent'>
+                                <div id='ShowDebugWindowButton' class='bulletlink'>
+                                    <div class='arrow-right'></div>
+                                    Debug Window
+                                </div>
+                                <div id='AddressesNotFoundButton' class='bulletlink'>
+                                    <div class='arrow-right'></div>
+                                    Addresses Not Found
+                                </div>
+                            </div>
+                            
+                        </div>
+                    </div>
+                    
+                    <!-- With Visible -->
+                    <div class='menubutton'>
+                        <span>With Visible</span>
+                        <div class='arrow-down'></div>
+
+                        <div class='menu'>
+                        
+                            <!-- Transfer -->
+                            <div class='header'>Transfer</div>
+                            <div class='indent'>
+                                <div id='withvisible-addtocampaign' class='bulletlink' onclick='AddVisibleToCampaign();'>
+                                    <div class='arrow-right'></div>
+                                    Add to Campaign
+                                </div>
+                                <div id='withvisible-changeowner' class='bulletlink' onclick='ChangeOwnerOfVisible();'>
+                                    <div class='arrow-right'></div>
+                                    Change Owner
+                                </div>
+                                <div id='withvisible-updatefield' class='bulletlink' onclick='UpdateFieldOfVisible();'>
+                                	<div class='arrow-right'></div>
+                                	Update Field
+                                </div>
+                            </div>
+                            
+                            <!-- Activity -->
+                            <div class='header'>Activity</div>
+                            <div class='indent'>
+                                <div id='withvisible-newtask' class='bulletlink' onclick='NewTaskForVisible();'>
+                                    <div class='arrow-right'></div>
+                                    New Task
+                                </div>
+                                <div id='withvisible-newevent' class='bulletlink' onclick='NewEventForVisible();'>
+                                    <div class='arrow-right'></div>
+                                    New Event
+                                </div>
+                            </div>
+                            
+                            <!-- Chatter -->
+                            <div class='header'>Chatter</div>
+                            <div class='indent'>
+                                <div id='withvisible-follow' class='bulletlink' onclick='updateChatterSubscriptions(true);'>
+                                    <div class='arrow-right'></div>
+                                    Follow
+                                </div>
+                                <div id='withvisible-unfollow' class='bulletlink' onclick='updateChatterSubscriptions(false);'>
+                                    <div class='arrow-right'></div>
+                                    Unfollow
+                                </div>
+                            </div>
+                            
+                            <!-- Routing -->
+                            <div class='header'>Routing</div>
+                            <div class='indent'>
+                                <div id='withvisible-follow' class='bulletlink' onclick='optimizeRouteForVisible();'>
+                                    <div class='arrow-right'></div>
+                                    Optimize Route
+                                </div>
+                            </div>
+                            
+                        </div>
+                    </div>
+                    
+                </td>
+            </tr>
+        </table>
+
+    </div>
+    
+    <!-- Sidebar -->
+    <div id='sidebar'>
+    
+        <!-- Sidebar Content -->
+        <div id="sidebar-content">
+    
+            <!-- Sidebar Tabs -->
+            <div id="tabs-nav">
+                
+                <!-- Tab Handles -->
+                <ul>
+                    <li><a href="#tab-queries">Queries</a></li>
+                    <li><a href="#tab-directions">Directions</a></li>
+                    <li><a href="#tab-export">Export</a></li>
+                </ul>
+    
+                <!-- Queries Tab -->
+                <div id="tab-queries">
+                    <div class="slider-tabs" style="display:block;float:left;margin:5px 0 0 0;padding:0;width:100%;">
+                        <div style="display:block;float:left;padding:0;margin:0;width:46%;">
+                            <a id="TreeTab" class="TreeTab-Active"><div class="bullet-bluearrow-left"></div>Tree</a>
+                        </div>
+   
+                        <div style="display:block;float:right;padding:0;margin:0;width:46%;">
+                            <a id="PlottedQueriesTab" class="PlottedQueriesTab-Inactive"><div class="bullet-bluearrow-right"></div>Plotted Queries<span id="PlottedSavedQueryCount"></span></a>
+                        </div>
+                    </div><!--slider-tabs-->
+    
+                    <div id="slider1">
+                        <div id="Slider-Tree">
+                            <div id="SQTree" class="demo" style="padding-top:3px;"></div>
+                        </div>
+                      
+                        <div id="Slider-PlottedSavedQueries" style="display:block;float:left;overflow:auto;padding:0;margin-top:10px;">
+                            <div style="display:block;float:left;margin:0;padding:0;">
+                                <h1 style="margin-top:0;padding-top:0;">Plotted Saved Queries</h1>
+                    
+                                <!-- Layers Container -->
+                                <div id="PlottedQueriesContainer" style="display:block;float:left;width:100%;">
+                                    <div id="PlottedQueriesTable" style='margin-top: 0; padding-top: 0;'>
+                                    
+                                    </div>
+                                </div>
+                                
+                                <!-- Layer Buttons -->
+                                <div>
+                                    <a class="btn lightgray" id="layerbutton-addproximitylayer" onclick="addProximityLayer();">Add Boundary</a>
+                                </div>
+                    
+                                <div id="TestMe" style="color:black;"></div>
+                            </div>
+                        </div>
+                        
+                        <div>
+                            Blank Slide
+                        </div>
+                    </div>
+                </div><!--queries-->
+                
+                <!-- Directions Tab -->
+                <div id="tab-directions">
+                
+                    <!-- Slider Buttons -->
+                    <div class="slider-tabs" style="display:block;float:left;margin:5px 0 0 0;padding:0;width:100%;">
+                    
+                        <!-- Locations -->
+                        <div style="display:block;float:left;padding:0;margin:0;width:46%;">
+                            <a id="DirectionsInputTab" class="TreeTab-Active"><div class="bullet-bluearrow-left"></div>Locations</a>
+                        </div>
+                        
+                        <!-- Directions -->
+                        <div style="display:block;float:right;padding:0;margin:0;width:46%;">
+                            <a id="DirectionsOutputTab" class="PlottedQueriesTab-Inactive"><div class="bullet-bluearrow-right"></div>Directions</a>
+                        </div>
+                        
+                    </div><!--slider-tabs-->
+    
+                    <!-- Directions Slides -->
+                    <div id="slider2">
+                    
+                        <!-- Locations Slide -->
+                        <div id="Slider-DirectionsInput">
+                        
+                            <!-- Directions Options -->
+                            <b>Directions Options</b>
+                            <table cellpadding="3" style="margin-bottom:5px;">
+                                <tr>
+                                    <td><b>Mode:</b></td>
+                                    <td>
+                                        <select id="RouteMode">
+                                            <option value="car">Car</option>
+                                            <option value="truck">Truck</option>
+                                            <option value="pedestrian">Walking</option>
+                                            <option value="publicTransport">Public Transport</option>
+                                        </select> 
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td><b>Type:</b></td>
+                                    <td>
+                                        <select id="RouteType">
+                                          <option value="shortest">Shortest</option>
+                                          <option value="fastest">Fastest</option>
+                                          <option value="scenic">Scenic</option>
+                                        </select> 
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td><b>Unit:</b></td>
+                                    <td>
+                                        <select id="UnitType">
+                                          <option value="mi">Miles</option>
+                                          <option value="km">Kilometers</option>
+                                        </select> 
+                                    </td>
+                                </tr>
+                            </table>
+        
+                            <!--
+                                <a onclick="CreatePopupWindow('TruckOptions','650');">TruckOptions</a>
+                             -->
+
+                            <!-- Directions Location List -->
+                            <div id="DirectionsInput" style="overflow:auto; margin-bottom:5px;padding:0 5px 5px 0;border-bottom:1px solid #ddd;">
+                                <ul id="sortable">
+                                    <li class="ui-state-default" index="0">
+                                    <div class="draggable"></div>
+                                        <span id="RowNumber">1</span>
+                                        <input type="text" />
+                                        <a class="button1-white" onclick="RemoveAddressRow(this);" style="float:right;color:#666;margin:-2px 2px 0 0;">Remove</a>
+                        
+                                    </li>
+                                    <li class="ui-state-default" index="1">
+                                    <div class="draggable"></div>
+                                        <span id="RowNumber">2</span>
+                                        <input type="text" />
+                                        <a class="button1-white" onclick="RemoveAddressRow(this);" style="float:right;color:#666;margin:-2px 2px 0 0;">Remove</a>
+                                    </li>
+                                </ul>
+                    
+                            </div>
+                            
+                            <!-- Directions Buttons -->
+                            <a class="button1-white" onclick="AddAddressRow();">Add Row</a> 
+                            <a class="button1-white" onclick="ClearDirections();">Clear</a> 
+                            <a class="button1-blue" style="float:right;margin-bottom:3px;" onclick="GetDirections();">Get Directions</a> 
+                                
+                        </div><!--Slider-DirectionsInput-->
+       
+                        <!-- Directions Slide -->
+                        <div id="Slider-DirectionsOutput" style="overflow:auto;">     
+                            <span style="font-family:helvetica,arial,sans-serif;font-size:12px;color:#006DB4;font-weight:bold;">Directions</span>
+                            
+                            <div id="DirectionControls" style="display:none; width:100%;">
+                                <a class="button1-white" onclick="printthis('DirectionsOutput');">Print</a> 
+                                <a class="button1-white" onclick="SendDirectionsEmail();">Email Directions</a> 
+                                <a class="button1-white" onclick="ClearDirections();">Clear</a> 
+                            </div>
+                            
+                            <br /> <br />
+            
+                  
+                            <div id="DirectionsOutput" style="overflow:auto;display:block;float:left;width:100%;">
+        
+                            </div>
+                        </div><!--Slider-DirectionsOutput-->
+                        
+                        <!-- Blank Slide -->
+                        <div>
+                            Blank Slide
+                        </div>
+                    </div><!--Directions Slider-->
+        
+                </div><!--Directions Tab-->
+    
+                <!-- Export Tab -->
+                <div id="tab-export">
+       
+                    <!-- Name -->
+                    <div style="display:block;float:left;width:100%;">
+                        <span style="display:block;float:left;margin-top:5px;font-family:helvetica,arial,sans-serif;font-size:12px;color:#000;font-weight:bold;">Name:</span>
+                        <input style="display:block;float:right;margin:3px 0 0 7px;padding:2px 5px 2px 5px;height:12px;width:200px;" type="text" id="ExportName" />
+                    </div>
+        
+                    <!-- Buttons -->
+                    <div style="display:block;float:right;width;100%;margin:0;padding:8px 0 5px 0;">
+                        <a class="button1-blue" style="float:right;margin-bottom:3px;margin-right:0;" onclick="DoExport();">Submit</a> 
+                        <a class="button1-white" style="float:right;margin-bottom:3px;margin-right:0;" onclick="ClearExport();">Clear Exports</a> 
+                    </div>
+        
+                    <!-- Exports Table -->
+                    <div id="exportedTable" class='loadmask-wrapper'>
+                    	
+                    	<!-- 
+                    	<table class='exported'>
+                    		<tr>
+                    			<th style="width:65%;border-right:1px solid #fff;">Export Name</th>
+                                <th style="width:28%;">Export Date</th>
+                    		</tr>
+                    	</table>
+        				 -->
+        				
+                        <apex:outputPanel id="MAExportsRepeat">
+                            <table class="exported">
+                                <tr>
+                                    <th style="width:65%;border-right:1px solid #fff;">Export Name</th>
+                                    <th style="width:28%;">Export Date</th>
+                                </tr>
+                                
+                                <apex:repeat value="{!MAExports}" var="e" >
+                                    <tr>
+                                        <td><a href="/apex/MapAnythingExport?expID={!e.Id}" target="_blank">{!e.Name}</a></td>
+                                        <td><apex:outputField value="{!e.CreatedDate}"/></td>
+                                    </tr>
+                                </apex:repeat>
+                            </table>   
+                        </apex:outputPanel>
+                        
+        
+                    </div>
+        
+                    <!-- Export Messages -->
+                    <apex:outputPanel id="ExportPageMessages">
+                        <apex:pagemessages ></apex:pagemessages>
+                    </apex:outputPanel>
+    
+                </div><!--End Export Tab-->
+    
+            </div><!--tabs-->
+        </div><!--sidebar-content-->
+    </div><!--sidebar-->
+
+    <!-- Sidebar Shadow -->
+    <div id="left-shadow"></div>
+    
+    <!-- Sidebar Handle -->
+    <div id="sidebar-button">
+        <img id="gearIcon" title="Collapse/Expand Menu" onmouseover="this.className = 'gearIconOn';" onmouseout="this.className = 'gearIcon';" onfocus="this.className = 'gearIconOn';" onblur="this.className = 'gearIcon';" alt="Collapse/Expand Menu" src="/s.gif" />   
+    </div><!--sidebar-button-->
+
+    <!-- Map -->
+    <div id="mapdiv" style="width:99%;">
+        
+        <!-- Zoom Bar -->
+        <div class='tools-zoom'>
+            <div class='zoom-bar-wrapper'>
+                <div class='zoom-bar'>
+                    <div class='zoom-bar-slider'></div>
+                    <div class='zoom-bar-level'></div><div class='zoom-bar-level'></div><div class='zoom-bar-level'></div><div class='zoom-bar-level'></div><div class='zoom-bar-level'></div><div class='zoom-bar-level'></div><div class='zoom-bar-level'></div><div class='zoom-bar-level'></div><div class='zoom-bar-level'></div><div class='zoom-bar-level'></div><div class='zoom-bar-level'></div><div class='zoom-bar-level'></div><div class='zoom-bar-level'></div><div class='zoom-bar-level'></div><div class='zoom-bar-level'></div><div class='zoom-bar-level'></div><div class='zoom-bar-level'></div><div class='zoom-bar-level'></div><div class='zoom-bar-level'></div>
+                </div>
+                
+                <div class='zoom-level street' data-zoom-level='17'>
+                    <div class='zoom-level-highlight'></div>
+                    <div class='zoom-level-label'>Street</div>
+                </div>
+                <div class='zoom-level city' data-zoom-level='11'>
+                    <div class='zoom-level-highlight'></div>
+                    <div class='zoom-level-label'>City</div>
+                </div>
+                <div class='zoom-level state' data-zoom-level='8'>
+                    <div class='zoom-level-highlight'></div>
+                    <div class='zoom-level-label'>State</div>
+                </div>
+                <div class='zoom-level country' data-zoom-level='5'>
+                    <div class='zoom-level-highlight'></div>
+                    <div class='zoom-level-label'>Country</div>
+                </div>
+            </div>
+            <div class='zoom-toggle'>
+                <div class='zoom-toggle-plus'><div class='zoom-toggle-plus-icon'></div></div>
+                <div class='zoom-toggle-minus'><div class='zoom-toggle-minus-icon'></div></div>
+            </div>
+        </div>
+        
+        <!-- Shadows -->
+        <div id="top-shadow"></div>
+        <div id="right-shadow"></div>
+        <div id="bottom-shadow"></div>
+        <div id="topleft-shadow"></div>
+        <div id="topright-shadow"></div>
+        <div id="bottomleft-shadow"></div>   
+        <div id="bottomright-shadow"></div> 
+        
+        <!-- Growl Wrapper -->
+        <div id="growl-wrapper" style='position: absolute; top: 5px; right: 5px;'></div>
+        
+    </div>
+
+    <!-- Map Footer (REMOVE THIS LATER) -->
+    <div id="map-footer" style="display:none;float:left;clear:both;width:100%;height:25px;margin:8px 0 0 0;background:#fff;">    
+        
+        <!-- Footer Logo -->
+        <div style="display:block;float:left;">
+            <a id="footer-logo" href="http://cloudbilt.com" target="_blank"></a>
+        </div>
+
+        <!-- Geocoders Table -->
+        <div style="display:block;float:right;">
+            <table>
+                <tr>
+                    <td><b>Geocoding</b></td>
+                    <td style="text-align:right;"><b>Request Pending:</b></td>
+                    <td id="GeoRequestPending"></td>
+                    <td style="text-align:right;"><b>Current Request:</b></td>
+                    <td id="GeoCurrentRequest"></td>
+                    <td style="text-align:right;"><b>Sent Request:</b></td>
+                    <td id="GeoSentRequest"></td>
+                    <td style="text-align:right;"><b>Processed Request:</b></td>
+                    <td id="GeoProcessedRequest"></td>
+                </tr>
+            </table>
+        </div>
+
+    </div><!--footer-->
+    
+    <!-- Range Colors -->
+    <div id="RangeColorsDiv" style="text-align:center;"></div>
+    
+    <style>
+        #container a
+        {
+            color:white;
+        }
+    </style>
+    
+    <!-- Notification Templates -->
+    <div id="container">
+        <div id="basic-template">
+            <a class="ui-notify-cross ui-notify-close" href="#">x</a>
+            <h1 style="color:red;">#{title}</h1>
+            <p>#{text}</p>
+        </div>
+        <div id="Warning-Template">
+            <a class="ui-notify-cross ui-notify-close" href="#">x</a>
+            <h1 style="color:yellow;">#{title}</h1>
+            <p>#{text}</p>
+        </div>
+    </div>
+    
+    <!-- Copy To Popup -->
+    <div id="CopyToPopup" class="popup_block">
+        <h2>Copy <span id="copynode" copyid="" copynodetype="" style="font-size:14px;color:black;"></span> To...</h2>
+        <div id="CopyToTree" class="demo" style="padding-top:3px;"></div>
+        <br />
+        <br />
+        <a class="button1-blue" onclick="SubmitCopyTo();">Submit</a>  
+        <a class="button1-blue" onclick="ClosePopupWindow();">Close</a>    
+    </div>
+    
+    <!-- Edit Permissions Popup -->
+    <div id="EditPermissionsPopup" class="popup_block">
+        <div class='loadmask-wrapper'>
+            <h2>Folder Permissions for <span id="foldertoedit" folderid="" style="font-size:14px;color:black;"></span></h2>
+            <br />
+            <table style='width: 100%;'>
+                <tr>
+                    <td>
+                        <!-- Permissions Grid Filters  -->
+                        <table id="permissions-filters">
+                            <tr>
+                                <td>Search for</td>
+                                <td><select id='permissionsfilter-searchtype'><option value='Both' selected="selected">Both</option><option value='User'>User</option><option value='Profile'>Profile</option></select></td>
+                                <td><input type='text' id='permissionsfilter-searchtext' /></td>
+                            </tr>
+                        </table>
+                    </td>
+                    <td>
+                        <!-- Permissions Grid Paging -->
+                        <table style='float: right;'>
+                            <tr>
+                                <td id='permissions-pageinfo'></td>
+                            </tr>
+                            <tr>
+                                <td style='text-align: right; verticle-align: middle;'>Go to page <select id='permissions-page'></select></td>
+                            </tr>
+                        </table>
+                    </td>
+                </tr>
+            
+            </table>
+            <div id="permissions-grid-wrapper">
+                <div id="permissions-grid-loadmask"></div>
+                <div id="permissions-grid-status">
+                    <div class='status'>
+                        <img src="{!URLFOR($Resource.MapAnything, 'images/chatterstatus-loader.gif')}" />
+                        <span></span>
+                    </div>
+                </div>
+                <table id="permissions-grid" cellspacing="5">
+                    <thead>
+                        <tr style="width:100%;">
+                            <td style="width:15%;text-align:left;"><b>Permission Type</b></td>
+                            <td style="width:20%;text-align:left;"><b>Permission For</b></td>
+                            <td style="width:10%"><b>Read</b></td>
+                            <td style="width:10%"><b>Create</b></td>
+                            <td style="width:10%"><b>Modify</b></td>
+                            <td style="width:10%"><b>Delete</b></td>
+                            <td style="width:10%"><b>Set Perm.</b></td>
+                            <td style="width:15%"></td>
+                        </tr>                   
+                    </thead>
+                </table>
+            </div>
+            <br />
+            <br />    
+            <a class="button1-blue" onclick="CreateNewPermissionPopup();">Create New</a>                 
+            <a class="button1-blue" onclick="ClosePopupWindow();">Close</a>
+        </div>
+    </div>
+
+    <!-- Debug Window -->
+    <div id="DebugWindowPopup" class="popup_block">
+        <h2>Debug Log</h2>
+        <div id="DebugOut"></div>
+        <br />
+        <br />
+        <a class="button1-blue" onclick="ClosePopupWindow();">Close</a>
+        <a class="button1-lightgray" onclick="ClearDebugWindow();">Clear</a>
+        <a class="button1-lightgray" onclick="EmailDebugLog();">Email Log</a>
+    </div>
+
+    <!-- Address Not Found Window -->
+    <div id="AddressNotFoundPopup" class="popup_block">
+        <h2>Addresses Not Found</h2>
+        <div id="MissingAddressesContent" ></div>
+        <br />
+        <br />
+        <a class="button1-blue" href="javascript:ClosePopupWindow();">Close</a>
+        <a class="button1-lightgray" onclick="ExportMissingAddresses();">Export Selected</a>
+        <a class="button1-lightgray" onclick="ExportMissingAddresses(true);">Export All</a>
+    </div>
+    
+    <!-- Add to Campaign Window -->
+    <div id="AddToCampaignPopup" class="popup_block" style='max-height: 600px;'>
+        <h2>Add to Campaign</h2>
+        
+        <!-- Step 1: Select Campaigns -->
+        <div id='addtocampaign-select-wrapper' class='loadmask-wrapper'>
+        
+            <!-- Header -->
+            <h4>Step 1: Select Campaigns</h4>
+            
+            <!-- Grid -->
+            <div class='grid-wrapper'>
+                <!-- Campaigns Grid Options -->
+                <table style='width: 100%;'>
+                    <tr>
+                        <td style='vertical-align: top;'>
+                            <!-- Campaigns Grid Filters -->
+                            <table id="addtocampaign-select-filters">
+                                <tr>
+                                    <td class='label'>Name</td>
+                                    <td class='data'><input type='text' id='addtocampaign-filter-name' class='filter-text' data-field='Name' /> <span class='link showadvancedfilters'>Show Advanced Filters</span> | <span class='link clearfilters'>Clear Filters</span></td>
+                                </tr>
+                            </table>
+                            
+                            <!-- Campaigns Grid Advanced Filters -->
+                            <div id="addtocampaign-select-advanced-filters" style='display: none;'>
+                                <table>
+                                    <tr>
+                                        <td class='label'>Type</td>
+                                        <td class='data'><input type='text' id='addtocampaign-filter-type' class='filter-text' data-field='Type' /></td>
+                                        <td class='label'>Status</td>
+                                        <td class='data'><input type='text' id='addtocampaign-filter-status' class='filter-text' data-field='Status' /></td>
+                                    </tr>
+                                    <tr>
+                                        <td class='label'>Start Date</td>
+                                        <td class='data' colspan='3'>between <input type='text' id='addtocampaign-filter-startdate-start' class='filter-calendar start' data-field='StartDate' /> and <input type='text' id='addtocampaign-filter-startdate-end' class='filter-calendar end' data-field='StartDate' /></td>
+                                    </tr>
+                                    <tr>
+                                        <td class='label'>End Date</td>
+                                        <td class='data' colspan='3'>between <input type='text' id='addtocampaign-filter-enddate-start' class='filter-calendar start' data-field='EndDate' /> and <input type='text' id='addtocampaign-filter-enddate-end' class='filter-calendar end' data-field='EndDate' /></td>
+                                    </tr>
+                                    <tr>
+                                        <td class='label'># Leads</td>
+                                        <td class='data' colspan='3'>between <input type='text' id='addtocampaign-filter-leads-start' class='filter-number start' data-field='NumberOfLeads' /> and <input type='text' id='addtocampaign-filter-leads-end' class='filter-number end' data-field='NumberOfLeads' /></td>
+                                    </tr>
+                                    <tr>
+                                        <td class='label'># Contacts</td>
+                                        <td class='data' colspan='3'>between <input type='text' id='addtocampaign-filter-contacts-start' class='filter-number start' data-field='NumberOfContacts' /> and <input type='text' id='addtocampaign-filter-contacts-end' class='filter-number end' data-field='NumberOfContacts' /></td>
+                                    </tr>
+                                    <tr>
+                                        <td class='label'># Responses</td>
+                                        <td class='data' colspan='3'>between <input type='text' id='addtocampaign-filter-responses-start' class='filter-number start' data-field='NumberOfResponses' /> and <input type='text' id='addtocampaign-filter-responses-end' class='filter-number end' data-field='NumberOfResponses' /></td>
+                                    </tr>
+                                </table>
+                            </div>
+                        </td>
+                        <td style='vertical-align: bottom;'>
+                            <!-- Campaigns Grid Paging -->
+                            <table style='float: right;'>
+                                <tr>
+                                    <td class='grid-pageinfo'></td>
+                                </tr>
+                                <tr>
+                                    <td style='text-align: right; verticle-align: middle;'>Go to page <select class='grid-page'></select></td>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>
+                
+                </table>
+                
+                <!-- Spacer -->
+                <div style='height: 15px;'>&nbsp;</div>
+    
+                <!-- Campaigns Grid -->
+                <div id='addtocampaign-select-grid-wrapper' class='loadmask-wrapper'>
+                    <table id='addtocampaign-select-grid' class='grid-blue'>
+                        <tr>
+                            <th style='width: 20px;'></th>
+                            <th>Name</th>
+                            <th>Type</th>
+                            <th>Status</th>
+                            <th>Start Date</th>
+                            <th>End Date</th>
+                            <th># Leads</th>
+                            <th># Contacts</th>
+                            <th># Responses</th>
+                        </tr>
+                    </table>
+                </div>
+                
+                <!-- Grid Selection Details -->
+                <div id='addtocampaign-select-selectiondetails'><span>0</span> selected <span class='link clearselections'>Clear Selections</span></div>
+            
+            </div>
+            
+            <!-- Spacer -->
+            <div style='height: 15px;'>&nbsp;</div>
+        
+            <!-- Buttons -->
+            <a class="button1-lightgray" onclick="AddToCampaign_Step2();">Next</a>
+            <span class='link' style='font-size: 10px; line-height: 22px;' onclick="ClosePopupWindow();">Cancel</span>
+            
+        </div>
+        
+        <!-- Step 2: Options -->
+        <div id='addtocampaign-options-wrapper' class='loadmask-wrapper'>
+        
+            <!-- Header -->
+            <h4>Step 2: Options</h4>
+            
+            <!-- Spacer -->
+            <div style='height: 15px;'>&nbsp;</div>
+            
+            <!-- Options Grid -->
+            <div id='addtocampaign-options-grid-wrapper' class='loadmask-wrapper'>
+                <table id='addtocampaign-options-grid' class='grid-blue'>
+                    <tr>
+                        <th>Name</th>
+                        <th>Member Status</th>
+                        <th>Override Status For Existing Members</th>
+                    </tr>
+                </table>
+            </div>
+        
+            <!-- Spacer -->
+            <div style='height: 15px;'>&nbsp;</div>
+        
+            <!-- Buttons -->
+            <a class="button1-lightgray" onclick="AddToCampaign_Step1();">Back</a>
+            <a class="button1-lightgray" onclick="AddToCampaign_Finish();">Save &amp; Close</a>
+            <span class='link' style='font-size: 10px; line-height: 22px;' onclick="ClosePopupWindow();">Cancel</span>
+        
+        </div>
+        
+    </div>
+    
+    <!-- Change Owner Window -->
+    <div id="ChangeOwnerPopup" class="popup_block" style='max-height: 600px;'>
+        <h2>Change Owner</h2>
+        
+        <!-- Step 1: Select New Owner -->
+        <div id='changeowner-select-wrapper' class='loadmask-wrapper'>
+        
+            <!-- Header -->
+            <h4>Step 1: Select New Owner</h4>
+            
+            <!-- Grid -->
+            <div class='grid-wrapper'>
+            
+                <!-- Users Grid Options -->
+                <table style='width: 100%;'>
+                    <tr>
+                        <td style='vertical-align: top;'>
+                        
+                            <!-- Grid Filters -->
+                            <table>
+                                <tr>
+                                    <td class='label'>Name</td>
+                                    <td class='data'><input type='text' id='changeowner-filter-name' class='filter-text' data-field='Name' /></td>
+                                </tr>
+                            </table>
+                            
+                        </td>
+                        <td style='vertical-align: bottom;'>
+                            
+                            <!-- Grid Paging -->
+                            <table style='float: right;'>
+                                <tr>
+                                    <td class='grid-pageinfo'></td>
+                                </tr>
+                                <tr>
+                                    <td style='text-align: right; verticle-align: middle;'>Go to page <select class='grid-page'></select></td>
+                                </tr>
+                            </table>
+                            
+                        </td>
+                    </tr>
+                
+                </table>
+                
+                <!-- Spacer -->
+                <div style='height: 15px;'>&nbsp;</div>
+    
+                <!-- Users Grid -->
+                <div id='changeowner-select-grid-wrapper' class='loadmask-wrapper'>
+                    <table id='changeowner-select-grid' class='grid-blue'>
+                        <tr>
+                            <th>Name</th>
+                        </tr>
+                    </table>
+                </div>
+                
+            </div>
+            
+            <!-- Spacer -->
+            <div style='height: 15px;'>&nbsp;</div>
+        
+            <!-- Buttons -->
+            <span class='link' style='font-size: 10px; line-height: 22px;' onclick="ClosePopupWindow();">Cancel</span>
+            
+        </div>
+        
+        <!-- Step 2: Options -->
+        <div id='changeowner-options-wrapper' class='loadmask-wrapper'>
+        
+            <!-- Header -->
+            <h4>Step 2: Transfer Options</h4>
+            
+            <!-- Spacer -->
+            <div style='height: 15px;'>&nbsp;</div>
+            
+            <!-- Transfer Options -->
+            <div>
+                <h4>Select which releated items to transfer</h4>
+                
+                <div><input type='checkbox' id='changeowner-notes' checked='checked' /> Notes</div>
+                <div><input type='checkbox' id='changeowner-attachments' checked='checked' /> Attachments</div>
+                <div><input type='checkbox' id='changeowner-tasks' checked='checked' /> Open Tasks</div>
+                <div><input type='checkbox' id='changeowner-events' checked='checked' /> Future Events</div>
+            </div>
+        
+            <!-- Spacer -->
+            <div style='height: 15px;'>&nbsp;</div>
+        
+            <!-- Buttons -->
+            <a class="button1-lightgray" onclick="ChangeOwner_Step1();">Back</a>
+            <a class="button1-lightgray" onclick="ChangeOwner_Finish();">Save &amp; Close</a>
+            <span class='link' style='font-size: 10px; line-height: 22px;' onclick="ClosePopupWindow();">Cancel</span>
+        
+        </div>
+        
+    </div>
+    
+    <!-- Update Field Window -->
+    <div id="UpdateFieldPopup" class="popup_block" style='max-height: 600px;'>
+    	<div class='loadmask-wrapper'>
+	    	<h2>Update Field</h2>
+	    	
+	    	<!-- Form -->
+	    	<div style='height: 120px; margin-top: 15px;'>
+		    	<table class='form-stretch'>
+		    	
+		    		<!-- Query to update -->
+		    		<tr class='updatefield-query-wrapper'>
+		    			<td>Query</td>
+		    			<td><select class='updatefield-query' onchange='UpdateField_QueryChanged();'></select></td>
+		    		</tr>
+		    		
+		    		<!-- Field to update -->
+		    		<tr class='updatefield-field-wrapper' style='display: none;'>
+		    			<td>Field</td>
+		    			<td><select class='updatefield-field' onchange='UpdateField_FieldChanged();'></select></td>
+			    	</tr>
+			    	
+			    	<!-- New value -->
+			    	<tr class='updatefield-value-wrapper' style='display: none;'>
+			    		<td>Value</td>
+			    		<td class='updatefield-value'></td>
+			    	</tr>
+			    		
+		    	</table>
+		    </div>
+	    
+	        <!-- Buttons -->
+	        <a class="button1-lightgray" onclick="UpdateField_Finish();">Save &amp; Close</a>
+	        <span class='link' style='font-size: 10px; line-height: 22px;' onclick="ClosePopupWindow();">Cancel</span>
+    	</div>
+    </div>
+    
+    <!-- New Task Window -->
+    <div id="NewTaskPopup" class="popup_block" style='max-height: 600px;'>
+        <h2>New Task</h2>
+        
+        <!-- Step 1: Assign To -->
+        <div id='newtask-assignto-wrapper' class='loadmask-wrapper'>
+        
+            <!-- Header -->
+            <h4>Step 1: Assign To</h4>
+            
+            <!-- Grid -->
+            <div class='grid-wrapper'>
+            
+                <!-- Users Grid Options -->
+                <table style='width: 100%;'>
+                    <tr>
+                        <td style='vertical-align: top;'>
+                        
+                            <!-- Grid Filters -->
+                            <table>
+                                <tr>
+                                    <td class='label'>Name</td>
+                                    <td class='data'><input type='text' class='filter-text' data-field='Name' /></td>
+                                </tr>
+                            </table>
+                            
+                        </td>
+                        <td style='vertical-align: bottom;'>
+                            
+                            <!-- Grid Paging -->
+                            <table style='float: right;'>
+                                <tr>
+                                    <td class='grid-pageinfo'></td>
+                                </tr>
+                                <tr>
+                                    <td style='text-align: right; verticle-align: middle;'>Go to page <select class='grid-page'></select></td>
+                                </tr>
+                            </table>
+                            
+                        </td>
+                    </tr>
+                
+                </table>
+                
+                <!-- Spacer -->
+                <div style='height: 15px;'>&nbsp;</div>
+    
+                <!-- Users Grid -->
+                <div id='newtask-select-grid-wrapper' class='loadmask-wrapper'>
+                    <table id='newtask-select-grid' class='grid-blue'>
+                        <tr>
+                            <th>Name</th>
+                        </tr>
+                    </table>
+                </div>
+                
+                <!-- Spacer -->
+                <div style='height: 15px;'>&nbsp;</div>
+                
+            </div>
+            
+            <!-- Buttons -->
+            <span class='link' style='font-size: 10px; line-height: 22px;' onclick="ClosePopupWindow();">Cancel</span>
+            
+        </div>
+        
+        <!-- Step 2: Task Details -->
+        <div id='newtask-details-wrapper' class='loadmask-wrapper'>
+        
+            <!-- Header -->
+            <h4>Step 2: Task Details</h4>
+            
+            <!-- Spacer -->
+            <div style='height: 15px;'>&nbsp;</div>
+        
+            <!-- Details -->
+            <table class='grid-blue'>
+                <tr>
+                    <td>Subject</td>
+                    <td><input type='text' id='newtask-details-subject' style='width: 100%; -webkit-box-sizing: border-box; -moz-box-sizing: border-box; box-sizing: border-box;' /></td>
+                </tr>
+                <tr>
+                    <td>Due Date</td>
+                    <td><input type='text' id='newtask-details-duedate' class='datepicker' style='width: 100%; -webkit-box-sizing: border-box; -moz-box-sizing: border-box; box-sizing: border-box;' /></td>
+                </tr>
+                <tr>
+                    <td>Comments</td>
+                    <td><textarea id='newtask-details-description' style='width: 100%; height: 100px; -webkit-box-sizing: border-box; -moz-box-sizing: border-box; box-sizing: border-box;'></textarea></td>
+                </tr>
+            </table>
+            
+            <!-- Spacer -->
+            <div style='height: 15px;'>&nbsp;</div>
+            
+            <!-- Buttons -->
+            <a class="button1-lightgray" onclick="NewTask_Step1();">Back</a>
+            <a class="button1-lightgray" onclick="NewTask_Finish();">Add &amp; Close</a>
+            <span class='link' style='font-size: 10px; line-height: 22px;' onclick="ClosePopupWindow();">Cancel</span>
+            
+        </div>
+        
+    </div>
+    
+    <!-- New Event Window -->
+    <div id="NewEventPopup" class="popup_block" style='max-height: 600px;'>
+        <h2>New Event</h2>
+        
+        <!-- Step 1: Assign To -->
+        <div id='newevent-assignto-wrapper' class='loadmask-wrapper'>
+        
+            <!-- Header -->
+            <h4>Step 1: Assign To</h4>
+            
+            <!-- Grid -->
+            <div class='grid-wrapper'>
+            
+                <!-- Users Grid Options -->
+                <table style='width: 100%;'>
+                    <tr>
+                        <td style='vertical-align: top;'>
+                        
+                            <!-- Grid Filters -->
+                            <table>
+                                <tr>
+                                    <td class='label'>Name</td>
+                                    <td class='data'><input type='text' class='filter-text' data-field='Name' /></td>
+                                </tr>
+                            </table>
+                            
+                        </td>
+                        <td style='vertical-align: bottom;'>
+                            
+                            <!-- Grid Paging -->
+                            <table style='float: right;'>
+                                <tr>
+                                    <td class='grid-pageinfo'></td>
+                                </tr>
+                                <tr>
+                                    <td style='text-align: right; verticle-align: middle;'>Go to page <select class='grid-page'></select></td>
+                                </tr>
+                            </table>
+                            
+                        </td>
+                    </tr>
+                
+                </table>
+                
+                <!-- Spacer -->
+                <div style='height: 15px;'>&nbsp;</div>
+    
+                <!-- Users Grid -->
+                <div id='newevent-select-grid-wrapper' class='loadmask-wrapper'>
+                    <table id='newevent-select-grid' class='grid-blue'>
+                        <tr>
+                            <th>Name</th>
+                        </tr>
+                    </table>
+                </div>
+                
+                <!-- Spacer -->
+                <div style='height: 15px;'>&nbsp;</div>
+                
+            </div>
+            
+            <!-- Buttons -->
+            <span class='link' style='font-size: 10px; line-height: 22px;' onclick="ClosePopupWindow();">Cancel</span>
+            
+        </div>
+        
+        <!-- Step 2: Event Details -->
+        <div id='newevent-details-wrapper' class='loadmask-wrapper'>
+        
+            <!-- Header -->
+            <h4>Step 2: Event Details</h4>
+            
+            <!-- Spacer -->
+            <div style='height: 15px;'>&nbsp;</div>
+        
+            <!-- Details -->
+            <table class='grid-blue'>
+                <tr>
+                    <td>Subject</td>
+                    <td><input type='text' id='newevent-details-subject' style='width: 100%; -webkit-box-sizing: border-box; -moz-box-sizing: border-box; box-sizing: border-box;' /></td>
+                </tr>
+                <tr>
+                    <td>Start</td>
+                    <td>
+                        <input type='text' id='newevent-details-startdate' class='datepicker' style='-webkit-box-sizing: border-box; -moz-box-sizing: border-box; box-sizing: border-box;' />
+                        <select type='text' id='newevent-details-starthour'><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option><option value="6">6</option><option value="7">7</option><option value="8">8</option><option value="9">9</option><option value="10">10</option><option value="11">11</option><option value="12">12</option></select>
+                        <select type='text' id='newevent-details-startminute'><option value="00">00</option><option value="01">01</option><option value="02">02</option><option value="03">03</option><option value="04">04</option><option value="05">05</option><option value="06">06</option><option value="07">07</option><option value="08">08</option><option value="09">09</option><option value="10">10</option><option value="11">11</option><option value="12">12</option><option value="13">13</option><option value="14">14</option><option value="15">15</option><option value="16">16</option><option value="17">17</option><option value="18">18</option><option value="19">19</option><option value="20">20</option><option value="21">21</option><option value="22">22</option><option value="23">23</option><option value="24">24</option><option value="25">25</option><option value="26">26</option><option value="27">27</option><option value="28">28</option><option value="29">29</option><option value="30">30</option><option value="31">31</option><option value="32">32</option><option value="33">33</option><option value="34">34</option><option value="35">35</option><option value="36">36</option><option value="37">37</option><option value="38">38</option><option value="39">39</option><option value="40">40</option><option value="41">41</option><option value="42">42</option><option value="43">43</option><option value="44">44</option><option value="45">45</option><option value="46">46</option><option value="47">47</option><option value="48">48</option><option value="49">49</option><option value="50">50</option><option value="51">51</option><option value="52">52</option><option value="53">53</option><option value="54">54</option><option value="55">55</option><option value="56">56</option><option value="57">57</option><option value="58">58</option><option value="59">59</option></select>
+                        <select type='text' id='newevent-details-startperiod'><option value='AM'>AM</option><option value='PM'>PM</option></select>
+                    </td>
+                </tr>
+                <tr>
+                    <td>End</td>
+                    <td>
+                        <input type='text' id='newevent-details-enddate' class='datepicker' style='-webkit-box-sizing: border-box; -moz-box-sizing: border-box; box-sizing: border-box;' />
+                        <select type='text' id='newevent-details-endhour'><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option><option value="6">6</option><option value="7">7</option><option value="8">8</option><option value="9">9</option><option value="10">10</option><option value="11">11</option><option value="12">12</option></select>
+                        <select type='text' id='newevent-details-endminute'><option value="00">00</option><option value="01">01</option><option value="02">02</option><option value="03">03</option><option value="04">04</option><option value="05">05</option><option value="06">06</option><option value="07">07</option><option value="08">08</option><option value="09">09</option><option value="10">10</option><option value="11">11</option><option value="12">12</option><option value="13">13</option><option value="14">14</option><option value="15">15</option><option value="16">16</option><option value="17">17</option><option value="18">18</option><option value="19">19</option><option value="20">20</option><option value="21">21</option><option value="22">22</option><option value="23">23</option><option value="24">24</option><option value="25">25</option><option value="26">26</option><option value="27">27</option><option value="28">28</option><option value="29">29</option><option value="30">30</option><option value="31">31</option><option value="32">32</option><option value="33">33</option><option value="34">34</option><option value="35">35</option><option value="36">36</option><option value="37">37</option><option value="38">38</option><option value="39">39</option><option value="40">40</option><option value="41">41</option><option value="42">42</option><option value="43">43</option><option value="44">44</option><option value="45">45</option><option value="46">46</option><option value="47">47</option><option value="48">48</option><option value="49">49</option><option value="50">50</option><option value="51">51</option><option value="52">52</option><option value="53">53</option><option value="54">54</option><option value="55">55</option><option value="56">56</option><option value="57">57</option><option value="58">58</option><option value="59">59</option></select>
+                        <select type='text' id='newevent-details-endperiod'><option value='AM'>AM</option><option value='PM'>PM</option></select>
+                    </td>
+                </tr>
+                <tr>
+                    <td>Description</td>
+                    <td><textarea id='newevent-details-description' style='width: 100%; height: 100px; -webkit-box-sizing: border-box; -moz-box-sizing: border-box; box-sizing: border-box;'></textarea></td>
+                </tr>
+            </table>
+            
+            <!-- Spacer -->
+            <div style='height: 15px;'>&nbsp;</div>
+            
+            <!-- Buttons -->
+            <a class="button1-lightgray" onclick="NewEvent_Step1();">Back</a>
+            <a class="button1-lightgray" onclick="NewEvent_Finish();">Add &amp; Close</a>
+            <span class='link' style='font-size: 10px; line-height: 22px;' onclick="ClosePopupWindow();">Cancel</span>
+            
+        </div>
+        
+    </div>
+
+    <!-- LinkedIn Message Popup -->
+    <div id="LinkedInMessagePopup" class="popup_block">
+        <div class='loadmask-wrapper'>
+        
+            <!-- Header -->
+            <h2>Send Message</h2>
+            
+            <!-- Instructions -->
+            <p class='popup-instructions'>Enter a subject and message below to send a message.</p>
+            
+            <!-- Content -->
+            <table class='grid-blue'>
+                <tr>
+                    <td>Subject</td>
+                    <td><input type='text' class='linkedin-message-subject' style='width: 100%; -webkit-box-sizing: border-box; -moz-box-sizing: border-box; box-sizing: border-box;' /></td>
+                </tr>
+                <tr>
+                    <td>Body</td>
+                    <td><textarea class='linkedin-message-body' style='width: 100%; height: 100px; -webkit-box-sizing: border-box; -moz-box-sizing: border-box; box-sizing: border-box;'></textarea></td>
+                </tr>
+            </table>
+            
+            <!-- Spacer -->
+            <div style="height: 15px;">&nbsp;</div>
+            
+            <!-- Buttons -->
+            <a class="button1-lightgray" onclick="linkedIn_SendMessage_Send();">Send Message</a>
+            <span class='link' style='font-size: 10px; line-height: 22px;' onclick="ClosePopupWindow();">Cancel</span>
+        
+        </div>
+    </div>
+    
+    <div id="MoveToAddressPopup" class="popup_block">
+    	<div class='loadmask-wrapper'>
+    	
+	    	<!-- Header -->
+	    	<h2>Move To Address</h2>
+	    	
+	    	<!-- Instructions -->
+	    	<p class='popup-instructions'>Enter an address below to move the map to that location</p>
+	    	
+	    	<!-- Content -->
+	        <table class='grid-blue'>
+	            <tr>
+	                <td>Address</td>
+	                <td><textarea class='movetoaddress-address' style='width: 100%; height: 60px; -webkit-box-sizing: border-box; -moz-box-sizing: border-box; box-sizing: border-box;'></textarea></td>
+	            </tr>
+	        </table>
+	        
+	        <!-- Spacer -->
+	        <div style="height: 15px;">&nbsp;</div>
+	        
+	        <!-- Buttons -->
+	        <a class="button1-lightgray" onclick="moveToAddress_geocode({setAsHome: false});">Move</a>
+	        <a class="button1-lightgray" onclick="moveToAddress_geocode({setAsHome: true});">Move &amp; Set As Default View</a>
+	        <span class='link' style='font-size: 10px; line-height: 22px;' onclick="ClosePopupWindow();">Cancel</span>
+	        
+    	</div>
+    </div>
+
+    <!-- Export Window -->
+    <div id="ExportPopup" class="popup_block">
+        <h2>Export</h2>
+        <br />
+        <br />
+        <a class="button1-blue" href="javascript:ClosePopupWindow();">Close</a>
+    </div>
+    
+    <!-- Loading Popup -->
+    <div id="LoadingPopup" class="popup_block">
+        <table>
+            <tr>
+                <td>
+                    <img src="{!$Resource.MapLoadingGif}" />
+                </td>
+                <td style="vertical-align:middle;">
+                    <b>Loading...</b>
+                </td>
+            </tr>
+        </table>
+    </div>
+
+    <!-- Truck Options -->
+    <div id="TruckOptions" class="popup_block">
+        <h2>Truck Options</h2>
+        
+        <table cellpadding="5">
+            <tr>
+                <td style="vertical-align:top;"><b>Hazardous Goods</b></td>
+                <td>
+                    <table>
+                        <tr>
+                            <td><input type="checkbox" name="explosive" value="explosive" />Explosive</td>
+                            <td><input type="checkbox" name="gas" value="gas" />Gas</td>
+                            <td><input type="checkbox" name="flammable" value="flammable" />Flammable</td>
+                            <td><input type="checkbox" name="combustible" value="combustible" />Combustible</td>
+                            <td><input type="checkbox" name="organic" value="organic" />Organic</td>
+                        </tr>
+                        <tr>
+                            <td><input type="checkbox" name="poison" value="poison" />Poison</td>
+                            <td><input type="checkbox" name="radioActive" value="radioActive" />Radio-Active</td>
+                            <td><input type="checkbox" name="corrosive" value="corrosive" />Corrosive</td>
+                            <td colspan="2"><input type="checkbox" name="other" value="other" />Other<br /></td>
+                        </tr>
+                        <tr>
+                            <td colspan="2">
+                                <input type="checkbox" name="poisonousInhalation" value="poisonousInhalation" />Poisonous upon Inhalation<br />
+                            </td>
+                            <td colspan="3">
+                                <input type="checkbox" name="harmfulToWater" value="harmfulToWater" />Harmful to Water<br />
+                            </td>
+                        </tr>
+                    </table>
+                </td>
+            </tr>
+            <tr>
+                <td style="vertical-align:top;"><b>Truck &amp; Trailer</b></td>
+                <td>
+                    <table cellpadding="3">
+                        <tr>
+                            <td><b>Height</b></td>
+                            <td><input type="text" name="email" size="10" /></td>
+                            <td style="color:#909090;">Maximum truck height in meters.</td>
+                        </tr>
+                        <tr>
+                            <td><b>Width</b></td>
+                            <td><input type="text" name="width" size="10"/></td>
+                            <td style="color:#909090;">Maximum truck width in meters.</td>
+                        </tr>
+                        <tr>
+                            <td><b>Length</b></td>
+                            <td><input type="text" name="length" size="10" /></td>
+                            <td style="color:#909090;">Maximum truck length in meters.</td>
+                        </tr>
+                        <tr>
+                            <td><b>Trailer Weight</b></td>
+                            <td><input type="text" name="trailerWeight" size="10"/></td>
+                            <td style="color:#909090;">Maximum trailer weight in tons.</td>
+                        </tr>
+                    
+                    </table>
+                </td>
+            </tr>
+        
+        </table>
+        
+        <a class="button1-blue" href="javascript:ClosePopupWindow();">Save &amp; Close</a>
+    </div>
+
+    <!-- Query Editor Window -->
+    <div id='queryeditor-modal' style='display: none;'>
+        <div class='query-editor-modal-loader'>Loading...</div>
+        <div class='query-editor-modal-content'></div>
+    </div>
+
+    <!-- Tooltip Template -->
+    <div id='tooltip-content-template' style='display: none;'>
+    
+        <!-- Header -->
+        <div class='tooltip-header'>
+        
+            <!-- Record Name -->
+            <div class='name'>
+                <a href="/::Id::" target="_blank">::Name::</a>
+            </div>
+            
+            <!-- Record Address -->
+            <div class='address'>::Address::</div>
+            
+        </div>
+        
+        <!-- Tabs -->
+        <div class='tabs' ContentKey="::ContentKey::">
+            <ul>
+                <li id='tab-info'><a href="#pane-info-::ContentKey::">Info</a></li>
+                <li id='tab-actions'><a href="#pane-actions-::ContentKey::">Actions</a></li>
+                <li id='tab-chatter' style='display: none;'><a href="#pane-chatter-::ContentKey::">Chatter</a></li>
+                <li id='tab-relatedlist' style='display: none;'><a href="#pane-relatedlist-::ContentKey::">Related List</a></li>
+            </ul>
+            
+            <!-- Info Tab -->
+            <div id="pane-info-::ContentKey::">
+                
+                <!-- Tooltips -->
+                <div class="tooltips">
+                    <table>
+                        
+                    </table>
+                </div>
+                
+            </div>
+            
+            <!-- Actions Tab -->
+            <div id="pane-actions-::ContentKey::">
+                <table style="text-align:center;vertical-align:middle;">
+                    <tr>
+                        <td style="width:33%;"><a class="button1-white actionbutton" style="width:100px;" id="AddToTrip-::ContentKey::" data-label='Add to Trip'>Add to Trip</a></td>
+                        <td style="width:33%;"><a class="button1-white actionbutton" style="width:100px;" id="SetProxCenter-::ContentKey::" data-label='Set Proximity Center'>Set Proximity Center</a></td>
+                        <td style="width:33%;"><a class="button1-white actionbutton" style="width:100px;" id="RemoveMarker-::ContentKey::" data-label='Remove Marker'>Remove Marker</a></td>
+                    </tr>
+                    
+                    <tr>
+                        <td style="width:33%;"><a class="button1-white actionbutton" style="width:100px;" id="SetVerifiedLocation-::ContentKey::" data-label='Set Verified Location'>Set Verified Location</a></td>
+                        <td style="width:33%;"><a class="button1-white actionbutton" style="width:100px;" id="AddToCampaign-::ContentKey::" data-label='Add to Campaign'>Add to Campaign</a></td>
+                        <td style="width:33%;"><a class="button1-white actionbutton" style="width:100px;" id="ChangeOwner-::ContentKey::" data-label='Change Owner'>Change Owner</a></td>
+                    </tr>
+                    
+                    <tr class='activitybuttons' style='display: none;'>
+                        <td style="width:33%;"><a class="button1-white actionbutton" style="text-decoration:none;width:100px;" target="_blank" href="/_ui/core/email/author/EmailAuthor?::EmailURL::" data-label='Send Email'>Send Email</a></td>                                
+                        <td style="width:33%;"><a class="button1-white actionbutton" style="text-decoration:none;width:100px;" target="_blank" href="/apex/MapActions?action=log_call&id=::Id::" data-label='Log a Call'>Log a Call</a></td>
+                        <td style="width:33%;"><a class="button1-white actionbutton" style="text-decoration:none;width:100px;" target="_blank" href="/apex/MapActions?action=new_task&id=::Id::" data-label='New Task'>New Task</a></td>
+                    </tr>
+                    
+                    <tr class='activitybuttons' style='display: none;'>
+                        <td style="width:33%;"><a class="button1-white actionbutton" style="text-decoration:none;width:100px;" target="_blank" href="/apex/MapActions?action=new_event&id=::Id::" data-label='New Event'>New Event</a></td>
+                        <td style="width:33%;"></td>
+                        <td style="width:33%;"></td>
+                    </tr>
+                </table>
+                
+                <div class='layout-tooltip'></div>
+            </div>
+            
+            <!--Chatter Tab -->
+            <div id="pane-chatter-::ContentKey::" class='loading'>
+            </div>
+            
+            <!-- Related Lists Tab -->
+            <div id="pane-relatedlist-::ContentKey::">
+                <div id="ajax-::ContentKey::" style='overflow: auto;'></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Templates -->
+    <div id='templates' style='display: none;'>
+    
+        <!-- Plotted Query Template -->
+        <div class="PlottedRowUnit">
+        
+            <!-- Load Mask -->
+            <div class='loadMask'></div>
+           
+            <!-- Header -->
+            <div class='header'>
+            
+                <!-- Basic Info -->
+                <div class='basicinfo'>
+                    <div class='basicinfo-name'>&nbsp;</div>
+                    <div class='basicinfo-baseobjectname'>&nbsp;</div>
+                </div>
+            
+                <!-- Rendering Options -->
+                <div class='renderButtons'>
+                    <div class='renderButtons-button markers' data-renderAs='Markers' title='Render Markers'></div>
+                    <div class='renderButtons-button heatmap' data-renderAs='Heatmap' title='Render Heatmap'></div>
+                    <div class='renderButtons-button cluster' data-renderAs='Cluster' title='Render Clusters'></div>
+                </div>
+                
+                <!-- Loading Indicator -->
+                <div class='loader'></div>
+            
+                <!-- Remove Button -->
+                <div class='btn-remove'></div>
+                
+            </div>
+            
+            <!-- Plotting Info -->
+            <div class='plottinginfo-wrapper'>
+                <div class='status'></div>
+                <div class='info'></div>
+            </div>
+            
+            <!-- Legend -->
+            <div class='legend-showhide' style='display: none; text-align: center; cursor: pointer; padding: 5px 0;'>--Hide Legend--</div>
+            <table class='legend' style='display: none;'></table>
+            <div class='legend-moreless' style='display: none; text-align: center; cursor: pointer; padding: 5px 0;'>--Show More--</div>
+            
+        </div>
+        
+        <!-- Proximity Layer Template -->
+        <div class='proximity layer'>
+        
+            <!-- Proximity Type -->
+            <div>
+                Type
+                <select class='proximitytype'>
+                    <option value='Circle'>Circle</option>
+                    <option value='Polygon'>Polygon</option>
+                    <option value='Isoline'>Isoline</option>
+                    <option value='Geography-State'>Geography-State</option>
+                    <option value='Geography-County'>Geography-County</option>
+                    <option value='KML'>KML</option>
+                </select>
+                <span class='link showoptions'>Hide Options</span>
+            </div>
+            
+            <!-- Options -->
+            <div class='options-wrapper'>
+            
+                <!-- Circle -->
+                <div class='options-circle'>
+                
+                    <p>Radius:</p>
+                    <input type='text' class='options-circle-radius' size='5' />
+                    <select class='options-circle-unit'>
+                        <option value='MILES'>Miles</option>
+                        <option value='KM'>Km</option>
+                        <option value='METERS'>Meters</option>
+                        <option value='YARDS'>Yards</option>
+                        <option value='FEET'>Feet</option>
+                    </select>
+                    
+                    <p>Address:</p>
+                    <textarea class='options-circle-address'></textarea> 
+                
+                </div>
+                
+                <!-- Isoline -->
+                <div class='options-isoline' style='display: none;'>
+                
+                    <p>Unit:</p>
+                    <select class='options-isoline-unit-type'>
+                        <option value='Distance'>Distance</option>
+                        <option value='Time'>Time</option>
+                    </select>
+                    <select class='options-isoline-unit'>
+                    </select>
+                    <input type='text' class='options-isoline-unit-value' size='5' />
+                    
+                    <p>Mode:</p>
+                    <select class='options-isoline-mode'>
+                        <option value='car'>Car</option>
+                        <option value='pedestrian'>Pedestrian</option>
+                    </select>
+                    
+                    
+                    <p><input type='checkbox' class='options-isoline-traffic' /> Enable Traffic</p>
+                    
+                    <p>Address:</p>
+                    <textarea class='options-isoline-address'></textarea>
+                
+                </div>
+                
+                <!-- Polygon -->
+                <div class='options-polygon' style='display: none;'>
+                    
+                </div>
+                
+                <!-- Geography-State -->
+                <div class='options-geography-state' style='display: none; padding: 15px 0;'>
+                    <select class='options-geography-states'>
+                        <option value="Alabama">Alabama</option>
+                        <option value="Alaska">Alaska</option>
+                        <option value="Arizona">Arizona</option>
+                        <option value="Arkansas">Arkansas</option>
+                        <option value="California">California</option>
+                        <option value="Colorado">Colorado</option>
+                        <option value="Connecticut">Connecticut</option>
+                        <option value="Delaware">Delaware</option>
+                        <option value="Florida">Florida</option>
+                        <option value="Georgia">Georgia</option>
+                        <option value="Hawaii">Hawaii</option>
+                        <option value="Idaho">Idaho</option>
+                        <option value="Illinois">Illinois</option>
+                        <option value="Indiana">Indiana</option>
+                        <option value="Iowa">Iowa</option>
+                        <option value="Kansas">Kansas</option>
+                        <option value="Kentucky">Kentucky</option>
+                        <option value="Louisiana">Louisiana</option>
+                        <option value="Maine">Maine</option>
+                        <option value="Maryland">Maryland</option>
+                        <option value="Massachusetts">Massachusetts</option>
+                        <option value="Michigan">Michigan</option>
+                        <option value="Minnesota">Minnesota</option>
+                        <option value="Mississippi">Mississippi</option>
+                        <option value="Missouri">Missouri</option>
+                        <option value="Montana">Montana</option>
+                        <option value="Nebraska">Nebraska</option>
+                        <option value="Nevada">Nevada</option>
+                        <option value="New Hampshire">New Hampshire</option>
+                        <option value="New Jersey">New Jersey</option>
+                        <option value="New Mexico">New Mexico</option>
+                        <option value="New York">New York</option>
+                        <option value="North Carolina">North Carolina</option>
+                        <option value="North Dakota">North Dakota</option>
+                        <option value="Ohio">Ohio</option>
+                        <option value="Oklahoma">Oklahoma</option>
+                        <option value="Oregon">Oregon</option>
+                        <option value="Pennsylvania">Pennsylvania</option>
+                        <option value="Rhode Island">Rhode Island</option>
+                        <option value="South Carolina">South Carolina</option>
+                        <option value="South Dakota">South Dakota</option>
+                        <option value="Tennessee">Tennessee</option>
+                        <option value="Texas">Texas</option>
+                        <option value="Utah">Utah</option>
+                        <option value="Vermont">Vermont</option>
+                        <option value="Virginia">Virginia</option>
+                        <option value="Washington">Washington</option>
+                        <option value="West Virginia">West Virginia</option>
+                        <option value="Wisconsin">Wisconsin</option>
+                        <option value="Wyoming">Wyoming</option>
+                    </select>
+                </div>
+                
+                <!-- Geography-County -->
+                <div class='options-geography-county' style='display: none; padding: 15px 0;'>
+                    <select class='options-geography-county-states'>
+                    	<option value='New York'>New York</option>
+                        <option value='North Carolina'>North Carolina</option>
+                        <option value='North Dakota'>North Dakota</option>
+                        <option value='Ohio'>Ohio</option>
+                        <option value='Oklahoma'>Oklahoma</option>
+                        <option value='Oregon'>Oregon</option>
+                        <option value='Pennsylvania'>Pennsylvania</option>
+                        <option value='Rhode Island'>Rhode Island</option>
+                        <option value='South Carolina'>South Carolina</option>
+                    </select>
+                    
+                    <select class='options-geography-counties'>
+                    </select>
+                </div>
+                
+                <!-- KML -->
+                <div class='options-kml' style='display: none; padding: 15px 0;'>
+                	<select class='combobox options-kml-document' disabled='disabled'><option value=''>Loading...</option></select>
+                	<div style='font-size: 8px; margin-top: 10px;'>**To add additional KMLs, upload them to the <a href='/{!documentsFolderId}' target='_blank'>MapAnything Documents</a> folder</div>
+                </div>
+                
+            </div>
+            
+            <!-- Color -->
+            <div class='color-wrapper'>
+            	<p style='margin-bottom: 0;'>Fill/Border Color:</p>
+            	<input type='text' class='color fillcolor' style='width: 70px;' /> <input type='text' class='color bordercolor' style='width: 70px;' />
+            </div>
+            
+            <!-- Buttons -->
+            <div class='buttons-wrapper'>
+                <a class="button1-blue button-update">Update</a>
+            </div>
+            <div class='button-remove'></div>
+            
+        </div>
+        
+        <!-- Missing Addresses Template -->
+        <div class='missingaddresses template'>
+            <div id="::SavedQueryId::_MissingAddresses_Header" class='missingaddresses-wrapper' data-id='::SavedQueryId::'>
+            
+                <!-- Saved Query Header -->
+                <div class='missingaddresses-header'>
+                
+                    <!-- Name -->
+                    ::SavedQueryName::
+                    <span class="count">(0)</span>
+                    
+                    <!-- Toggle -->
+                    <a class='toggle' onclick="ToggleMissingAddressContent(this);">Hide</a>
+                    
+                </div>
+                
+                <!-- Addresses -->
+                <div id="::SavedQueryId::_MissingAddresses_Content" class='missingaddresses-content' style="display: block;">
+                    <table cellpadding="3" id="::SavedQueryId::_MissingAddresses_Table" class='missingaddresses-table' style="width:100%;">
+                        <tr class='missingaddress' data-id='::RecordId::'>
+                            <td><input type='checkbox' class='missingaddress-checkbox' /> <a target="_blank" href="/::RecordId::">::Tooltip1::</a></td>
+                            <td>::MarkerAddress::</td>
+                            <td style="text-align:right;">Unable to Locate Address</td>
+                        </tr>
+                    </table>
+                </div>
+                
+            </div>
+        </div>
+        
+        <!-- Grid Templates -->
+        <table>
+            <tr class='permissions-row'>
+                <td class="permission-type" style="text-align:left;"></td>
+                <td class="permission-for" style="text-align:left"></td>
+                <td class="permission-read"><input type="checkbox" class="autosave" data-field="Read__c" /></td>
+                <td class="permission-create"><input type="checkbox" class="autosave" data-field="Create__c" /></td>
+                <td class="permission-modify"><input type="checkbox" class="autosave" data-field="Modify__c" /></td>
+                <td class="permission-delete"><input type="checkbox" class="autosave" data-field="Delete__c" /></td>
+                <td class="permission-setperm"><input type="checkbox" class="autosave" data-field="SetPermissions__c" /></td>
+                <td class="permission-delete"><a href="#">Delete</a></td>            
+            </tr>
+            <tr class='campaign-row'>
+                <td><input type='checkbox' class='campaign-checkbox' /></td>
+                <td class='campaign-name'></td>
+                <td class='campaign-type'></td>
+                <td class='campaign-status'></td>
+                <td class='campaign-startdate'></td>
+                <td class='campaign-enddate'></td>
+                <td class='campaign-leads'></td>
+                <td class='campaign-contacts'></td>
+                <td class='campaign-responses'></td>
+            </tr>
+            <tr class='campaign-options-row'>
+                <td class='campaign-name'></td>
+                <td class='campaign-status'><select></select></td>
+                <td class='campaign-override'><input type='checkbox' /></td>
+            </tr>
+            <tr class='changeowner-row'>
+                <td class='user-name'></td>
+            </tr>
+        </table>
+        
+        <!-- Loader Template -->
+        <img class='loader' src="{!URLFOR($Resource.MapAnything, 'images/chatterstatus-loader.gif')}" style="display: none;"/>
+        
+        <!-- LinkedIn Cluter Template -->
+        <div class='linkedin-cluster-tooltip'>
+            <div class='linkedin-cluster-header'></div>
+            
+            <div class='linkedin-cluster-table-wrapper'>
+                <table class='linkedin-cluster-table'></table>
+            </div>
+        </div>
+        
+        <!-- LinkedIn Row Template -->
+        <table>
+            <tr class='linkedin-row'>
+                <td class='linkedin-picture'></td>
+                <td class='linkedin-info'>
+                    <div class='linkedin-name'></div>
+                    <div class='linkedin-headline'></div>
+                    <div class='linkedin-industry'></div>
+                </td>
+                <td class='linkedin-actions'>
+                    <button class='linkedin-actions-createlead' onclick='linkedIn_CreateLead($(this).closest(".linkedin-row"));'>Create Lead</button>
+                    <button class='linkedin-actions-connect' onclick='linkedIn_Connect($(this).closest(".linkedin-row"));'>Connect</button>
+                    <button class='linkedin-actions-getintroduced' onclick='linkedIn_GetIntroduced($(this).closest(".linkedin-row"));'>Get Introduced</button>
+                    <button class='linkedin-actions-inmail' onclick='linkedIn_SendInMail($(this).closest(".linkedin-row"));'>Send InMail</button>
+                    <button class='linkedin-actions-message' onclick='linkedIn_SendMessage($(this).closest(".linkedin-row"));'>Send Message</button>
+                    <button class='linkedin-actions-addtotrip' onclick='linkedIn_AddToTrip($(this).closest(".linkedin-row"));'>Add To Trip</button>
+                </td>
+                <td class='linkedin-companyactions' style='display: none;'>
+                    <button class='linkedin-actions-createaccount' onclick='linkedIn_CreateAccount($(this).closest(".linkedin-row"));'>Create Account</button>
+                    <button class='linkedin-actions-addtotrip' onclick='linkedIn_AddToTrip($(this).closest(".linkedin-row"));'>Add To Trip</button>
+                </td>
+            </tr>
+        </table>
+        
+        <!-- LinkedIn Filter Template -->
+        <div class='linkedin-filter'>
+            <select>
+                <option value='keywords'>Keywords</option>
+                <option value='first-name'>First Name</option>
+                <option value='last-name'>Last Name</option>
+                <option value='company-name'>Company Name</option>
+                <option value='title'>Title</option>
+                <option value='school-name'>School Name</option>
+            </select>
+            <input type='text' />
+        </div>
+        
+        <!-- Button Set Section Template -->
+        <div class='buttonset-section'>
+        	<div class='buttonset-section-header'></div>
+        	<div class='buttonset-section-columns'>
+        		<div class='buttoncolumn'></div>
+        		<div class='buttoncolumn'></div>
+        		<div class='buttoncolumn'></div>
+        	</div>
+        </div>
+        
+    </div>
+
+</apex:page>

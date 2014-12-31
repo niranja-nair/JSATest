@@ -1,0 +1,480 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
+    <actionOverrides>
+        <actionName>Accept</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>CancelEdit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Clone</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Delete</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Edit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Follow</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>List</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>New</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>SaveEdit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Tab</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>View</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <compactLayoutAssignment>SYSTEM</compactLayoutAssignment>
+    <customHelpPage>MiniStore_Help</customHelpPage>
+    <deploymentStatus>Deployed</deploymentStatus>
+    <deprecated>false</deprecated>
+    <description>Defines custom fields for use on Mini-Store landing pages, and how field values are mapped to related objects.</description>
+    <enableActivities>false</enableActivities>
+    <enableBulkApi>true</enableBulkApi>
+    <enableFeeds>false</enableFeeds>
+    <enableHistory>false</enableHistory>
+    <enableReports>false</enableReports>
+    <enableSharing>true</enableSharing>
+    <enableStreamingApi>true</enableStreamingApi>
+    <fields>
+        <fullName>Campaign__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <label>Campaign</label>
+        <referenceTo>Campaign</referenceTo>
+        <relationshipLabel>Custom Field Mappings</relationshipLabel>
+        <relationshipName>Custom_Field_Mappings</relationshipName>
+        <relationshipOrder>0</relationshipOrder>
+        <reparentableMasterDetail>false</reparentableMasterDetail>
+        <trackTrending>false</trackTrending>
+        <type>MasterDetail</type>
+        <writeRequiresMasterRead>false</writeRequiresMasterRead>
+    </fields>
+    <fields>
+        <fullName>Default_Boolean_Value__c</fullName>
+        <defaultValue>false</defaultValue>
+        <deprecated>false</deprecated>
+        <description>Default value to use if field is boolean.</description>
+        <externalId>false</externalId>
+        <inlineHelpText>Default value to use if field is boolean.</inlineHelpText>
+        <label>Default Boolean Value</label>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>Default_Email_Value__c</fullName>
+        <deprecated>false</deprecated>
+        <description>Default email value to use for this field mapping.</description>
+        <externalId>false</externalId>
+        <inlineHelpText>Default email value to use for this field mapping.</inlineHelpText>
+        <label>Default Email Value</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Email</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Default_Number_Value__c</fullName>
+        <deprecated>false</deprecated>
+        <description>Default value to use for number field mappings</description>
+        <externalId>false</externalId>
+        <inlineHelpText>Default value to use for number field mappings</inlineHelpText>
+        <label>Default Number Value</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>4</scale>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Default_Text_Value__c</fullName>
+        <deprecated>false</deprecated>
+        <description>Default text value for this field mapping.  Make sure your text value fits in the field length of your target field.</description>
+        <externalId>false</externalId>
+        <inlineHelpText>Default text value for this field mapping.  Make sure your text value fits in the field length of your target field.</inlineHelpText>
+        <label>Default Text Value</label>
+        <length>32768</length>
+        <trackTrending>false</trackTrending>
+        <type>LongTextArea</type>
+        <visibleLines>6</visibleLines>
+    </fields>
+    <fields>
+        <fullName>Hidden__c</fullName>
+        <defaultValue>false</defaultValue>
+        <deprecated>false</deprecated>
+        <description>Make the field for this mapping hidden on the landing page.</description>
+        <externalId>false</externalId>
+        <inlineHelpText>Make the field for this mapping hidden on the landing page.</inlineHelpText>
+        <label>Hidden</label>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>Long_Label__c</fullName>
+        <deprecated>false</deprecated>
+        <description>Used for checkbox labels (on the right-hand-side) and rollover descriptions.</description>
+        <externalId>false</externalId>
+        <inlineHelpText>Used for checkbox labels (on the right-hand-side) and rollover descriptions.</inlineHelpText>
+        <label>Long Label</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>TextArea</type>
+    </fields>
+    <fields>
+        <fullName>Maps_To_Field__c</fullName>
+        <deprecated>false</deprecated>
+        <description>Salesforce field database name.</description>
+        <externalId>false</externalId>
+        <inlineHelpText>Salesforce field database name.</inlineHelpText>
+        <label>Maps To Field</label>
+        <length>255</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Maps_To_Object__c</fullName>
+        <deprecated>false</deprecated>
+        <description>Salesforce object field values will be written to.</description>
+        <externalId>false</externalId>
+        <inlineHelpText>Salesforce object field values will be written to.</inlineHelpText>
+        <label>Maps To Object</label>
+        <picklist>
+            <picklistValues>
+                <fullName>Contact</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Account</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Payment</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Payment Profile</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Payment or Payment Profile</fullName>
+                <default>false</default>
+            </picklistValues>
+            <sorted>false</sorted>
+        </picklist>
+        <trackTrending>false</trackTrending>
+        <type>Picklist</type>
+    </fields>
+    <fields>
+        <fullName>Order__c</fullName>
+        <deprecated>false</deprecated>
+        <description>Order of appearance on form.</description>
+        <externalId>false</externalId>
+        <inlineHelpText>Order of appearance on form.</inlineHelpText>
+        <label>Order</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Picklist_Options__c</fullName>
+        <deprecated>false</deprecated>
+        <description>Semicolon-separated value:label pairs.  Separate each value and label with a colon, or specify value only between each semicolon.  (e.g. value1:label1;value2:label2)</description>
+        <externalId>false</externalId>
+        <inlineHelpText>Semicolon-separated value:label pairs.  Separate each value and label with a colon, or specify value only between each semicolon.  (e.g. value1:label1;value2:label2)</inlineHelpText>
+        <label>Picklist Options</label>
+        <length>32000</length>
+        <trackTrending>false</trackTrending>
+        <type>LongTextArea</type>
+        <visibleLines>4</visibleLines>
+    </fields>
+    <fields>
+        <fullName>Required__c</fullName>
+        <defaultValue>false</defaultValue>
+        <deprecated>false</deprecated>
+        <description>A value is required for this custom field.</description>
+        <externalId>false</externalId>
+        <inlineHelpText>A value is required for this custom field.</inlineHelpText>
+        <label>Required</label>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>Type__c</fullName>
+        <deprecated>false</deprecated>
+        <description>Type of field to display on the landing page.</description>
+        <externalId>false</externalId>
+        <inlineHelpText>Type of field to display on the landing page.</inlineHelpText>
+        <label>Type</label>
+        <picklist>
+            <picklistValues>
+                <fullName>Text</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Number</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Checkbox</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Blank Space</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Picklist</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Email</fullName>
+                <default>false</default>
+            </picklistValues>
+            <sorted>false</sorted>
+        </picklist>
+        <trackTrending>false</trackTrending>
+        <type>Picklist</type>
+    </fields>
+    <label>Custom Field Mapping</label>
+    <nameField>
+        <label>Label</label>
+        <type>Text</type>
+    </nameField>
+    <pluralLabel>Custom Field Mappings</pluralLabel>
+    <recordTypes>
+        <fullName>Blank_Space</fullName>
+        <active>true</active>
+        <description>For creating a vertical space between custom landing page fields.</description>
+        <label>Blank Space</label>
+        <picklistValues>
+            <picklist>Maps_To_Object__c</picklist>
+            <values>
+                <fullName>Account</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Contact</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Payment</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>Type__c</picklist>
+            <values>
+                <fullName>Blank Space</fullName>
+                <default>true</default>
+            </values>
+        </picklistValues>
+    </recordTypes>
+    <recordTypes>
+        <fullName>Checkbox_Field_Mapping</fullName>
+        <active>true</active>
+        <description>For creating a custom checkbox on the landing page form.</description>
+        <label>Checkbox Field Mapping</label>
+        <picklistValues>
+            <picklist>Maps_To_Object__c</picklist>
+            <values>
+                <fullName>Account</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Contact</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Payment</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Payment Profile</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Payment or Payment Profile</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>Type__c</picklist>
+            <values>
+                <fullName>Checkbox</fullName>
+                <default>true</default>
+            </values>
+        </picklistValues>
+    </recordTypes>
+    <recordTypes>
+        <fullName>Email_Field_Mapping</fullName>
+        <active>true</active>
+        <description>For creating a custom email field on the landing page form.</description>
+        <label>Email Field Mapping</label>
+        <picklistValues>
+            <picklist>Maps_To_Object__c</picklist>
+            <values>
+                <fullName>Account</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Contact</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Payment</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Payment Profile</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Payment or Payment Profile</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>Type__c</picklist>
+            <values>
+                <fullName>Email</fullName>
+                <default>true</default>
+            </values>
+        </picklistValues>
+    </recordTypes>
+    <recordTypes>
+        <fullName>Number_Field_Mapping</fullName>
+        <active>true</active>
+        <description>For creating a custom number field on the landing page form.</description>
+        <label>Number Field Mapping</label>
+        <picklistValues>
+            <picklist>Maps_To_Object__c</picklist>
+            <values>
+                <fullName>Account</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Contact</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Payment</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Payment Profile</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Payment or Payment Profile</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>Type__c</picklist>
+            <values>
+                <fullName>Number</fullName>
+                <default>true</default>
+            </values>
+        </picklistValues>
+    </recordTypes>
+    <recordTypes>
+        <fullName>Picklist_Field_Mapping</fullName>
+        <active>true</active>
+        <description>For creating a custom picklist on the landing page form.</description>
+        <label>Picklist Field Mapping</label>
+        <picklistValues>
+            <picklist>Maps_To_Object__c</picklist>
+            <values>
+                <fullName>Account</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Contact</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Payment</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Payment Profile</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Payment or Payment Profile</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>Type__c</picklist>
+            <values>
+                <fullName>Picklist</fullName>
+                <default>true</default>
+            </values>
+        </picklistValues>
+    </recordTypes>
+    <recordTypes>
+        <fullName>Text_Field_Mapping</fullName>
+        <active>true</active>
+        <description>For creating a custom text field on the landing page form.</description>
+        <label>Text Field Mapping</label>
+        <picklistValues>
+            <picklist>Maps_To_Object__c</picklist>
+            <values>
+                <fullName>Account</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Contact</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Payment</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Payment Profile</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Payment or Payment Profile</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>Type__c</picklist>
+            <values>
+                <fullName>Text</fullName>
+                <default>true</default>
+            </values>
+        </picklistValues>
+    </recordTypes>
+    <searchLayouts/>
+    <sharingModel>ControlledByParent</sharingModel>
+</CustomObject>

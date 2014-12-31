@@ -1,0 +1,1056 @@
+<apex:component >
+	<script type='text/javascript'>
+		function analyzeQuery($plottedQuery, callback)
+		{
+			//initialize query records
+			$plottedQuery.data('records', {});
+			
+			//if this query is for the visible area only, we need to send some additional map data with the request
+			var requestData = { visibleAreaOnly: false, includeMetadata: true, offset: 0 };
+			if ($plottedQuery.data('visibleAreaOnly'))
+			{
+				$.extend(requestData, {
+					visibleAreaOnly	: true,
+					mapLat			: map.getViewBounds().getCenter().latitude,
+					mapLong			: map.getViewBounds().getCenter().longitude,
+					mapHeight		: map.getViewBounds().getHeight(),
+					mapWidth		: map.getViewBounds().getWidth()
+				});
+			}
+			
+			//if this isn't an actual saved query, we need to send query metadata
+			if ($plottedQuery.data('id').indexOf('Record-') == 0)
+			{
+				$.extend(requestData, {
+					BaseObjectId		: $plottedQuery.data('BaseObjectId'),
+					RecordId			: $plottedQuery.data('RecordId'),
+					markerColor			: $plottedQuery.data('markerColor'),
+					tooltipFieldsString	: $plottedQuery.data('tooltipFieldsString')
+				});
+			}
+			
+			//send request for query analysis
+			$.getJSON("/apex/MASavedQueryAJAXResources"+pageSuffix+"?action=analyze_query&SavedQueryId=" + $plottedQuery.data('id') + "&UserId=" + UserId, requestData, function handleResponse (response) {
+		        if (response.success)
+		        {
+		        	//store metadata if it was requested
+		        	if (requestData.includeMetadata)
+		        	{
+			        	//update the plotted query row
+			        	$plottedQuery.find('.title').text(response.data.savedQueryName);
+	    				$plottedQuery.find('.subtitle').text(response.data.baseObjectLabel);
+			        
+			        	//store basic info
+			        	$plottedQuery.data('BaseObjectId', response.data.BaseObjectId);
+			        	$plottedQuery.data('savedQueryName', response.data.savedQueryName);
+	                	$plottedQuery.data('baseObjectName', response.data.baseObjectName);
+	                	$plottedQuery.data('baseObjectLabel', response.data.baseObjectLabel);
+			        	$plottedQuery.data('relatedListCount', response.data.relatedListCount);
+			        	$plottedQuery.data('supportsActivities', response.data.supportsActivities);
+			        	$plottedQuery.data('supportsChatter', response.data.supportsChatter);
+			        	
+			        	//store the proximity options
+			        	if (response.data.proximityOptions) {
+			        		$plottedQuery.data('proximityOptions', {
+			        			enabled			: response.data.proximityOptions.enabled == 'true',
+			        			radius			: response.data.proximityOptions.radius,
+			        			measurementType	: response.data.proximityOptions.measurementType
+			        		});
+			        	}
+			        	
+			        	//store the marker metadata that was returned
+			        	$plottedQuery.data('markerMetadata', response.data.markerMetadata);
+			        	
+			        	//process the color/image assignments (keep track of any images that are used so we can preload them)
+			        	$plottedQuery.data('imgIds', []);
+			        	var imgIds = $plottedQuery.data('imgIds');
+			        	if (response.data.markerMetadata.ColorAssignmentType == 'Static')
+			        	{
+			        		//this is a static assignment so just record the img id if we have one
+			        		if (response.data.markerMetadata.IconColor && response.data.markerMetadata.IconColor.indexOf('image:') == 0)
+	                        {
+	                            imgIds.push(response.data.markerMetadata.IconColor.split('image:')[1]);
+	                        }
+			        	}
+			        	else if (response.data.markerMetadata.ColorAssignmentType == 'Dynamic, Field')
+			        	{
+			        		//add each color assignment to our marker metadata and also to the legend
+			        		var markerMetadata = $plottedQuery.data('markerMetadata');
+			        		markerMetadata.ColorAssignments = {};
+			            	$.each((markerMetadata.ColorAssignment || '<Other>~#00FF00').split('~~'), function (index, colorAssignment) {
+			            	
+			            		//split this color assignment to get the value and color/image
+			            		var colorAssignmentParts = colorAssignment.split('~');
+			            		
+			            		//record the img id for this assignment if we have one
+			            		var imgId = '';
+		            			if (colorAssignmentParts[1] && colorAssignmentParts[1].indexOf('image:') == 0)
+		                        {
+		                        	imgId = colorAssignmentParts[1].split('image:')[1];
+		                            imgIds.push(imgId);
+		                        }
+		                        
+		                        //start building a new legend row for this assignment
+		                        var $newLegendRow = $(
+		            				"<tr class='legend-row' style='display: none;'><td><input type='checkbox' class='legend-checkbox' checked='checked' data-value='::AssignmentValue::' /> ::AssignmentValue::</td><td class='visiblemarkers'></td><td class='of'></td><td class='totalmarkers'></td><td class='legend-color' style='background-color: ::AssignmentColor::;'></td></tr>"
+		            				.replace(/::AssignmentValue::/g, htmlEncode(colorAssignmentParts[0]))
+		            				.replace(/::AssignmentColor::/g, htmlEncode(colorAssignmentParts[1]))
+		            			).data('numMarkers', 0);
+		            			
+		            			//replace the color with an image if needed
+		            			if (imgId != '')
+		            			{
+		            				$newLegendRow.find('.legend-color').addClass('image').html('<img src="/servlet/servlet.FileDownload?file='+imgId+'" style="height: 20px; max-width: 30px;" />');
+		            			}
+		                        
+			            		//add this legend row to the legend
+			            		if (colorAssignmentParts[0] == '<Other>')
+			            		{
+			            			//this color is to be used for values that don't match an option.  store it separately
+			            			markerMetadata.IconColorOther = colorAssignmentParts[1];
+			            			$plottedQuery.find('table.legend').append($newLegendRow.addClass('other'));
+			            		}
+			            		else
+			            		{
+			            			
+			            			//add this value/color pair to the assignments
+			            			markerMetadata.ColorAssignments[colorAssignmentParts[0]] = colorAssignmentParts[1];
+			            			$plottedQuery.find('table.legend').append($newLegendRow);
+			            		}
+			            		
+			            	});
+			            	
+			            	//show the legend
+			            	$plottedQuery.find('.legend').show();
+			        	}
+			        	
+			        	//store the field info that was returned
+			        	$plottedQuery.data('addressFields', response.data.addressFields);
+			        	$plottedQuery.data('coordinateFields', response.data.coordinateFields);
+			        	
+			        	//store the tooltip info that was returned
+			        	$plottedQuery.data('tooltips', response.data.tooltips);
+		        	}
+		        	
+		        	//store the record ids that were returned
+		        	var records = $plottedQuery.data('records');
+		        	$.each(response.data.results, function (index, recordId) {
+		        		records[recordId] = {
+		        			savedQueryId: $plottedQuery.data('id'),
+		        			contentKey: $plottedQuery.data('id') + '-' + recordId,
+		        			plottedQuery: $plottedQuery,
+		        			isProcessed: false,
+		        			isGeocoded: false,
+		        			isVisible: false
+		        		};
+		        	});
+		        	
+		        	//determine if we need to make another callout for more results
+		        	if (response.data.results.length >= 25000)
+		        	{
+		        		//need to get more results.  send a new request with an updated offset and don't request metadata
+		        		requestData.offset += response.data.results.length;
+		        		requestData.includeMetadata = false;
+		        		$.getJSON("/apex/MASavedQueryAJAXResources"+pageSuffix+"?action=analyze_query&SavedQueryId=" + $plottedQuery.data('id') + "&UserId=" + UserId, requestData, handleResponse)
+		        		.error(function () {
+		        			growlError($('#growl-wrapper'), 'Error Analyzing Query', 3000);
+		        			removeQuery($plottedQuery.removeClass('loading').addClass('unloading')); 
+		        		});
+		        		
+		        		//status update
+		        		$plottedQuery.find('.status').html('Running query...' + requestData.offset);
+		        	}
+		        	else
+		        	{
+			        	//done.  preload each image that this query will be using
+	                    imgLoaderCounts[$plottedQuery.data('id')] = 0;
+	                    $.each($plottedQuery.data('imgIds'), function (index, imgId) {
+	                        var img = new Image();
+	                        img.queryId = $plottedQuery.data('id');
+	                        img.imgId = imgId;
+	                        img.name = '/servlet/servlet.FileDownload?file='+imgId;
+	                        img.src = '/servlet/servlet.FileDownload?file='+imgId;
+	                        img.onload = imgLoaded;
+	                        img.onerror = imgError;
+	                        img.onabort = imgError;
+	                        
+	                        imgLoaderCounts[$plottedQuery.data('id')] = imgLoaderCounts[$plottedQuery.data('id')] + 1;
+	                    });
+	                    
+	                    //set an interval to determine when all of the images have loaded so we can continue processing
+		                imgLoaderIntervals[$plottedQuery.data('id')] = setInterval(
+		                    function () {
+		                        if ((imgLoaderCounts[$plottedQuery.data('id')] || 0) == 0) {
+		                            clearInterval(imgLoaderIntervals[$plottedQuery.data('id')]);
+		                            try { callback(true, records); } catch (err) { }
+		                        }
+		                    }, 400
+		                );
+		            }
+		        }
+		        else
+		        {
+		        	growlError($('#growl-wrapper'), 'Error Analyzing Query', 3000);
+		        	removeQuery($plottedQuery.removeClass('loading').addClass('unloading')); 
+		        }
+		    })
+		    .error(function(jqXHR, textStatus, errorThrown) { 
+		        growlError($('#growl-wrapper'), 'Error Analyzing Query', 3000);
+		        removeQuery($plottedQuery.removeClass('loading').addClass('unloading')); 
+		    });
+		}
+		
+		function processBatch($plottedQuery, recordBatch)
+		{
+			//start building a data object to send with the request
+			var requestData = {
+				records: JSON.stringify(recordBatch),
+				tooltips: JSON.stringify($plottedQuery.data('tooltips'))
+			};
+			
+			//if this is a record query, we need to send query metadata
+			if ($plottedQuery.data('id').indexOf('Record-') == 0)
+			{
+				$.extend(requestData, {
+					BaseObjectId		: $plottedQuery.data('BaseObjectId'),
+					RecordId			: $plottedQuery.data('RecordId'),
+					markerColor			: $plottedQuery.data('markerColor'),
+					tooltipFieldsString	: $plottedQuery.data('tooltipFieldsString')
+				});
+			}
+			
+			var records = $plottedQuery.data('records');
+			var recordsToGeocode = $plottedQuery.data('recordsToGeocode');
+			$.getJSON("/apex/MASavedQueryAJAXResources"+pageSuffix+"?action=process_batch&SavedQueryId=" + $plottedQuery.data('id') + "&UserId=" + UserId, requestData, function (response) {
+		        if (response.success)
+		        {
+		        	var latField = $plottedQuery.data('coordinateFields').Latitude;
+		        	var longField = $plottedQuery.data('coordinateFields').Longitude;
+		        	var verifiedLatField = $plottedQuery.data('coordinateFields').VerifiedLatitude;
+		        	var verifiedLongField = $plottedQuery.data('coordinateFields').VerifiedLongitude;
+		        	var addressFields = $plottedQuery.data('addressFields');
+		        	
+		        	//loop through the response records and extend them with the received data
+		        	$.each(response.data.records, function (index, record) {
+		        	
+		        		//extend the record
+		        		$.extend(records[record.Id], {
+		        			isProcessed: true,
+		        			isGeocoded: false,
+		        			isBadAddress: false,
+		        			record: record,
+		        			latitude: extractValue(record, latField),
+		        			longitude: extractValue(record, longField),
+		        			verifiedLatitude: extractValue(record, verifiedLatField),
+		        			verifiedLongitude: extractValue(record, verifiedLongField),
+		        			markerIconText: $plottedQuery.data('markerMetadata').ColorAssignmentType == 'Static' ? '' : 'L',
+		        			markerAddress: extractValue(record, addressFields.Street) + "," + extractValue(record, addressFields.City) + " " + extractValue(record, addressFields.State) + "," + extractValue(record, addressFields.Zip) + (extractValue(record, addressFields.Country) == '' ? '' : ','+extractValue(record, addressFields.Country)),
+		        			formattedMarkerAddress: extractValue(record, addressFields.Street).replace(/\n\r?/g, '<br />') + "<br />" + extractValue(record, addressFields.City) + " " + extractValue(record, addressFields.State) + "," + extractValue(record, addressFields.Zip) + (extractValue(record, addressFields.Country) == '' ? '' : '<br />'+extractValue(record, addressFields.Country))
+		        		});
+		        		records[record.Id].markerLatitude = (records[record.Id].verifiedLatitude || records[record.Id].latitude);
+		        		records[record.Id].markerLongitude = (records[record.Id].verifiedLongitude || records[record.Id].longitude);
+		        		
+		        		//determine if this record is already geocoded (make sure that the lat/long is valid).  if it's not, add it to the list to be geocoded
+		        		var markerLat = parseFloat(records[record.Id].markerLatitude);
+		        		var markerLong = parseFloat(records[record.Id].markerLongitude);
+		        		if (!isNaN(markerLat) && !isNaN(markerLong) && markerLat >= -90 && markerLat <= 90 && markerLong >= -180 && markerLong <= 180) {
+		        			records[record.Id].isGeocoded = true;
+		        		}
+		        		else {
+		        			recordsToGeocode.push(records[record.Id]);
+		        		}
+		        	});
+		        	
+		        	//some records may not be returned due to activity filtering.  remove those records
+		        	$.each(recordBatch, function (index, recordId) {
+		        		if (!records[recordId].isProcessed) {
+		        			delete records[recordId];
+		        		}
+		        	});
+		        }
+		        else
+		        {
+		        }
+	    	})
+		    .error(function(jqXHR, textStatus, errorThrown) {
+		    });
+		}
+		
+		function geocodeRecord(record, callback)
+		{
+			record.isGeocoded = true;
+			var $plottedQuery = record.plottedQuery;
+			$plottedQuery.data('numGeocodeRequestsCompleted', $plottedQuery.data('numGeocodeRequestsCompleted') + 1);
+		
+			var URLParams = "action=GeoCode&geocodetype=MarkerGeoCode&savelatlong=true&savedqueryid=" +record.savedQueryId+ "&recordid=" +record.record.Id;
+		    $.getJSON("/apex/MAGeoCodeAJAXResources", URLParams + "&searchtext=" + encodeURIComponent(record.markerAddress), function(response)
+		    {
+		    	if (response.success)
+		    	{
+		    		$.extend(record, {
+			    		latitude		: response.Latitude,
+			    		longitude		: response.Longitude,
+			    		markerLatitude	: response.Latitude,
+			    		markerLongitude	: response.Longitude
+			    	});
+			    	
+			    	if (!response.RecordUpdate)
+			        {
+			            Debug("Failed to Update Record: " + response.RecordUpdateError);
+			        }
+		    	}
+		    	else
+		    	{
+		    		record.isBadAddress = true;
+		    	}
+		    	
+		    	callback(response.success);
+		    });
+		}
+		
+		function geocodeMultiple(objectsToGeocode, callback, additionalRequestData)
+		{
+			//find a parent address field if there is one (need this to know which record to update with the geo data)
+			var parentAddressField = '';
+			if (additionalRequestData && additionalRequestData.LatitudeField && additionalRequestData.LatitudeField.indexOf('.') != -1) {
+				parentAddressField = additionalRequestData.LatitudeField.split('.')[0];
+			}
+			
+			//put a geocoding index on each object so that we can match up the returns
+			var geocodeIndex = 1;
+			var geocodeRequestObjects = [];
+			var objectsToGeocodeMap = {};
+			$.each(objectsToGeocode, function (index, obj) {
+				geocodeRequestObjects.push({
+					geocodeIndex: geocodeIndex,
+					searchtext: obj.markerAddress,
+					IdToUpdate: parentAddressField == '' ? obj.record.Id : obj.record[parentAddressField].Id
+				});
+				objectsToGeocodeMap[geocodeIndex] = obj;
+				geocodeIndex++;
+			});
+			
+			var requestData = $.extend(
+				(additionalRequestData || {}), 
+				{
+					action: 'geocodeMultiple',
+					serializedObjectsToGeocode: JSON.stringify(geocodeRequestObjects) 
+				}
+			);
+		    $.getJSON("/apex/MAGeoCodeAJAXResources", requestData, function(response)
+		    {
+		    	var numSuccess = 0;
+		    	var numFail = 0;
+		    	if (response.success)
+		    	{
+			    	$.each(response.results, function (index, result) {
+			    		var obj = $.extend(objectsToGeocodeMap[result.geocodeIndex], {
+			    			isBadAddress	: result.geoData.IsBadAddress,
+							latitude		: result.geoData.Latitude,
+				    		longitude		: result.geoData.Longitude,
+				    		markerLatitude	: result.geoData.Latitude,
+				    		markerLongitude	: result.geoData.Longitude			    		
+			    		});
+
+			    		if (!obj.isBadAddress) {
+							numSuccess++;
+			    		}
+			    		else {
+			    			numFail++;
+			    		}
+			    	});
+			    	
+			    	//check for records that couldn't be updated
+			    	$.each(response.SaveResults, function (index, saveResult) {
+			    		if (!saveResult.success) {
+			    			try { Debug('Update Failed: ' + saveResult.errors[0]); } catch (err) { }
+			    		}
+			    	});  
+		    	}
+		    	else
+		    	{
+		    		$.each(objectsToGeocode, function (index, obj) {
+			    		obj.isGeocoded = obj.isBadAddress = true;
+			    	});
+		    		numFail += objectsToGeocode.length;
+		    	}
+		    	
+		    	callback(numSuccess, numFail);
+		    })
+		    .error(function () {
+		    	$.each(objectsToGeocode, function (index, obj) {
+		    		obj.isGeocoded = obj.isBadAddress = true;
+		    	});
+		    	callback(0, objectsToGeocode.length);
+		    });
+		}
+		
+		function updateMissingAddressContent ($plottedQuery)
+		{
+			//add a missing addresses section for this query if we need one
+    		if ($('[id="MissingAddressesContent #'+$plottedQuery.data('id')+'_MissingAddresses_Header"]').length == 0)
+    		{
+    			//add a missing addresses section for this query
+    			$('#MissingAddressesContent').append(
+	    			$('.missingaddresses.template').clone().find('table').html('').closest('.missingaddresses').removeClass('template').wrap('<div/>').parent().html()
+	    			.replace(/::SavedQueryId::/g, $plottedQuery.data('id'))
+	    			.replace(/::SavedQueryName::/g, $plottedQuery.data('savedQueryName'))
+	    		);
+    		}
+    		
+    		//remove any missing addresses for this query
+    		$('#MissingAddressesContent [id="'+$plottedQuery.data('id')+'_MissingAddresses_Header"] table .missingaddress').remove();
+    		
+    		//loop through the records that are marked as bad addresses
+    		$.each($plottedQuery.data('records'), function (index, record) {
+    			if (record.isBadAddress) {
+    			
+		    		//create a missing address for this record
+		    		var $newMissingAddress = $(
+		    				$('.missingaddresses.template .missingaddress').clone().wrap('<div/>').parent().html()
+			    			.replace(/::RecordId::/g, record.record.Id)
+			    			.replace(/::Tooltip1::/g, extractTooltipValue($plottedQuery.data('tooltips')[0], record))
+			    			.replace(/::MarkerAddress::/g, record.markerAddress)
+			    	);
+			    	
+			    	//add export data.  this data will be sent during an export request
+			    	var addressFields = $plottedQuery.data('addressFields');
+			    	$newMissingAddress.data('exportData', {
+						recordId		: record.record.Id,
+						objectType		: $plottedQuery.data('baseObjectLabel'),
+						savedQueryName	: $plottedQuery.data('savedQueryName'),
+						tooltip1Label	: $plottedQuery.data('tooltips')[0] ? $plottedQuery.data('tooltips')[0].FieldLabel : '',
+						tooltip1Value	: extractTooltipValue($plottedQuery.data('tooltips')[0], record),
+						street			: extractValue(record, addressFields.Street),
+						city			: extractValue(record, addressFields.City),
+						state			: extractValue(record, addressFields.State),
+						zip				: extractValue(record, addressFields.Zip),
+						country			: extractValue(record, addressFields.Country)
+					});
+					
+			    	//append the missing address to the list for this query
+		    		$('#MissingAddressesContent [id="'+$plottedQuery.data('id')+'_MissingAddresses_Header"] table').append($newMissingAddress);
+		    	}
+    		});
+    		
+    		//update the missing address count
+    		$('#MissingAddressesContent [id="'+$plottedQuery.data('id')+'_MissingAddresses_Header"] .count').text('('+$('#MissingAddressesContent [id="'+$plottedQuery.data('id')+'_MissingAddresses_Header"] .missingaddress').length+')');
+		}
+		
+		function renderQuery($plottedQuery, renderAs, callback)
+		{
+			switch (renderAs)
+			{
+				case 'Markers':
+				
+					//update the visible marker counter (why is this here?)
+			        $plottedQuery.find('.status').html('Data Points: ' + $plottedQuery.data('numRecords'));
+				
+					//
+					var markerRendererBatchSize = 100;
+					var markerRendererTimeout = 50;
+					var markersToRender = [];
+	    			$.each($plottedQuery.data('records'), function (index, record) {
+	    				if (record.marker && !record.isVisible) {
+	    					if (!pc_Added || (pc_Added && new nokia.maps.geo.Coordinate(parseFloat(record.marker.Lat), parseFloat(record.marker.Long)).distance(new nokia.maps.geo.Coordinate(parseFloat(pc_Lat), parseFloat(pc_Long))) <= (pc_Diameter / 2)))
+	    					{
+	    						record.isVisible = true;
+			                	markersToRender.push(record.marker);
+			                	
+			                	//update the legend visible marker counter if needed
+			                	if (record.legendRow) {
+			                		var visibleMarkersText = record.legendRow.find('.visiblemarkers').text();
+			                		record.legendRow.find('.visiblemarkers').text((parseInt(visibleMarkersText) || 0) + 1);
+			                	}
+			                }
+	    				}
+	    				
+	    				if (markersToRender.length + map.objects.length > 10000) { return false; }
+	    			});
+					
+					//render markers in batches using a timeout
+					$plottedQuery.data(
+						'markerRendererTimeout', 
+						setTimeout(function doBatch() {
+							
+							//grab a batch of markers that aren't already visible
+							var markers = [];
+							while (markersToRender.length > 0 && markers.length < markerRendererBatchSize)
+							{
+								markers.push(markersToRender.pop());
+							}
+			    			
+			    			//add the markers to the map
+							map.objects.addAll(markers);
+			    			
+			    			//should we keep rendering?
+			    			if (markersToRender.length == 0)
+			    			{
+			    				//no, so hide markers based on unchecked values in the legend (if we have any) and then fire the callback
+			    				$plottedQuery.find('.legend-checkbox').not(':checked').change();
+			    				$plottedQuery.find('.renderButtons-button[data-renderAs='+renderAs+']').addClass('on');
+			    				
+			    				//update query info
+				                updateQueryInfo($plottedQuery);
+			    				
+			    				callback();
+			    			}
+			    			else
+			    			{
+			    				//yes, so set a new timeout to process the next batch
+			    				setTimeout(doBatch, markerRendererTimeout);
+			    			}
+							
+						}, markerRendererTimeout)
+					);
+					break;
+					
+				case 'Heatmap':
+					
+					//remove the existing heat map if there is one
+	                if ($plottedQuery.data('heatmapProvider'))
+	                {
+	                	map.overlays.remove($plottedQuery.data('heatmapProvider'));
+	                	$plottedQuery.data('heatmapProvider', null);
+	                }
+	                
+					var heatmapProvider = new nokia.maps.heatmap.Overlay({
+	                    max: 20,
+	                    opacity: 1,
+	                    type: "density",
+	                    coarseness: 2,
+	                    sampleDepth: 4,
+	                    colors: {
+						    interpolate : true,
+						    stops       : {
+						        0       : '#00B',
+						        0.2     : '#0b0',
+						        0.5     : '#ff0',
+						        0.7     : '#f00'
+						    }
+						}
+	                });
+	
+					var heatMapDataPoints = [];
+					$.each($plottedQuery.data('records'), function (index, record) {
+	    				if (record.markerLatitude != '' && record.markerLongitude != '') {
+	    					heatMapDataPoints.push({
+	    						value: 0,
+			                    latitude: record.markerLatitude,
+			                    longitude: record.markerLongitude
+	    					});
+	    				}
+	    			});
+					
+	                heatmapProvider.addData(heatMapDataPoints);
+	                map.overlays.add(heatmapProvider);
+	                
+	                $plottedQuery.data({ heatmapProvider: heatmapProvider, numHeatmapDataPoints: heatMapDataPoints.length });
+	                $plottedQuery.find('.renderButtons-button[data-renderAs='+renderAs+']').addClass('on');
+	                
+	                //update query info
+				    updateQueryInfo($plottedQuery);
+	                
+	                //done so fire callback
+	                try { callback(); } catch (err) { }
+					break;
+					
+				case 'Cluster':
+					var ClusterProvider = nokia.maps.clustering.ClusterProvider,
+				    clusterProvider = new ClusterProvider(map, {
+				        eps: 16,
+				        minPts: 1,
+				        dataPoints: []
+				    });
+				    
+				    var clusterDataPoints = [];
+				    $.each($plottedQuery.data('records'), function (index, record) {
+	    				if (record.markerLatitude != '' && record.markerLongitude != '') {
+	    					clusterDataPoints.push({
+			                    latitude: record.markerLatitude,
+			                    longitude: record.markerLongitude
+	    					});
+	    				}
+	    				
+	    				if (clusterDataPoints.length > 12000) { return false; }
+	    			});
+				    
+				    clusterProvider.addAll(clusterDataPoints);
+				    clusterProvider.cluster();
+				    
+				    $plottedQuery.data({ clusterProvider: clusterProvider, numClusterDataPoints: clusterDataPoints.length });
+				    $plottedQuery.find('.renderButtons-button[data-renderAs='+renderAs+']').addClass('on');
+				    
+				    //update query info
+				    updateQueryInfo($plottedQuery);
+				    
+				    //done so fire callback
+				    try { callback(); } catch (err) { }
+					break;
+			}
+		}
+		
+		function unrenderQuery($plottedQuery, renderAs, callback)
+		{
+			switch (renderAs)
+			{
+				case 'Markers':
+				
+					var markerUnrendererBatchSize = 120;
+					var markerUnrendererTimeout = 100;
+					
+					//render markers in batches using a timeout
+					$plottedQuery.data(
+						'markerUnrendererTimeout', 
+						setTimeout(function doBatch() {
+						
+							//remove markers
+							var markers = [];
+				   			$.each(($plottedQuery.data('records') || []), function (index, record) {
+				   				if (record.marker && record.isVisible) {
+				   					record.isVisible = false;
+				   					markers.push(record.marker);
+				   					
+				   					//try to remove any tooltips associated with this marker
+				   					if (record.marker.infoBubbleHandle) {
+				   						try {
+				   							InfoBubbles.removeBubble(record.marker.infoBubbleHandle);
+				   						}
+				   						catch (err) { }
+				   					}
+				   				}
+				   				
+				   				if (markers.length > markerUnrendererBatchSize) { return false; }
+				   			});
+				   			map.objects.removeAll(markers);
+				   			
+				   			//should we keep unrendering?
+			    			if (markers.length == 0)
+			    			{
+			    				//no, so fire the callback
+			    				$plottedQuery.find('.renderButtons-button[data-renderAs='+renderAs+']').removeClass('on');
+			    				updateQueryInfo($plottedQuery);
+			    				try { callback(); } catch (err) { }
+			    			}
+			    			else
+			    			{
+			    				//yes, so set a new timeout to process the next batch
+			    				setTimeout(doBatch, markerUnrendererTimeout);
+			    			}
+			   			
+			   			}, markerUnrendererTimeout)
+			   		);
+			   		
+		   			//set legend row visible markers to 0
+		   			$plottedQuery.find('.legend-row .visiblemarkers').text('0');
+		   			
+					break;
+				case 'Heatmap':
+				
+					//remove heat map if it exists
+					if ($plottedQuery.data('heatmapProvider')) {
+						map.overlays.remove($plottedQuery.data('heatmapProvider'));
+					}
+					
+					//fire the callback
+					$plottedQuery.find('.renderButtons-button[data-renderAs='+renderAs+']').removeClass('on');
+					updateQueryInfo($plottedQuery);
+					try { callback(); } catch (err) { }
+					
+					break;
+				case 'Cluster':
+				
+					//remove cluster if it exists
+					if ($plottedQuery.data('clusterProvider')) {
+						$plottedQuery.data('clusterProvider').destroy();
+					}
+					
+					//fire the callback
+					$plottedQuery.find('.renderButtons-button[data-renderAs='+renderAs+']').removeClass('on');
+					updateQueryInfo($plottedQuery);
+					try { callback(); } catch (err) { }
+					
+					break;
+			}
+		}
+		
+		function updateQueryInfo($plottedQuery)
+		{
+			var infoHTML = '';
+			var queryData = $plottedQuery.data();
+			
+			//general data point info
+			$plottedQuery.find('.status').html('Data Points: ' + $plottedQuery.data('numRecords'));
+			
+			//geocode info
+			if (queryData.numGeocodeRequestsNeeded > 0) {
+				infoHTML += "<div>"+queryData.numGeocodeRequestsNeeded+" geocodes completed.  <span class='geocode link'>"+queryData.numFailedGeocodes+" bad address(es)</span>.</div>";
+			}
+			
+			//marker info
+			if ($plottedQuery.find('.renderButtons-button.markers').is('.on')) {
+				var visibleMarkerCount = 0;
+				$.each(queryData.records, function (recordId, record) {
+					if (record.isVisible) {
+						visibleMarkerCount++;
+					}
+				});
+				infoHTML += "<div>"+queryData.numMarkers+" markers created, "+visibleMarkerCount+" visible.</div>";
+			}
+			
+			//heatmap info
+			if ($plottedQuery.find('.renderButtons-button.heatmap').is('.on')) {
+				infoHTML += "<div>"+$plottedQuery.data('numHeatmapDataPoints')+" heatmap data points.</div>";
+			}
+			
+			//cluster info
+			if ($plottedQuery.find('.renderButtons-button.cluster').is('.on')) {
+				infoHTML += "<div>"+$plottedQuery.data('numClusterDataPoints')+" cluster data points.</div>";
+			}
+			
+			$plottedQuery.find('.plottinginfo-wrapper .info').html(infoHTML);
+		}
+		
+		function removeQuery($plottedQuery)
+		{
+			//unrender everything
+			unrenderQuery($plottedQuery, 'Heatmap', function () {
+				unrenderQuery($plottedQuery, 'Cluster', function () {
+					unrenderQuery($plottedQuery, 'Markers', function () {
+						
+						//remove plotted query
+						$plottedQuery.remove();
+						UpdateAddToCampaignButton();
+							
+					});					
+				});
+			});
+		}
+		
+		function CreateMarkerFromRecord(record)
+		{
+			//get the value of the first tooltip (it will be used as the title for this marker)
+            var tooltip1Value = 'Unknown';
+            var tooltip1Metadata = record.plottedQuery.data('tooltips')[0];
+            if (tooltip1Metadata)
+            {
+            	tooltip1Value = extractTooltipValue(tooltip1Metadata, record);
+            }
+            
+            //get the color/image for this marker
+            var markerMetadata = record.plottedQuery.data('markerMetadata');
+            var markerColor = '#000000';
+            if (markerMetadata.ColorAssignmentType == 'Static')
+            {
+            	markerColor = markerMetadata.IconColor;
+            }
+            else if (markerMetadata.ColorAssignmentType == 'Dynamic, Field')
+            {
+            	var picklistValue = extractValue(record.record, markerMetadata.PicklistField);
+            	if (markerMetadata.ColorAssignments[picklistValue])
+            	{
+            		//set the marker color
+            		markerColor = markerMetadata.ColorAssignments[picklistValue];
+            		
+            		//update the legend marker count
+            		var $legendRow = record.plottedQuery.find('.legend-checkbox[data-value="'+picklistValue+'"]').closest('.legend-row');
+            		$legendRow.data('numMarkers', $legendRow.data('numMarkers') + 1);
+            		
+            		//store the legend row with the record for easy access later
+            		record.legendRow = $legendRow;
+            	}
+            	else if (markerMetadata.IconColorOther)
+            	{
+            		//set the marker color as the value defined for <Other>
+            		markerColor = markerMetadata.IconColorOther;
+            		
+            		//update the legend marker count for <Other>
+            		var $legendRow = record.plottedQuery.find('.legend-row.other');
+            		$legendRow.data('numMarkers', $legendRow.data('numMarkers') + 1);
+            		
+            		//store the legend row with the record for easy access later
+            		record.legendRow = $legendRow;
+            	}
+            	else
+            	{
+            		//this should never happen, but if we don't have a color for this value and we don't have a color for <Other>, then just make the marker black
+            		markerColor = '#000000';
+            	}
+            }
+		
+			//create marker options
+			var MarkerCoordinate = new nokia.maps.geo.Coordinate(parseFloat(record.markerLatitude), parseFloat(record.markerLongitude));         
+		    var markerOptions = {
+		        title: tooltip1Value,
+		        visibility: true,
+		        brush: markerColor,
+		        Ignore: false, 
+		        SavedQryId: record.savedQueryId,
+		        Lat: record.markerLatitude,
+		        Long: record.markerLongitude,
+		        PicklistFieldValue: null,
+		        record: record,
+		        text: record.markerIconText,
+		        eventListener: {
+		            "click": [marker_Click, false, null],
+		            "tap": [marker_Click, false, null]
+		        }
+		    };
+		    
+		    //create either an image marker or a standard marker depending on the markerColor value
+		    if (markerColor && markerColor.indexOf('image:') == 0)
+			{
+			    delete markerOptions.brush;
+			    
+			    if (imgLoaderDimensions[markerColor.split('image:')[1]]) {
+			        $.extend(markerOptions, {
+			            icon: '/servlet/servlet.FileDownload?file=' + markerColor.split('image:')[1],
+			            anchor: new nokia.maps.util.Point(
+			                Math.floor(imgLoaderDimensions[markerColor.split('image:')[1]].width / 2), 
+			                imgLoaderDimensions[markerColor.split('image:')[1]].height
+			            )
+			        });
+			        return new nokia.maps.map.Marker(MarkerCoordinate, markerOptions);
+			    }
+			}
+			return new nokia.maps.map.StandardMarker(MarkerCoordinate, markerOptions);
+		}
+		
+		function marker_Click()
+        {
+        	var marker = this;
+            var record = this.record;
+            var queryMetadata = record.plottedQuery.data();
+            
+            //start building tooltip content from template
+            var $tooltipContent = $('#tooltip-content-template').clone().attr('id', 'tooltip-content');
+            
+            //show related list tab if needed
+            if (queryMetadata.relatedListCount > 0) { 
+                $tooltipContent.find('#tab-relatedlist').show(); 
+            }
+            
+            //show picklist field info if needed 
+            if (queryMetadata.markerMetadata.ColorAssignmentType == 'Dynamic, Field') { 
+                $tooltipContent.find('.picklistinfo').show(); 
+            }
+            
+            //show activity buttons if needed
+            if (queryMetadata.supportsActivities) {
+                $tooltipContent.find('.activitybuttons').show();
+            }
+            
+            //add tooltips
+            var $tooltips = $tooltipContent.find('.tooltips > table');
+            var tooltip1Value = 'Tooltip 1';
+            $.each(queryMetadata.tooltips, function (index, tooltip) 
+            {
+       			//if this is the first tooltip, keep track of the value for use later.  otherwise, append it to the tooltips
+            	if (index == 0)
+            	{
+            		tooltip1Value = extractTooltipValue(tooltip, record);
+            	}
+            	else
+            	{
+            		//create a new tooltip row
+            		var $newTooltip = $("<tr><td><b>"+tooltip.FieldLabel+"</b></td><td>"+extractTooltipValue(tooltip, record)+"</td></tr>");
+            		
+            		//if this tooltip row is for a textarea, allow wrapping
+            		if (tooltip.DisplayType == 'TEXTAREA') {
+            			$newTooltip.find('td').first().css('vertical-align', 'top');
+            			$newTooltip.find('td').last().css('white-space', 'normal');
+            		}
+            		
+            		//append this new row to the tooltips table
+            		$tooltips.append($newTooltip);
+            	}
+            });
+            
+            //build the url for the standard email page for this record (for use with the email tooltip action)
+            var EmailURL = "p2_lkid=" + record.record.Id + "&rtype=" + record.record.Id.substring(0,3) + "&retURL=%2F" + record.record.Id;
+            if(record.record.Id.substring(0,3) === "001")
+            {
+                EmailURL = "p3_lkid=" + record.record.Id + "&retURL=%2F" + record.record.Id;
+            }               
+            
+            //create info bubble
+            marker.infoBubbleHandle = InfoBubbles.addBubble(
+                $tooltipContent.wrap('<div></div>').show().parent().html()
+                    .replace(/::ContentKey::/g, record.contentKey)
+                    .replace(/::Id::/g, record.record.Id)
+                    .replace(/::Name::/g, tooltip1Value)
+                    .replace(/::Address::/g, record.markerAddress)
+                    .replace(/::PicklistFieldLabel::/g, 'PicklistFieldLabel')
+                    .replace(/::PicklistFieldValue::/g, 'PicklistFieldValue')
+                    .replace(/::EmailURL::/g, EmailURL),
+                new nokia.maps.geo.Coordinate(parseFloat(marker.Lat), parseFloat(marker.Long))
+            );
+            
+            //find the tooltip that is now attached to the dom
+            $tooltipContent = $('#tooltip-content');
+                            
+            //init tabs
+            $tooltipContent.find('.tabs').tabs();
+            
+            //show chatter tab if needed
+            if (queryMetadata.supportsChatter) {
+                $tooltipContent.find('#tab-chatter').show().find('a').data('recordId', record.record.Id).data('contentKey', record.contentKey).data('loaded', false).click(function () {
+                    if (!$(this).data('loaded')) 
+                    {
+                        //mark as loaded so we don't load again
+                        $(this).data('loaded', true);
+                        
+                        //load chatter integration
+                        $(this).closest('#tooltip-content').find('#pane-chatter-'+$(this).data('contentKey')).append("<iframe src='/apex/ChatterFeed?entityId="+$(this).data('recordId')+"' style='width: 100%; height: 300px; border: none;'></iframe>");
+                    }
+                });
+            }
+            
+            //load related list integration
+            if (queryMetadata.relatedListCount > 0)
+            {
+                $("#ajax-" + record.contentKey)
+                    .html('Loading')
+                    .load('MAPopupRelatedListInformation',"parentid=" + record.record.Id + '&sqid=' + queryMetadata.id );  
+            }
+            
+            //show/hide action buttons based on permissions
+            if (userSettings.EnabledActionButtons) 
+            {
+            	$tooltipContent.find('.actionbutton').hide();
+            	$.each(userSettings.EnabledActionButtons, function (index, buttonLabel) {
+            		$tooltipContent.find('.actionbutton[data-label="'+buttonLabel+'"]').show();
+            	});
+            }
+            
+            //hide location verification button if this base object does not support it
+            if (!(queryMetadata.coordinateFields.VerifiedLatitude && queryMetadata.coordinateFields.VerifiedLongitude))
+            {
+            	$('#SetVerifiedLocation-' + record.contentKey).hide();
+            }
+            
+            //hide add to campaign button if this is not a contact or lead
+            if ($.inArray(record.record.Id.substring(0, 3), ['003', '00Q']) == -1)
+            {
+            	$('#AddToCampaign-' + record.contentKey).hide();
+            }
+             
+            //handle action button clicks              
+            $('#AddToTrip-' + record.contentKey).click(function() {
+                AddMarkerToTrip(marker);
+                ShowDirectionsTab();
+                HideBubbles();
+            });
+            $('#SetProxCenter-' + record.contentKey).click(function() {
+                AddOval(marker.Lat, marker.Long);
+                HideBubbles();
+            });
+            $('#RemoveMarker-' + record.contentKey).click(function() {
+                RemoveMarker(marker);
+                HideBubbles();
+            });
+            $('#SetVerifiedLocation-' + record.contentKey).click(function() {
+            	HideBubbles();
+            	
+            	//store the current marker color so we can set it back later
+            	var currentMarkerColor = (marker.brush && marker.brush.color) ? marker.brush.color : '#000000';
+            	
+            	//make the marker draggable and listen for drag events
+				marker.set({draggable: true, brush: 'yellow'});
+				marker.addListener('dragend', function (evt) {
+					var mapDragType = evt.dataTransfer.getData("application/map-drag-type"); 
+					var marker = evt.dataTransfer.getData("application/map-drag-object");
+					var offset = evt.dataTransfer.getData("application/map-drag-object-offset");
+					
+					//reset the marker to non-draggable
+					marker.set({
+						draggable: false,
+						brush: currentMarkerColor
+					});
+					
+					//get coordinates where the marker was dropped
+					var dropCoordinate = map.pixelToGeo(evt.displayX - offset.x + marker.anchor.x, evt.displayY - offset.y + marker.anchor.y);
+					
+					//send request to update the verified lat/long for this record
+					var requestData = {
+						action			: 'set_verified_location',
+						baseObjectId	: marker.record.plottedQuery.data('BaseObjectId'),
+						recordId		: marker.record.record.Id,
+						latitude		: dropCoordinate.latitude,
+						longitude		: dropCoordinate.longitude
+					};
+					$.getJSON("/apex/MATooltipAJAXResources", requestData, function(response)
+				    { 
+				        if(response.success)
+				        {
+				        	//update the verified latitude and longitude on this marker
+				        	marker.Lat = marker.record.markerLatitude = marker.record.verifiedLatitude = dropCoordinate.latitude;
+				        	marker.Long = marker.record.markerLongitude = marker.record.verifiedLongitude = dropCoordinate.longitude;  
+				        }
+				        else
+				        {
+				        	//show error and move marker back to where it was
+				        	growlError($('#growl-wrapper'), 'Unable to set verified location', 3000);
+				        	marker.set('coordinate', new nokia.maps.geo.Coordinate(marker.Lat, marker.Long));
+				        }
+				    })
+				    .error(function() { 
+				    	growlError($('#growl-wrapper'), 'Unable to set verified location', 3000);
+				    	marker.set('coordinate', new nokia.maps.geo.Coordinate(marker.Lat, marker.Long)); 
+				    });
+				});
+            });
+            $('#AddToCampaign-' + record.contentKey).click(function() {
+                AddVisibleToCampaign(record.record.Id);
+                HideBubbles();
+            });
+            $('#ChangeOwner-' + record.contentKey).click(function() {
+                ChangeOwner([record.record.Id]);
+                HideBubbles();
+            });
+        }
+        
+        function extractTooltipValue(tooltipMetadata, record)
+        {
+        	if (tooltipMetadata && record)
+        	{
+	        	//figure out the tooltip value
+				var tooltipValue = tooltipMetadata.Accessible == 'true' ? '' : 'Insufficient Privileges';
+	           	var tooltipRefId;
+	       		if (tooltipMetadata.Accessible == 'true' && tooltipMetadata.FieldName != null)
+	   			{
+	   				//is this a reference field?
+		           	if (tooltipMetadata.FieldName.indexOf(".") > -1)
+		           	{ 
+		               	//yes, so split on the dot and make the value a link
+		               	if (record.record[tooltipMetadata.FieldName.split(".")[0]] != null)
+		               	{
+							var fieldParts = tooltipMetadata.FieldName.split(".");
+		                   
+		                   	tooltipValue = record.record[tooltipMetadata.FieldName.split(".")[0]][tooltipMetadata.FieldName.split(".")[1]];
+		                   	tooltipRefId = record.record[tooltipMetadata.RefFieldName.split(".")[0]][tooltipMetadata.RefFieldName.split(".")[1]];   
+		                   	tooltipValue = '<a target="_blank" href="/' + tooltipRefId + '">' + tooltipValue + '</a>';
+		               	}
+		           	}
+		           	else
+		           	{
+		           		//no, so just get the data
+		               	tooltipValue = record.record[tooltipMetadata.FieldName];
+		           	}
+		           
+		            //if we have a tooltip value, format it
+		           	if (tooltipValue != "")
+		           	{
+		               	tooltipValue = FormatsObjectValue(tooltipValue, tooltipMetadata.DisplayType, tooltipRefId);
+		           	}
+		       	}
+		       	
+		       	//return the value
+		       	return tooltipValue;
+		    }
+		    
+		    //just return blank if we weren't passed the proper data
+		    return '';
+        }
+	</script>
+</apex:component>

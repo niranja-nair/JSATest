@@ -1,0 +1,203 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
+    <customSettingsType>Hierarchy</customSettingsType>
+    <customSettingsVisibility>Public</customSettingsVisibility>
+    <description>Allows management of PaymentConnect terminal features on a user-by-user basis.</description>
+    <enableEnhancedLookup>false</enableEnhancedLookup>
+    <enableFeeds>false</enableFeeds>
+    <fields>
+        <fullName>Auto_Check_Save_Payment_Method__c</fullName>
+        <defaultValue>false</defaultValue>
+        <deprecated>false</deprecated>
+        <description>Auto-Check the &quot;Save Payment Method&quot; option checkbox.</description>
+        <externalId>false</externalId>
+        <inlineHelpText>Auto-Check the &quot;Save Payment Method&quot; option checkbox.</inlineHelpText>
+        <label>Auto-Check Save Payment Method</label>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>Hide_ARB_Cat_Split_Names__c</fullName>
+        <defaultValue>false</defaultValue>
+        <deprecated>false</deprecated>
+        <description>Hides the category split picklist on the AuthNet ARB Terminal.</description>
+        <externalId>false</externalId>
+        <inlineHelpText>Hides the category split picklist on the AuthNet ARB Terminal.</inlineHelpText>
+        <label>Hide Category Split Names</label>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>Hide_ARB_Invoice_Number__c</fullName>
+        <defaultValue>false</defaultValue>
+        <deprecated>false</deprecated>
+        <description>Show/Hide the AuthNet ARB Terminal Invoice Number field.</description>
+        <externalId>false</externalId>
+        <inlineHelpText>Show/Hide the AuthNet ARB Terminal Invoice Number field.</inlineHelpText>
+        <label>Hide ARB Invoice Number</label>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>Hide_ARB_Shipping__c</fullName>
+        <defaultValue>false</defaultValue>
+        <deprecated>false</deprecated>
+        <description>Show/Hide shipping fields on the AuthNet Recurring Billing terminal</description>
+        <externalId>false</externalId>
+        <inlineHelpText>Show/Hide shipping fields on the AuthNet Recurring Billing terminal</inlineHelpText>
+        <label>Hide ARB Shipping</label>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>Hide_AuthNet_Trial_Fields__c</fullName>
+        <defaultValue>false</defaultValue>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <inlineHelpText>Hide/show trial subscription fields (trial amount, frequency, period &amp; occurrences) on the PayPal recurring payment terminal.</inlineHelpText>
+        <label>Hide AuthNet Trial Fields</label>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>Hide_Cash_Entry_Cat_Split_Names__c</fullName>
+        <defaultValue>false</defaultValue>
+        <deprecated>false</deprecated>
+        <description>Hides the category split picklist from the Cash Entry terminal</description>
+        <externalId>false</externalId>
+        <inlineHelpText>Hides the category split picklist from the Cash Entry terminal</inlineHelpText>
+        <label>Hide Category Split Names</label>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>Hide_Cash_Entry_Shipping_Address_Fields__c</fullName>
+        <defaultValue>false</defaultValue>
+        <deprecated>false</deprecated>
+        <description>Hides shipping address fields on the Cash Entry terminal.</description>
+        <externalId>false</externalId>
+        <inlineHelpText>Hides shipping address fields on the Cash Entry terminal.</inlineHelpText>
+        <label>Hide Shipping Address Fields</label>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>Hide_Native_Recur_Cat_Split_Names__c</fullName>
+        <defaultValue>false</defaultValue>
+        <deprecated>false</deprecated>
+        <description>Hides the category split names picklist on the native Scheduled Payments Terminal.</description>
+        <externalId>false</externalId>
+        <inlineHelpText>Hides the category split names picklist on the native Scheduled Payments Terminal.</inlineHelpText>
+        <label>Hide Category Split Names</label>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>Hide_Native_Recur_Shipping_Address__c</fullName>
+        <defaultValue>false</defaultValue>
+        <deprecated>false</deprecated>
+        <description>Hides the shipping address fields on the Native Scheduled Payments Terminal.</description>
+        <externalId>false</externalId>
+        <inlineHelpText>Hides the shipping address fields on the Native Scheduled Payments Terminal.</inlineHelpText>
+        <label>Hide Shipping Address Fields</label>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>Hide_Native_Recur_Trial_Fields__c</fullName>
+        <defaultValue>false</defaultValue>
+        <deprecated>false</deprecated>
+        <description>Hides the subscription trial fields on the Native Scheduled Payments Terminal.</description>
+        <externalId>false</externalId>
+        <inlineHelpText>Hides the subscription trial fields on the Native Scheduled Payments Terminal.</inlineHelpText>
+        <label>Hide Subscription Trial Fields</label>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>Hide_PayPal_Profile_Reference__c</fullName>
+        <defaultValue>false</defaultValue>
+        <deprecated>false</deprecated>
+        <description>Hide/Show the PayPal recurring payment profile Reference Number field.</description>
+        <externalId>false</externalId>
+        <inlineHelpText>Hide/Show the PayPal recurring payment profile Reference Number field.</inlineHelpText>
+        <label>Hide PayPal Profile Reference</label>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>Hide_PayPal_Recurring_Cat_Split_Names__c</fullName>
+        <defaultValue>false</defaultValue>
+        <deprecated>false</deprecated>
+        <description>Hides the category split picklist on the PayPal Subscription Terminal.</description>
+        <externalId>false</externalId>
+        <inlineHelpText>Hides the category split picklist on the PayPal Subscription Terminal.</inlineHelpText>
+        <label>Hide Category Split Names</label>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>Hide_PayPal_Recurring_Shipping__c</fullName>
+        <defaultValue>false</defaultValue>
+        <deprecated>false</deprecated>
+        <description>Show/Hide shipping fields on the PayPal Recurring Payments terminal</description>
+        <externalId>false</externalId>
+        <inlineHelpText>Show/Hide shipping fields on the PayPal Recurring Payments terminal</inlineHelpText>
+        <label>Hide PayPal Recurring Shipping</label>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>Hide_PayPal_Recurring_Tax__c</fullName>
+        <defaultValue>false</defaultValue>
+        <deprecated>false</deprecated>
+        <description>Show/Hide PayPal Recurring Payment tax fields on the terminal</description>
+        <externalId>false</externalId>
+        <inlineHelpText>Show/Hide PayPal Recurring Payment tax fields on the terminal</inlineHelpText>
+        <label>Hide PayPal Recurring Tax</label>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>Hide_PayPal_Trial_Fields__c</fullName>
+        <defaultValue>false</defaultValue>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <inlineHelpText>Hide/show trial subscription fields (trial amount, frequency, period &amp; occurrences) on the PayPal recurring payment terminal.</inlineHelpText>
+        <label>Hide PayPal Trial Fields</label>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>Hide_Pmt_Term_Cat_Split_Names__c</fullName>
+        <defaultValue>false</defaultValue>
+        <deprecated>false</deprecated>
+        <description>Hides the category split picklist from the payment terminal</description>
+        <externalId>false</externalId>
+        <inlineHelpText>Hides the category split picklist from the payment terminal</inlineHelpText>
+        <label>Hide Category Split Names</label>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>Hide_Pmt_Term_Shipping_Address__c</fullName>
+        <defaultValue>false</defaultValue>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <inlineHelpText>Hide/show shipping address fields on the Payment Terminal</inlineHelpText>
+        <label>Hide Shipping Address Fields</label>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>Hide_Pmt_Term_Shipping_Handling__c</fullName>
+        <defaultValue>false</defaultValue>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <inlineHelpText>Hide/show the Payment Terminal shipping and handling amount field.</inlineHelpText>
+        <label>Hide Shipping and Handling</label>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <label>Terminal Settings</label>
+</CustomObject>

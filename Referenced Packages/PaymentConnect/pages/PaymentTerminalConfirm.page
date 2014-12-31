@@ -1,0 +1,287 @@
+<apex:page standardController="pymt__PaymentX__c" extensions="pymt.PaymentTerminalController" >
+<style>
+
+	.modalProgressBox {
+		display: block;
+		position: absolute;
+		z-index: 999;
+		text-align: center; 
+		width: 100%;
+		height: 100%;
+		background-color: #FFF;
+		padding-top:250px;
+		top: 0px;
+		left: 0px;
+		filter:alpha(opacity=50);
+		-moz-opacity:0.5;
+		-khtml-opacity: 0.5;
+		opacity: 0.5;
+		color: black;
+		font-size: 14pt;
+    }
+
+.labelColumn {
+    text-align:right;
+    width:180px;
+	font-weight:bold;
+}
+
+h1 {
+	font-size:1.2em;
+}
+
+
+.verticalSpacer {
+	height:20px;
+	border:1px solid transparent;
+}
+</style>
+
+<apex:sectionHeader title="Linvio PaymentConnect" subtitle="Credit Card Terminal" help="{!$Page.pymt__Help}"/>
+
+<apex:form id="transactionReviewForm">
+<apex:pageMessages />
+     <apex:actionStatus id="modalActionStatus" >
+         <apex:facet name="start" >
+           <apex:outputPanel styleClass="modalProgressBox">&nbsp; 
+           <br/><br/><br/>
+             <apex:image value="{!URLFOR($Resource.pymt__PaymentConnect, 'images/spinner_med.gif')}"  style="vertical-align:middle;" alt="busy..." />
+             &nbsp;Sending Request </apex:outputPanel>
+         </apex:facet> 
+         <apex:facet name="stop"  >
+         </apex:facet>
+    </apex:actionStatus> 
+    
+<apex:outputPanel id="heading">
+    <apex:outputPanel rendered="{!(submitStatus == 'ready')}">
+    	<h1>Transaction Review</h1>
+        <p>Please review the transaction details below and click 'Submit Transaction' to process this payment.</p> 
+    </apex:outputPanel>
+    <apex:outputPanel rendered="{!(submitStatus == 'failed')}">
+        <h1>Transaction Failed</h1>
+        <p>Click the 'Back' button to make any required changes to this transaction and re-submit.</p> 
+    </apex:outputPanel>
+    <apex:outputPanel rendered="{!(submitStatus == 'completed')}">
+        <h1>Transaction Completed</h1>
+    </apex:outputPanel>
+</apex:outputPanel>
+
+<apex:pageBlock >
+
+<apex:panelGrid columns="2" columnClasses="labelColumn, valueColumn">
+
+<apex:outputLabel for="contact">Payment Name:</apex:outputLabel>
+<apex:outputField id="name" value="{!pymt__PaymentX__c.name}" />
+
+<apex:outputLabel for="amount">Amount:</apex:outputLabel>
+<apex:outputText id="amount" value="{!preTaxAmount}" />
+
+<apex:outputLabel for="tax">Tax:</apex:outputLabel>
+<apex:outputField id="tax" value="{!pymt__PaymentX__c.pymt__Tax__c}" />
+
+<apex:outputLabel for="shippingAmount">Shipping:</apex:outputLabel>
+<apex:outputField id="shippingAmount" value="{!pymt__PaymentX__c.pymt__Shipping__c}" />
+
+<apex:outputLabel for="totalAmount">Total Amount:</apex:outputLabel>
+<apex:outputPanel layout="inline">
+<apex:outputField id="totalAmount" value="{!pymt__PaymentX__c.pymt__Amount__c}" />&nbsp;<apex:outputField id="currencyCode" value="{!pymt__PaymentX__c.pymt__Currency_ISO_Code__c}" />
+</apex:outputPanel>
+
+<apex:outputText value=""/>
+<apex:outputText value=""/>
+
+<apex:outputLabel for="contact">Contact:</apex:outputLabel>
+<apex:outputField id="contact" value="{!pymt__PaymentX__c.pymt__Contact__c}" />
+
+<apex:outputLabel for="account">Account:</apex:outputLabel>
+<apex:outputField id="account" value="{!pymt__PaymentX__c.pymt__Account__c}" />
+
+<apex:outputLabel for="opportunity">Opportunity:</apex:outputLabel>
+<apex:outputField id="opportunity" value="{!pymt__PaymentX__c.pymt__Opportunity__c}" />
+
+<apex:outputText value="" styleClass="verticalSpacer"/>
+<apex:outputText value=""/>
+
+<apex:outputText value="Processor Connection:"/>
+<apex:outputText value="{!connection.Name}"/>
+
+<!--  Start Payment Type == creditcard -->
+<apex:outputText value="Payment Method:" rendered="{!(paymentType== 'creditcard')}"/>
+<apex:outputText value="Credit Card" rendered="{!(paymentType== 'creditcard')}"/>
+
+<apex:outputText value="Transaction Type:" rendered="{!(paymentType== 'creditcard')}"/>
+<apex:outputText value="{!selectedTransType}" rendered="{!(paymentType== 'creditcard')}"/>
+
+<apex:outputText value="Credit Card Number:" rendered="{!(paymentType== 'creditcard')}"/>
+<apex:outputText id="ccNumber" value="************{!pymt__PaymentX__c.pymt__Last_4_Digits__c}" rendered="{!(paymentType== 'creditcard')}"/>
+
+<apex:outputText value="Card Type:" rendered="{!(paymentType== 'creditcard')}"/>
+<apex:outputText id="cardType" value="{!cardType}" rendered="{!(paymentType== 'creditcard')}"/>
+
+<apex:outputText value="CVV:" rendered="{!(paymentType== 'creditcard')}"/>
+<apex:outputText id="cvvNumber" value="{!cvv}"  rendered="{!AND(paymentType== 'creditcard',submitStatus <> 'completed')}"/>
+<apex:outputText id="cvvNumberMasked" value="***"  rendered="{!AND(paymentType== 'creditcard',submitStatus == 'completed')}"/>
+
+<apex:outputText value="Card Expiration:" rendered="{!(paymentType== 'creditcard')}"/>
+<apex:outputPanel layout="inline" rendered="{!(paymentType== 'creditcard')}">
+<apex:outputText id="expMonth" value="{!expirationMonth}"/>/<apex:outputText id="expYear" value="{!expirationYear}"/>
+</apex:outputPanel>
+<!--  End Payment Type == creditcard -->
+
+<!--  Start Payment Type == echeck -->
+<apex:outputText value="Payment Method:" rendered="{!(paymentType== 'echeck')}"/>
+<apex:outputText value="eCheck" rendered="{!(paymentType== 'echeck')}"/>
+
+<apex:outputText value="Transaction Type:" rendered="{!(paymentType== 'echeck')}"/>
+<apex:outputText value="{!selectedTransType}" rendered="{!(paymentType== 'echeck')}"/>
+
+<apex:outputText value="Account Type:" rendered="{!(paymentType== 'echeck')}"/>
+<apex:outputText id="accountType" value="{!selectedBankAccountType}"  rendered="{!(paymentType== 'echeck')}"/>
+
+<apex:outputText value="eCheck Type:" rendered="{!(paymentType== 'echeck')}"/>
+<apex:outputText id="echeckType" value="{!selectedECheckType}"  rendered="{!(paymentType== 'echeck')}"/>
+
+<apex:outputText value="Bank Name:" rendered="{!(paymentType== 'echeck')}"/>
+<apex:outputText id="bankName" value="{!bankName}"  rendered="{!(paymentType== 'echeck')}"/>
+
+<apex:outputText value="Bank Account Number:" rendered="{!(paymentType== 'echeck')}"/>
+<apex:outputText id="bankAccountNumber" value="{!bankAccountNumber}"  rendered="{!(paymentType== 'echeck')}"/>
+
+<apex:outputText value="Bank Routing Number:" rendered="{!(paymentType== 'echeck')}"/>
+<apex:outputText id="bankRoutingNumber" value="{!bankRoutingNumber}"  rendered="{!(paymentType== 'echeck')}"/>
+
+<apex:outputText value="Check Number:" rendered="{!(paymentType== 'echeck')}"/>
+<apex:outputText id="checkNumber" value="{!pymt__PaymentX__c.pymt__Check_Number__c}"  rendered="{!(paymentType== 'echeck')}"/>
+<!--  End Payment Type == echeck -->
+
+
+<!--  Start Payment Type == cimProfile -->
+<apex:outputText value="Payment Method:" rendered="{!(paymentType== 'cimProfile')}"/>
+<apex:outputText value="AuthNet CIM Profile" rendered="{!(paymentType== 'cimProfile')}"/>
+
+<apex:outputText value="Transaction Type:" rendered="{!(paymentType== 'cimProfile')}"/>
+<apex:outputText value="{!selectedTransType}" rendered="{!(paymentType== 'cimProfile')}"/>
+
+<apex:outputText value="Profile Id:" rendered="{!(paymentType== 'cimProfile')}"/>
+<apex:outputText value="{!paymentMethodRecord.pymt__Profile_Id__c}"  rendered="{!(paymentType== 'cimProfile')}"/>
+<!--  End Payment Type == cimProfile -->
+
+
+<!--  Start Payment Type == payPalReferenceTransaction -->
+<apex:outputText value="Payment Method:" rendered="{!(paymentType== 'payPalReferenceTransaction')}"/>
+<apex:outputText value="PayPal Reference Transaction" rendered="{!(paymentType== 'payPalReferenceTransaction')}"/>
+
+<apex:outputText value="Transaction Type:" rendered="{!(paymentType== 'payPalReferenceTransaction')}"/>
+<apex:outputText value="{!selectedTransType}" rendered="{!(paymentType== 'payPalReferenceTransaction')}"/>
+
+<apex:outputText value="Profile Id:" rendered="{!(paymentType== 'payPalReferenceTransaction')}"/>
+<apex:outputText value="{!paymentMethodRecord.pymt__Profile_Id__c}"  rendered="{!(paymentType== 'payPalReferenceTransaction')}"/>
+<!--  End Payment Type == payPalReferenceTransaction -->
+
+<!--  Start Payment Type == eWayProfile -->
+<apex:outputText value="Payment Method:" rendered="{!(paymentType== 'eWayProfile')}"/>
+<apex:outputText value="eWay Stored Payment Profile" rendered="{!(paymentType== 'eWayProfile')}"/>
+
+<apex:outputText value="Transaction Type:" rendered="{!(paymentType== 'eWayProfile')}"/>
+<apex:outputText value="{!selectedTransType}" rendered="{!(paymentType== 'eWayProfile')}"/>
+
+<apex:outputText value="Profile Id:" rendered="{!(paymentType== 'eWayProfile')}"/>
+<apex:outputText value="{!paymentMethodRecord.pymt__Profile_Id__c}"  rendered="{!(paymentType== 'eWayProfile')}"/>
+<!--  End Payment Type == eWayProfile -->
+
+
+<apex:outputText value="" styleClass="verticalSpacer"/>
+<apex:outputText value=""/>
+
+<!--  Start Payment Type == echeck || creditcard -->
+<apex:outputText value="Billing Name:" rendered="{!OR(paymentType == 'echeck', paymentType == 'creditcard')}"/>
+<apex:outputText value="{!billingName}"  rendered="{!OR(paymentType == 'echeck', paymentType == 'creditcard')}"/>
+
+<apex:outputText value="Billing Address:" rendered="{!OR(paymentType == 'echeck', paymentType == 'creditcard')}"/>
+<apex:outputText value="{!billingStreet}"  rendered="{!OR(paymentType == 'echeck', paymentType == 'creditcard')}"/>
+
+<apex:outputText value="" rendered="{!OR(paymentType == 'echeck', paymentType == 'creditcard')}"/>
+<apex:outputText value="{!billingCity}, {!billingstate} {!billingpostalcode} {!billingcountry}"  rendered="{!OR(paymentType == 'echeck', paymentType == 'creditcard')}"/>
+
+<!--  End Payment Type == echeck || creditcard -->
+
+
+<!--  Start Payment Type <> (echeck || creditcard) -->
+<apex:outputText value="Billing Name:"  rendered="{!NOT(OR(paymentType == 'echeck', paymentType == 'creditcard'))}"/>
+ <apex:outputText value="{!paymentMethodRecord.pymt__Billing_First_Name__c & ' ' & paymentMethodRecord.pymt__Billing_Last_Name__c} "  rendered="{!NOT(OR(paymentType == 'echeck', paymentType == 'creditcard'))}"/>
+
+<apex:outputText value="Billing Address:" rendered="{!NOT(OR(paymentType == 'echeck', paymentType == 'creditcard'))}"/>
+ <apex:outputText value="{!paymentMethodRecord.pymt__Billing_Street__c} "  rendered="{!NOT(OR(paymentType == 'echeck', paymentType == 'creditcard'))}"/>
+
+<apex:outputText value="" rendered="{!NOT(OR(paymentType == 'echeck', paymentType == 'creditcard'))}"/>
+ <apex:outputText value="{!paymentMethodRecord.pymt__Billing_City__c}, {!paymentMethodRecord.pymt__Billing_State__c} {!paymentMethodRecord.pymt__Billing_Postal_Code__c} {!paymentMethodRecord.pymt__Billing_Country__c}"  rendered="{!NOT(OR(paymentType == 'echeck', paymentType == 'creditcard'))}"/>
+
+<!--  Start Payment Type <> (echeck || creditcard) -->
+
+
+<!--  Start Shipping Address -->
+<apex:outputText value="" styleClass="verticalSpacer"/>
+<apex:outputText value=""/>
+
+ 
+<apex:outputText value="Ship To Name:" rendered="{!NOT(hideShippingAddress)}"/>
+ <apex:outputText value="{!pymt__PaymentX__c.pymt__Ship_To_Name__c} "  rendered="{!NOT(hideShippingAddress)}"/>
+
+<apex:outputText value="Shipping Address:" rendered="{!NOT(hideShippingAddress)}"/>
+ <apex:outputText value="{!pymt__PaymentX__c.pymt__Ship_To_Street__c} "  rendered="{!NOT(hideShippingAddress)}"/>
+
+<apex:outputText value="" rendered="{!NOT(hideShippingAddress)}"/>
+ <apex:outputText value="{!pymt__PaymentX__c.pymt__Ship_To_City__c}, {!pymt__PaymentX__c.pymt__Ship_To_State__c}  {!pymt__PaymentX__c.pymt__Ship_To_Postal_Code__c} {!pymt__PaymentX__c.pymt__Ship_To_Country__c}"  rendered="{!NOT(hideShippingAddress)}"/>
+
+<!--  Start Payment Type <> (echeck || creditcard) -->
+
+
+</apex:panelGrid>
+
+<apex:outputPanel id="savePmtMethodPanel" rendered="{!AND(savePmtDetailsEnabled, submitStatus == 'completed')}">
+<apex:panelGrid columns="2" columnClasses="labelColumn, valueColumn" >
+<apex:outputText value=""/>
+<apex:outputPanel layout="inline">
+<apex:inputCheckbox value="{!savePmtDetails}"  >
+<apex:actionSupport event="onchange"  />
+</apex:inputCheckbox>
+<apex:outputText value="Save payment information as a stored payment method" />
+</apex:outputPanel>
+
+<apex:outputText value="" rendered="{!eWayTokensEnabled}"/>
+<apex:outputPanel style="padding-left:25px;" rendered="{!eWayTokensEnabled}">
+<apex:outputText value="Profile billing name: "/>
+<apex:inputField value="{!contact.Salutation}"/>&nbsp;{!billingName}
+</apex:outputPanel>
+
+<apex:outputText value=""/>
+<apex:outputPanel layout="inline">
+<apex:inputCheckbox value="{!setPmtMethodAsDefault}"  />
+<apex:outputText value="Make this the Contact's default Payment Method."   />
+</apex:outputPanel>
+
+
+</apex:panelGrid>
+</apex:outputPanel>
+
+    <br/>  
+    <apex:pageBlockButtons >
+                    <apex:outputPanel rendered="{!(submitStatus == 'ready')}">
+
+                        <apex:commandButton id="cancel_1" value="Cancel" action="{!cancelFromTerminal}" />
+                        <apex:commandButton id="back_1" value="<<Back" action="{!backOnSubmitPage}"/>
+                        <apex:commandButton id="submitPayment" value="Submit Transaction" action="{!submitPayment}" status="modalActionStatus" rerender="transactionReviewForm"/>
+                    </apex:outputPanel>
+                    <apex:outputPanel rendered="{!(submitStatus == 'failed')}">
+                        <apex:commandButton id="cancel_2" value="Cancel" action="{!cancelFromTerminal}" />
+                        <apex:commandButton id="back_2" value="<<Back" action="{!retryTransaction}"/>
+                    </apex:outputPanel>
+                    <apex:outputPanel rendered="{!(submitStatus == 'completed')}">
+                        <apex:commandButton id="continue" value="Continue" action="{!continueFromTerminal}" />
+                    </apex:outputPanel>
+    
+    </apex:pageBlockButtons>
+    </apex:pageBlock>
+</apex:form>
+
+</apex:page>

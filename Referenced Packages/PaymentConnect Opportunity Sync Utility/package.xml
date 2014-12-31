@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Package xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>PaymentConnect Opportunity Sync Utility</fullName>
+    <apiAccessLevel>Unrestricted</apiAccessLevel>
+    <description>A click-to-configure utility from Linvio that automates the creation of Opportunity (and Non-Profit Starter Pack &quot;Donation&quot;) records retroactively from completed Payment records.</description>
+    <namespacePrefix>opsync</namespacePrefix>
+    <setupWeblink>PaymentConnect_Opp_Sync_Utility_Help</setupWeblink>
+    <types>
+        <members>BatchCreateOpps</members>
+        <members>OppSyncConfigController</members>
+        <members>ScheduleBatchCreateOppsScript</members>
+        <name>ApexClass</name>
+    </types>
+    <types>
+        <members>OppSyncConfig</members>
+        <members>OppSyncHelp</members>
+        <name>ApexPage</name>
+    </types>
+    <types>
+        <members>OppSync_Field_Mapping__c.Opportunity_Field_Name__c</members>
+        <members>OppSync_Field_Mapping__c.Payment_Field_Name__c</members>
+        <members>OppSync_Settings__c.Batch_Script_LastNDays__c</members>
+        <members>OppSync_Settings__c.Build_Line_Items__c</members>
+        <members>OppSync_Settings__c.Clear_History_After__c</members>
+        <members>OppSync_Settings__c.Default_Product_Id__c</members>
+        <members>OppSync_Settings__c.Disable_Contact_Role_Creation__c</members>
+        <members>OppSync_Settings__c.Discount_Product_Id__c</members>
+        <members>OppSync_Settings__c.Opportunity_Name__c</members>
+        <members>OppSync_Settings__c.Opportunity_Stage_Name__c</members>
+        <members>OppSync_Settings__c.Pricebook_Id__c</members>
+        <members>OppSync_Settings__c.Scheduled_Batch_Job_Id__c</members>
+        <name>CustomField</name>
+    </types>
+    <types>
+        <members>OppSync_Field_Mapping__c</members>
+        <members>OppSync_Settings__c</members>
+        <name>CustomObject</name>
+    </types>
+    <types>
+        <members>PaymentConnect_Opp_Sync_Utility_Help</members>
+        <name>CustomPageWebLink</name>
+    </types>
+    <types>
+        <members>PaymentConnectOppSyncHelp</members>
+        <name>StaticResource</name>
+    </types>
+    <types>
+        <members>pymt__Settings__c.Opportunity_Sync_Utility</members>
+        <name>WebLink</name>
+    </types>
+    <version>31.0</version>
+</Package>

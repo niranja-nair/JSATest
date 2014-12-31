@@ -1,0 +1,156 @@
+<apex:page standardController="pymt__Payment_Profile__c" extensions="pymt.PaymentProfileMgtScheduledPayments" showHeader="false" sidebar="false" >
+<style>
+    body {
+       font-size:.75em;
+    }
+    p {
+	   margin:6px 0px 6px 0px;
+	   padding:0;    
+    }
+	.ppc_inner {
+		padding:4px;
+	}
+    .pbBody {
+     /*   background:#f3f3ec; */
+    }
+    .reasonbox {
+        width:400px;
+    }
+    .ppc_button_bar {
+    	background-color:#e0e0e0;
+    	/* background: url({!URLFOR($Resource.PaymentConnect,'/images/btnBarBkgd.png')}); 
+    	background-position: 0px -25px; */
+    	border: solid 1px #a4a4a4;
+    	padding:4px 12px 4px 12px;
+    	-moz-border-radius: 8px;
+		border-radius: 8px;
+    }
+    
+
+.message {
+	border: 1px solid #e8e8e8;
+	padding: 4px;
+}
+
+.messageCell h4 {
+	display:inline;
+	
+}
+
+.errorM3 .msgIcon {
+	height:16px;
+	width: 16px;
+	margin-right:4px;
+	background-image: url('{!URLFOR($Resource.PaymentConnect, "images/exclamation.png")}');
+}
+
+.infoM3 .msgIcon {
+	height:16px;
+	width: 16px;
+	margin-right:4px;
+	background-image: url('{!URLFOR($Resource.PaymentConnect, "images/help.png")}');
+}
+
+.confirmM3 .msgIcon {
+	height:16px;
+	width: 16px;
+	margin-right:4px;
+	background-image: url('{!URLFOR($Resource.PaymentConnect, "images/accept.png")}');
+}
+
+.warningM3 .msgIcon {
+	height:16px;
+	width: 16px;
+	margin-right:4px;
+	background-image: url('{!URLFOR($Resource.PaymentConnect, "images/error.png")}');
+}    
+</style>
+    <script type="text/javascript">
+    
+    
+    function promptForCancel() {
+        var reason = prompt("Enter a reason (option) and click 'OK' to cancel this recurring payment profile:");
+    }
+
+    function promptForSuspend() {
+        var reason = prompt("Enter a reason (option) and click 'OK' to suspend this recurring payment profile:");
+    }
+
+    </script>
+<body>
+<script type="text/javascript" src="{!URLFOR($Resource.PaymentConnect, 'includes/tooltip/wz_tooltip.js')}"></script>
+    
+<apex:form id="profileControlForm" style="height:250px">
+<div class="ppc_button_bar">
+    <apex:commandButton value="Activate Subscription" onclick="parent.location.replace('{!URLFOR($Page.pymt__ScheduledPaymentTerminal)}?ppid={!pymt__Payment_Profile__c.Id}&cancelURL=%2F{!pymt__Payment_Profile__c.Id}');" status="formActionStatus"  rendered="{!IF(pymt__Payment_Profile__c.pymt__Subscription_Status__c =='Not Activated',true,false)}" />
+    <apex:commandButton value="Cancel" id="cancelButton" action="{!cancelRecurringPaymentConfirm}" status="formActionStatus"  disabled="{!IF(pymt__Payment_Profile__c.pymt__Subscription_Status__c =='Active',false,true)}"  rerender="contentArea, cancelRecurringView"/>
+    <apex:commandButton value="Suspend" id="suspendButton" action="{!suspendRecurringPaymentConfirm}" status="formActionStatus"  disabled="{!IF(AND(pymt__Payment_Profile__c.pymt__Subscription_Status__c =='Active',NOT(ISNULL(pymt__Payment_Profile__c.pymt__Next_Payment_Date__c))),false,true)}" rerender="contentArea, suspendRecurringView"/>
+    <apex:commandButton value="Resume" id="resumeButton" action="{!resumeRecurringPaymentConfirm}" status="formActionStatus"  disabled="{!IF(AND(pymt__Payment_Profile__c.pymt__Subscription_Status__c =='Suspended',NOT(ISNULL(pymt__Payment_Profile__c.pymt__Next_Payment_Date__c)),NOT(ISNULL(pymt__Payment_Profile__c.pymt__Suspended_Date__c))),false,true)}" rerender="contentArea, resumeRecurringView"/>
+    <apex:commandButton value="Update Recurring Amount"  action="{!updateRecurringPaymentConfirm}" status="formActionStatus"  disabled="{!IF(pymt__Payment_Profile__c.pymt__Subscription_Status__c =='Active',false,true)}"  rerender="contentArea, updateAmountView"/>
+    <apex:actionStatus id="formActionStatus" >
+         <apex:facet name="start" >
+           <apex:outputPanel >&nbsp; 
+             <apex:image value="{!URLFOR($Resource.pymt__PaymentConnect, 'images/loadingAnimation.gif')}"  style="vertical-align:middle;" alt="busy..." />
+             &nbsp;</apex:outputPanel>
+         </apex:facet>
+         <apex:facet name="stop">
+           <apex:image value="{!URLFOR('/s.gif')}"  alt="" style="height:12px;" />
+         </apex:facet>
+    </apex:actionStatus>
+    </div>
+ <apex:outputPanel id="contentArea"  >
+    <apex:messages id="pageMessages" styleClass="message" style="margin-top:5px;"/> 
+    <apex:outputPanel id="cancelRecurringView"  rendered="{!IF(currentAction == 'CancelRecurringPayment',true,false)}">
+    	<div class="ppc_inner">
+    	<apex:outputPanel rendered="{!futureScheduledPaymentsCount >0}">
+    	<p>PaymentConnect found {!futureScheduledPaymentsCount} scheduled (unpaid) payment(s) for this subscription.  Canceling this profile will remove the scheduled payments from the system.</p>
+    	</apex:outputPanel>
+        <p>Enter a reason for canceling this recurring payment profile (optional) and click the button below to complete this action:</p>
+        <apex:inputText styleclass="reasonbox" value="{!reason}" /><br/><br/>
+        <apex:commandButton value="Cancel Recurring Payment" styleClass="btnImportant" action="{!cancelRecurringPaymentExecute}" status="formActionStatus" />
+        </div>
+    </apex:outputPanel>
+    <apex:outputPanel id="suspendRecurringView" rendered="{!IF(currentAction == 'SuspendRecurringPayment',true,false)}">
+    	<div class="ppc_inner"> 
+        <p>When you suspend a profile all payment requests will stop, but you can reactivate the profile later.  Enter a reason for suspending this recurring payment profile (optional) and click the button below to complete this action:</p>
+        <apex:inputText styleclass="reasonbox" value="{!reason}" /><br/><br/>
+        <apex:commandButton value="Suspend Recurring Payment" action="{!suspendRecurringPaymentExecute}"  status="formActionStatus"/>
+		</div>
+    </apex:outputPanel>
+    <apex:outputPanel id="resumeRecurringView" rendered="{!IF(currentAction == 'ResumeRecurringPayment',true,false)}">
+    	<div class="ppc_inner">
+    	<apex:outputPanel rendered="{!suspendedPaymentsCount >0}">
+    	<p>PaymentConnect found {!suspendedPaymentsCount} "Scheduled-Suspended" payment(s) for this subscription.  Would you like to reschedule these record(s) so they will be processed in the next batch run?</p>
+    	<apex:inputCheckbox value="{!rescheduleSuspendedPayments}">Reschedule previously suspended payments?</apex:inputCheckbox>
+    	</apex:outputPanel>
+        <p>Enter a reason for resuming this recurring payment profile (optional) and click the button below to complete this action:</p>
+        <apex:inputText styleclass="reasonbox" value="{!reason}" /><br/><br/>
+        <apex:commandButton value="Resume Scheduled Payments" action="{!resumeRecurringPaymentExecute}"  status="formActionStatus"/>
+		</div>
+    </apex:outputPanel>
+    <apex:outputPanel id="updateAmountView" rendered="{!IF(currentAction == 'UpdateRecurringPayment',true,false)}">
+    	<div class="ppc_inner">
+        <p>Enter a new recurring amount for this subscription profile:</p>
+        <apex:panelGrid columns="4" id="updateAmountGrid">
+  			<apex:outputText value="New Recurring Amount: "/>
+  			<apex:inputField value="{!pymt__Payment_Profile__c.pymt__Amount__c}"/>
+        </apex:panelGrid> <br/>
+		<apex:commandButton value="Update Recurring Amount" action="{!nullAction}"  status="formActionStatus" onclick="alert('Updating recurring amount.  Currently scheduled payments for this profile will not be changed.');"/>
+		
+		</div>
+    </apex:outputPanel>    
+    <apex:outputPanel id="introView" rendered="{!IF(currentAction == 'intro',true,false)}">
+    	<div class="ppc_inner">
+        <p>Use the buttons above to manage this Scheduled Payments Profile.</p>
+		</div>
+    </apex:outputPanel>
+    <apex:outputPanel id="reloadView" rendered="{!IF(currentAction == 'ReloadPage',true,false)}">
+    	<div class="ppc_inner">
+        <p>It may be necessary to reload the current page to see the latest updates to this payment profile.</p>
+        <apex:commandButton value="Reload Page" action="{!clearCurrentAction}" status="formActionStatus" oncomplete="window.parent.location='{!URLFOR($Action.Payment_Profile__c.View, pymt__Payment_Profile__c.Id)}'" />
+		</div>
+    </apex:outputPanel>
+</apex:outputPanel>
+</apex:form>
+</body>
+</apex:page>

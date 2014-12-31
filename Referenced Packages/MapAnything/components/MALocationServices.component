@@ -1,0 +1,33 @@
+<apex:component access="global">
+
+	<script type='text/javascript'>
+		if (typeof nokia == 'undefined') {
+			document.write("<script type='text/javascript' charset='UTF-8' src='https://api.maps.nlp.nokia.com/2.2.3/jsl.js?with=all'><"+"/script>");
+		}
+	</script>
+
+	<script type='text/javascript'>
+	    nokia.Settings.set("appId", "cL2-LKZ0bcVr0BcDu7P-"); 
+	    nokia.Settings.set("authenticationToken", "ygeWiBoAwmMHKgSwNCgxQw");
+	    (document.location.protocol == "https:") && nokia.Settings.set("secureConnection", "force");
+	    
+	    var MALocationServices = {
+	    	getPosition: function (callback)
+		    {
+		    	new nokia.maps.positioning.Manager().getCurrentPosition(
+	        		function (position) {
+	        			if (callback) {
+	        				callback({ success: true, position: position });
+	        			}
+	        		},
+	        		function (error) {
+	        			if (callback) {
+	        				callback({ success: false, message: 'Unable to retreive location' });
+	        			}
+	        		}
+	        	);
+		    }
+		};
+    </script>
+    
+</apex:component>

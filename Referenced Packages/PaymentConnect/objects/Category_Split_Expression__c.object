@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
+    <customSettingsType>List</customSettingsType>
+    <customSettingsVisibility>Protected</customSettingsVisibility>
+    <description>Category split expressions to be used in auto-splitting completed payments.  1020 character max</description>
+    <enableEnhancedLookup>false</enableEnhancedLookup>
+    <enableFeeds>false</enableFeeds>
+    <fields>
+        <fullName>Part1__c</fullName>
+        <deprecated>false</deprecated>
+        <description>Part 1 of the expression (characters 1-255)</description>
+        <externalId>false</externalId>
+        <inlineHelpText>Part 1 of the expression (characters 1-255)</inlineHelpText>
+        <label>Part1</label>
+        <length>255</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Part2__c</fullName>
+        <deprecated>false</deprecated>
+        <description>Part 2 of the expression (characters 256-510)</description>
+        <externalId>false</externalId>
+        <inlineHelpText>Part 2 of the expression (characters 256-510)</inlineHelpText>
+        <label>Part2</label>
+        <length>255</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Part3__c</fullName>
+        <deprecated>false</deprecated>
+        <description>Part 3 of the expression (characters 511-765)</description>
+        <externalId>false</externalId>
+        <inlineHelpText>Part 3 of the expression (characters 511-765)</inlineHelpText>
+        <label>Part3</label>
+        <length>255</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Part4__c</fullName>
+        <deprecated>false</deprecated>
+        <description>Part 4 of the expression (characters 765-1020)</description>
+        <externalId>false</externalId>
+        <inlineHelpText>Part 4 of the expression (characters 765-1020)</inlineHelpText>
+        <label>Part4</label>
+        <length>255</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <label>Category Split Expression</label>
+</CustomObject>

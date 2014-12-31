@@ -1,0 +1,3 @@
+<apex:page tabStyle="pymt__PaymentConnect_Admin__tab" >
+<p>This page has been moved to <apex:outputLink value="{!URLFOR($Page.pymt__PaymentConnectSettings)}">here</apex:outputLink></p>
+</apex:page>

@@ -1,0 +1,71 @@
+<apex:component >
+
+	  <footer class="background-midnight-blue color-white">
+      <div class="container">
+        <div class="row">
+          <div class="col-md-5">
+            <h3>Junior Statesmen Foundation</h3>
+            <strong>National Headquarters in California</strong><br/>
+            800 S. Claremont St., Suite 202<br/>
+            San Mateo, CA 94402<br/>
+            (800) 334-5353<br/><br/>
+            <strong>Washington, D.C. Office</strong><br/>
+            1411 K St. NW, Suite 200<br/>
+            Washington, DC 20005<br/>
+            (800) 317-9338
+          </div>
+          <div class="col-md-3">
+          	<h3>About JSA</h3>
+          	<p>The mission of the Junior State of America and the Junior Statesmen Foundation is to strengthen American democracy by educating and preparing high school students for life-long involvement and responsible leadership in a democratic society.</p>
+          </div>
+          <div class="col-md-4">
+            <h3>Additional Resources</h3>
+            <ul class="nav-footer">
+              <li><a href="http://jsa.org/contact-jsa/">Contact Us</a></li>
+              <li><a href="http://jsa.org/about/">About JSA</a></li>
+              <li><a href="http://jsa.org/downloads/">Downloads</a></li>
+              <li><a href="http://summer.jsa.org">Summer Programs</a></li>
+              <li><a href="http://jsa.org/portal">MyJSA</a></li>
+              <li><a href="http://jsa.org/bethepeople">Be the People</a></li>
+            </ul>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-12">
+            <hr />
+            <div class="row">
+              <div class="col-md-12">
+                <a href="http://jsa.org">www.jsa.org</a><br/>
+                JSA is a <a href="http://jsa.org/about/the-junior-statesmen-foundation/" target="_blank">non-profit 501(c)(3) educational organization</a><br/>
+                © {!year(today())} JSA. <a href="http://jsa.org/terms-of-use-and-privacy-policy/" target="_blank">Terms of Use and Privacy Policy</a>
+              </div>
+              <!--<div class="col-md-2">
+                <p class="social">
+                  <a href="/"><span class="fa fa-facebook"></span></a>
+                  <a href="/"><span class="fa fa-twitter"></span></a>
+                  <a href="/"><span class="fa fa-youtube"></span></a>
+                  <a href="/"><span class="fa fa-linkedin"></span></a>
+                  <a href="/"><span class="fa fa-pinterest"></span></a>
+                </p>
+              </div>-->
+            </div>
+          </div>
+        </div>
+      </div>
+    </footer>
+
+    <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+    <!-- Include all compiled plugins (below), or include individual files as needed -->
+    <script src="//netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"></script>
+    <script src="{!URLFOR($Resource.NeatTheme, 'js/reduce-menu.js')}"></script>
+
+    <!-- Include slider -->
+    <!--<script src="{!URLFOR($Resource.NeatTheme, 'js/jquery.event.move.js')}"></script>
+    <script src="{!URLFOR($Resource.NeatTheme, 'js/jquery.mixitup.min.js')}"></script>
+    <script src="{!URLFOR($Resource.NeatTheme, 'js/responsive-slider.js')}"></script>
+    <script src="{!URLFOR($Resource.NeatTheme, 'js/responsive-calendar.js')}"></script>
+    <script src="{!URLFOR($Resource.NeatTheme, 'libs/lightbox/js/lightbox-2.6.min.js')}"></script>
+    <script src="{!URLFOR($Resource.NeatTheme, 'js/match-height.js')}"></script>-->
+    
+</apex:component>

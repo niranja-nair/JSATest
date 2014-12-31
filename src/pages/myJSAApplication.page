@@ -1,0 +1,809 @@
+<apex:page showheader="false" sidebar="false" Controller="JSAApplicationController" >
+<head>
+    <title>MyJSA</title>
+    <apex:stylesheet value="{!URLFOR($Resource.jquery_ui_css)}" /> 
+    <apex:stylesheet value="{!URLFOR($Resource.myJSAbaseStyle)}" />
+    <link rel="stylesheet" type="text/css" href="{!URLFOR($Resource.JSAPortal, 'style-theme.css')}" />
+    <link rel="stylesheet" type="text/css" href="{!URLFOR($Resource.JSAPortal, 'style.css')}" />
+    
+    <style>
+        .roomBox
+        {
+            padding:15px;
+            margin:5px;
+            border: 1px solid black;
+            float: left;
+            width: 90%;
+        }
+        
+        .leftBox
+        {
+            width: 50%;
+            float: left;
+        }
+        
+        .smallLeftBox
+        {
+            width: 30%;
+            float: left;
+        }
+        
+        .inputArea
+        {
+            width: 70%;
+            float: left;
+        }
+        
+        #summary
+        {
+            overflow: auto;
+            margin: 10px;
+            margin-bottom: 20px;
+        }
+        
+        .striped tr:nth-child(even)
+        {
+            background-color: #f5f5f5;
+            padding-top: 10px;
+        }
+        
+        .highlightedLink
+        {           
+            text-decoration: underline;
+            color: #3172B4;
+        }
+       
+        #clearSchool {
+            background-color : lightgray;
+            width : 6em;
+            height: 2em;
+            font-size: 10px;
+        }
+
+        .highSchoolId{
+            display:none;
+        }
+        .ui-widget input, .ui-widget select, .ui-widget textarea, .ui-widget button {
+            font-size:13px;
+        }
+        
+        a{
+       text-decoration: none;
+       color:#015ba7;
+}
+    </style>
+      
+<script>
+var _gaq = _gaq || [];
+_gaq.push(['_setAccount', 'UA-1376727-1']);
+_gaq.push(['_setDomainName', 'force.com']);
+_gaq.push(['_setAllowLinker', true]);
+_gaq.push(['_trackPageview']);
+</script>
+    </head>
+
+    <body>
+        <div class="mainBox">
+            <div class="topHeaderBox">
+                <div class="topLogoBox">
+                    <img src="{!$Resource.jsf_cap_logo_png}" width="155px" height="20px"></img>
+                </div>
+            </div>
+            <div class="headerBox" id="headerBox">
+                <img src="{!$Resource.jsf_header_logo_png}" width="484px" height="176px"></img>
+                <div style="float:right; padding:15px">
+                    <a style="color:white" href="/secur/logout.jsp?retUrl=/portalLogin">Logout</a>
+                </div>
+            </div>
+            
+            <div class="midBox" id="midBoxHome">
+            
+                <ul id="nav2" class="menu">
+                    <li id="menu-item-472" class="menu-item">
+                        <a href="/apex/myJSAhome" >MyJSA Home</a>
+                    </li>
+                    <li class="menu-item">
+                        <a href="/apex/myJSAchapter">My Chapter</a>
+                    </li>
+                    <li class="menu-item">
+                    <a href="https://myjsa.force.com/_ui/core/chatter/ui/ChatterPage">My Chatter</a>
+                    </li>
+                    <li id="menu-item-482" class="selectedMenu">
+                        <a href="/apex/myJSAEventSummary" id="selectedMenuBtn">My Events</a>
+                    </li>
+                    <li class="menu-item">
+                        <a href="/apex/myJSAProfile">My Personal Data</a>
+                    </li>
+                </ul>
+                
+                <apex:pageMessages id="messages"></apex:pageMessages>
+                
+                <div class="columns">
+               
+                    <div class="breadcrumb"></div>
+                    
+                    <div class="col1">
+                    
+                        <div id="archivebox"><h2>{!opName}</h2></div>
+                        <input type="hidden" id="submittedValue" value="{!submitted}" />
+                        <input type="hidden" id="submittedApp" value="{!SubmittedForApproval}" />
+                        <div id="appltabs">
+                          <ul style="background:none; border:none;">
+                            <li><a href="#tabs-1">1. Overview</a></li>
+                            <apex:outputText rendered="{!IsSSApplication}" >
+                            <li><a href="#tabs-2">2. Recommendation</a></li>
+                            </apex:outputText>
+                            <apex:outputText rendered="{!IsSympApplication}" >
+                            <li><a href="#tabs-2">2. School</a></li>
+                            </apex:outputText>
+                            <li><a href="#tabs-3">3. Essay</a></li>
+                            <li><a href="#tabs-4">4. Next Steps</a></li>
+                          </ul>
+                          <apex:form >
+                          <div id="tabs-1">                         
+                                    <table class="striped" width="100%">
+                                        <tr>
+                                            <td colspan="2">
+                                                <apex:outputPanel rendered="{!IsSSApplication}" >
+                                                Note: Your application will be reviewed once you have selected a course, completed your personal information online, submitted your essay, and we have received your teacher recommendation and school transcript. Once Application Status changes to "Complete" you will not be able to make further changes to your application. <br /><br />
+                                                For your "Personal Data Complete?" status to be marked as True, all fields in the "My Personal Data" section must be complete. <br /><br />
+                                                </apex:outputPanel>
+                                                <apex:outputPanel rendered="{!IsSympApplication}" >
+                                                You have now successfully created your online application. You can either continue filling out the application, or click the ‘Save for Later’ link at the bottom of the application. If you save it for later, you will find your application under the ‘My Events’ tab when you login to your MyJSA account. <br /><br />
+                                                In order to complete your application, you must fill out the ‘My Personal Data’ tab as well as complete or submit all the application requirements. Once you have completed and submitted the application, JSA will notify you of your application status within two weeks. <br /><br />
+                                                </apex:outputPanel>
+                                            </td>
+                                        </tr>
+                                        <!-- <tr>
+                                            <td colspan="2" style="padding:8px;">
+                                                <div class="label">
+                                                    <b><apex:outputText value="Campus/Session?" rendered="{!IsSSApplication}" />
+                                                    <apex:outputText value="Institute?" rendered="{!IsSympApplication}" /></b>
+                                                </div>
+                                                 <div class="action">
+                                                     <apex:selectList rendered="{!IsSSApplication}" disabled="true" id="campus" value="{!SelectedSession}" multiselect="false" size="1">
+                                                        <apex:selectOption itemLabel="-- Select One --" itemValue="" />
+                                                        <apex:selectOptions value="{!SSSessionOptions}"/>                                               
+                                                     </apex:selectList>
+                                                     <apex:selectList rendered="{!IsSympApplication}" disabled="true" id="institute" value="{!SelectedSession}" multiselect="false" size="1">
+                                                        <apex:selectOption itemLabel="-- Select One --" itemValue="" />
+                                                        <apex:selectOptions value="{!SympSessionOptions}"/>                                             
+                                                     </apex:selectList>
+                                                 </div>                                             
+                                            </td>
+                                        </tr>
+                                        <tr>                                        
+                                            <td colspan="2" style="padding:8px;">
+                                                <apex:outputPanel rendered="{!IsSSApplication}">
+                                                     <div class="label"><b>Second Choice Session?</b></div>
+                                                     <div class="action">
+                                                         <apex:selectList disabled="{!submitted}" id="secondchoicesession" value="{!SelectedSecondChoice}" multiselect="false" size="1">
+                                                            <apex:selectOption itemLabel="-- Select One --" itemValue="" />
+                                                            <apex:selectOptions value="{!SSSessionOptions}"/>
+                                                         </apex:selectList>
+                                                     </div>     
+                                                 </apex:outputPanel>                                                          
+                                            </td>
+                                        </tr>  
+                                        <tr>
+                                            <td colspan="2" style="padding:8px;">
+                                                <div class="label"><b>How did you learn about the program?</b></div>
+                                                 <div class="action">
+                                                     <apex:selectList id="ssrefsource" disabled="{!submitted}" value="{!SelectedSSRefSource}" multiselect="false" size="1">
+                                                        <apex:selectOptions value="{!ReferralOptions}"/>
+                                                     </apex:selectList>
+                                                 </div>
+                                            </td>
+                                        </tr> -->
+                                        <tr>
+                                            <td colspan="2" style="padding:8px;">
+                                                <apex:outputPanel rendered="{!IsSSApplication}" >
+                                                    <div class="label"><b>Course Selection*</b></div>
+                                                    <div class="action" id="courses">               
+                                                         <apex:selectList id="course" disabled="{!submitted}" value="{!SelectedSSCourse}" multiselect="false" size="1">
+                                                            <apex:selectOptions value="{!SSCourses}"/>
+                                                         </apex:selectList>                 
+                                                     </div>
+                                                     <!-- Added for Intuit Online Invoice Question -->
+                                                     <br />
+                                                     <div class="label"><b>Would you like to make online payments? </b>                
+                                                         <apex:inputCheckbox id="OnlineInvoiceFlag"  disabled="{!submitted}" value="{!IsInvoiceNeeded}" /><br />
+                                                         If checked, you will be emailed an online payment link after your application is accepted.
+                                                     </div>
+                                                 </apex:outputPanel>
+                                            </td>                                   
+                                        </tr>
+                                        <apex:repeat value="{!OverviewContentKeys}" var="key">                                            
+                                            <tr>
+                                                <td>{!key} </td>
+                                                <td>{!OverviewContent[key]} </td>
+                                            </tr>                                       
+                                        </apex:repeat>                                        
+                                    </table>
+                                    <br/>
+                                    <br/>
+                                    <div>
+                                        <apex:commandButton styleClass="btn blue" value="Next" id="goToAcademics" ></apex:commandButton>
+                                        &nbsp; | &nbsp;
+                                        <apex:commandLink rendered="{!NOT(submitted)}" styleClass="highlightedLink" value="Save for Later" action="{!SaveOpp}" />
+                                        &nbsp; | &nbsp;
+                                        <apex:outputLink styleClass="highlightedLink" value="/apex/myJSAEventSummary">Cancel</apex:outputLink>                                            
+                                    </div>         
+                                                           
+                          </div>
+                          <div id="tabs-2">
+                                <apex:outputPanel rendered="{!IsSSApplication}" >
+                                Please confirm your high school below. If your high school is not listed, please type in the name of your high school below.
+                                <br /><br />
+                                    <table width="100%">
+                                        <tr>
+                                            <td>
+                                                <span>High School State?<span class="req">*</span></span>
+                                                <br/>
+                                                <apex:selectList value="{!highSchoolState}" disabled="{!submitted}" size="1" styleClass="select highSchoolState" style="width:161px;">
+                                                    <apex:selectOption itemValue="" itemLabel="-- State --"  />
+                                                    <apex:selectOptions value="{!highSchoolStateOptions}"/>
+                                                </apex:selectList>
+                                            </td>
+                                            <td>
+                                                <span class="questionTitle">High School<span class="req">*</span></span>
+                                                <div id="wwgrp_highSchool" class="wwgrp">
+                                                    <div id="wwctrl_highSchool" class="wwctrl">
+                                                        <apex:inputText disabled="{!submitted}" styleClass="highSchoolName" value="{!HighSchoolText}" size="20" maxlength="20"/>
+                                                        <apex:inputText disabled="{!submitted}" styleClass="highSchoolId" value="{!HighSchool}" size="20" maxlength="20"/>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                <span>Reference Teacher Name?<span>*</span></span>
+                                                <br/>
+                                                <apex:inputText disabled="{!submitted}" value="{!RefTeacherName}" />
+                                            </td>
+                                            <td>
+                                                <span>Reference Teacher Email?<span>*</span></span>
+                                                <br/>
+                                                <apex:inputText disabled="{!submitted}" value="{!RefTeacherEmail}" />
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                Reference Teacher Phone? <span>*</span>
+                                                <br/>
+                                                <apex:inputText disabled="{!submitted}" value="{!RefTeacherPhone}" />
+                                            </td>
+                                            <td>
+                                            </td>
+                                        </tr>
+                                    </table>
+                                    <br/>
+                                    <br/>
+                                    </apex:outputPanel>
+                                    <apex:outputPanel rendered="{!IsSympApplication}" >
+                                    Please confirm your high school below. If your high school is not listed, please type in the name of your high school below.
+                                <br /><br />
+                                    <table width="100%">
+                                        <tr>
+                                            <td>
+                                                <span>High School State?<span class="req">*</span></span>
+                                                <br/>
+                                                <apex:selectList value="{!highSchoolState}" disabled="{!submitted}" size="1" styleClass="select highSchoolState" style="width:161px;">
+                                                    <apex:selectOption itemValue="" itemLabel="-- State --"  />
+                                                    <apex:selectOptions value="{!highSchoolStateOptions}"/>
+                                                </apex:selectList>
+                                            </td>
+                                            <td>
+                                                <span class="questionTitle">High School<span class="req">*</span></span>
+                                                <div id="wwgrp_highSchool" class="wwgrp">
+                                                    <div id="wwctrl_highSchool" class="wwctrl">
+                                                        <apex:inputText disabled="{!submitted}" styleClass="highSchoolName" value="{!HighSchoolText}" size="20" maxlength="20"/>
+                                                        <apex:inputText disabled="{!submitted}" styleClass="highSchoolId" value="{!HighSchool}" size="20" maxlength="20"/>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        <!-- <tr>
+                                            <td>
+                                                <span>Reference Teacher Name?<span>*</span></span>
+                                                <br/>
+                                                <apex:inputText disabled="{!submitted}" value="{!RefTeacherName}" />
+                                            </td>
+                                            <td>
+                                                <span>Reference Teacher Email?<span>*</span></span>
+                                                <br/>
+                                                <apex:inputText disabled="{!submitted}" value="{!RefTeacherEmail}" />
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                Reference Teacher Phone? <span>*</span>
+                                                <br/>
+                                                <apex:inputText disabled="{!submitted}" value="{!RefTeacherPhone}" />
+                                            </td>
+                                            <td>
+                                            </td>
+                                        </tr> -->
+                                    </table>
+                                    <br/>
+                                    <br/>
+                                    </apex:outputPanel>
+                                    <div>
+                                        <apex:commandButton styleClass="btn blue" value="Next" id="goToEssay" ></apex:commandButton>
+                                        &nbsp;&nbsp;
+                                        <apex:outputLink styleClass="highlightedLink" id="gotoOverview">Previous</apex:outputLink>
+                                        &nbsp; | &nbsp;
+                                        <apex:commandLink rendered="{!NOT(submitted)}" styleClass="highlightedLink" value="Save for Later" action="{!SaveOpp}" />
+                                        &nbsp; | &nbsp;
+                                        <apex:outputLink styleClass="highlightedLink" value="/apex/myJSAEventSummary">Cancel</apex:outputLink>                                            
+                                    </div>  
+                                
+                          </div>
+                          <div id="tabs-3">
+                                
+                                    <div>
+                                        See application <a target="_blank" style="color:#015ba7" href="http://summer.jsa.org/apply/application-steps/">instructions</a> for detailed guidelines.
+                                    </div>
+                                    <br/><br/>
+                                    <apex:outputPanel rendered="{!IsSSApplication}" >
+                                    <div>                                   
+                                            <span>Describe your extracurricular activities and any leadership positions. (150 words max.)</span>
+                                            <br/>
+                                            <apex:inputTextarea disabled="{!submitted}" id="extraCurr" value="{!extracurricularActivities}" style="width:500px;height:70px;" />
+                                            <br/><br/>                                      
+                                    </div>
+                                    <div>
+                                        <span>What political issue are you passionate about?(250 words min.; 750 words max.)</span>
+                                        <br/>
+                                        <apex:inputTextarea disabled="{!submitted}" id="essay" value="{!personalEssay}" style="width:500px;height:70px;" />
+                                        <br/><br/>
+                                    </div>
+                                    </apex:outputPanel>
+                                    <apex:outputPanel rendered="{!IsSympApplication}" >
+                                        <div>                                   
+                                            <span>Describe your leadership positions.</span>
+                                            <br/>
+                                            <apex:inputTextarea disabled="{!submitted}" id="leadership" value="{!LeadershipPositions}" style="width:500px;height:70px;" />
+                                            <br/><br/>                                      
+                                        </div>
+                                        <div>
+                                            <span>Most important issue / solution?</span>
+                                            <br/>
+                                            <apex:inputTextarea disabled="{!submitted}" id="impissue" value="{!MostImportantIssue}" style="width:500px;height:70px;" />
+                                            <br/><br/>
+                                        </div>
+                                    </apex:outputPanel>
+                                    <div>
+                                        <apex:commandButton rendered="{!NOT(submitted)}" styleClass="btn blue" value="Next" id="Next" action="{!Submit}" onclick="alert('Updates submitted. See Next Steps for more information.');" ></apex:commandButton>
+                                        <apex:commandButton rendered="{!submitted}" styleClass="btn blue" value="Next" id="goToPayment" ></apex:commandButton> 
+                                        &nbsp;&nbsp;
+                                        <apex:outputLink styleClass="highlightedLink" id="gotoacads">Previous</apex:outputLink>
+                                        &nbsp; | &nbsp;
+                                        <apex:commandLink rendered="{!NOT(submitted)}" styleClass="highlightedLink" value="Save for Later" action="{!SaveOpp}" />
+                                        &nbsp; | &nbsp;
+                                        <apex:outputLink styleClass="highlightedLink" value="/apex/myJSAEventSummary">Cancel</apex:outputLink>                                            
+                                    </div>                              
+                          </div>
+                          </apex:form>
+                          <div id="tabs-4"> 
+                            <apex:outputPanel rendered="{!IsSSApplication}" >
+                            <div>
+                            <p style="font-size:small;">
+                                    Thank you for starting an application.  You have taken the first step on a journey to the best summer experience of your life.  An incredible faculty, amazing new friends, stimulating political discussions and much more will be waiting for you at the program.<br />
+                                    <br />
+                                    Next steps to complete your application:<br />
+                                    + Send an official transcript from your high school. Faxed or electronic copies are acceptable.<br />
+                                    + Ask a school teacher or counselor to fill out a <a target="_blank" style="color:#015ba7" href="https://jsa.wufoo.com/forms/teachercounselor-recommendation-form/">recommendation form</a>. A form is automatically emailed to a teacher if you provide an email address in the academics section of the online application, but it is always best to personally follow up with your teacher or counselor.<br />
+                                    + If you have not done so, complete the Essay section and all other required fields OR email your essay if you have any problems sending using this online application.<br /> 
+                                    <br />
+                                    Our rolling admissions process will let us respond to you within two weeks of receiving your completed application. No payment is due until you are accepted to the program. If you are accepted, you will receive information about payment schedule and scholarship options, and the payment section below will be updated periodically.<br />
+                                    <br />
+                                    *After Acceptance*
+                                    <br />
+                                    Once you've been accepted to the program, parents and students find themselves filling out the necessary forms in the orientation guide and gathering together the tuition payment. Below is a link to make your deposit payment online and a link to your campus orientation guide.</p>
+                                    <br />
+                                    <!-- PayPal/Intuit Payment Online Link -->
+                                     <br />
+                                    <p style="font-size:small;">
+                                     <apex:outputPanel rendered="{!OnlinePaymentLink !=null && !OnlinePaymentLink.empty}"><a style="color:#015ba7" href="{!OnlinePaymentLink}" target="_blank">Make a Payment Online </a><span class="vfHelpText"><apex:outputLink value="javascript:return false;"><img src="{!URLFOR($Resource.help2)}"/><span>{!$ObjectType.Opportunity.fields.Online_Payment_Link__c.inlineHelpText}</span></apex:outputLink></span></apex:outputPanel></p>
+                                     <br />
+                                     Orientation Guide Link
+                                     <br />
+                                    <p style="font-size:small;">
+                                     <apex:outputPanel rendered="{!OrientationGuide !=null && !OrientationGuide.empty}"><a style="color:#015ba7" href="{!OrientationGuide}" target="_blank">2014 JSA Summer School Orientation Guide </a><span class="vfHelpText"><apex:outputLink value="javascript:return false;"><img src="{!URLFOR($Resource.help2)}"/><span>{!$ObjectType.Opportunity.fields.Orientation_Guide__c.inlineHelpText}</span></apex:outputLink></span></apex:outputPanel></p>
+                                     <br />
+                                    <!-- Make a Payment Online Link
+                                     <br />
+                                    <p style="font-size:small;">
+                                     <apex:outputPanel rendered="{!OnlinePaymentLink !=null && !OnlinePaymentLink.empty}"><a style="color:#015ba7" href="{!OnlinePaymentLink}" target="_blank">Make a Payment Online </a><span class="vfHelpText"><apex:outputLink value="javascript:return false;"><img src="{!URLFOR($Resource.help2)}"/><span>{!$ObjectType.Opportunity.fields.Online_Payment_Link__c.inlineHelpText}</span></apex:outputLink></span></apex:outputPanel></p>
+                                     <br /> -->
+                            </div>         
+                            <table class="striped" width="100%">
+                                <tr>
+                                <td> <b>Invoice Summary</b> </td>
+                                
+                                <td>
+                                    <div class="print_roster" style="float:right;">
+                                        <a target="_blank" id="print_invoice" href="/apex/JSAApplPrintInvoice?opId={!OpId}">Print Invoice</a>                  
+                                    </div>
+                                </td>
+                                </tr>
+                                
+                                <tr>
+                                    <td>
+                                        Sales Order Number
+                                    </td>
+                                    
+                                    <td style="float:right;">
+                                        {!SalesOrderNumber}
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        Invoice Number
+                                    </td>
+                                    
+                                    <td style="float:right;">
+                                        {!OppInvoiceNumber}
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        Total Amount
+                                    </td>
+                                    
+                                    <td style="float:right;">
+                                        ${!TotalAmount}
+                                    </td>
+                                </tr>
+                            </table>
+                            <br/>
+                        <table class="striped" width="100%">                                
+                                <thead><b>Payments</b></thead>
+                                <apex:repeat value="{!PaymentDetails.QuickbookPayments}" var="p">
+                                    <tr>
+                                        <td>{!p.PaymentDate}</td>
+                                        <td>{!p.PaymentMethod}</td>
+                                        <td style="float:right;">
+                                        <apex:outputText value="{0, number, currency}">
+                                            <apex:param value="{!p.PaymentAmount}"/>
+                                        </apex:outputText>                                      
+                                        </td>
+                                    </tr>
+                                </apex:repeat>                          
+                            </table>
+                            <br/>
+                            <table class="striped" width="100%">
+                                <thead><b>Credit Memos</b></thead>
+                                 <apex:repeat value="{!PaymentDetails.QBCreditMemoLineItems}" var="memli">
+                                    <tr>
+                                        <td>{!memli.CreditMemoNumbersDate} </td>
+                                        <td>{!memli.LineDescription}</td>
+                                        <td style="float:right;">
+                                        <apex:outputText value="{0, number, currency}" >
+                                            <apex:param value="{!memli.LineAmount}" />
+                                        </apex:outputText>
+                                        </td>
+                                    </tr>
+                                </apex:repeat> 
+                                </table>
+                                <br/>
+                                <table class="striped" width="100%">
+                                <tr>
+                                    <td><b>REMAINING BALANCE DUE</b></td>
+                                    <td></td>
+                                    <td style="float:right;"><b>${!TotalBalance}</b></td>
+                                </tr>
+                            </table>
+                            <p style="font-size:small;">
+                            <br/>
+                            <b>Additional Information</b>
+                            <br/>
+                            Please email our office at jsa@jsa.org for additional payment and balance information.
+                            </p>                      
+                          </apex:outputPanel>
+                          <apex:outputPanel rendered="{!IsSympApplication}" >
+                            <div>
+                            <p style="font-size:small;">
+                                    Next steps to complete your application:<br />
+                                    + If you have not done so, complete the Essay section and all other required fields OR email your essay if you have any problems sending using this online application.<br /> 
+                                    <br />
+                                    Our rolling admissions process will let us respond to you within two weeks of receiving your completed application. No payment is due until you are accepted to the program. If you are accepted, you will receive information about payment schedule and scholarship options, and the payment section below will be updated periodically.</p>
+                                      <!-- PayPal/Intuit Payment Online Link -->
+                                     <br />
+                                    <p style="font-size:small;">
+                                     <apex:outputPanel rendered="{!OnlinePaymentLink !=null && !OnlinePaymentLink.empty}"><a style="color:#015ba7" href="{!OnlinePaymentLink}" target="_blank">Make a Payment Online </a><span class="vfHelpText"><apex:outputLink value="javascript:return false;"><img src="{!URLFOR($Resource.help2)}"/><span>{!$ObjectType.Opportunity.fields.Online_Payment_Link__c.inlineHelpText}</span></apex:outputLink></span></apex:outputPanel></p>
+                                     <br />  
+                                      <!--  Make a Payment Online Link
+                                     <br />
+                                     <p style="font-size:small;">
+                                     <apex:outputPanel rendered="{!OnlinePaymentLink !=null && !OnlinePaymentLink.empty}"><a style="color:#015ba7" href="{!OnlinePaymentLink}" target="_blank">Make a Payment Online </a><span class="vfHelpText"><apex:outputLink value="javascript:return false;"><img src="{!URLFOR($Resource.help2)}"/><span>{!$ObjectType.Opportunity.fields.Online_Payment_Link__c.inlineHelpText}</span></apex:outputLink></span></apex:outputPanel></p>
+                                     <br /> -->
+                            </div>        
+                            <table class="striped" width="100%">
+                                <tr>
+                                <td> <b>Invoice Summary</b> </td>
+                                
+                                <td>
+                                    <div class="print_roster" style="float:right;">
+                                        <a target="_blank" id="print_invoice" href="/apex/JSAApplPrintInvoice?opId={!OpId}">Print Invoice</a>                  
+                                    </div>
+                                </td>
+                                </tr>
+                                
+                                <tr>
+                                    <td>
+                                        Sales Order Number
+                                    </td>
+                                    
+                                    <td style="float:right;">
+                                        {!SalesOrderNumber}
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        Invoice Number
+                                    </td>
+                                    
+                                    <td style="float:right;">
+                                        {!OppInvoiceNumber}
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        Total Amount
+                                    </td>
+                                    
+                                    <td style="float:right;">
+                                        ${!TotalAmount}
+                                    </td>
+                                </tr>
+                            </table>
+                            <br/>
+                        <table class="striped" width="100%">                                
+                                <thead><b>Payments</b></thead>
+                                <apex:repeat value="{!PaymentDetails.QuickbookPayments}" var="p">
+                                    <tr>
+                                        <td>{!p.PaymentDate}</td>
+                                        <td>{!p.PaymentMethod}</td>
+                                        <td style="float:right;">
+                                        <apex:outputText value="{0, number, currency}">
+                                            <apex:param value="{!p.PaymentAmount}"/>
+                                        </apex:outputText>                                      
+                                        </td>
+                                    </tr>
+                                </apex:repeat>                          
+                            </table>
+                            <br/>
+                            <table class="striped" width="100%">
+                                <thead><b>Credit Memos</b></thead>
+                                 <apex:repeat value="{!PaymentDetails.QBCreditMemoLineItems}" var="memli">
+                                    <tr>
+                                        <td>{!memli.CreditMemoNumbersDate} </td>
+                                        <td>{!memli.LineDescription}</td>
+                                        <td style="float:right;">
+                                        <apex:outputText value="{0, number, currency}" >
+                                            <apex:param value="{!memli.LineAmount}" />
+                                        </apex:outputText>
+                                        </td>
+                                    </tr>
+                                </apex:repeat> 
+                                </table>
+                                <br/>
+                                <table class="striped" width="100%">
+                                <tr>
+                                    <td><b>REMAINING BALANCE DUE</b></td>
+                                    <td></td>
+                                    <td style="float:right;"><b>${!TotalBalance}</b></td>
+                                </tr>
+                            </table>
+                            <p style="font-size:small;">
+                            <br/>
+                            <b>Additional Information</b>
+                            <br/>
+                            Please email our office at jsa@jsa.org for additional payment and balance information.
+                            </p>                      
+                          </apex:outputPanel>
+                          </div>
+                        </div>            
+                    </div>
+                    <div class="col2">                        
+                        <div class="widget">    
+                                <h3>JSA Program Details</h3>
+                                  <ul class="menu">
+                                  <li class="menu-item">
+                                    <a target="_blank" href="http://summer.jsa.org/programs/summer-school/">JSA Summer School</a>
+                                  </li> 
+                                  <li class="menu-item">
+                                    <a target="_blank" href="http://summer.jsa.org/programs/jsa-summer-institutes/">JSA Institutes</a>
+                                  </li> 
+                                  <li class="menu-item">
+                                    <a target="_blank" href="http://summer.jsa.org/programs/summer-school/diplomat-program-beijing-china/">JSA International</a>
+                                  </li>   
+                                </ul>  
+                            </div>
+                            
+                            <div class="widget">    
+                                <h3>JSA News and Updates</h3>
+                                
+                                <script language="JavaScript" src="https://feed2js.org//feed2js.php?src=http%3A%2F%2Fjsa.org%2Fcategory%2Fmyjsa%2Ffeed%2F&num=3&desc=140>1&targ=y&utf=y"  charset="UTF-8" type="text/javascript"></script>
+                                
+                            </div>
+
+                            <div class="widget">
+                                <h3>JSA Event Calendar</h3>
+                                
+                                <script language="JavaScript" src="https://feed2js.org//feed2js.php?src=http%3A%2F%2Fevents.jsa.org%2Fevents%2Frss%2F&num=5&targ=y&utf=y"  charset="UTF-8" type="text/javascript"></script>
+                                
+                                <div class="moreEvents">
+                                    <a href="http://events.jsa.org/events/">View more events</a>
+                                </div>
+                            </div>
+            
+                    
+                    
+                    </div>
+                 </div>
+            </div> <!-- end of midBox -->
+            
+            <div class="footerShadow">
+                <div class="footerBox" id="footerBox">
+                    <div class="row" id="footer">
+                        <span>
+                            <div class="leftCell">
+                                <h3>Junior Statesmen Foundation</h3>
+                                <p></p>
+                                <strong>National Headquarters in California</strong>
+                                <br></br>
+                                800 S. Claremont St., Suite 202, San Mateo, CA 94402
+                                <br></br>
+                                (800) 334-5353
+                                <p></p>
+                                <strong>Washington, D.C. Office</strong>
+                                <br></br>
+                                1411 K St. NW, Suite 200, Washington, DC 20005<br></br>
+                                (800) 317-9338
+                            </div>
+                            <div class="midCell">
+                            <h3>About JSA</h3>
+                            <br></br>
+                            <p>The mission of the Junior State of America and the Junior Statesmen Foundation is to strengthen American democracy by educating and preparing high school students for life-long involvement and responsible leadership in a democratic society.</p>
+                            </div>
+                            <div class="rightCell">
+                                <h3>Additional Resources</h3><br></br>
+                                <ul class="footerList">
+                                    <li class="li-item-left">
+                                        <a href="http://jsa.org/contact-jsa/">Contact Us</a>
+                                    </li>
+                                    <li class="li-item-left">
+                                        <a href="http://jsa.org/about/">About JSA</a>
+                                    </li>
+                                    <li class="li-item-left">
+                                        <a href="http://jsa.org/downloads/">Downloads</a>
+                                    </li>
+                                    <li class="li-item-right reset">
+                                        <a href="http://summer.jsa.org">Summer Programs</a>
+                                    </li>
+                                    <li class="li-item-right">
+                                        <a href="http://jsa.org/portal">MyJSA</a>
+                                    </li>
+                                    <li class="li-item-right">
+                                        <a href="http://jsa.org/bethepeople">Be the People</a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="footer-bottom-container">
+            <h4><a href="http://jsa.org">www.jsa.org</a></h4>
+    JSA is a <a href="http://jsa.org/about/the-junior-statesmen-foundation/" target="_blank">non-profit 501(c)(3) educational organization</a><br></br>
+    © <!--?php echo date('Y') ?--> JSA. <a href="http://jsa.org/terms-of-use-and-privacy-policy/" target="_blank">Terms of Use and Privacy Policy</a>
+        </div>
+        <apex:includeScript value="{!$Resource.jquery_js}"/> 
+        <apex:includeScript value="{!$Resource.jquery_ui_js}"/>
+         <script>
+                $(function() {                                      
+                    $( "#appltabs").tabs(); 
+                    var $tabs;
+                                        
+                    if($("#submittedValue").val() == 'true') {
+                        $tabs = $('#appltabs').tabs({selected:3});
+                        $tabs.tabs("option","active",3);
+                    }
+                    else if($("#submittedApp").val() == 'true') {
+                        $tabs = $('#appltabs').tabs({selected:3});
+                        $tabs.tabs("option","active",3);
+                    }
+                    else {
+                        $tabs = $('#appltabs').tabs({ selected: 0, disabled: [1,2,3] });
+                    }
+                    
+                    $('[id$=goToAcademics]').click(function(e){
+                       e.preventDefault();  
+                       $tabs.tabs('enable', 1);
+                       $tabs.tabs( "option", "active", 1 ); 
+                    }); 
+                    
+                    $('[id$=goToEssay]').click(function(e) {
+                        e.preventDefault();
+                        $tabs.tabs('enable',2);
+                        $tabs.tabs("option","active",2);
+                    });
+                    
+                    $('[id$=gotoOverview]').click(function(e){
+                        e.preventDefault();
+                        $tabs.tabs("option","active",0);
+                    });
+                    
+                    $('[id$=gotoacads]').click(function(e) {
+                        e.preventDefault();
+                        $tabs.tabs("option","active",1);
+                    });
+                    
+                    $('[id$=goToPayment]').click(function(e) {
+                        e.preventDefault();
+                        $tabs.tabs("option","active",3);
+                    });
+                    
+                                    
+                    var highSchoolState = $('.highSchoolState').val(),
+                    clearSchoolFields = function(){
+                        $('.highSchoolId').val('');
+                        $('.highSchoolName').val('').removeAttr('disabled').focus().attr({'placeholder':'start typing and select from list'});      
+                    };   
+    
+                    $('.highSchoolState').on('change', function(){
+                        highSchoolState = $(this).val();
+                        clearSchoolFields();
+                    });
+    
+                    $('#clearSchool').button().on('click', function(event){
+                        event.preventDefault();
+                        clearSchoolFields();
+                    });
+    
+                    $('.highSchoolName').autocomplete({
+                        //point the autocomplete at JSR method
+                        delay: 500,
+                        source: function( request, response ) {
+                            
+                            //JSRemoting method fetches the data
+                            JSAApplicationController.findSchools(request.term,$('.highSchoolState').val(),function(results,event){
+                                //feeds it to the autocompleter
+                                response(results);
+                            });
+                        },
+                        //make sure that the user only sees the label instead of ugly ID
+                        focus: function(event, ui){
+                            
+                            //don't display the id
+                            event.preventDefault();
+                            
+                            //show the label instead
+                            this.value = ui.item.label;
+                        
+                        },
+                        //display only the label and stash the value in our hidden ID field
+                        select: function( event, ui ) {
+                    
+                            //make sure we don't display id 
+                            event.preventDefault();
+                            
+                            //show the label instead
+                            this.value = ui.item.label;
+                    
+                            //stash the value 
+                            $('.highSchoolId').val(ui.item.value);
+                            
+                        }        
+                    });
+                                                
+                });             
+                
+                
+      </script>
+    </body>
+</apex:page>

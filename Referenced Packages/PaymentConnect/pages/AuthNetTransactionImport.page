@@ -1,0 +1,466 @@
+<apex:page controller="pymt.AuthNetTransactionImportController" sidebar="false" tabstyle="pymt__PaymentX__c" >
+<script src="https://www.google.com/jsapi?key=ABQIAAAAC7Ltv_3xEtJuuoY0LLIU0BQLNlfCSZsNWrNrjOuv5jQjg1XmWxTBmlNjfmUYoQnNBdSSobucYtoG8A" type="text/javascript"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.16/jquery-ui.min.js"></script>
+<script src="{!URLFOR($Resource.PaymentConnect, 'includes/tooltip/wz_tooltip.js')}"></script>
+<apex:stylesheet value="https://ajax.googleapis.com/ajax/libs/jqueryui/1.8/themes/smoothness/jquery-ui.css"  />
+<script>
+	   $j = jQuery.noConflict();
+	   $j(document).ready(function() {
+	    	$j("#modalDialog").dialog({ autoOpen: false, modal: true, position: 'center', width: '800px'  });
+	   });
+	    
+	   function showDialog(name){
+	      $j("#modalDialog").dialog("open");
+	      $j('#modalDialog').dialog("option" , "title" , name);
+	      $j('#modalDialog').dialog('option', 'position', 'center');
+	      return false;
+	   }
+	   
+	   
+	   
+</script>
+<apex:sectionHeader title="Linvio PaymentConnect" subtitle="AuthNet Transaction Import"/>
+<apex:form >
+<apex:pageMessages id="messages"/>
+<apex:pageMessage rendered="{!gatewaySimMode}" severity="info" strength="3" summary="PaymentConnect is currently in gateway simulation mode. In this mode PaymentConnect will simulate responses from your payment processor and create sample data for this utility. To work with real transaction records, have your Salesforce administrator turn gateway simulation mode off."/>
+<apex:pageBlock mode="maindetail">
+<apex:selectList value="{!selectedConnectionId}" size="1">
+    <apex:selectOptions value="{!processorConnectionOptions}" />
+</apex:selectList>
+Batches from&nbsp;<apex:selectList value="{!selectedPeriod}" size="1">
+    <apex:selectOption itemValue="today" itemLabel="Today" />
+    <apex:selectOption itemValue="last7days" itemLabel="Last 7 Days" />
+    <apex:selectOption itemValue="lastMonth" itemLabel="Last Month" />
+</apex:selectList>
+&nbsp;
+	<apex:commandButton value="View Batches" action="{!retrieveBatches}" status="formActionStatus" rerender="formActionStatus, batchTable"/>
+     <apex:actionStatus id="formActionStatus">
+             <apex:facet name="start">
+                 <apex:outputPanel >&nbsp;
+                     <apex:image value="{!URLFOR($Resource.pymt__PaymentConnect, 'images/icon-spinner.gif')}"
+                         style="vertical-align:middle;" alt="" />
+                         &nbsp;Processing...
+                 </apex:outputPanel>
+             </apex:facet>
+             <apex:facet name="stop">
+                 <apex:image value="{!URLFOR('/s.gif')}" alt="" style="height:17px;" /> 
+             </apex:facet> 
+     </apex:actionStatus> 
+<br/><br/>
+	<apex:pageBlockSection title="Batches" columns="1">
+	<apex:outputPanel layout="none" id="batchTable" >
+		
+		<apex:pageBlockTable value="{!batches}" var="batch">
+		
+		    <apex:column >
+		        <apex:commandLink action="{!retrieveTransactions}" rerender="messages, transactionsTable" status="formActionStatus" >
+		        <apex:image url="{!URLFOR($Resource.pymt__PaymentConnect, 'images/add.png')}" title="Click to retrieve transactions in this batch."/>
+		        <apex:param name="selectedBatchId" id="selectedBatchId" value="{!batch.batchId}" assignTo="{!selectedBatchId}"/>
+		        </apex:commandLink>
+		    </apex:column>
+		    <apex:column headerValue="Batch Id" value="{!batch.batchId}" />
+		    <apex:column headerValue="Settled" value="{!batch.settlementTime}" /> 
+		
+		    <apex:column headerValue="Settlement State" value="{!batch.settlementState}" />
+		    <apex:column headerValue="Payment Method" value="{!batch.paymentMethod}" />
+	    </apex:pageBlockTable>
+	</apex:outputPanel>     
+	</apex:pageBlockSection>
+	
+	<apex:outputPanel id="transactionsTable">
+	<apex:pageBlockSection title="Transactions in Batch #{!selectedBatchId}"  columns="1">
+		<apex:pageBlockTable value="{!transItems}" var="item" id="transactionsPBTable">
+		    <apex:column >
+		        <apex:commandLink action="{!displayTransactionPanel}" oncomplete="showDialog('Transaction Details');" rerender="messages, transXML, modalDialogPanel" status="formActionStatus" >
+		        <apex:image url="{!URLFOR($Resource.pymt__PaymentConnect, 'images/accept.png')}" title="{!item.compareState}" rendered="{!item.compareState = 'Matched'}" />
+		        <apex:image url="{!URLFOR($Resource.pymt__PaymentConnect, 'images/exclamation.png')}" title="{!item.compareState}" rendered="{!item.compareState = 'NotFound'}"/>
+		        <apex:param name="selectedTransId" id="selectedTransId" value="{!item.transId}" assignTo="{!selectedTransactionId}"/>
+		        </apex:commandLink>
+		    </apex:column>		
+		    <apex:column headerValue="Transaction Id" value="{!item.transId}"/> 
+		    <apex:column headerValue="First Name" value="{!item.firstName}"/> 
+		    <apex:column headerValue="Last Name" value="{!item.lastName}"/>
+		    <apex:column style="text-align:right;" headerValue="Amount">
+		    	<apex:outputText value="{0,number,#,##0.00} {1}">
+		    		<apex:param value="{!item.settleAmount}" />
+		    		<apex:param value="USD" />	
+		    	</apex:outputText>
+		    </apex:column> 
+		    <apex:column headerValue="Account Type" value="{!item.accountType}"/> 
+		    <apex:column headerValue="Account Number" value="{!item.accountNumber}"/> 
+		    <apex:column headerValue="Status" value="{!item.transactionStatus}"/> 
+		    <apex:column headerValue="Submitted" value="{!item.submitTime}"/> 
+		    
+		</apex:pageBlockTable>
+		  
+	</apex:pageBlockSection>
+	</apex:outputPanel>
+
+</apex:pageBlock>
+
+</apex:form>
+
+<div id="modalDialog">
+<apex:form >
+<apex:outputPanel id="modalDialogPanel">
+
+<apex:pageMessages id="dialogMessages"/>
+<apex:outputPanel layout="none" id="dialogControls">
+<apex:outputPanel >
+<script>
+var showDialogFlag = {!showDialog};
+</script>
+</apex:outputPanel>
+</apex:outputPanel>
+<apex:pageMessage summary="{!matchingUnprocessedPayments} possible Payment record match(es) found. Select one from the list below and click 'Reload' if you would like to associate this AuthNet transaction with the Payment and perform an update instead of an add." severity="info" strength="3" rendered="{!matchingUnprocessedPayments >0}">
+<apex:selectList size="1" value="{!selectedUnprocessedPmtId}"> 
+	<apex:selectOptions value="{!matchingUnprocessedPmtOptions}"/>
+</apex:selectList>&nbsp;<apex:commandLink value="Reload " action="{!attachUnprocessedPayment}" rerender="modalDialogPanel"/>
+</apex:pageMessage>
+<apex:pageBlock title="AuthNet Transaction Detail" >
+<apex:pageBlockButtons >
+<apex:commandButton value="Close Dialog" action="{!closeDialog}" oncomplete="$j('#modalDialog').dialog('close');"/>
+<apex:commandButton value="Next Transaction" action="{!viewNextTransactionPanel}"  status="dialogActionStatus" rerender="modalDialogPanel"/>
+&nbsp;&nbsp;&nbsp;&nbsp;
+<apex:commandButton styleClass="btnSharing" value="Add Payment To Salesforce" action="{!addPayment}" rerender="modalDialogPanel, transactionsTable" rendered="{!currentTransW.compareState == 'NotFound'}" status="dialogActionStatus"/>
+<apex:commandButton styleClass="btnSharing" value="Update Payment Status" action="{!updatePayment}" rerender="modalDialogPanel, transactionsTable" rendered="{!currentTransW.compareState == 'StatusMismatch'}" status="dialogActionStatus"/>
+     <apex:actionStatus id="dialogActionStatus">
+             <apex:facet name="start">
+                 <apex:outputPanel >&nbsp;
+                     <apex:image value="{!URLFOR($Resource.pymt__PaymentConnect, 'images/icon-spinner.gif')}"
+                         style="vertical-align:middle;" alt="" />
+                         &nbsp;Processing...
+                 </apex:outputPanel>
+             </apex:facet>
+             <apex:facet name="stop">
+                 <apex:image value="{!URLFOR('/s.gif')}" alt="" style="height:17px;" /> 
+             </apex:facet> 
+     </apex:actionStatus> 
+</apex:pageBlockButtons>
+<apex:pageBlockSection columns="2" id="currentTransactionSummary">
+<apex:pageBlockSectionItem >
+<apex:outputText value="Transaction ID"/>
+<apex:outputText value="{!trans.aimResponse.transId}"/>
+</apex:pageBlockSectionItem>
+
+<apex:pageBlockSectionItem helpText="RefTransId for refunds">
+<apex:outputText value="Parent ID"/>
+<apex:outputText value="{!trans.refTransId}"/>
+</apex:pageBlockSectionItem>
+
+<apex:pageBlockSectionItem >
+<apex:outputText value="Split Tender ID"/>
+<apex:outputText value="{!trans.splitTenderId}"/>
+</apex:pageBlockSectionItem>
+
+<apex:pageBlockSectionItem >
+<apex:outputText value="Batch ID"/>
+<apex:outputText value="{!trans.batchId}"/>
+</apex:pageBlockSectionItem>
+
+<apex:pageBlockSectionItem >
+<apex:outputText value="Submit Time"/>
+<apex:outputText value="{!trans.submitTime}"/>
+</apex:pageBlockSectionItem>
+
+<apex:pageBlockSectionItem >
+<apex:outputText value="Settlement Time"/>
+<apex:outputText value="{!trans.settlementTime}"/>
+</apex:pageBlockSectionItem>
+
+<apex:pageBlockSectionItem >
+<apex:outputText value="Transaction Type"/>
+<apex:outputText value="{!trans.aimResponse.transType}"/>
+</apex:pageBlockSectionItem>
+
+<apex:pageBlockSectionItem >
+<apex:outputText value="Payment Type"/>
+<apex:outputText value="{!trans.paymentType}"/>
+</apex:pageBlockSectionItem>
+
+<apex:pageBlockSectionItem helpText="Last 4 digits of card number">
+<apex:outputText value="Card Number"/>
+<apex:outputText value="{!trans.aimResponse.lastFour}"/>
+</apex:pageBlockSectionItem>
+
+<apex:pageBlockSectionItem >
+<apex:outputText value="Card Type"/>
+<apex:outputText value="{!trans.aimResponse.cardType}"/>
+</apex:pageBlockSectionItem>
+
+<apex:pageBlockSectionItem >
+<apex:outputText value="Transaction Status"/>
+<apex:outputText value="{!trans.transactionStatus}"/>
+</apex:pageBlockSectionItem>
+
+<apex:pageBlockSectionItem >
+<apex:outputText value="Settlement State"/>
+<apex:outputText value="{!trans.settlementState}"/>
+</apex:pageBlockSectionItem>
+
+<apex:pageBlockSectionItem >
+<apex:outputText value="Response Code"/>
+<apex:outputText value="{!trans.aimResponse.responseCode}"/>
+</apex:pageBlockSectionItem>
+
+<apex:pageBlockSectionItem >
+<apex:outputText value="Response Reason Code"/>
+<apex:outputText value="{!trans.aimResponse.responseReasonCode}"/>
+</apex:pageBlockSectionItem>
+
+<apex:pageBlockSectionItem >
+<apex:outputText value="Response Reason Text"/>
+<apex:outputText value="{!trans.aimResponse.responseReasonText}"/>
+</apex:pageBlockSectionItem>
+
+<apex:pageBlockSectionItem >
+<apex:outputText value="Auth Code"/>
+<apex:outputText value="{!trans.aimResponse.authCode}"/>
+</apex:pageBlockSectionItem>
+
+<apex:pageBlockSectionItem >
+<apex:outputText value="AVS Response"/>
+<apex:outputText value="{!trans.aimResponse.avsCode}"/>
+</apex:pageBlockSectionItem>
+
+<apex:pageBlockSectionItem helpText="Response from the card code security check.">
+<apex:outputText value="Card Code Response"/>
+<apex:outputText value="{!trans.aimResponse.cvv2RespCode}"/>
+</apex:pageBlockSectionItem>
+
+<apex:pageBlockSectionItem helpText="The cardholder authentication verification response code.">
+<apex:outputText value="CAVV Response"/>
+<apex:outputText value="{!trans.aimResponse.cavvResponse}"/>
+</apex:pageBlockSectionItem>
+
+<apex:pageBlockSectionItem helpText="The action taken for a transaction that triggered one or more of the Advanced Fraud Detection Suite filters.">
+<apex:outputText value="FDS Filter Action"/>
+<apex:outputText value="{!trans.fdsFilterAction}"/>
+</apex:pageBlockSectionItem>
+
+<apex:pageBlockSectionItem >
+<apex:outputText value="Requested Amount"/>
+<apex:outputText value="{!trans.requestedAmount}"/>
+</apex:pageBlockSectionItem>
+
+
+<apex:pageBlockSectionItem helpText="The amount authorized or refunded.">
+<apex:outputText value="Auth Amount"/>
+<apex:outputText value="{!trans.authAmount}"/>
+</apex:pageBlockSectionItem>
+
+<apex:pageBlockSectionItem helpText="The amount that was submitted for settlement.">
+<apex:outputText value="Settle Amount"/>
+<apex:outputText value="{!trans.aimResponse.amount}"/>
+</apex:pageBlockSectionItem>
+
+<apex:pageBlockSectionItem helpText="The amount remaining on the prepaid card at the time of the transaction.">
+<apex:outputText value="Prepaid Balance Remaining"/>
+<apex:outputText value="{!trans.prepaidBalanceRemaining}"/>
+</apex:pageBlockSectionItem>
+
+<apex:pageBlockSectionItem >
+<apex:outputText value="Tax"/>
+<apex:outputText value="{!trans.aimResponse.tax}"/>
+</apex:pageBlockSectionItem>
+
+<apex:pageBlockSectionItem >
+<apex:outputText value="Tax Exempt"/>
+<apex:outputText value="{!trans.aimResponse.taxExempt}"/>
+</apex:pageBlockSectionItem>
+
+<apex:pageBlockSectionItem helpText="">
+<apex:outputText value="Shipping"/>
+<apex:outputText value="{!trans.aimResponse.freight}"/>
+</apex:pageBlockSectionItem>
+
+
+<apex:pageBlockSectionItem >
+<apex:outputText value="Invoice Number"/>
+<apex:outputText value="{!trans.aimResponse.invoiceNum}"/>
+</apex:pageBlockSectionItem>
+
+<apex:pageBlockSectionItem helpText="Purchase Order Number">
+<apex:outputText value="Order Number"/>
+<apex:outputText value="{!trans.aimResponse.poNum}"/>
+</apex:pageBlockSectionItem>
+
+<apex:pageBlockSectionItem >
+<apex:outputText value="Description"/>
+<apex:outputText value="{!trans.aimResponse.description}"/>
+</apex:pageBlockSectionItem>
+
+<apex:pageBlockSectionItem >
+<apex:outputText value="Phone Number"/>
+<apex:outputText value="{!trans.aimResponse.phone}"/>
+</apex:pageBlockSectionItem>
+
+<apex:pageBlockSectionItem >
+<apex:outputText value="Fax Number"/>
+<apex:outputText value="{!trans.aimResponse.fax}"/>
+</apex:pageBlockSectionItem>
+
+<apex:pageBlockSectionItem helpText="The customer's email address." >
+<apex:outputText value="Email"/>
+<apex:outputText value="{!trans.aimResponse.email}"/>
+</apex:pageBlockSectionItem>
+
+<apex:pageBlockSectionItem >
+<apex:outputText value="Customer Type"/>
+<apex:outputText value="{!trans.customerType}"/>
+</apex:pageBlockSectionItem>
+
+<apex:pageBlockSectionItem >
+<apex:outputText value="Billing Address"/>
+<apex:outputPanel >
+<apex:outputText value="{!trans.aimResponse.firstName} {!trans.aimResponse.lastName}"/>
+<br/><apex:outputText value="{!trans.aimResponse.address}"/>
+<br/><apex:outputText value="{!trans.aimResponse.city&IF(ISNULL(trans.aimResponse.city),'',', ')}{!trans.aimResponse.state} {!trans.aimResponse.zip}"/>
+<br/><apex:outputText value="{!trans.aimResponse.country}"/>
+</apex:outputPanel>
+</apex:pageBlockSectionItem>
+
+<apex:pageBlockSectionItem >
+<apex:outputText value="Shipping Address"/>
+<apex:outputPanel >
+<apex:outputText value="{!trans.aimResponse.shipToFirstName} {!trans.aimResponse.shipToLastName}"/>
+<br/><apex:outputText value="{!trans.aimResponse.shipToAddress}"/>
+<br/><apex:outputText value="{!trans.aimResponse.shipToCity&IF(ISNULL(trans.aimResponse.shipToCity),'',', ')}"/>
+<apex:outputText value="{!trans.aimResponse.shipToState} {!trans.aimResponse.shipToZip}"/>
+<br/><apex:outputText value="{!trans.aimResponse.shipToCountry}"/>
+</apex:outputPanel>
+</apex:pageBlockSectionItem>
+
+<apex:pageBlockSectionItem >
+<apex:outputText value="Customer IP"/>
+<apex:outputText value="{!trans.customerIP}"/>
+</apex:pageBlockSectionItem>
+
+<apex:pageBlockSectionItem helpText="Indicates whether or not this is a recurring transcation.">
+<apex:outputText value="Recurring Billing"/>
+<apex:inputCheckbox disabled="true" value="{!trans.recurringBilling}"/>
+</apex:pageBlockSectionItem>
+
+
+</apex:pageBlockSection>
+
+<apex:outputPanel id="relatedPaymentSections">
+<apex:pageBlockSection title="Update Existing Payment Record" collapsible="false" rendered="{!(currentTransW.compareState == 'StatusMismatch')}" >
+
+	<apex:pageBlockSectionItem >
+	<apex:outputText value="Payment ID"/>
+	<apex:outputLink value="/{!currentTransW.pmt.Id}" target="_blank">
+		<apex:outputText value="{!currentTransW.pmt.Id}"/>
+	</apex:outputLink>
+	</apex:pageBlockSectionItem>
+	
+	<apex:inputField value="{!currentTransW.pmt.pymt__Status__c}" />
+	
+	<apex:inputField value="{!currentTransW.pmt.pymt__Transaction_Type__c}" />
+	
+	<apex:inputField value="{!currentTransW.pmt.pymt__Payment_Type__c}" />
+	
+	<apex:outputField value="{!currentTransW.pmt.pymt__Amount__c}"/>
+	
+	<apex:outputField value="{!currentTransW.pmt.pymt__Date__c}"/>
+	
+	<apex:outputField value="{!currentTransW.pmt.pymt__Contact__c}"/>
+	
+	<apex:outputField value="{!currentTransW.pmt.pymt__Account__c}"/>
+	
+	<apex:outputField value="{!currentTransW.pmt.pymt__Payment_Profile__c}"/>
+
+</apex:pageBlockSection>
+
+<apex:pageBlockSection title="Matched Payment Record" collapsible="false" rendered="{!(currentTransW.compareState == 'Matched')}" >
+
+	<apex:pageBlockSectionItem >
+	<apex:outputText value="Payment ID"/>
+	<apex:outputLink value="/{!currentTransW.pmt.Id}" target="_blank">
+		<apex:outputText value="{!currentTransW.pmt.Id}"/>
+	</apex:outputLink>
+	</apex:pageBlockSectionItem>
+	
+	<apex:outputField value="{!currentTransW.pmt.pymt__Status__c}" />
+	
+	<apex:outputField value="{!currentTransW.pmt.pymt__Transaction_Type__c}" />
+	
+	<apex:outputField value="{!currentTransW.pmt.pymt__Payment_Type__c}" />
+	
+	<apex:outputField value="{!currentTransW.pmt.pymt__Amount__c}"/>
+	
+	<apex:outputField value="{!currentTransW.pmt.pymt__Date__c}"/>
+	
+	<apex:outputField value="{!currentTransW.pmt.pymt__Contact__c}"/>
+	
+	<apex:outputField value="{!currentTransW.pmt.pymt__Account__c}"/>
+	
+	<apex:outputField value="{!currentTransW.pmt.pymt__Payment_Profile__c}"/>
+
+</apex:pageBlockSection>
+
+
+
+<apex:pageBlockSection columns="2" title="New Payment Record Details" collapsible="false" rendered="{!(currentTransW.compareState == 'NotFound')}" >
+
+
+
+<apex:pageBlockSectionItem >
+<apex:outputText value="Payment Name"/>
+<apex:inputText value="{!currentTransW.pmt.Name}"/>
+</apex:pageBlockSectionItem>
+
+
+<apex:inputField value="{!currentTransW.pmt.pymt__Status__c}"/>
+
+<apex:outputField value="{!currentTransW.pmt.pymt__Amount__c}"/>
+
+<apex:inputField value="{!currentTransW.pmt.pymt__Date__c}"/>
+
+<apex:inputField value="{!currentTransW.pmt.pymt__Transaction_Type__c}"/>
+
+<apex:inputField value="{!currentTransW.pmt.pymt__Payment_Type__c}"/>
+
+
+<apex:outputField value="{!currentTransW.pmt.pymt__Processor_Connection__c}"/>
+
+<apex:inputField value="{!currentTransW.pmt.pymt__Contact__c}"/>
+
+<apex:inputField value="{!currentTransW.pmt.pymt__Account__c}"/>
+
+<apex:inputField value="{!currentTransW.pmt.pymt__Parent_Transaction__c}"/>
+
+<apex:pageBlockSectionItem >
+	<apex:outputText value="Recurring Payment Profile"/>
+
+	<apex:outputPanel layout="none">
+	<apex:inputField value="{!currentTransW.pmt.pymt__Payment_Profile__c}"/>
+	<apex:outputPanel layout="none" rendered="{!multipleProfilesExist}">
+	<br/><span style="color:red;">Multiple Profiles Exist. </span><br/>Select: <apex:SelectList value="{!currentTransW.pmt.pymt__Payment_Profile__c}" size="1" style="width:200px;">
+		<apex:SelectOptions value="{!multipleProfileOptions}"/>
+		<apex:actionSupport event="onchange" action="{!dismissMultipleProfilesPrompt}" rerender="modalDialogPanel"/>
+	</apex:SelectList>&nbsp;or&nbsp;<apex:commandLink value="Dismiss" action="{!dismissMultipleProfilesPrompt}" rerender="modalDialogPanel"/>
+	</apex:outputPanel>
+	</apex:outputPanel>
+</apex:pageBlockSectionItem>
+
+
+</apex:pageBlockSection>
+</apex:outputPanel>
+
+<apex:pageBlockSection title="XML Response" columns="1" rendered="{!debug}">
+	<apex:outputText id="transXML" value="{!transactionXML}" style="width:400px;"/> 
+
+</apex:pageBlockSection>
+
+<br/><br/>
+</apex:pageBlock>
+
+
+</apex:outputPanel>
+
+</apex:form>
+</div>
+
+</apex:page>

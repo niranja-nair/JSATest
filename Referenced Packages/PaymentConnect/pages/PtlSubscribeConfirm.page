@@ -1,0 +1,76 @@
+<apex:page id="ptlSubscribeConfirmPage" controller="pymt.SiteSubscribeConfirmController" tabStyle="pymt__Payment_Profile__c" cache="false" language="{!$CurrentPage.Parameters.lang}">
+<head>
+<title>Checkout Complete</title>
+<style>
+
+.address_heading {
+	font-weight:bold;
+	font-size:1.2em;
+	margin-top:10px;
+}
+</style>
+</head>
+
+    <apex:form id="checkoutConfirmForm"  >
+    	<apex:outputPanel id="subscribeConfirmFormPanel" >
+
+            <apex:pageMessages id="messages"/>
+        	<apex:outputPanel rendered="{!showPageContents}"> 
+	            <apex:outputPanel rendered="{!NOT($Label.SiteSubscribeConfirm_Heading == '-')}">
+	            <apex:sectionHeader title="{!$Label.SiteSubscribeConfirm_Heading}"  rendered="{!NOT($Label.SiteSubscribeConfirm_Heading == '-')}"/>
+	            </apex:outputPanel>
+	            <apex:outputPanel rendered="{!NOT($Label.SiteSubscribeConfirm_CompletedMessage == '-')}">
+	            <p>{!$Label.SiteSubscribeConfirm_CompletedMessage}</p> 
+	            </apex:outputPanel>
+	            <apex:pageBlock title="{!IF($Label.SiteSubscribeConfirm_ReceiptDetailsHeading == '-','',$Label.SiteSubscribeConfirm_ReceiptDetailsHeading)}">
+
+	          
+				<apex:panelGrid columns="2" columnClasses="labelColumn,term_column" id="subscription_terms2">
+				
+					<apex:outputLabel value="{!$Label.Label_SubscriptionFor}" />
+					<apex:outputField value="{!profile.Name}"/>
+	
+					<apex:outputLabel value="{!$Label.Label_Description}" rendered="{!NOT(ISNULL(profile.pymt__Description__c))}" />
+					<apex:outputField value="{!profile.pymt__Description__c}" rendered="{!NOT(ISNULL(profile.pymt__Description__c))}"/>
+								
+					<apex:outputLabel value="Start Date" />
+					<apex:outputField value="{!profile.pymt__Subscription_Start_Date__c}"/>
+	          
+	             <apex:outputLabel value="{!$Label.Label_TrialAmount}"  rendered="{!NOT(ISNULL(profile.pymt__Trial_Occurrences__c))}"/> 
+				<apex:outputPanel layout="inline" rendered="{!NOT(ISNULL(profile.pymt__Trial_Occurrences__c))}">
+	              <apex:outputField value="{!profile.pymt__Trial_Amount__c}"/> 
+	              every&nbsp;<apex:outputText value="{0}"><apex:param value="{!profile.pymt__Frequency__c}"/></apex:outputText>&nbsp;{!profile.Period__c} x &nbsp;
+	              <apex:outputField value="{!profile.pymt__Trial_Occurrences__c}"/>
+				</apex:outputPanel>
+	
+	         	<apex:outputLabel value="{!$Label.Label_SubscriptionAmount}"/> 
+	 			<apex:outputPanel layout="inline">
+	            	<apex:outputField value="{!profile.pymt__Amount__c}"/>
+	            	every&nbsp;<apex:outputText value="{0}"><apex:param value="{!profile.pymt__Frequency__c}"/></apex:outputText>&nbsp;{!profile.Period__c} {!IF(NOT(ISNULL(profile.Total_Occurrences__c)), "x "+TEXT(profile.Total_Occurrences__c),"")}
+	 			</apex:outputPanel>
+	
+				</apex:panelGrid>
+	          
+	          
+	          <div class="address_heading">{!$Label.SiteSubscribeConfirm_ReceivedFromHeading}</div>
+	          <p>{!profile.Billing_First_Name__c} {!profile.Billing_Last_Name__c}<br/>
+	            {!profile.Billing_Street__c}<br/>
+	            {!profile.Billing_City__c}, {!profile.Billing_State__c}&nbsp;{!profile.Billing_Postal_Code__c}<br/>
+	            {!profile.Billing_Country__c}<br/>
+	          </p>
+	          <div class="address_heading">{!$Label.SiteSubscribeConfirm_PaidToHeading}</div>
+	          <p>{!$Organization.Name}<br/>
+	          	{!$Organization.Street}<br/>
+	            {!$Organization.City}, {!$Organization.State}&nbsp;{!$Organization.PostalCode}<br/>
+	            {!$Organization.Country}<br/>
+	            {!$Organization.Phone}<br/>
+	          </p>
+	          <apex:commandButton id="finish" value="{!$Label.SiteSubscribeConfirm_FinishedButton}" action="{!finishTransaction}" onclick="" rendered="{!finishURL <> null}"/>
+	            </apex:pageBlock>
+ 
+        	</apex:outputPanel>
+        	
+		</apex:outputPanel>
+    </apex:form>
+
+</apex:page>

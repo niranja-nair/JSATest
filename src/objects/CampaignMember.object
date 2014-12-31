@@ -1,0 +1,1172 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
+    <actionOverrides>
+        <actionName>CancelEdit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Clone</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>ConvertLead</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Create_Opportunity</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Delete</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Edit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>SaveEdit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>View</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <compactLayoutAssignment>SYSTEM</compactLayoutAssignment>
+    <enableFeeds>false</enableFeeds>
+    <fields>
+        <fullName>Board_Level__c</fullName>
+        <description>Distinguish between Directors and Trustees</description>
+        <externalId>false</externalId>
+        <label>Board Level</label>
+        <picklist>
+            <picklistValues>
+                <fullName>Director</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Trustee</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Emeritus</fullName>
+                <default>false</default>
+            </picklistValues>
+            <sorted>false</sorted>
+        </picklist>
+        <type>Picklist</type>
+    </fields>
+    <fields>
+        <fullName>Cabinet_Level__c</fullName>
+        <externalId>false</externalId>
+        <label>Cabinet Level</label>
+        <picklist>
+            <picklistValues>
+                <fullName>State</fullName>
+                <default>true</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Regional</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>National</fullName>
+                <default>false</default>
+            </picklistValues>
+            <sorted>false</sorted>
+        </picklist>
+        <type>Picklist</type>
+    </fields>
+    <fields>
+        <fullName>Cabinet_Name__c</fullName>
+        <description>Name of the State or Regional Cabinet</description>
+        <externalId>false</externalId>
+        <inlineHelpText>The name of the State or Regional Cabinet</inlineHelpText>
+        <label>Cabinet Name</label>
+        <picklist>
+            <picklistValues>
+                <fullName>Arizona</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Mid-Atlantic</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Midwest</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Northeast</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Northern California</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Ohio River Valley</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Pacific Northwest</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Southeast</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Southern California</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Texas</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>National</fullName>
+                <default>false</default>
+            </picklistValues>
+            <sorted>false</sorted>
+        </picklist>
+        <type>Picklist</type>
+    </fields>
+    <fields>
+        <fullName>CampaignId</fullName>
+        <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>City</fullName>
+    </fields>
+    <fields>
+        <fullName>Committee__c</fullName>
+        <externalId>false</externalId>
+        <label>Committee</label>
+        <picklist>
+            <picklistValues>
+                <fullName>Audit</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Budget</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Fundraising</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Board Development</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Marketing &amp; Strategic Communication</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Summer School Board of Visitors</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Statesman of the Year</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Finance</fullName>
+                <default>false</default>
+            </picklistValues>
+            <sorted>false</sorted>
+        </picklist>
+        <type>Picklist</type>
+    </fields>
+    <fields>
+        <fullName>CompanyOrAccount</fullName>
+    </fields>
+    <fields>
+        <fullName>ContactId</fullName>
+        <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>Country</fullName>
+    </fields>
+    <fields>
+        <fullName>Description</fullName>
+    </fields>
+    <fields>
+        <fullName>DoNotCall</fullName>
+    </fields>
+    <fields>
+        <fullName>Email</fullName>
+    </fields>
+    <fields>
+        <fullName>Fax</fullName>
+    </fields>
+    <fields>
+        <fullName>FirstName</fullName>
+    </fields>
+    <fields>
+        <fullName>FirstRespondedDate</fullName>
+    </fields>
+    <fields>
+        <fullName>HasOptedOutOfEmail</fullName>
+    </fields>
+    <fields>
+        <fullName>HasOptedOutOfFax</fullName>
+    </fields>
+    <fields>
+        <fullName>HasResponded</fullName>
+    </fields>
+    <fields>
+        <fullName>LastName</fullName>
+    </fields>
+    <fields>
+        <fullName>LeadId</fullName>
+        <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>LeadSource</fullName>
+        <picklist>
+            <picklistValues>
+                <fullName>External Referral</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Web</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Word of mouth</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Other</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>My College Guide</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>International (CB)</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Teacher Nomination</fullName>
+                <default>false</default>
+            </picklistValues>
+            <sorted>false</sorted>
+        </picklist>
+        <type>Picklist</type>
+    </fields>
+    <fields>
+        <fullName>MobilePhone</fullName>
+    </fields>
+    <fields>
+        <fullName>Phone</fullName>
+    </fields>
+    <fields>
+        <fullName>PostalCode</fullName>
+    </fields>
+    <fields>
+        <fullName>Recruitment_Phase__c</fullName>
+        <externalId>false</externalId>
+        <label>Recruitment Phase</label>
+        <picklist>
+            <picklistValues>
+                <fullName>No Contact</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Left Message</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Undecided - follow up needed</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Interested - Follow up needed</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Intends to Apply</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Accepted</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>No - different program</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>No - other plans</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>No - finances</fullName>
+                <default>false</default>
+            </picklistValues>
+            <sorted>false</sorted>
+        </picklist>
+        <type>Picklist</type>
+    </fields>
+    <fields>
+        <fullName>Salutation</fullName>
+        <picklist>
+            <picklistValues>
+                <fullName>Mr.</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Ms.</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Dr.</fullName>
+                <default>false</default>
+            </picklistValues>
+            <sorted>false</sorted>
+        </picklist>
+        <type>Picklist</type>
+    </fields>
+    <fields>
+        <fullName>Source__c</fullName>
+        <externalId>false</externalId>
+        <inlineHelpText>How did we first get this JSA member to express interest in applying for summer school (for JSA Scholar campaign only)?</inlineHelpText>
+        <label>Source</label>
+        <picklist>
+            <picklistValues>
+                <fullName>Marketing/General</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Convention - FS</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Convention - Con</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Convention - SS</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>School Visit</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>JSA Leader - CP/Cab</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Returner</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Previous applicant</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>T/A Fall</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>T/A Congress</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>T/A Spring</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>T/A Email</fullName>
+                <default>false</default>
+            </picklistValues>
+            <sorted>false</sorted>
+        </picklist>
+        <type>Picklist</type>
+    </fields>
+    <fields>
+        <fullName>State</fullName>
+    </fields>
+    <fields>
+        <fullName>Status</fullName>
+        <picklist>
+            <picklistValues>
+                <fullName>Accepted</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Applied</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Attended</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Declined</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Dropped</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Entered in campaign</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Intends to Apply</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Interested</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Interested (Alumni Form)</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Interested - Follow up needed</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Left Message</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Not Interested</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Opportunity opened</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Responded</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Sent</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>VM</fullName>
+                <default>false</default>
+            </picklistValues>
+            <sorted>true</sorted>
+        </picklist>
+        <type>Picklist</type>
+    </fields>
+    <fields>
+        <fullName>Street</fullName>
+    </fields>
+    <fields>
+        <fullName>Term_Expiration__c</fullName>
+        <externalId>false</externalId>
+        <label>Term Expiration</label>
+        <required>false</required>
+        <type>Date</type>
+    </fields>
+    <fields>
+        <fullName>Title</fullName>
+    </fields>
+    <fields>
+        <fullName>Title_Position__c</fullName>
+        <externalId>false</externalId>
+        <label>Title/Position</label>
+        <length>60</length>
+        <required>false</required>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <recordTypes>
+        <fullName>Board_Members</fullName>
+        <active>true</active>
+        <label>Board Members</label>
+        <picklistValues>
+            <picklist>Board_Level__c</picklist>
+            <values>
+                <fullName>Director</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Emeritus</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Trustee</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>Cabinet_Level__c</picklist>
+            <values>
+                <fullName>National</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Regional</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>State</fullName>
+                <default>true</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>Cabinet_Name__c</picklist>
+            <values>
+                <fullName>Arizona</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Mid-Atlantic</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Midwest</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Northeast</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Northern California</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Ohio River Valley</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Pacific Northwest</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Southeast</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Southern California</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Texas</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>Committee__c</picklist>
+            <values>
+                <fullName>Audit</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Board Development</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Budget</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Finance</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Fundraising</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Marketing %26 Strategic Communication</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Statesman of the Year</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Summer School Board of Visitors</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>Recruitment_Phase__c</picklist>
+            <values>
+                <fullName>Accepted</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Intends to Apply</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Interested - Follow up needed</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Left Message</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>No - different program</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>No - finances</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>No - other plans</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>No Contact</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Undecided - follow up needed</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>Source__c</picklist>
+            <values>
+                <fullName>Convention - Con</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Convention - FS</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Convention - SS</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>JSA Leader - CP%2FCab</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Marketing%2FGeneral</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Returner</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>School Visit</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+    </recordTypes>
+    <recordTypes>
+        <fullName>JSA_Cabinet</fullName>
+        <active>true</active>
+        <description>JSA Elected Officials and Appointed Cabinet Members</description>
+        <label>JSA Cabinet</label>
+        <picklistValues>
+            <picklist>Board_Level__c</picklist>
+            <values>
+                <fullName>Director</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Trustee</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>Cabinet_Level__c</picklist>
+            <values>
+                <fullName>National</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Regional</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>State</fullName>
+                <default>true</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>Cabinet_Name__c</picklist>
+            <values>
+                <fullName>Arizona</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Mid-Atlantic</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Midwest</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>National</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Northeast</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Northern California</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Ohio River Valley</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Pacific Northwest</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Southeast</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Southern California</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Texas</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>Committee__c</picklist>
+            <values>
+                <fullName>Audit</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Budget</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>Recruitment_Phase__c</picklist>
+            <values>
+                <fullName>Accepted</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Intends to Apply</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Interested - Follow up needed</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Left Message</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>No - different program</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>No - finances</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>No - other plans</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>No Contact</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Undecided - follow up needed</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>Source__c</picklist>
+            <values>
+                <fullName>Convention - Con</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Convention - FS</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Convention - SS</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>JSA Leader - CP%2FCab</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Marketing%2FGeneral</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Returner</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>School Visit</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+    </recordTypes>
+    <recordTypes>
+        <fullName>Standard_Campaign</fullName>
+        <active>true</active>
+        <description>Use this record type for campaigns that drive attendance at events/programs, such as summer school.</description>
+        <label>Standard Campaign</label>
+        <picklistValues>
+            <picklist>Board_Level__c</picklist>
+            <values>
+                <fullName>Director</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Trustee</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>Cabinet_Level__c</picklist>
+            <values>
+                <fullName>National</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Regional</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>State</fullName>
+                <default>true</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>Cabinet_Name__c</picklist>
+            <values>
+                <fullName>Arizona</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Mid-Atlantic</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Midwest</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Northeast</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Northern California</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Ohio River Valley</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Pacific Northwest</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Southeast</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Southern California</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Texas</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>Committee__c</picklist>
+            <values>
+                <fullName>Audit</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Budget</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>Recruitment_Phase__c</picklist>
+            <values>
+                <fullName>Accepted</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Intends to Apply</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Interested - Follow up needed</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Left Message</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>No - different program</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>No - finances</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>No - other plans</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>No Contact</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Undecided - follow up needed</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>Source__c</picklist>
+            <values>
+                <fullName>Convention - Con</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Convention - FS</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Convention - SS</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>JSA Leader - CP%2FCab</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Marketing%2FGeneral</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Previous applicant</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Returner</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>School Visit</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+    </recordTypes>
+    <recordTypes>
+        <fullName>Summer_Recruitment</fullName>
+        <active>true</active>
+        <description>Recruitment for Summer Program Students</description>
+        <label>Summer Recruitment</label>
+        <picklistValues>
+            <picklist>Board_Level__c</picklist>
+            <values>
+                <fullName>Director</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Trustee</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>Cabinet_Level__c</picklist>
+            <values>
+                <fullName>National</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Regional</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>State</fullName>
+                <default>true</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>Cabinet_Name__c</picklist>
+            <values>
+                <fullName>Arizona</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Mid-Atlantic</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Midwest</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>National</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Northeast</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Northern California</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Ohio River Valley</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Pacific Northwest</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Southeast</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Southern California</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Texas</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>Committee__c</picklist>
+            <values>
+                <fullName>Audit</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Budget</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>Recruitment_Phase__c</picklist>
+            <values>
+                <fullName>Accepted</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Intends to Apply</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Interested - Follow up needed</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Left Message</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>No - different program</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>No - finances</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>No - other plans</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>No Contact</fullName>
+                <default>true</default>
+            </values>
+            <values>
+                <fullName>Undecided - follow up needed</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>Source__c</picklist>
+            <values>
+                <fullName>Convention - Con</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Convention - FS</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Convention - SS</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>JSA Leader - CP%2FCab</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Marketing%2FGeneral</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Previous applicant</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Returner</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>School Visit</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>T%2FA Congress</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>T%2FA Email</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>T%2FA Fall</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>T%2FA Spring</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+    </recordTypes>
+</CustomObject>

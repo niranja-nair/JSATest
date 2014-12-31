@@ -1,0 +1,50 @@
+<apex:page tabStyle="pymt__PaymentX__c" standardController="pymt__PaymentX__c"  extensions="pymt.NewPaymentController" cache="false">
+
+  <apex:sectionHeader title="Linvio PaymentConnect"  subtitle="New Payment"/>
+    <apex:form > 
+    <apex:pageMessages />
+        <apex:pageBlock title="New Payment Options">
+            <apex:pageBlockButtons >
+                <apex:commandButton value="Cancel" action="{!cancelFromNewPayment}"/>
+            </apex:pageBlockButtons>
+            <br/>
+            <table>
+            <tr>
+            <td>
+	            <apex:commandLink action="{!openCardTerminal}">
+	            <apex:image value="{!URLFOR($Resource.pymt__PaymentConnect, '/images/CardTerminalButton.png')}"/>
+	            </apex:commandLink>
+            </td>
+            <td><br/>
+            	<strong>Credit Card Terminal</strong><br/>
+            	<p>Process a credit card payment or authorization using one of your configured processor connections.</p>
+            </td>
+            </tr>
+            <tr>
+            <td><apex:commandLink action="{!openCashTerminal}">
+	            <apex:image value="{!URLFOR($Resource.pymt__PaymentConnect, '/images/CashTerminalButton.png')}"/>
+	            </apex:commandLink>
+            </td>
+            <td><br/>
+            	<strong>Cash Entry Terminal</strong><br/>
+            	<p>Enter a cash, check or money order receipt into Salesforce with the Cash Entry Terminal.
+            	</p>
+            </td>
+            </tr>
+            </table>
+            <!-- <p>You may also select products to attach to this transaction using the "Add Products" button below:</p>
+            <br/>-->
+                <!--apex:commandButton value="Add Products" /-->
+            
+            <p>&nbsp;</p>
+            <p>&nbsp;</p>
+            <p>&nbsp;</p>
+            <p>&nbsp;</p>
+			<p><apex:commandLink action="{!openEditView}">Bypass terminal entry</apex:commandLink> and create a Payment record manually.</p>
+        </apex:pageBlock>       
+        
+        
+    </apex:form>
+        
+        
+</apex:page>

@@ -1,0 +1,285 @@
+<apex:page showHeader="false" sidebar="false" controller="portalRegistrationController" docType="html-5.0">
+    <title>My JSA Registration</title>
+
+    <c:NeatHeader login="true" />
+
+    <!-- Breadcrumbs - START -->
+    <div class="background-clouds breadcrumbs-container">
+      <div class="container">
+        <ol class="breadcrumb">
+          <li><a href="#">My JSA</a></li>
+        </ol>
+      </div>
+    </div>
+    <!-- Breadcrumbs - END -->
+
+   <section>
+      <div class="container">
+        <div class="row">
+          <div class="col-md-12">
+            <div class="content">
+              <apex:pageMessages id="messages" />
+              <apex:outputPanel rendered="{!AND(NOT(isDisabled),NOT(secondPhase))}" id="main">
+                <apex:form >
+                  <h1>Sign Up - Step 1 of 2</h1>
+                  <div class="col-md-6">
+                    <b>First Name *</b><br/>
+                    <apex:inputField value="{!c.firstName}" styleClass="col-xs-12 form-control" required="true" />
+                  </div>
+                  <div class="col-md-6">
+                    <b>Last Name *</b><br/>
+                    <apex:inputField value="{!c.lastName}" styleClass="col-xs-12 form-control" required="true" />
+                  </div>
+                  <div class="col-md-6">
+                    <b>Email *</b><br/>
+                    <apex:inputField value="{!c.email}" styleClass="col-xs-12 form-control" required="true" />
+                  </div>
+                  <div class="col-md-6">
+                    <b>Phone Number *</b><br/>
+                    <apex:inputField value="{!c.phone}" styleClass="col-xs-12 form-control" required="true" />
+                  </div>
+                  <div class="col-md-6">
+                    <b>Gender *</b><br/>
+                    <apex:inputField value="{!c.Gender__c}" styleClass="col-xs-12 form-control" required="true" />
+                  </div>
+                  <div class="col-md-6">
+                    <b>Mailing Country</b><br/>
+                    <apex:inputField value="{!a.Countries__c}" styleClass="col-xs-12 form-control" />
+                  </div>
+                  <div class="col-md-6">
+                    <b>Mailing Street Address</b><br/>
+                    <apex:inputField value="{!a.BillingStreet}" styleClass="col-xs-12 form-control" style="height: 34px" />
+                  </div>
+                  <div class="col-md-6">
+                    <b>Mailing City</b><br/>
+                    <apex:inputField value="{!a.BillingCity}" styleClass="col-xs-12 form-control" />
+                  </div>
+                  <div class="col-md-6 contactdropdown">
+                    <b>Mailing State</b><br/>
+                    <apex:inputField value="{!a.US_States__c}" styleClass="col-xs-12 form-control" />
+                  </div>
+                  <div class="col-md-6">
+                    <b>Mailing Zip Code</b><br/>
+                    <apex:inputField value="{!a.billingPostalCode}" styleClass="col-xs-12 form-control" />
+                  </div>
+                  <br clear="both" /><br/>
+                  <div class="col-md-12 bootbutton">
+                    <apex:commandButton value="Next" action="{!goToSecondPhase}" styleClass="btn btn-primary btn-lg" />
+                  </div>
+                </apex:form>
+              </apex:outputPanel>
+              <apex:outputPanel rendered="{!AND(NOT(isDisabled),secondPhase)}" id="panel2">
+                <apex:form >
+                    <h1>Sign Up - Step 2 of 2</h1>
+                    <div class="col-md-6">
+                      <b>Are you a student or teacher? *</b><br/>
+                      <apex:actionRegion >
+                        <apex:inputField value="{!newContact.Category__c}" styleClass="col-xs-12 form-control" id="category" required="true">
+                          <apex:actionSupport event="onchange" action="{!categoryChange}" rerender="stage2bottom" />
+                        </apex:inputField>
+                      </apex:actionRegion>
+                    </div>
+                    <div class="col-md-6 contactdropdown">
+                      <b>JSA Role *</b><br/>
+                      <apex:inputField value="{!newContact.JSA_Role__c}" styleClass="col-xs-12 form-control" required="true" />
+                    </div>
+                    <div class="col-md-6 contactdropdown">
+                      <b>High School State *</b><br/>
+                      <apex:selectList value="{!highSchoolState}" size="1" styleClass="col-xs-12 highSchoolState form-control">
+                        <apex:selectOption itemValue="" itemLabel="Select a State" />
+                                            <apex:selectOption itemValue="International" itemLabel="XX - International " />
+                                            <apex:selectOption itemValue="Alaska" itemLabel="AK - Alaska " />
+                                            <apex:selectOption itemValue="Alabama" itemLabel="AL - Alabama " />
+                                            <apex:selectOption itemValue="Arkansas" itemLabel="AR - Arkansas " />
+                                            <apex:selectOption itemValue="American Samoa" itemLabel="AS - American Samoa " />
+                                            <apex:selectOption itemValue="Arizona" itemLabel="AZ - Arizona " />
+                                            <apex:selectOption itemValue="California" itemLabel="CA - California " />
+                                            <apex:selectOption itemValue="Colorado" itemLabel="CO - Colorado " />
+                                            <apex:selectOption itemValue="Connecticut" itemLabel="CT - Connecticut " />
+                                            <apex:selectOption itemValue="District of Columbia" itemLabel="DC - District of Columbia " />
+                                            <apex:selectOption itemValue="Delaware" itemLabel="DE - Delaware " />
+                                            <apex:selectOption itemValue="Florida" itemLabel="FL - Florida " />
+                                            <apex:selectOption itemValue="Federated States of Micronesia" itemLabel="FM - Federated States of Micronesia " />
+                                            <apex:selectOption itemValue="Georgia" itemLabel="GA - Georgia " />
+                                            <apex:selectOption itemValue="Guam" itemLabel="GU - Guam " />
+                                            <apex:selectOption itemValue="Hawaii" itemLabel="HI - Hawaii " />
+                                            <apex:selectOption itemValue="Iowa" itemLabel="IA - Iowa " />
+                                            <apex:selectOption itemValue="Idaho" itemLabel="ID - Idaho " />
+                                            <apex:selectOption itemValue="Illinois" itemLabel="IL - Illinois " />
+                                            <apex:selectOption itemValue="Indiana" itemLabel="IN - Indiana " />
+                                            <apex:selectOption itemValue="Kansas" itemLabel="KS - Kansas " />
+                                            <apex:selectOption itemValue="Kentucky" itemLabel="KY - Kentucky " />
+                                            <apex:selectOption itemValue="Louisiana" itemLabel="LA - Louisiana " />
+                                            <apex:selectOption itemValue="Massachusetts" itemLabel="MA - Massachusetts " />
+                                            <apex:selectOption itemValue="Maryland" itemLabel="MD - Maryland " />
+                                            <apex:selectOption itemValue="Maine" itemLabel="ME - Maine " />
+                                            <apex:selectOption itemValue="Marshall Islands" itemLabel="MH - Marshall Islands " />
+                                            <apex:selectOption itemValue="Michigan" itemLabel="MI - Michigan " />
+                                            <apex:selectOption itemValue="Minnesota" itemLabel="MN - Minnesota " />
+                                            <apex:selectOption itemValue="Missouri" itemLabel="MO - Missouri " />
+                                            <apex:selectOption itemValue="Northern Mariana Islands" itemLabel="MP - Northern Mariana Islands " />
+                                            <apex:selectOption itemValue="Mississippi" itemLabel="MS - Mississippi " />
+                                            <apex:selectOption itemValue="Montana" itemLabel="MT - Montana " />
+                                            <apex:selectOption itemValue="North Carolina" itemLabel="NC - North Carolina " />
+                                            <apex:selectOption itemValue="North Dakota" itemLabel="ND - North Dakota " />
+                                            <apex:selectOption itemValue="Nebraska" itemLabel="NE - Nebraska " />
+                                            <apex:selectOption itemValue="New Hampshire" itemLabel="NH - New Hampshire " />
+                                            <apex:selectOption itemValue="New Jersey" itemLabel="NJ - New Jersey " />
+                                            <apex:selectOption itemValue="New Mexico" itemLabel="NM - New Mexico " />
+                                            <apex:selectOption itemValue="Nevada" itemLabel="NV - Nevada " />
+                                            <apex:selectOption itemValue="New York" itemLabel="NY - New York " />
+                                            <apex:selectOption itemValue="Ohio" itemLabel="OH - Ohio " />
+                                            <apex:selectOption itemValue="Oklahoma" itemLabel="OK - Oklahoma " />
+                                            <apex:selectOption itemValue="Oregon" itemLabel="OR - Oregon " />
+                                            <apex:selectOption itemValue="Pennsylvania" itemLabel="PA - Pennsylvania " />
+                                            <apex:selectOption itemValue="Puerto Rico" itemLabel="PR - Puerto Rico " />
+                                            <apex:selectOption itemValue="Palau" itemLabel="PW - Palau " />
+                                            <apex:selectOption itemValue="Rhode Island" itemLabel="RI - Rhode Island " />
+                                            <apex:selectOption itemValue="South Carolina" itemLabel="SC - South Carolina " />
+                                            <apex:selectOption itemValue="South Dakota" itemLabel="SD - South Dakota " />
+                                            <apex:selectOption itemValue="Tennessee" itemLabel="TN - Tennessee " />
+                                            <apex:selectOption itemValue="Texas" itemLabel="TX - Texas " />
+                                            <apex:selectOption itemValue="Utah" itemLabel="UT - Utah " />
+                                            <apex:selectOption itemValue="Virginia" itemLabel="VA - Virginia " />
+                                            <apex:selectOption itemValue="U.S. Virgin Islands" itemLabel="VI - U.S. Virgin Islands " />
+                                            <apex:selectOption itemValue="Vermont" itemLabel="VT - Vermont " />
+                                            <apex:selectOption itemValue="Washington" itemLabel="WA - Washington " />
+                                            <apex:selectOption itemValue="Wisconsin" itemLabel="WI - Wisconsin " />
+                                            <apex:selectOption itemValue="West Virginia" itemLabel="WV - West Virginia " />
+                                            <apex:selectOption itemValue="Wyoming" itemLabel="WY - Wyoming " />
+                      </apex:selectList>
+                    </div>
+                    <div class="col-md-6">
+                      <b>High School *</b><br/>
+                      <apex:inputText id="HighSchoolTextId" styleClass="col-xs-12 highSchoolName typeahead form-control" value="{!newContact.High_School_Text__c}" required="true" />
+                      <script>var HighSchoolTextId = '{!$Component.HighSchoolTextId}';</script>
+                      <apex:inputText styleClass="highSchoolId" value="{!newContact.High_School__c}" style="display: none;" />
+                    </div>
+                  <apex:pageBlock id="stage2bottom">
+                    <apex:outputPanel rendered="{!isRequired}">
+                      <div class="col-md-6">
+                        <b>Parent/Guardian First Name</b><br/>
+                        <apex:inputField value="{!newContact.Parent_Guardian_First_Name__c}" styleClass="col-xs-12 form-control" />
+                      </div>
+                      <div class="col-md-6">
+                        <b>Parent/Guardian Last Name</b><br/>
+                        <apex:inputField value="{!newContact.Parent_Guardian_Last_Name__c}" styleClass="col-xs-12 form-control" />
+                      </div>
+                      <div class="col-md-6">
+                        <b>Graduation Year *</b><br/>
+                        <apex:inputField value="{!newContact.High_School_Graduation_Year__c}" styleClass="col-xs-12 form-control" />
+                      </div>
+                      <div class="col-md-6">
+                        <b>Birthdate</b><br/>
+                        <apex:inputField value="{!newContact.Birthdate}" styleClass="col-xs-12 form-control" />
+                      </div>
+                    </apex:outputPanel>
+                    <br clear="both" /><br/>
+                    <div class="col-md-12 bootbutton">
+                      <apex:commandButton value="Sign Up" onclick="test();" action="{!createPortalUser}" styleClass="btn btn-primary btn-lg" />
+                    </div>
+                  </apex:pageBlock>
+                </apex:form>
+              </apex:outputPanel>
+              <apex:outputPanel rendered="{!isDisabled}" id="success">
+                <apex:outputPanel rendered="{!NOT(userExists)}">
+                  <h2>Thank you for signing up!</h2>
+                  <p>You should have received an email with a username and temporary password. Click the login link below to access MyJSA with your new account.</p>
+                </apex:outputPanel>
+                <div class="col-md-12 bootbutton">
+                  <p><a href="/JSAPortalLogin" class="btn btn-primary btn-lg">Click Here to Login</a></p>
+                </div>
+              </apex:outputPanel>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <c:NeatFooter />
+
+    <script src="{!$Resource.typeahead_js}"></script>
+
+<script>
+
+$(document).ready(function() {
+
+    $(".highSchoolName").typeahead({
+        /*hint: false*/
+    }, {
+        source: function(query, cb) {
+            portalRegistrationController.findSchools(query, $(".highSchoolState").val(), function(results, event){
+                cb(results);
+            });
+            $(".highSchoolId").val('');
+        },
+        name: 'value',
+        displayKey: 'label'
+    }).on('typeahead:selected', function(e, suggestion, name) {
+        $(".highSchoolId").val(suggestion.value);       
+        $(".highSchoolName").prop('disabled', true);
+    }).on('typeahead:autocompleted', function(e, suggestion, name) {
+        $(".highSchoolId").val(suggestion.value);        
+        $(".highSchoolName").prop('disabled', true);
+    });
+
+    $(".highSchoolState").on('change', function(){
+
+        $(".highSchoolId").val('');
+        $(".highSchoolName").val('');
+
+        var state = $(".highSchoolState").val();
+
+        if (state != '') {
+            $(".highSchoolName").prop('disabled', false);
+            $(".highSchoolName").attr('placeholder', '');
+            $(".highSchoolName").css('background-color', '#FFF');
+        } else {
+            $(".highSchoolName").attr('placeholder', 'Select a state');
+            $(".highSchoolName").prop('disabled', true);
+            $(".highSchoolName").css('background-color', '#EEE');
+        }
+
+    });
+
+    if ($(".highSchoolName").val() == '') {
+        $(".highSchoolName").attr('placeholder', 'Select a state');
+        $(".highSchoolName").prop('disabled', true);
+        $(".highSchoolId").val('');
+    }
+
+    $(".contactdropdown").bind('DOMNodeInserted', function() {
+        $(".contactdropdown select").addClass("form-control");
+    });
+
+    var startYear = 1994;
+    var endYear = 2020;
+    var optionsString = '';
+
+    for (i = startYear;i <= endYear;i++) {
+        optionsString += "<option value='" + i + "'>" + i + "</option>";
+    }
+
+    $("#calYearPicker").html(optionsString);
+
+});
+
+    <!-- Suyati Modified -->
+    function test()
+    {                
+        if($(".highSchoolId").val() == '')
+        { 
+            $(".highSchoolState").val('');
+            $(".highSchoolState").css('border', '1px solid red');           
+            $(".highSchoolName").css('border', '1px solid red');                
+            return false;
+        }
+        else
+        {
+            return true;
+        }
+    }
+
+</script>
+    
+</apex:page>

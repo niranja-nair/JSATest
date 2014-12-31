@@ -1,0 +1,2147 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
+    <actionOverrides>
+        <actionName>Accept</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>CancelEdit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Clone</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Delete</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Edit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Follow</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>List</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>New</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>SaveEdit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Tab</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>View</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <compactLayoutAssignment>SYSTEM</compactLayoutAssignment>
+    <customHelpPage>Help</customHelpPage>
+    <deploymentStatus>Deployed</deploymentStatus>
+    <deprecated>false</deprecated>
+    <description>Configuration record for each individual PayPal, AuthNet, Google, eWay and WorldPay account.</description>
+    <enableActivities>true</enableActivities>
+    <enableBulkApi>true</enableBulkApi>
+    <enableFeeds>false</enableFeeds>
+    <enableHistory>false</enableHistory>
+    <enableReports>false</enableReports>
+    <enableSharing>true</enableSharing>
+    <enableStreamingApi>true</enableStreamingApi>
+    <fields>
+        <fullName>API_Password__c</fullName>
+        <deprecated>false</deprecated>
+        <description>Password for API transactions</description>
+        <externalId>false</externalId>
+        <inlineHelpText>Password for API transactions</inlineHelpText>
+        <label>API Password</label>
+        <length>128</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>API_Username__c</fullName>
+        <deprecated>false</deprecated>
+        <description>Username for API transactions</description>
+        <externalId>false</externalId>
+        <inlineHelpText>Username for API transaction</inlineHelpText>
+        <label>API Username</label>
+        <length>128</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Account_Type__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <inlineHelpText>Payment processor account type.</inlineHelpText>
+        <label>Account Type</label>
+        <picklist>
+            <controllingField>Processor_Id__c</controllingField>
+            <picklistValues>
+                <fullName>Website Payments Pro</fullName>
+                <controllingFieldValues>PayPal</controllingFieldValues>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Website Payments Standard</fullName>
+                <controllingFieldValues>PayPal</controllingFieldValues>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>AU XML</fullName>
+                <controllingFieldValues>eWay</controllingFieldValues>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>AU XML (CVN)</fullName>
+                <controllingFieldValues>eWay</controllingFieldValues>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>AU Shared</fullName>
+                <controllingFieldValues>eWay</controllingFieldValues>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>AU Shared (CVN)</fullName>
+                <controllingFieldValues>eWay</controllingFieldValues>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>NZ Shared</fullName>
+                <controllingFieldValues>eWay</controllingFieldValues>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>UK Shared</fullName>
+                <controllingFieldValues>eWay</controllingFieldValues>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>AIM</fullName>
+                <controllingFieldValues>Authorize.Net</controllingFieldValues>
+                <default>false</default>
+            </picklistValues>
+            <sorted>false</sorted>
+        </picklist>
+        <trackTrending>false</trackTrending>
+        <type>Picklist</type>
+    </fields>
+    <fields>
+        <fullName>Assigned_to_Terminal__c</fullName>
+        <defaultValue>false</defaultValue>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <inlineHelpText>Check to enable this payment processor connection in the payment terminal.</inlineHelpText>
+        <label>Assigned to Terminal</label>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>AuthNet_Direct_Response_Delim__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <label>AuthNet Direct Response Delimiter</label>
+        <picklist>
+            <picklistValues>
+                <fullName>|</fullName>
+                <default>true</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>&apos;</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>&quot;</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>*</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>,</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>/</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>;</fullName>
+                <default>false</default>
+            </picklistValues>
+            <sorted>false</sorted>
+        </picklist>
+        <trackTrending>false</trackTrending>
+        <type>Picklist</type>
+    </fields>
+    <fields>
+        <fullName>AuthNet_Enable_Echecks__c</fullName>
+        <defaultValue>false</defaultValue>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <label>AuthNet Enable Echecks</label>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>AuthNet_Login_Id__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <label>AuthNet API Login Id</label>
+        <length>64</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>AuthNet_Trans_Key__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <label>AuthNet Transaction Key</label>
+        <length>64</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Auto_Attach_Products__c</fullName>
+        <defaultValue>true</defaultValue>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <inlineHelpText>Automatically connect Product records to new shopping cart items using the product code.</inlineHelpText>
+        <label>Connect Products to Cart Items</label>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>Auto_Attach__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <inlineHelpText>Determines which methods of auto-attaching contact and opportunity records will be used for transactions originating outside of Salesforce.</inlineHelpText>
+        <label>Auto Attach</label>
+        <picklist>
+            <picklistValues>
+                <fullName>Contact using PayPal Payer Id</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Contact using email</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Opportunity using invoice number</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Opportunity using name</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Contact using Google Buyer Id</fullName>
+                <default>false</default>
+            </picklistValues>
+            <sorted>false</sorted>
+        </picklist>
+        <trackTrending>false</trackTrending>
+        <type>MultiselectPicklist</type>
+        <visibleLines>3</visibleLines>
+    </fields>
+    <fields>
+        <fullName>Auto_Create_Account__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <inlineHelpText>When auto-creating contacts - this setting determines whether an account should also be created.  &apos;Individual Accounts&apos; are accounts given the same name as the Contact and marked &apos;Convert To Person Account&apos; so they can be batch converted later.</inlineHelpText>
+        <label>Auto-Create Account</label>
+        <picklist>
+            <picklistValues>
+                <fullName>Use Default Account</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Create Individual Account</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Create Business Account</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Create Individual or Business Account</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Create Business Account or Use Default</fullName>
+                <default>false</default>
+            </picklistValues>
+            <sorted>false</sorted>
+        </picklist>
+        <trackTrending>false</trackTrending>
+        <type>Picklist</type>
+    </fields>
+    <fields>
+        <fullName>Auto_Create_Cart_Items__c</fullName>
+        <defaultValue>true</defaultValue>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <inlineHelpText>Automatically add shopping cart items when receiving a new payment notification with cart item data.</inlineHelpText>
+        <label>Auto Create Shopping Cart Items</label>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>Auto_Create_Contacts__c</fullName>
+        <defaultValue>true</defaultValue>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <inlineHelpText>Create a new contact (using transaction details) if the external transaction cannot be matched up with an existing contact in Salesforce.</inlineHelpText>
+        <label>Auto-Create Contacts</label>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>Category_Split_Expression__c</fullName>
+        <deprecated>false</deprecated>
+        <description>Optional JSON string defining the suggested Category splits for payments when completed.</description>
+        <externalId>false</externalId>
+        <inlineHelpText>Optional JSON string defining the suggested Category splits for payments when completed.</inlineHelpText>
+        <label>Category Split Expression</label>
+        <length>32768</length>
+        <trackTrending>false</trackTrending>
+        <type>LongTextArea</type>
+        <visibleLines>6</visibleLines>
+    </fields>
+    <fields>
+        <fullName>Category_Split_Name__c</fullName>
+        <deprecated>false</deprecated>
+        <description>This picklist may be edited by the PaymentConnect administrator to add names matching category split settings that have been configured in the PaymentConnect Admin area.</description>
+        <externalId>false</externalId>
+        <inlineHelpText>Category split expression to apply to completed payments that have been processed using this processor connection.  Overrides the application-wide category split settings.</inlineHelpText>
+        <label>Category Split Name</label>
+        <picklist>
+            <picklistValues>
+                <fullName>Don&apos;t Auto-Split</fullName>
+                <default>false</default>
+            </picklistValues>
+            <sorted>false</sorted>
+        </picklist>
+        <trackTrending>false</trackTrending>
+        <type>Picklist</type>
+    </fields>
+    <fields>
+        <fullName>Custom_Gateway_URL__c</fullName>
+        <deprecated>false</deprecated>
+        <description>Overrides the payment processor&apos;s default gateway URL(s).</description>
+        <externalId>false</externalId>
+        <inlineHelpText>Overrides the payment processor&apos;s default gateway URL(s).</inlineHelpText>
+        <label>Custom Gateway URL</label>
+        <length>255</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Default_Account__c</fullName>
+        <deleteConstraint>SetNull</deleteConstraint>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <inlineHelpText>Default Account to use when auto-creating Contacts</inlineHelpText>
+        <label>Default Account</label>
+        <referenceTo>Account</referenceTo>
+        <relationshipLabel>Processor Connections</relationshipLabel>
+        <relationshipName>Processor_Connections</relationshipName>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>Default_Connection__c</fullName>
+        <defaultValue>false</defaultValue>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <inlineHelpText>Indicates this connection is the default connection to use for shopping carts, donation pages, quote payment pages and other customer-facing interfaces.</inlineHelpText>
+        <label>Default Connection</label>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>Default_Currency__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <label>Default Currency</label>
+        <picklist>
+            <picklistValues>
+                <fullName>AUD</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>CAD</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>CHF</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>CZK</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>DKK</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>EUR</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>GBP</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>HKD</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>HUF</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>ILS</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>JPY</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>MXN</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>NOK</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>NZD</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>PLN</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>SEK</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>SGD</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>USD</fullName>
+                <default>false</default>
+            </picklistValues>
+            <sorted>false</sorted>
+        </picklist>
+        <trackTrending>false</trackTrending>
+        <type>Picklist</type>
+    </fields>
+    <fields>
+        <fullName>Description__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <inlineHelpText>Description or notes about this payment processor account.</inlineHelpText>
+        <label>Description</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>TextArea</type>
+    </fields>
+    <fields>
+        <fullName>Direct_Response_Encaps__c</fullName>
+        <deprecated>false</deprecated>
+        <description>The character that is used to encapsulate the fields in transaction responses from the payment processor.</description>
+        <externalId>false</externalId>
+        <inlineHelpText>The character that is used to encapsulate the fields in transaction responses from the payment processor.</inlineHelpText>
+        <label>Direct Response Encaps</label>
+        <picklist>
+            <picklistValues>
+                <fullName>|</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>&quot;</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>&apos;</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>:</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>;</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>/</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>\</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>-</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>*</fullName>
+                <default>false</default>
+            </picklistValues>
+            <sorted>false</sorted>
+        </picklist>
+        <trackTrending>false</trackTrending>
+        <type>Picklist</type>
+    </fields>
+    <fields>
+        <fullName>Enabled_Card_Types__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <inlineHelpText>Card types to show in payment terminal(s) using this processor connection.  If left empty, a default card type list will be displayed.</inlineHelpText>
+        <label>Enabled Card Types</label>
+        <picklist>
+            <picklistValues>
+                <fullName>Visa</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>MasterCard</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Amex</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Discover</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Maestro</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Solo</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Diners Club</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>JCB</fullName>
+                <default>false</default>
+            </picklistValues>
+            <sorted>false</sorted>
+        </picklist>
+        <trackTrending>false</trackTrending>
+        <type>MultiselectPicklist</type>
+        <visibleLines>8</visibleLines>
+    </fields>
+    <fields>
+        <fullName>External_Transactions__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <inlineHelpText>Preference for handling transactions coming from outside of Salesforce.  Auto Attach will attempt to auto-create relationships between the new payment record and contacts and  opportunities in your Salesforce instance.</inlineHelpText>
+        <label>External Transactions</label>
+        <picklist>
+            <picklistValues>
+                <fullName>Auto Attach</fullName>
+                <default>true</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Leave Unattached</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Discard</fullName>
+                <default>false</default>
+            </picklistValues>
+            <sorted>false</sorted>
+        </picklist>
+        <trackTrending>false</trackTrending>
+        <type>Picklist</type>
+    </fields>
+    <fields>
+        <fullName>Google_Merchant_Id__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <label>Google Merchant Id</label>
+        <length>64</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Google_Merchant_Key__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <label>Google Merchant Key</label>
+        <length>64</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Installation_Id__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <inlineHelpText>WorldPay Installation Id</inlineHelpText>
+        <label>Installation Id</label>
+        <length>64</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Merchant_Id__c</fullName>
+        <deprecated>false</deprecated>
+        <description>Merchant ID assigned to you by the payment processor.</description>
+        <externalId>false</externalId>
+        <inlineHelpText>Merchant ID assigned to you by the payment processor.</inlineHelpText>
+        <label>Merchant Id</label>
+        <length>64</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Notification_Relay_Method__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <label>Relay Method</label>
+        <picklist>
+            <picklistValues>
+                <fullName>Visualforce</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>API</fullName>
+                <default>false</default>
+            </picklistValues>
+            <sorted>false</sorted>
+        </picklist>
+        <trackTrending>false</trackTrending>
+        <type>Picklist</type>
+    </fields>
+    <fields>
+        <fullName>Orphaned_Payments__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <inlineHelpText>This setting determines what should be done with external transactions that cannot be matched to an opportunity or a contact record.</inlineHelpText>
+        <label>Unattached External Transactions</label>
+        <picklist>
+            <picklistValues>
+                <fullName>Keep</fullName>
+                <default>true</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Discard</fullName>
+                <default>false</default>
+            </picklistValues>
+            <sorted>false</sorted>
+        </picklist>
+        <trackTrending>false</trackTrending>
+        <type>Picklist</type>
+    </fields>
+    <fields>
+        <fullName>PP_API_Password__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <label>PayPal API Password</label>
+        <length>64</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>PP_API_Signature__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <label>PayPal API Signature</label>
+        <length>255</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>PP_API_Username__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <label>PayPal API Username</label>
+        <length>128</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>PP_Merchant_Id__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <inlineHelpText>PayPal assigned merchant Id.  Used to build buy-now buttons and similar shopping links in visual force.</inlineHelpText>
+        <label>PayPal Merchant Id</label>
+        <length>64</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>PaymentConnect_Setup__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <label>PaymentConnect Settings Record</label>
+        <referenceTo>Settings__c</referenceTo>
+        <relationshipLabel>Processor Connections</relationshipLabel>
+        <relationshipName>Processor_Connections</relationshipName>
+        <relationshipOrder>0</relationshipOrder>
+        <reparentableMasterDetail>false</reparentableMasterDetail>
+        <trackTrending>false</trackTrending>
+        <type>MasterDetail</type>
+        <writeRequiresMasterRead>false</writeRequiresMasterRead>
+    </fields>
+    <fields>
+        <fullName>Post_Verification_Code__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <inlineHelpText>MD5 hash value for AuthNet, Payment Response Password for WorldPay</inlineHelpText>
+        <label>Post Verification Code</label>
+        <length>255</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Processor_Id__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <label>Processor</label>
+        <picklist>
+            <picklistValues>
+                <fullName>PayPal</fullName>
+                <default>true</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Authorize.Net</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Google</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>WorldPay</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>eWay</fullName>
+                <default>false</default>
+            </picklistValues>
+            <sorted>false</sorted>
+        </picklist>
+        <trackTrending>false</trackTrending>
+        <type>Picklist</type>
+    </fields>
+    <fields>
+        <fullName>Relay_Id__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <inlineHelpText>Used to match notifications passing through the relay with the correct processor connection record.  For visualforce relay scripts this is the page name of the relay.  For api relays, this Id is set in the relay&apos;s configuration file.</inlineHelpText>
+        <label>Relay Id</label>
+        <length>32</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Relay_Script__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <label>Relay Script</label>
+        <length>255</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Site_Checkout__c</fullName>
+        <deprecated>false</deprecated>
+        <description>Determines the type of checkout offered in Sites - Native (API), Redirect (hosted at the processor)</description>
+        <externalId>false</externalId>
+        <inlineHelpText>Determines the type of checkout offered in Sites - Native (API), Redirect (hosted at the processor)</inlineHelpText>
+        <label>Site Checkout</label>
+        <picklist>
+            <picklistValues>
+                <fullName>Native</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Redirect</fullName>
+                <default>false</default>
+            </picklistValues>
+            <sorted>false</sorted>
+        </picklist>
+        <trackTrending>false</trackTrending>
+        <type>Picklist</type>
+    </fields>
+    <fields>
+        <fullName>Test_Mode__c</fullName>
+        <defaultValue>false</defaultValue>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <inlineHelpText>This is a connection to a test or sandbox account.</inlineHelpText>
+        <label>Test Account</label>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>Tokenized_Card_Service_Enabled__c</fullName>
+        <defaultValue>false</defaultValue>
+        <deprecated>false</deprecated>
+        <description>Check if tokenized card services are enabled for this processor (e.g. AuthNet CIM)</description>
+        <externalId>false</externalId>
+        <inlineHelpText>Check if tokenized card services are enabled for this processor (e.g. AuthNet CIM)</inlineHelpText>
+        <label>Tokenized Card Service Enabled</label>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>Verify_Notifications__c</fullName>
+        <defaultValue>false</defaultValue>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <inlineHelpText>If enabled, requires that each notification pass a verification check before processing.</inlineHelpText>
+        <label>Verify Notifications</label>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <label>Processor Connection</label>
+    <nameField>
+        <label>Connection Name</label>
+        <type>Text</type>
+    </nameField>
+    <pluralLabel>Processor Connections</pluralLabel>
+    <recordTypes>
+        <fullName>Authorize_Net</fullName>
+        <active>true</active>
+        <description>Configure a processor connection between PaymentConnect and Authorize.Net.</description>
+        <label>Authorize.Net</label>
+        <picklistValues>
+            <picklist>Account_Type__c</picklist>
+            <values>
+                <fullName>AIM</fullName>
+                <default>true</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>AuthNet_Direct_Response_Delim__c</picklist>
+            <values>
+                <fullName>%22</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>%27</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>%2C</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>%2F</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>%3B</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>%7C</fullName>
+                <default>true</default>
+            </values>
+            <values>
+                <fullName>*</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>Auto_Attach__c</picklist>
+            <values>
+                <fullName>Contact using email</fullName>
+                <default>true</default>
+            </values>
+            <values>
+                <fullName>Opportunity using invoice number</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Opportunity using name</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>Auto_Create_Account__c</picklist>
+            <values>
+                <fullName>Create Business Account</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Create Business Account or Use Default</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Create Individual Account</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Create Individual or Business Account</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Use Default Account</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>Category_Split_Name__c</picklist>
+            <values>
+                <fullName>Don%27t Auto-Split</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>Default_Currency__c</picklist>
+            <values>
+                <fullName>USD</fullName>
+                <default>true</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>Direct_Response_Encaps__c</picklist>
+            <values>
+                <fullName>%22</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>%27</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>%2F</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>%3A</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>%3B</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>%5C</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>%7C</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>*</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>-</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>Enabled_Card_Types__c</picklist>
+            <values>
+                <fullName>Amex</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Discover</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>MasterCard</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Visa</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>External_Transactions__c</picklist>
+            <values>
+                <fullName>Auto Attach</fullName>
+                <default>true</default>
+            </values>
+            <values>
+                <fullName>Discard</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Leave Unattached</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>Notification_Relay_Method__c</picklist>
+            <values>
+                <fullName>API</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Visualforce</fullName>
+                <default>true</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>Orphaned_Payments__c</picklist>
+            <values>
+                <fullName>Discard</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Keep</fullName>
+                <default>true</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>Processor_Id__c</picklist>
+            <values>
+                <fullName>Authorize%2ENet</fullName>
+                <default>true</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>Site_Checkout__c</picklist>
+            <values>
+                <fullName>Native</fullName>
+                <default>true</default>
+            </values>
+            <values>
+                <fullName>Redirect</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+    </recordTypes>
+    <recordTypes>
+        <fullName>Google_Checkout</fullName>
+        <active>true</active>
+        <description>Configure a processor connection between PaymentConnect and Google Checkout.</description>
+        <label>Google Checkout</label>
+        <picklistValues>
+            <picklist>Account_Type__c</picklist>
+            <values>
+                <fullName>Website Payments Pro</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>AuthNet_Direct_Response_Delim__c</picklist>
+            <values>
+                <fullName>%22</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>%27</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>%2C</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>%2F</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>%3B</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>%7C</fullName>
+                <default>true</default>
+            </values>
+            <values>
+                <fullName>*</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>Auto_Attach__c</picklist>
+            <values>
+                <fullName>Contact using Google Buyer Id</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Contact using email</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Opportunity using invoice number</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Opportunity using name</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>Auto_Create_Account__c</picklist>
+            <values>
+                <fullName>Create Business Account</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Create Business Account or Use Default</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Create Individual Account</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Create Individual or Business Account</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Use Default Account</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>Category_Split_Name__c</picklist>
+            <values>
+                <fullName>Don%27t Auto-Split</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>Default_Currency__c</picklist>
+            <values>
+                <fullName>USD</fullName>
+                <default>true</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>Direct_Response_Encaps__c</picklist>
+            <values>
+                <fullName>%22</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>%27</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>%2F</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>%3A</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>%3B</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>%5C</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>%7C</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>*</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>-</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>Enabled_Card_Types__c</picklist>
+            <values>
+                <fullName>Amex</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Discover</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Maestro</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>MasterCard</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Solo</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Visa</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>External_Transactions__c</picklist>
+            <values>
+                <fullName>Auto Attach</fullName>
+                <default>true</default>
+            </values>
+            <values>
+                <fullName>Discard</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Leave Unattached</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>Notification_Relay_Method__c</picklist>
+            <values>
+                <fullName>API</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Visualforce</fullName>
+                <default>true</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>Orphaned_Payments__c</picklist>
+            <values>
+                <fullName>Discard</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Keep</fullName>
+                <default>true</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>Processor_Id__c</picklist>
+            <values>
+                <fullName>Google</fullName>
+                <default>true</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>Site_Checkout__c</picklist>
+            <values>
+                <fullName>Redirect</fullName>
+                <default>true</default>
+            </values>
+        </picklistValues>
+    </recordTypes>
+    <recordTypes>
+        <fullName>PayPal</fullName>
+        <active>true</active>
+        <description>Configure a processor connection between PaymentConnect and PayPal Website Payments Pro or Website Payments Standard.</description>
+        <label>PayPal</label>
+        <picklistValues>
+            <picklist>Account_Type__c</picklist>
+            <values>
+                <fullName>Website Payments Pro</fullName>
+                <default>true</default>
+            </values>
+            <values>
+                <fullName>Website Payments Standard</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>AuthNet_Direct_Response_Delim__c</picklist>
+            <values>
+                <fullName>%22</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>%27</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>%2C</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>%2F</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>%3B</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>%7C</fullName>
+                <default>true</default>
+            </values>
+            <values>
+                <fullName>*</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>Auto_Attach__c</picklist>
+            <values>
+                <fullName>Contact using PayPal Payer Id</fullName>
+                <default>true</default>
+            </values>
+            <values>
+                <fullName>Contact using email</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Opportunity using invoice number</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Opportunity using name</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>Auto_Create_Account__c</picklist>
+            <values>
+                <fullName>Create Business Account</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Create Business Account or Use Default</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Create Individual Account</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Create Individual or Business Account</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Use Default Account</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>Category_Split_Name__c</picklist>
+            <values>
+                <fullName>Don%27t Auto-Split</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>Default_Currency__c</picklist>
+            <values>
+                <fullName>AUD</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>CAD</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>EUR</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>GBP</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>JPY</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>USD</fullName>
+                <default>true</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>Direct_Response_Encaps__c</picklist>
+            <values>
+                <fullName>%22</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>%27</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>%2F</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>%3A</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>%3B</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>%5C</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>%7C</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>*</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>-</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>Enabled_Card_Types__c</picklist>
+            <values>
+                <fullName>Amex</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Discover</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Maestro</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>MasterCard</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Solo</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Visa</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>External_Transactions__c</picklist>
+            <values>
+                <fullName>Auto Attach</fullName>
+                <default>true</default>
+            </values>
+            <values>
+                <fullName>Discard</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Leave Unattached</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>Notification_Relay_Method__c</picklist>
+            <values>
+                <fullName>API</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Visualforce</fullName>
+                <default>true</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>Orphaned_Payments__c</picklist>
+            <values>
+                <fullName>Discard</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Keep</fullName>
+                <default>true</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>Processor_Id__c</picklist>
+            <values>
+                <fullName>PayPal</fullName>
+                <default>true</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>Site_Checkout__c</picklist>
+            <values>
+                <fullName>Native</fullName>
+                <default>true</default>
+            </values>
+            <values>
+                <fullName>Redirect</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+    </recordTypes>
+    <recordTypes>
+        <fullName>WorldPay</fullName>
+        <active>true</active>
+        <description>Configure a processor connection between PaymentConnect and RBS Worldpay.</description>
+        <label>WorldPay</label>
+        <picklistValues>
+            <picklist>Account_Type__c</picklist>
+            <values>
+                <fullName>Website Payments Pro</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>AuthNet_Direct_Response_Delim__c</picklist>
+            <values>
+                <fullName>%22</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>%27</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>%2C</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>%2F</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>%3B</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>%7C</fullName>
+                <default>true</default>
+            </values>
+            <values>
+                <fullName>*</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>Auto_Attach__c</picklist>
+            <values>
+                <fullName>Contact using email</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>Auto_Create_Account__c</picklist>
+            <values>
+                <fullName>Create Business Account</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Create Business Account or Use Default</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Create Individual Account</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Create Individual or Business Account</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Use Default Account</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>Category_Split_Name__c</picklist>
+            <values>
+                <fullName>Don%27t Auto-Split</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>Default_Currency__c</picklist>
+            <values>
+                <fullName>AUD</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>CAD</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>CHF</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>CZK</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>DKK</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>EUR</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>GBP</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>HKD</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>HUF</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>ILS</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>JPY</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>MXN</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>NOK</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>NZD</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>PLN</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>SEK</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>SGD</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>USD</fullName>
+                <default>true</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>Direct_Response_Encaps__c</picklist>
+            <values>
+                <fullName>%22</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>%27</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>%2F</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>%3A</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>%3B</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>%5C</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>%7C</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>*</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>-</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>Enabled_Card_Types__c</picklist>
+            <values>
+                <fullName>Amex</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Discover</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Maestro</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>MasterCard</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Solo</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Visa</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>External_Transactions__c</picklist>
+            <values>
+                <fullName>Auto Attach</fullName>
+                <default>true</default>
+            </values>
+            <values>
+                <fullName>Discard</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Leave Unattached</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>Notification_Relay_Method__c</picklist>
+            <values>
+                <fullName>Visualforce</fullName>
+                <default>true</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>Orphaned_Payments__c</picklist>
+            <values>
+                <fullName>Discard</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Keep</fullName>
+                <default>true</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>Processor_Id__c</picklist>
+            <values>
+                <fullName>WorldPay</fullName>
+                <default>true</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>Site_Checkout__c</picklist>
+            <values>
+                <fullName>Redirect</fullName>
+                <default>true</default>
+            </values>
+        </picklistValues>
+    </recordTypes>
+    <recordTypes>
+        <fullName>eWay</fullName>
+        <active>true</active>
+        <description>Configure a processor connection between PaymentConnect and eWay.</description>
+        <label>eWay</label>
+        <picklistValues>
+            <picklist>Account_Type__c</picklist>
+            <values>
+                <fullName>AU Shared</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>AU Shared %28CVN%29</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>AU XML</fullName>
+                <default>true</default>
+            </values>
+            <values>
+                <fullName>AU XML %28CVN%29</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>NZ Shared</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>UK Shared</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>AuthNet_Direct_Response_Delim__c</picklist>
+            <values>
+                <fullName>%22</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>%27</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>%2C</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>%2F</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>%3B</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>%7C</fullName>
+                <default>true</default>
+            </values>
+            <values>
+                <fullName>*</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>Auto_Attach__c</picklist>
+            <values>
+                <fullName>Contact using email</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>Auto_Create_Account__c</picklist>
+            <values>
+                <fullName>Create Business Account</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Create Business Account or Use Default</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Create Individual Account</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Create Individual or Business Account</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Use Default Account</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>Category_Split_Name__c</picklist>
+            <values>
+                <fullName>Don%27t Auto-Split</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>Default_Currency__c</picklist>
+            <values>
+                <fullName>AUD</fullName>
+                <default>true</default>
+            </values>
+            <values>
+                <fullName>CAD</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>EUR</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>GBP</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>HKD</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>JPY</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>NZD</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>SGD</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>USD</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>Direct_Response_Encaps__c</picklist>
+            <values>
+                <fullName>%22</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>%27</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>%2F</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>%3A</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>%3B</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>%5C</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>%7C</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>*</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>-</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>Enabled_Card_Types__c</picklist>
+            <values>
+                <fullName>Amex</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Diners Club</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Discover</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>JCB</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>MasterCard</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Visa</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>External_Transactions__c</picklist>
+            <values>
+                <fullName>Auto Attach</fullName>
+                <default>true</default>
+            </values>
+            <values>
+                <fullName>Discard</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Leave Unattached</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>Notification_Relay_Method__c</picklist>
+            <values>
+                <fullName>Visualforce</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>Orphaned_Payments__c</picklist>
+            <values>
+                <fullName>Discard</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Keep</fullName>
+                <default>true</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>Processor_Id__c</picklist>
+            <values>
+                <fullName>eWay</fullName>
+                <default>true</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>Site_Checkout__c</picklist>
+            <values>
+                <fullName>Native</fullName>
+                <default>true</default>
+            </values>
+            <values>
+                <fullName>Redirect</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+    </recordTypes>
+    <searchLayouts>
+        <excludedStandardButtons>Accept</excludedStandardButtons>
+        <excludedStandardButtons>ChangeOwner</excludedStandardButtons>
+    </searchLayouts>
+    <sharingModel>ControlledByParent</sharingModel>
+    <validationRules>
+        <fullName>Check_Assign_to_Terminal</fullName>
+        <active>true</active>
+        <description>Prevents users from checking the Assign to Terminal box for certain account types.</description>
+        <errorConditionFormula>AND( OR(ISPICKVAL(Account_Type__c, &quot;Website Payments Standard&quot;),  
+ISPICKVAL(Account_Type__c, &quot;eWay NZ&quot;),
+ISPICKVAL(Account_Type__c, &quot;eWay UK&quot;)),
+Assigned_to_Terminal__c  = true)</errorConditionFormula>
+        <errorDisplayField>Assigned_to_Terminal__c</errorDisplayField>
+        <errorMessage>Assigned to Terminal cannot be check for this account type.  Native terminal transaction are not supported.</errorMessage>
+    </validationRules>
+    <validationRules>
+        <fullName>PayPal_Standard_and_Assign_to_Terminal</fullName>
+        <active>false</active>
+        <description>Replaced by Check_Assign_To_Terminal.</description>
+        <errorConditionFormula>False</errorConditionFormula>
+        <errorDisplayField>Assigned_to_Terminal__c</errorDisplayField>
+        <errorMessage>Website Payments Standard accounts cannot be assigned to the Payment Terminal</errorMessage>
+    </validationRules>
+    <webLinks>
+        <fullName>AuthNet_Transaction_Import_Utility</fullName>
+        <availability>online</availability>
+        <description>Display the AuthNet Transaction Import utility</description>
+        <displayType>link</displayType>
+        <encodingKey>UTF-8</encodingKey>
+        <height>600</height>
+        <linkType>url</linkType>
+        <masterLabel>AuthNet Transaction Import Utility</masterLabel>
+        <openType>noSidebar</openType>
+        <protected>false</protected>
+        <url>/apex/pymt__AuthNetTransactionImport</url>
+    </webLinks>
+    <webLinks>
+        <fullName>Test_Relay_Script</fullName>
+        <availability>online</availability>
+        <description>Runs a connection test to ensure that PaymentConnect and the relay script for this connection are configured correctly.</description>
+        <displayType>button</displayType>
+        <linkType>javascript</linkType>
+        <masterLabel>Test Relay Script</masterLabel>
+        <openType>onClickJavaScript</openType>
+        <protected>false</protected>
+        <url>{!REQUIRESCRIPT(&quot;/soap/ajax/24.0/connection.js&quot;)}
+{!REQUIRESCRIPT(&quot;/soap/ajax/24.0/apex.js&quot;)}
+
+function isNullOrEmpty(value) {
+    if (value == null) return true;
+    if (value == &apos;&apos;) return true;
+    return false;
+}
+
+function runtest() {
+
+  if (&apos;{!Processor_Connection__c.Notification_Relay_Method__c}&apos; == &apos;&apos;) {
+     alert(&apos;Please select a notification relay method for this processor connection.&apos;);
+     return;
+  }
+  if (isNullOrEmpty(&apos;{!Processor_Connection__c.Relay_Script__c}&apos;)) {
+     alert(&apos;A relay script URL has not been provided.  Please make sure you have installed and configured a PaymentConnect relay for this processor connection and enter the URL in the processor connection settings record.&apos;);
+     return;
+  }
+
+  var result = sforce.apex.execute(&apos;pymt/PaymentX&apos; ,&apos;testNotificationHandler&apos;,{processor:&apos;{!Processor_Connection__c.Id}&apos;}, null, false);
+  var resultstr = (result == null?&quot;&quot;:result.toString());
+  var resultmsg = resultstr;
+  if (resultstr.search(/(&quot;|&apos;)*success(&quot;|&apos;)*:/i) &gt; -1)  {
+      var resultObj = !(/[^,:{}\[\]0-9.\-+Eaeflnr-u \n\r\t]/.test(resultstr.replace(/&quot;(\\.|[^&quot;\\])*&quot;/g, &apos;&apos;))) &amp;&amp; eval(&apos;(&apos; + resultstr + &apos;)&apos;);
+      if (resultObj.success) {
+            resultmsg = &apos;A test notification has been sent to your relay script.  If the script has been installed and configured correctly, a log entry will be added below to record a successful relay script test.&apos;;
+     }	
+    if (resultObj !=null &amp;&amp; resultObj.success == false &amp;&amp; resultObj.message != null) {
+       resultmsg = &quot;Relay Script Error: &quot;+resultObj.message;
+    }
+  }
+  if (resultstr.search(/Page not found/i) &gt; -1) resultmsg = &apos;The relay script could not be found.  Please check the URL.&apos;;
+  alert (resultmsg);
+  window.location.reload();
+  return;
+}
+
+runtest();</url>
+    </webLinks>
+</CustomObject>

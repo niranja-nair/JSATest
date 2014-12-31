@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<EmailTemplate xmlns="http://soap.sforce.com/2006/04/metadata">
+    <apiVersion>20.0</apiVersion>
+    <available>true</available>
+    <description>Builds an email receipt from an Opportunity record with opportunity line items.</description>
+    <encodingKey>ISO-8859-1</encodingKey>
+    <name>Receipt: Opportunity Receipt Itemized (Sample)</name>
+    <style>none</style>
+    <subject>Your Receipt - Thank You!</subject>
+    <type>visualforce</type>
+</EmailTemplate>

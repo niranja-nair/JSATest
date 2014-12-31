@@ -1,0 +1,28 @@
+<body onload="go();" style="background: #F3F3EC url('https://www.rapleaf.com/images/sales_force/rapleaf_bg_blue.png') repeat-x; padding: 0; margin: 0;">
+  <div id="navcontainer">
+    <ul id="navlist">
+      <li id="active"><a href="#" id="current"
+        onclick="showTab(this, 'profiles');return false;">Social Networks</a>
+      </li>
+      <li><a href="#"
+        onclick="showTab(this, 'demographics');return false;">Demographics</a>
+      </li>
+    </ul>
+  </div>
+  
+  <div id = 'rapleaf_container'>
+    <div style="font-weight: bold; width: 100%; height: 50px; text-align: center; position: absolute; left: 50%; top: 50%; margin-left: -50%; margin-top: -25px;">
+      <p id="message" style="vertical-align: middle;"></p>
+    </div>
+    <div id='profiles'></div>
+    <div id='demographics'></div>
+  </div>
+
+  <div id='loading'>
+    <img src='https://www.rapleaf.com/images/sales_force/loading.gif' width='32px' height='32px' /><h2>Setting up Rapleaf for SaleForce ... </h2>
+    <p>
+      This is a one-time only operation that may take up to a few minutes to complete. 
+      Please don't close this window or navigate away from this page while the setup script is running, or your application may not work properly.
+    </p>
+ </div>
+</body>

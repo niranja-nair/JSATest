@@ -1,0 +1,395 @@
+<apex:page id="siteCheckoutPage" controller="pymt.SiteCheckoutPageController" showHeader="false" sidebar="false" cache="false" standardStylesheets="false">
+<head>
+<title>Checkout</title>
+</head>
+<apex:composition template="{!$Site.Template}">
+  <apex:define name="body">
+<script>
+
+function addLoadEvent(func) {
+  var oldonload = window.onload;
+  if (typeof window.onload != 'function') {
+    window.onload = func;
+  } else {
+    window.onload = function() {
+      if (oldonload) {
+        oldonload();
+      }
+      func();
+    }
+  }
+}
+
+// Disable browser autocomplete for fields accepting sensitive data
+function disableAutoComplete() {
+	var el;
+	el = document.getElementById("{!$Component.checkoutForm.ccNumber}");
+	if (el) el.setAttribute("autocomplete","off");
+	el = document.getElementById("{!$Component.checkoutForm.cvvNumber}");
+	if (el) el.setAttribute("autocomplete","off");
+}
+
+addLoadEvent(disableAutoComplete);
+
+var enableValidation=false;
+var paymentType = '{!selectedPaymentType}';
+
+function validateForm() {
+
+    if (!enableValidation) return true;
+    enableValidation=false;
+
+       // check required fields
+                 
+       var fname = document.getElementById("{!$Component.checkoutForm.billingfirstname}");
+       var lname = document.getElementById("{!$Component.checkoutForm.billinglastname}");
+       if (fname.value == "" || lname.value == "") {
+           alert("Please provide the billing contact name.");
+           return false;
+       }
+   
+       var address = document.getElementById("{!$Component.checkoutForm.billingstreet}");
+       if (address.value == "") {
+           alert("Please provide the billing address.");
+           return false;
+       } 
+   
+       var city = document.getElementById("{!$Component.checkoutForm.billingcity}");
+       if (city.value == "") {
+           alert("Please provide the billing city.");
+           return false;
+       }
+   
+       var state = document.getElementById("{!$Component.checkoutForm.billingstate}");
+       if (state.value == "") {
+           alert("Please provide the billing state/province.");
+           return false;
+       }
+   
+       var zip = document.getElementById("{!$Component.checkoutForm.billingpostalcode}");
+       if (zip.value == "") {
+           alert("Please provide the billing postal code.");
+           return false;
+       }
+   
+       var country = document.getElementById("{!$Component.checkoutForm.billingcountry}");
+       if (country.value == "") {
+           alert("Please provide a 2 character country code (e.g. US, UK, CA)");
+           return false;
+       }
+    
+      if (paymentType == 'creditcard') {
+   
+	       var cardNumber = document.getElementById("{!$Component.checkoutForm.ccNumber}");
+	       if (cardNumber.value == "") {
+	           alert("Please enter your credit card number.");
+	           return false;
+	       }
+	       
+	       var cvvNumber = document.getElementById("{!$Component.checkoutForm.cvvNumber}");
+	       if (cvvNumber.value == "") {
+	           alert("Please enter your CVV number.");
+	           return false;
+	       }
+
+      } else if (paymentType == 'echeck')  {
+     
+
+	       var bankname = document.getElementById("{!$Component.checkoutForm.bankname}");
+	       if (bankname.value == "") {
+	           alert("Please enter the name of your bank.");
+	           return false;
+	       }  
+
+	       var bankaccountname = document.getElementById("{!$Component.checkoutForm.bankaccountname}");
+	       if (bankaccountname.value == "") {
+	           alert("Please enter the name on your bank account.");
+	           return false;
+	       }  
+
+	       var bankaccountnumber = document.getElementById("{!$Component.checkoutForm.bankaccountnumber}");
+	       if (bankaccountnumber.value == "") {
+	           alert("Please enter your bank account number.");
+	           return false;
+	       }  
+
+	       var bankroutingnumber = document.getElementById("{!$Component.checkoutForm.bankroutingnumber}");
+	       if (bankroutingnumber.value == "") {
+	           alert("Please enter your bank routing number.");
+	           return false;
+	       }  
+
+      }
+      
+      return true;
+  }
+</script>
+    <div class="pc_page_content_top"></div>
+    <div class="pc_page_content" id="pc_site_checkout_page">
+    <div class="pc_page_content_inner"> 
+    <apex:form id="checkoutForm" styleClass="{!IF($CurrentPage.parameters.form_class == NULL,'pc_checkout_form',$CurrentPage.parameters.form_class)}" 
+    	onsubmit="return validateForm();">
+    	<apex:outputPanel id="checkoutFormPanel" >
+
+        <apex:outputField id="processorConnectionId"
+            value="{!payment.pymt__Processor_Connection__c}"
+            rendered="false" />
+        <apex:outputField id="testMode"
+            value="{!payment.pymt__Is_Test_Transaction__c}"
+            rendered="false" />
+        <apex:outputField id="paymentStatus"
+            value="{!payment.pymt__Status__c}" rendered="false" />
+        <apex:outputField id="last4"
+            value="{!payment.pymt__Last_4_Digits__c}" rendered="false" />
+
+     	<div id="checkoutProgressBar"><img src="/s.gif" class="paymentStep" /></div>
+        <apex:pageMessages id="messageBox1" />   
+
+            <apex:outputPanel rendered="{!showPageContents}">
+            <apex:outputPanel rendered="{!NOT($Label.SiteCheckout_CheckoutHeading == '-')}">
+            <h1>{!$Label.SiteCheckout_CheckoutHeading}</h1>
+            </apex:outputPanel>
+            <apex:outputPanel rendered="{!NOT($Label.SiteCheckout_CheckoutInstructions=='-')}">
+			<p class="pc_checkout_instructions">{!$Label.SiteCheckout_CheckoutInstructions}</p>
+            </apex:outputPanel>
+
+            <apex:outputPanel rendered="{!NOT(hasCartItems)}" >
+		            <table class="pc_cart_item_table">
+		            <tr>
+		            	<th class="itemDescriptionColumn">{!$Label.Label_Description}</th>
+		            	<th class="currency_column">{!$Label.Label_Amount}</th>
+		            </tr>
+		            <tr>
+		            	<td class="itemDescriptionColumn"><apex:outputText value="{!payment.name}" /></td>
+		            	<td class="currency_column"><apex:outputText value="{0, number, ###,###,###,##0.00}"><apex:param value="{!subtotal}"/></apex:outputText></td>            
+		            </tr>
+		            </table>
+
+			</apex:outputPanel>
+        
+            <apex:outputPanel rendered="{!hasCartItems}" >            
+            <apex:outputPanel rendered="{!NOT($Label.SiteCheckout_ItemListHeading == '-')}">            
+            <h3>{!$Label.SiteCheckout_ItemListHeading}</h3>
+            </apex:outputPanel>
+            <c:CartItemDataTable cartItems="{!attachedCartItems}" id="cartItemTable"/>
+            </apex:outputPanel>
+                        
+            <div class="pc_checkout_totals" >
+            <apex:panelGrid columns="3" columnClasses="totalsLabelColumn,currency_column,currencyCodeColumn">
+            	<apex:outputLabel value="{!$Label.Label_DiscountAmount}" rendered="{!NOT(OR(ISNULL(payment.pymt__Discount__c),payment.pymt__Discount__c==0))}"/>
+            	<apex:outputField value="{!discount.pymt__Amount__c}" styleClass="discountAmount" rendered="{!NOT(OR(ISNULL(payment.pymt__Discount__c),payment.pymt__Discount__c==0))}"/>
+            	<apex:outputText value="" rendered="{!NOT(OR(ISNULL(payment.pymt__Discount__c),payment.pymt__Discount__c==0))}"/>
+            	
+            	<apex:outputLabel value="{!$Label.Label_TaxAmount}" rendered="{!NOT(OR(ISNULL(payment.pymt__Tax__c),payment.pymt__Tax__c==0))}"/>
+            	<apex:outputField value="{!payment.pymt__Tax__c}" styleClass="taxAmount" rendered="{!NOT(OR(ISNULL(payment.pymt__Tax__c),payment.pymt__Tax__c==0))}"/>
+            	<apex:outputText value="" rendered="{!NOT(OR(ISNULL(payment.pymt__Tax__c),payment.pymt__Tax__c==0))}"/>
+            	
+            	<apex:outputLabel value="{!$Label.Label_ShippingAmount}" rendered="{!NOT(OR(ISNULL(payment.pymt__Shipping__c),payment.pymt__Shipping__c==0))}"/>
+            	<apex:outputField value="{!shipping.pymt__Amount__c}" styleClass="shippingAmount" rendered="{!NOT(OR(ISNULL(payment.pymt__Shipping__c),payment.pymt__Shipping__c==0))}"/>
+            	<apex:outputText value="" rendered="{!NOT(OR(ISNULL(payment.pymt__Shipping__c),payment.pymt__Shipping__c==0))}"/>
+            	
+            	<apex:outputLabel value="{!$Label.Label_TotalAmount}"/>
+            	<apex:outputField styleClass="totalAmount" value="{!payment.pymt__Amount__c}" />
+					<apex:outputText value="{!IF(isMultiCurrencyOrg,'',payment.pymt__Currency_ISO_Code__c)}" />            	
+            	
+            </apex:panelGrid>
+
+            </div>
+			<br/>
+
+			
+            <apex:outputPanel id="nativeCheckoutPanel" rendered="{!checkoutMethod == 'Native'}">
+            <apex:outputPanel rendered="{!NOT($Label.SiteCheckout_BillingInfoHeading == '-')}">
+            <h2>{!$Label.SiteCheckout_BillingInfoHeading}</h2>
+            </apex:outputPanel>
+	            <apex:outputPanel rendered="{!NOT($Label.SiteCheckout_BillingInfoInstructions == '-')}">
+	            <p class="pc_billing_info_instructions">{!$Label.SiteCheckout_BillingInfoInstructions}</p>
+	            </apex:outputPanel>
+	            
+			<apex:outputPanel id="billingContactPanel" >
+	            <apex:panelGrid columns="3" styleClass="pc_card_holder_information_table" columnClasses="labelColumn,requiredFieldMarkerColumn,fieldColumn">
+	            	<apex:outputText value="{!$Label.Label_FirstName}"/>
+					<apex:image url="/s.gif" styleClass="requiredFieldMarker"/>
+	                <apex:inputText styleClass="pc_medium_input_field" id="billingfirstname" value="{!fnameOnCard}" />
+	
+	                <apex:outputText value="{!$Label.Label_LastName}"/>
+					<apex:image url="/s.gif" styleClass="requiredFieldMarker"/>
+	                <apex:inputText styleClass="pc_medium_input_field" id="billinglastname" value="{!lnameOnCard}" />
+	
+	                <apex:outputText value="{!$Label.Label_StreetAddress}"/>
+					<apex:image url="/s.gif" styleClass="requiredFieldMarker"/>
+	                <apex:inputText styleClass="pc_long_input_field" id="billingstreet"
+	                        value="{!billingstreet}" />
+	
+	                <apex:outputText value="{!$Label.Label_City}"/>
+					<apex:image url="/s.gif" styleClass="requiredFieldMarker"/>
+	                <apex:inputText styleClass="pc_medium_input_field" id="billingcity" value="{!billingcity}" />
+	                
+	                <apex:outputText value="{!$Label.Label_StateProvince}"/>
+					<apex:image url="/s.gif" styleClass="requiredFieldMarker"/>
+	                <apex:inputText styleClass="pc_medium_input_field"  id="billingstate" value="{!billingstate}" />
+	
+	                <apex:outputText value="{!$Label.Label_PostalCode}"/>
+					<apex:image url="/s.gif" styleClass="requiredFieldMarker"/>
+	                <apex:inputText styleClass="pc_medium_input_field"  id="billingpostalcode"
+	                        value="{!billingpostalcode}" />
+	
+	                <apex:outputText value="{!$Label.Label_Country}"/>
+					<apex:image url="/s.gif" styleClass="requiredFieldMarker"/>
+	                <apex:inputText styleClass="pc_short_input_field"  id="billingcountry"
+	                        value="{!billingcountry}" />
+	
+	                
+               </apex:panelGrid>			
+			
+			</apex:outputPanel>
+			
+            <apex:outputPanel rendered="{!(paymentTypeOptionsSize > 1)}">
+	            <apex:panelGrid columns="3" columnClasses="labelColumn,requiredFieldMarkerColumn,fieldColumn">
+	                <apex:outputText value=""/>
+					<apex:image url="/s.gif" />
+					<apex:selectRadio value="{!selectedPaymentType}" layout="lineDirection">
+						<apex:selectOptions value="{!paymentTypeOptions}" />
+						<apex:actionSupport event="onchange" action="{!nullAction}" rerender="paymentTypePanels"/>
+					</apex:selectRadio>
+    	        </apex:panelGrid>
+            </apex:outputPanel>
+
+			<apex:outputPanel layout="none" id="paymentTypePanels">
+			<apex:outputPanel id="cardCheckoutPanel" rendered="{!selectedPaymentType == 'creditcard'}" >
+            
+	            <script>paymentType = "creditcard";</script>
+	            <apex:panelGrid columns="3" styleClass="pc_card_information_table" columnClasses="labelColumn,requiredFieldMarkerColumn,fieldColumn">
+
+			
+	                <apex:outputText value="{!$Label.Label_CardType}"/>
+					<apex:image url="/s.gif" styleClass="requiredFieldMarker"/>
+	                <apex:outputPanel layout="inline">
+	                <apex:selectList size="1" id="cardTypeSelectList"
+	                            multiselect="false" value="{!cardType}">
+	                       <apex:selectOptions value="{!cardTypeOptions}" />
+	                </apex:selectList><img id="pc_accepted_card_logos" src="/s.gif"/>
+	                </apex:outputPanel>
+	                
+	                <apex:outputText value="{!$Label.Label_CardNumber}"/>
+					<apex:image url="/s.gif" styleClass="requiredFieldMarker"/>
+	                <apex:inputText id="ccNumber" styleClass="pc_long_input_field" value="{!creditCardNumber}" />
+	                
+	                <apex:outputText value="{!$Label.Label_SecurityCode}"/>
+					<apex:image url="/s.gif" styleClass="requiredFieldMarker"/>
+	                <apex:inputText id="cvvNumber" styleClass="pc_short_input_field" value="{!cvv}" />
+	
+	                <apex:outputText value="{!$Label.Label_CardExpiration}"/>
+					<apex:image url="/s.gif" styleClass="requiredFieldMarker"/>
+					<apex:outputPanel layout="inline">
+					
+	                            <apex:selectList id="expMonth" value="{!expirationMonth}" size="1"> 
+	                                <apex:selectOptions value="{!expMonthOptions}" />
+	                             </apex:selectList><span class="expMonth_expYear_separator">&nbsp;</span>
+	                            <apex:selectList id="expYear" value="{!expirationYear}" size="1"> 
+	                                <apex:selectOptions value="{!expYearOptions}" />
+	                            </apex:selectList>                      
+	                
+					</apex:outputPanel>
+				</apex:panelGrid>            
+            
+            </apex:outputPanel>
+
+
+        
+            <apex:outputPanel id="echeckCheckoutPanel" rendered="{!selectedPaymentType == 'echeck'}" >
+
+	            <script>paymentType = "echeck";</script>
+	            <apex:panelGrid columns="3" styleClass="pc_echeck_information_table" columnClasses="labelColumn,requiredFieldMarkerColumn,fieldColumn">
+
+	                <apex:outputText value="Bank Name"/>
+					<apex:image url="/s.gif" styleClass="requiredFieldMarker"/>
+	                <apex:inputText styleClass="pc_medium_input_field"  id="bankname"
+	                        value="{!bankName}" />
+
+					<apex:outputLabel for="accountTypeSelectList">Account Type</apex:outputLabel>
+					<apex:image url="/s.gif" styleClass="requiredFieldMarker"/>
+					<apex:selectList size="1" id="accountTypeSelectList"
+                            multiselect="false" value="{!selectedBankAccountType}">
+                            <apex:selectOption itemValue="checking" itemLabel="Checking" />
+                            <apex:selectOption itemValue="businesschecking"
+                                itemLabel="Business Checking" />
+                            <apex:selectOption itemValue="savings" itemLabel="Savings" />
+                    </apex:selectList>
+                        
+	                <apex:outputText value="Name on Account"/>
+					<apex:image url="/s.gif" styleClass="requiredFieldMarker"/>
+	                <apex:inputText styleClass="pc_medium_input_field"  id="bankaccountname"
+	                        value="{!bankAccountName}" />
+	                        	
+	                <apex:outputText value="Account Number"/>
+					<apex:image url="/s.gif" styleClass="requiredFieldMarker"/>
+	                <apex:inputText styleClass="pc_medium_input_field"  id="bankaccountnumber"
+	                        value="{!bankAccountNumber}" />
+	                        	
+	                <apex:outputText value="Routing Number"/>
+					<apex:image url="/s.gif" styleClass="requiredFieldMarker"/>
+	                <apex:inputText styleClass="pc_medium_input_field"  id="bankroutingnumber"
+	                        value="{!bankRoutingNumber}" />
+	                        	
+
+				</apex:panelGrid>  	            
+            </apex:outputPanel>
+        	</apex:outputPanel>
+        
+        </apex:outputPanel>
+        
+        <apex:outputPanel id="buttons">
+ 		<apex:panelGrid columns="3" columnClasses="labelColumn,requiredFieldMarkerColumn,fieldColumn" id="button_panel_grid" styleClass="pc_button_panel_grid">
+			<apex:outputText value=""/>
+			<apex:image url="/s.gif"/>
+			<apex:outputPanel layout="inline">
+				<apex:commandButton id="cancel" value="{!$Label.SiteCheckout_CancelButton}"
+                        action="{!cancelTransaction}" rendered="{!(cancelURL<>null && NOT(ISNULL(cancelURL)))}"/> 
+                <apex:commandButton id="worldpaybtn" value="{!$Label.SiteCheckout_WorldPayButton}" status="formActionStatus" rendered="{!checkoutProcessor == 'WorldPay'}"
+                        action="{!processTransaction}" disabled="{!simulationMode}"   rerender="checkoutForm, checkoutFormPanel"/>
+                <apex:commandButton id="ewaybtn" value="Checkout with eWay" status="formActionStatus" rendered="{!AND(checkoutProcessor == 'eWay', checkoutMethod == 'Redirect') }"
+                        action="{!processTransaction}" disabled="{!simulationMode}"   rerender="checkoutForm, checkoutFormPanel"/>
+                <apex:commandButton id="authnetSIMbtn" value="{!IF(isAuthorizationOnly, $Label.SiteCheckout_AuthorizationButton,$Label.SiteCheckout_PaymentButton)}" status="formActionStatus" rendered="{!AND(checkoutProcessor == 'Authorize.Net', checkoutMethod == 'Redirect')}"
+                        action="{!processTransaction}" disabled="{!simulationMode}"   rerender="checkoutForm, checkoutFormPanel"/> 
+                <apex:commandButton id="processCard" value="{!IF(isAuthorizationOnly, $Label.SiteCheckout_AuthorizationButton,$Label.SiteCheckout_PaymentButton)}" status="formActionStatus" rendered="{!checkoutMethod == 'Native'}"
+                        action="{!processTransaction}"  onclick="enableValidation = true;" rerender="checkoutForm, checkoutFormPanel, formActionStatus, messages"/>
+            	<apex:commandLink action="{!processTransaction}" style="text-decoration:none;" status="formActionStatus" rendered="{!(checkoutProcessor == 'Google')}">
+            		<apex:image value="{!URLFOR($Resource.pymt__PaymentConnect, 'images/google_checkout_bug.png')}"
+                           style="vertical-align:middle;border:none;" alt="" />
+                     </apex:commandLink>                        
+            	<apex:commandLink action="{!processTransaction}" style="text-decoration:none;" status="formActionStatus" rendered="{!AND(checkoutProcessor == 'PayPal', checkoutMethod == 'Redirect')}">
+            		<apex:image value="{!URLFOR($Resource.pymt__PaymentConnect, 'images/paypal_bug.png')}"
+                           style="vertical-align:middle;border:none;" alt="" />
+                     </apex:commandLink>                        
+                <apex:actionStatus id="formActionStatus" onstart="document.getElementById('{!$Component.checkoutForm.processCard}').disabled=true;" onstop="document.getElementById('{!$Component.checkoutForm.processCard}').disabled=false;">
+                        <apex:facet name="start">
+                            <apex:outputPanel >&nbsp;
+                                <apex:image value="{!URLFOR($Resource.pymt__PaymentConnect, 'images/icon-spinner.gif')}"
+                                    style="vertical-align:middle;" alt="" />
+                                    &nbsp;Processing...
+                            </apex:outputPanel>
+                        </apex:facet>
+                        <apex:facet name="stop">
+                            <apex:image value="{!URLFOR('/s.gif')}" alt="" style="height:17px;" /> 
+                        </apex:facet> 
+                </apex:actionStatus>
+			
+			</apex:outputPanel>
+		</apex:panelGrid>
+ 
+        </apex:outputPanel>
+        
+        </apex:outputPanel>
+            
+
+ 
+
+	</apex:outputPanel>
+    </apex:form>
+    </div><!--  pc_page_content_inner -->
+    </div><!--  pc_page_content -->
+
+    </apex:define>
+</apex:composition>
+</apex:page>

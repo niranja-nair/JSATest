@@ -1,0 +1,92 @@
+<apex:page showHeader="false" sidebar="false" controller="mainPortalController">
+    <title>My Event Summary</title>
+
+    <c:NeatHeader events="active" />
+
+    <!-- Breadcrumbs - START -->
+    <div class="background-clouds breadcrumbs-container">
+      <div class="container">
+        <ol class="breadcrumb">
+          <li><a href="/JSAHome">My JSA Home</a></li>
+          <li class="active">My Event Summary</li>
+        </ol>
+      </div>
+    </div>
+    <!-- Breadcrumbs - END -->
+
+    <section>
+      <div class="container">
+        <div class="row">
+          <div class="col-md-8">
+            <div class="content">
+                <h1><span>My Events</span></h1>
+                <apex:outputPanel layout="none" rendered="{!NOT(ISBLANK(theSchool))}" id="eventsList">
+                    <apex:outputPanel rendered="{!showEvents}">
+                        <h3>Convention Registrations</h3> 
+                        <ul>       
+                            <apex:repeat value="{!openChapterConvnKeys}" var="opId">
+                                <li><a href="/apex/JSAEvent?OpId={!opId}">{!chapterConvnRegOpps[opId]}</a></li>
+                            </apex:repeat>
+                        </ul>
+                    </apex:outputPanel>
+                    <h3>Summer School Applications</h3>
+                    <ul>
+                        <apex:repeat value="{!openSummerSchoolKeys}" var="opId">
+                            <li><a href="/apex/JSAApplication?OpId={!opId}&ApplicationType=SS">{!summerSchoolRegOpps[opId]}</a></li>
+                        </apex:repeat>
+                    </ul>
+                    <h3>Institute Registrations</h3>
+                    <ul>
+                        <apex:repeat value="{!openSymposiumKeys}" var="opId">
+                            <li><a href="/apex/JSAApplication?OpId={!opId}&ApplicationType=Symp">{!SymposiumRegOpps[opId]}</a></li>
+                        </apex:repeat>
+                    </ul>
+                </apex:outputPanel>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <apex:outputPanel rendered="{!showEvents}">
+                <h3>Register for a New Event?</h3>
+                <p>When a new convention is available you'll see a dropdown list in this section. Select the convention and click start registration to sign up your chapter.</p>
+              <p>For information about upcoming conventions, dates and locations - <a href="http://jsa.org/conventions/congress/congress-pricing-package-details/" target="blank">Click Here</a></p>
+              <apex:outputPanel rendered="{!NOT(ISBLANK(theSchool))}">
+                <apex:form >
+                  <div class="contactdropdown conventionDropdown">
+                    <apex:selectList value="{!selectedConvention}" multiselect="false" size="1" styleClass="col-xs-12 form-control conventionPicker">
+                      <apex:selectOptions value="{!conSelection}" />
+                    </apex:selectList>
+                    <br/><br/>
+                  </div>
+                  <div class="bootbutton conventionButton">
+                    <apex:commandButton action="{!saveOp}" value="Start Registration" styleClass="btn btn-primary btn-lg" />
+                  </div>
+                </apex:form>
+              </apex:outputPanel>
+            </apex:outputPanel>
+            <h3>JSA News and Updates</h3>
+            <script language="JavaScript" src="https://feed2js.org//feed2js.php?src=http%3A%2F%2Fjsa.org%2Fcategory%2Fmyjsa%2Ffeed%2F&num=3&desc=140>1&targ=y&utf=y"  charset="UTF-8" type="text/javascript"></script>
+            <h3>JSA Event Calendar</h3>
+            <script language="JavaScript" src="https://feed2js.org//feed2js.php?src=http%3A%2F%2Fevents.jsa.org%2Fevents%2Frss%2F&num=5&targ=y&utf=y"  charset="UTF-8" type="text/javascript"></script>
+            <a href="http://events.jsa.org/events/">View more events</a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <c:NeatFooter />
+
+<script>
+
+$(document).ready(function(){
+
+    //hide convention picker if empty
+    if($('.conventionPicker').children().length == 0){
+      $('.conventionDropdown').hide();
+      $('.conventionButton').hide();
+    }
+
+});
+
+</script>
+    
+</apex:page>

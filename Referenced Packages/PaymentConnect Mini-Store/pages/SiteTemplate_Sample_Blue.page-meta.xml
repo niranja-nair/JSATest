@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ApexPage xmlns="http://soap.sforce.com/2006/04/metadata">
+    <apiVersion>20.0</apiVersion>
+    <availableInTouch>false</availableInTouch>
+    <confirmationTokenRequired>false</confirmationTokenRequired>
+    <description>Sample Site Template for use with PaymentConnect and the Mini-Store add-on.  Adds mini-store CSS to the sample template that comes with PaymentConnect.</description>
+    <label>SiteTemplate_Sample_Blue</label>
+    <packageVersions>
+        <majorNumber>3</majorNumber>
+        <minorNumber>3501</minorNumber>
+        <namespace>pymt</namespace>
+    </packageVersions>
+</ApexPage>

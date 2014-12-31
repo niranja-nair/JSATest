@@ -1,0 +1,122 @@
+<apex:page controller="cmpgn.CampaignMemberSyncController" tabStyle="Campaign">
+<style>
+.plainTable {
+   width:100%;
+   border:none;
+}
+
+.inlineRadioList input{
+    padding-top:5px;
+}
+</style>
+<apex:form >
+<apex:actionFunction name="SelectAll" action="{!selectAll}"/>
+<apex:actionFunction name="SetItemCount" action="{!setItemCount}"/>
+<apex:sectionHeader subtitle="Campaign Member - Payment Contact Sync Utility" Title="Linvio PaymentConnect"/>
+<apex:pageBlock title="Campaign: {!campaignName}" helpTitle="Mini-Store Add-On Help" helpURL="{!URLFOR($Page.cmpgn__MiniStore_Help)}"  mode="detail">
+<apex:pageBlockButtons >
+<apex:commandButton value="Back" action="{!exitPage}" title="Return to the previous page" />
+<apex:commandButton action="{!updateCampaignMembers}" value="Update Campaign Members List" title="Add/Update campaign members using selected Payment contact information."/>
+
+</apex:pageBlockButtons> 
+
+<apex:pageMessages />
+
+<apex:panelGrid width="90%" columns="1" style="text-align: left">
+
+<apex:panelGroup >
+<apex:outputLabel >Sort list by</apex:outputLabel>
+&nbsp;&nbsp;
+<apex:selectList id="searchField" value="{!filterSrchField}" multiselect="false" size="1" >
+        <apex:selectOption itemValue="pymt__Date__c" itemLabel="Date"/>
+        <apex:selectOption itemValue="pymt__Contact__r.LastName" itemLabel="Last Name"/>
+        <apex:selectOption itemValue="pymt__Amount__c" itemLabel="Payment Amount"/>
+        <apex:selectOption itemValue="pymt__Status__c" itemLabel="Status"/>
+</apex:selectList>
+<apex:selectRadio value="{!filterSortValue}" style="display:inline;" styleClass="inlineRadioList">
+<apex:selectOption itemvalue="Asc" itemLabel="Ascending"></apex:selectOption>
+<apex:selectOption itemvalue="Desc" itemLabel="Descending"></apex:selectOption>
+</apex:selectRadio>
+&nbsp;
+<apex:commandButton action="{!SortList}" value="Go" title="Refresh the Payments list using selected sort options."/>
+</apex:panelGroup>
+
+
+<apex:panelGroup >
+<apex:outputLabel >Set member status to</apex:outputLabel>
+&nbsp;&nbsp;
+<apex:selectList id="MemberStatus" value="{!memberStatus}" multiselect="false" size="1">
+        <apex:selectOptions value="{!MemberStatusValues}"/>
+</apex:selectList>
+&nbsp;&nbsp;&nbsp;&nbsp;
+
+<apex:inputCheckbox value="{!updateExistingMembers}" />
+<apex:outputLabel >Update Existing Members</apex:outputLabel>
+<br/>
+<br/>
+</apex:panelGroup>
+
+
+</apex:panelGrid>
+
+<apex:pageBlockSection columns="1"  title="Payments" collapsible="false">
+<apex:pageBlockTable style="cellpadding=10" width="100%" value="{!Donors}" var="p">
+<apex:column >
+    <apex:facet name="header">
+          <apex:inputCheckbox value="{!SelectAll}" onclick="SelectAll()"/>   
+     </apex:facet>
+<apex:inputCheckbox value="{!p.selected}" />       
+</apex:column>
+<apex:column >
+    <apex:facet name="header">
+       <apex:outputLabel >First Name</apex:outputLabel>                  
+     </apex:facet>
+{!p.payment.pymt__Contact__r.FirstName}
+</apex:column>
+<apex:column value="{!p.payment.pymt__Contact__r.LastName}"/>
+<apex:column value="{!p.payment.pymt__Status__c}"/>
+<apex:column value="{!p.payment.pymt__Amount__c}"/>
+<apex:column value="{!p.payment.pymt__Date__c}"/>
+<apex:column >
+    <apex:facet name="header">Member
+
+    </apex:facet>
+    <apex:outputText rendered="{!p.isCampaignMember}" value="&#x2713;" style="color:green;font-family:Lucida Sans Regular;font-size: 12pt" escape="false"/>
+    
+</apex:column>
+</apex:pageBlockTable>
+</apex:pageBlockSection>
+<table width = '100%'>
+<tr>
+<td>
+<apex:panelGroup >
+<apex:selectList onchange="SetItemCount()" value="{!itemsPerPage}" multiselect="false" size="1">
+        <apex:selectOption itemValue="10" itemLabel="10"/>
+        <apex:selectOption itemValue="25" itemLabel="25"/>
+        <apex:selectOption itemValue="50" itemLabel="50"/>
+        <apex:selectOption itemValue="100" itemLabel="100"/>
+        <apex:selectOption itemValue="200" itemLabel="200"/>
+</apex:selectList>
+<apex:outputLabel >Page:  </apex:outputLabel>
+<apex:outputLabel value="{!pageCount}"></apex:outputLabel>
+</apex:panelGroup>
+</td>
+<td align = 'center' style="font-weight: bold;">
+<apex:panelGroup >
+<apex:commandLink action="{!previous}"><font color="blue">Previous</font></apex:commandLink>
+<apex:outputLabel >   </apex:outputLabel>
+<apex:commandLink action="{!next}" ><font color="blue">Next</font></apex:commandLink>
+</apex:panelGroup>
+</td>
+<td align = 'right'>
+<apex:panelGroup >
+<apex:outputLabel >Total Records:  </apex:outputLabel>
+<apex:outputLabel value="{!recordCount}"></apex:outputLabel>
+</apex:panelGroup>
+</td>
+</tr>
+</table>
+
+</apex:pageBlock>
+</apex:form>
+</apex:page>

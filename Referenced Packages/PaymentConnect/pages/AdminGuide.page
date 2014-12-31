@@ -1,0 +1,3 @@
+<apex:page sidebar="false" showHeader="false" standardStylesheets="false"
+action="{!URLFOR($Resource.AdminGuide, 'PaymentConnectAdminGuide/index.html')}" >
+</apex:page>

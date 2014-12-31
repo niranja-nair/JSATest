@@ -1,0 +1,1409 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
+    <actionOverrides>
+        <actionName>Accept</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>CancelEdit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Clone</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Delete</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Edit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Follow</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>List</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>New</actionName>
+        <content>NewPayment</content>
+        <skipRecordTypeSelect>false</skipRecordTypeSelect>
+        <type>Visualforce</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>SaveEdit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Tab</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>View</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <compactLayoutAssignment>SYSTEM</compactLayoutAssignment>
+    <customHelpPage>Help</customHelpPage>
+    <deploymentStatus>Deployed</deploymentStatus>
+    <deprecated>false</deprecated>
+    <description>Used to keep track of transaction details in Salesforce.  Supports payment management functionality (refunds, voids) through supported online payment gateways.</description>
+    <enableActivities>true</enableActivities>
+    <enableBulkApi>true</enableBulkApi>
+    <enableFeeds>false</enableFeeds>
+    <enableHistory>false</enableHistory>
+    <enableReports>true</enableReports>
+    <enableSharing>true</enableSharing>
+    <enableStreamingApi>true</enableStreamingApi>
+    <fields>
+        <fullName>Account__c</fullName>
+        <deleteConstraint>SetNull</deleteConstraint>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <label>Account</label>
+        <referenceTo>Account</referenceTo>
+        <relationshipName>Payments</relationshipName>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>Amount__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <inlineHelpText>Total transaction amount (including tax, shipping and fees)</inlineHelpText>
+        <label>Amount</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackTrending>false</trackTrending>
+        <type>Currency</type>
+    </fields>
+    <fields>
+        <fullName>Auth_Amount__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <inlineHelpText>Amount authorized for this transaction.</inlineHelpText>
+        <label>Authorization Amount</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackTrending>false</trackTrending>
+        <type>Currency</type>
+    </fields>
+    <fields>
+        <fullName>Auth_Expiration__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <inlineHelpText>Authorization expiration date returned from payment processor.</inlineHelpText>
+        <label>Auth Expiration</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>DateTime</type>
+    </fields>
+    <fields>
+        <fullName>Authorization_Id__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <inlineHelpText>Authorization ID returned from payment processor.</inlineHelpText>
+        <label>Authorization Id</label>
+        <length>255</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Batch_Processing_Action__c</fullName>
+        <deprecated>false</deprecated>
+        <description>For Scheduled payments.  Type of action to perform when batch processing the scheduled payment.</description>
+        <externalId>false</externalId>
+        <inlineHelpText>For Scheduled payments.  Type of action to perform when batch processing the scheduled payment.</inlineHelpText>
+        <label>Batch Processing Action</label>
+        <picklist>
+            <picklistValues>
+                <fullName>Process using assigned Payment Method</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Process using default Payment Method on Contact</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Send payment request</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Capture</fullName>
+                <default>false</default>
+            </picklistValues>
+            <sorted>false</sorted>
+        </picklist>
+        <trackTrending>false</trackTrending>
+        <type>Picklist</type>
+    </fields>
+    <fields>
+        <fullName>Batch_Processing_Result__c</fullName>
+        <deprecated>false</deprecated>
+        <description>For Scheduled payments. Displays results after batch processing.</description>
+        <externalId>false</externalId>
+        <inlineHelpText>For Scheduled payments. Displays results after batch processing.</inlineHelpText>
+        <label>Batch Processing Result</label>
+        <length>255</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Billing_City__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <label>Billing City</label>
+        <length>50</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Billing_Company__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <label>Billing Company</label>
+        <length>100</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Billing_Country__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <label>Billing Country</label>
+        <length>50</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Billing_Email__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <label>Billing Email</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Email</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Billing_First_Name__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <label>Billing First Name</label>
+        <length>40</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Billing_Last_Name__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <label>Billing Last Name</label>
+        <length>80</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Billing_Phone__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <label>Billing Phone</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Phone</type>
+    </fields>
+    <fields>
+        <fullName>Billing_Postal_Code__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <label>Billing Postal Code</label>
+        <length>25</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Billing_State__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <label>Billing State</label>
+        <length>50</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Billing_Street__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <label>Billing Street</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>TextArea</type>
+    </fields>
+    <fields>
+        <fullName>Card_Type__c</fullName>
+        <deprecated>false</deprecated>
+        <description>Credit card type</description>
+        <externalId>false</externalId>
+        <inlineHelpText>Credit card type</inlineHelpText>
+        <label>Card Type</label>
+        <picklist>
+            <picklistValues>
+                <fullName>Visa</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>MasterCard</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Amex</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Discover</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Maestro</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Solo</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Diners Club</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>JCB</fullName>
+                <default>false</default>
+            </picklistValues>
+            <sorted>false</sorted>
+        </picklist>
+        <trackTrending>false</trackTrending>
+        <type>Picklist</type>
+    </fields>
+    <fields>
+        <fullName>Category_Split_Expression__c</fullName>
+        <deprecated>false</deprecated>
+        <description>Optional JSON expression used to determine Category Splits for the payment when it is completed.</description>
+        <externalId>false</externalId>
+        <inlineHelpText>Optional JSON expression used to determine Category Splits for the payment when it is completed.</inlineHelpText>
+        <label>Category Split Expression</label>
+        <length>32768</length>
+        <trackTrending>false</trackTrending>
+        <type>LongTextArea</type>
+        <visibleLines>6</visibleLines>
+    </fields>
+    <fields>
+        <fullName>Category_Split_Name__c</fullName>
+        <deprecated>false</deprecated>
+        <description>This picklist may be edited by the PaymentConnect administrator to add names matching category split settings that have been configured in the PaymentConnect Admin area.</description>
+        <externalId>false</externalId>
+        <inlineHelpText>The name of the category split expression to use when auto-splitting this payment.  Overrides split settings at the processor connection or application level.</inlineHelpText>
+        <label>Category Split Name</label>
+        <picklist>
+            <picklistValues>
+                <fullName>Don&apos;t Auto-Split</fullName>
+                <default>false</default>
+            </picklistValues>
+            <sorted>false</sorted>
+        </picklist>
+        <trackTrending>false</trackTrending>
+        <type>Picklist</type>
+    </fields>
+    <fields>
+        <fullName>Category_Split_Total__c</fullName>
+        <deprecated>false</deprecated>
+        <description>Total amount of category splits for this Payment (excluding uncategorized splits).</description>
+        <externalId>false</externalId>
+        <inlineHelpText>Total amount of category splits for this Payment (excluding uncategorized splits).</inlineHelpText>
+        <label>Category Split Total</label>
+        <summarizedField>Category_Split__c.Amount__c</summarizedField>
+        <summaryFilterItems>
+            <field>Category_Split__c.Assigned_To_Category__c</field>
+            <operation>equals</operation>
+            <value>true</value>
+        </summaryFilterItems>
+        <summaryForeignKey>Category_Split__c.Payment__c</summaryForeignKey>
+        <summaryOperation>sum</summaryOperation>
+        <trackTrending>false</trackTrending>
+        <type>Summary</type>
+    </fields>
+    <fields>
+        <fullName>Category_Splits__c</fullName>
+        <deprecated>false</deprecated>
+        <description>Total number of Category Splits for this Payment.</description>
+        <externalId>false</externalId>
+        <inlineHelpText>Total number of Category Splits for this Payment.</inlineHelpText>
+        <label>Category Splits</label>
+        <summaryForeignKey>Category_Split__c.Payment__c</summaryForeignKey>
+        <summaryOperation>count</summaryOperation>
+        <trackTrending>false</trackTrending>
+        <type>Summary</type>
+    </fields>
+    <fields>
+        <fullName>Check_Number__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <label>Check Number</label>
+        <length>12</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Connection_Error__c</fullName>
+        <defaultValue>false</defaultValue>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <inlineHelpText>Set whenever a connection error occurs between Salesforce and the payment processor.  Check the payment log for details when this flag is set.</inlineHelpText>
+        <label>Connection Error</label>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>Contact__c</fullName>
+        <deleteConstraint>SetNull</deleteConstraint>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <label>Contact</label>
+        <referenceTo>Contact</referenceTo>
+        <relationshipName>Payments</relationshipName>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>Currency_ISO_Code__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <label>Currency ISO Code</label>
+        <picklist>
+            <picklistValues>
+                <fullName>AUD</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>CAD</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>CHF</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>CZK</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>DKK</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>EUR</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>GBP</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>HKD</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>HUF</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>ILS</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>JPY</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>MXN</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>NOK</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>NZD</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>PLN</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>SEK</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>SGD</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>USD</fullName>
+                <default>false</default>
+            </picklistValues>
+            <sorted>false</sorted>
+        </picklist>
+        <trackTrending>false</trackTrending>
+        <type>Picklist</type>
+    </fields>
+    <fields>
+        <fullName>Date__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <inlineHelpText>Actual date of payment.</inlineHelpText>
+        <label>Payment Date</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Date</type>
+    </fields>
+    <fields>
+        <fullName>Discount__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <inlineHelpText>cart item total - discount + tax + shipping = transaction amount</inlineHelpText>
+        <label>Discount</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackTrending>false</trackTrending>
+        <type>Currency</type>
+    </fields>
+    <fields>
+        <fullName>Invoice_Number__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <label>Invoice Number</label>
+        <length>255</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Is_Test_Transaction__c</fullName>
+        <defaultValue>false</defaultValue>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <inlineHelpText>Checked if this is a test transaction.</inlineHelpText>
+        <label>Test Transaction</label>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>Key__c</fullName>
+        <deprecated>false</deprecated>
+        <description>Payment access key.  Used to limit public access to payment details in Sites.</description>
+        <externalId>false</externalId>
+        <inlineHelpText>Payment access key.  Used to limit public access to payment details in Sites.</inlineHelpText>
+        <label>Key</label>
+        <length>255</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Last_4_Digits__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <inlineHelpText>Last 4 digits of credit card.</inlineHelpText>
+        <label>Last 4 Digits</label>
+        <length>4</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Last_Response_Status__c</fullName>
+        <deprecated>false</deprecated>
+        <description>Used to keep track of last response status value.  Allows PaymentConnect to filter out redundant notifications.</description>
+        <externalId>false</externalId>
+        <inlineHelpText>Used to keep track of last response status value.  Allows PaymentConnect to filter out redundant notifications.</inlineHelpText>
+        <label>Last Response Status</label>
+        <length>20</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Log__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <inlineHelpText>Transaction results returned from payment processor and other related information.</inlineHelpText>
+        <label>Log</label>
+        <length>32000</length>
+        <trackTrending>false</trackTrending>
+        <type>LongTextArea</type>
+        <visibleLines>10</visibleLines>
+    </fields>
+    <fields>
+        <fullName>Memo__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <inlineHelpText>Details about the transaction.</inlineHelpText>
+        <label>Memo</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>TextArea</type>
+    </fields>
+    <fields>
+        <fullName>Merchant_Custom_Data__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <inlineHelpText>Custom fields and values passed in with the new payment notification through the PaymentConnect relay handlers.</inlineHelpText>
+        <label>Merchant Custom Data</label>
+        <length>32000</length>
+        <trackTrending>false</trackTrending>
+        <type>LongTextArea</type>
+        <visibleLines>3</visibleLines>
+    </fields>
+    <fields>
+        <fullName>OnPaymentCompleted_Trigger__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <inlineHelpText>Custom action(s) to perform when payment is completed.  Tags must be separated with semi-colons.  Recommended format is alphanumeric, with no spaces or special characters.  E.g. InitiateDropShip;NotifyAccounting;EmailReceipt</inlineHelpText>
+        <label>On Payment Completed</label>
+        <picklist>
+            <picklistValues>
+                <fullName>EmailReceipt</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>DoubleDownThanks</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>FundraiserThanks</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>FundraiserThanksMeese</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>ScholarshipFundThanks</fullName>
+                <default>false</default>
+            </picklistValues>
+            <sorted>false</sorted>
+        </picklist>
+        <trackTrending>false</trackTrending>
+        <type>MultiselectPicklist</type>
+        <visibleLines>5</visibleLines>
+    </fields>
+    <fields>
+        <fullName>Opportunity__c</fullName>
+        <deleteConstraint>SetNull</deleteConstraint>
+        <deprecated>false</deprecated>
+        <description>The opportunity record this payment is related to.</description>
+        <externalId>false</externalId>
+        <label>Opportunity</label>
+        <referenceTo>Opportunity</referenceTo>
+        <relationshipLabel>Payments</relationshipLabel>
+        <relationshipName>Payments</relationshipName>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>Parent_Transaction__c</fullName>
+        <deleteConstraint>SetNull</deleteConstraint>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <inlineHelpText>This look-up field is set for credit card captures and other transactions that have a &apos;parent&apos; transaction or payment record.</inlineHelpText>
+        <label>Parent Transaction</label>
+        <referenceTo>PaymentX__c</referenceTo>
+        <relationshipLabel>Related Payments</relationshipLabel>
+        <relationshipName>Related_Payments</relationshipName>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>Payment_Method__c</fullName>
+        <deleteConstraint>SetNull</deleteConstraint>
+        <deprecated>false</deprecated>
+        <description>Stored Payment Method used to process the transaction.</description>
+        <externalId>false</externalId>
+        <inlineHelpText>Stored Payment Method used to process the transaction.</inlineHelpText>
+        <label>Payment Method</label>
+        <lookupFilter>
+            <active>true</active>
+            <filterItems>
+                <field>Payment_Method__c.Contact__c</field>
+                <operation>equals</operation>
+                <valueField>$Source.Contact__c</valueField>
+            </filterItems>
+            <isOptional>true</isOptional>
+        </lookupFilter>
+        <referenceTo>Payment_Method__c</referenceTo>
+        <relationshipLabel>Payments</relationshipLabel>
+        <relationshipName>Payments</relationshipName>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>Payment_Processor__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <inlineHelpText>The payment processor or merchant account used to process this payment.  This field is set automatically when external payments are received and recorded, and when payments are processed using the Payment Terminal.</inlineHelpText>
+        <label>Payment Processor</label>
+        <picklist>
+            <picklistValues>
+                <fullName>Authorize.Net</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>eWay</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Google</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>PayPal</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>WorldPay</fullName>
+                <default>false</default>
+            </picklistValues>
+            <sorted>false</sorted>
+        </picklist>
+        <trackTrending>false</trackTrending>
+        <type>Picklist</type>
+    </fields>
+    <fields>
+        <fullName>Payment_Profile__c</fullName>
+        <deleteConstraint>SetNull</deleteConstraint>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <inlineHelpText>For subscription and recurring payments, this field should reference the subscription payment profile.</inlineHelpText>
+        <label>Recurring Payment Profile</label>
+        <referenceTo>Payment_Profile__c</referenceTo>
+        <relationshipLabel>Payments</relationshipLabel>
+        <relationshipName>Payments</relationshipName>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>Payment_Request_Date__c</fullName>
+        <deprecated>false</deprecated>
+        <description>The date scheduled payment requests should be sent out.  N days before the Scheduled Payment Date, where  N = Processing Action Lead Time, or the record creation date (whichever is later).</description>
+        <externalId>false</externalId>
+        <formula>IF( ISNULL( Scheduled_Payment_Date__c ) , NULL, IF( DATEVALUE(CreatedDate) &gt;Scheduled_Payment_Date__c -  NULLVALUE( Processing_Action_Lead_Time__c  ,0), DATEVALUE(CreatedDate), Scheduled_Payment_Date__c -  NULLVALUE( Processing_Action_Lead_Time__c  ,0)))</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <inlineHelpText>The date scheduled payment requests should be sent out.  N days before the Scheduled Payment Date, where  N = Processing Action Lead Time, or the record creation date (whichever is later).</inlineHelpText>
+        <label>Payment Request Date</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Date</type>
+    </fields>
+    <fields>
+        <fullName>Payment_Type__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <label>Payment Type</label>
+        <picklist>
+            <picklistValues>
+                <fullName>Cash</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Check or Money Order</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Credit Card</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>ECheck</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Electronic Funds Transfer</fullName>
+                <default>false</default>
+            </picklistValues>
+            <sorted>false</sorted>
+        </picklist>
+        <trackTrending>false</trackTrending>
+        <type>Picklist</type>
+    </fields>
+    <fields>
+        <fullName>Processing_Action_Lead_Time__c</fullName>
+        <deprecated>false</deprecated>
+        <description>Number of days before the scheduled payment date that the batch processing action (e.g. Send payment request) is to be processed.</description>
+        <externalId>false</externalId>
+        <inlineHelpText>Number of days before the scheduled payment date that the batch processing action (e.g. Send payment request) is to be processed.</inlineHelpText>
+        <label>Processing Action Lead Time</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Processor_Connection__c</fullName>
+        <deleteConstraint>SetNull</deleteConstraint>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <label>Processor Connection</label>
+        <referenceTo>Processor_Connection__c</referenceTo>
+        <relationshipLabel>Payments</relationshipLabel>
+        <relationshipName>Payments</relationshipName>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>Reschedule__c</fullName>
+        <defaultValue>false</defaultValue>
+        <deprecated>false</deprecated>
+        <description>Setup the next scheduled native subscription payment when this payment is completed.</description>
+        <externalId>false</externalId>
+        <inlineHelpText>Setup the next scheduled native subscription payment when this payment is completed.</inlineHelpText>
+        <label>Reschedule</label>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>Scheduled_Payment_Date__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <inlineHelpText>Scheduled Payment Date is the date on which payment is expected to be paid, and may be used to trigger payment reminders using workflow rules.</inlineHelpText>
+        <label>Scheduled Payment Date</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Date</type>
+    </fields>
+    <fields>
+        <fullName>Scheduled_Payment_Number__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <inlineHelpText>Sequence number assigned to scheduled payment</inlineHelpText>
+        <label>Scheduled Payment Number</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Ship_To_City__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <label>Ship To City</label>
+        <length>50</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Ship_To_Company__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <label>Ship To Company</label>
+        <length>100</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Ship_To_Country__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <label>Ship To Country</label>
+        <length>50</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Ship_To_Name__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <label>Ship To Name</label>
+        <length>100</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Ship_To_Phone__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <label>Ship To Phone</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Phone</type>
+    </fields>
+    <fields>
+        <fullName>Ship_To_Postal_Code__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <label>Ship To Postal Code</label>
+        <length>25</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Ship_To_State__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <label>Ship To State</label>
+        <length>50</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Ship_To_Street__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <label>Ship To Street</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>TextArea</type>
+    </fields>
+    <fields>
+        <fullName>Shipping_Calc_Result__c</fullName>
+        <deprecated>false</deprecated>
+        <description>Result of last triggered shipping calculation attempt. [Success|Error]|[Error Code]|[Message]</description>
+        <externalId>false</externalId>
+        <inlineHelpText>Result of last triggered shipping calculation attempt. [Success|Error]|[Error Code]|[Message]</inlineHelpText>
+        <label>Shipping Calc Result</label>
+        <length>255</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Shipping_Method__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <label>Shipping Method</label>
+        <picklist>
+            <picklistValues>
+                <fullName>Standard Shipping</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>FedEx</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>UPS</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>USPS</fullName>
+                <default>false</default>
+            </picklistValues>
+            <sorted>false</sorted>
+        </picklist>
+        <trackTrending>false</trackTrending>
+        <type>Picklist</type>
+    </fields>
+    <fields>
+        <fullName>Shipping__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <inlineHelpText>Shipping total for transaction.</inlineHelpText>
+        <label>Shipping</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Status__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <label>Status</label>
+        <picklist>
+            <picklistValues>
+                <fullName>Scheduled</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Pending</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Authorized</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Declined</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Error</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Expired</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Reversed</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Voided</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Completed</fullName>
+                <default>false</default>
+            </picklistValues>
+            <sorted>false</sorted>
+        </picklist>
+        <trackTrending>false</trackTrending>
+        <type>Picklist</type>
+    </fields>
+    <fields>
+        <fullName>Subscription_Id__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <inlineHelpText>For recurring or subscription payments, this is the recurring payment profile Id.</inlineHelpText>
+        <label>Subscription Id</label>
+        <length>50</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Tax_Calc_Result__c</fullName>
+        <deprecated>false</deprecated>
+        <description>Result of last triggered tax calculation attempt. [Success|Error]|[Error Code]|[Message]</description>
+        <externalId>false</externalId>
+        <inlineHelpText>Result of last triggered tax calculation attempt. [Success|Error]|[Error Code]|[Message]</inlineHelpText>
+        <label>Tax Calc Result</label>
+        <length>255</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Tax_Method__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <inlineHelpText>Used with the Trigger Tax Calc checkbox to determine which custom tax calculations to use.</inlineHelpText>
+        <label>Tax Method</label>
+        <picklist>
+            <picklistValues>
+                <fullName>State/Province Lookup</fullName>
+                <default>false</default>
+            </picklistValues>
+            <sorted>false</sorted>
+        </picklist>
+        <trackTrending>false</trackTrending>
+        <type>Picklist</type>
+    </fields>
+    <fields>
+        <fullName>Tax__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <inlineHelpText>Tax amount on transaction.</inlineHelpText>
+        <label>Tax</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackTrending>false</trackTrending>
+        <type>Currency</type>
+    </fields>
+    <fields>
+        <fullName>Transaction_Fee__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <inlineHelpText>Payment processor transaction fee.</inlineHelpText>
+        <label>Transaction Fee</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackTrending>false</trackTrending>
+        <type>Currency</type>
+    </fields>
+    <fields>
+        <fullName>Transaction_Id__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <inlineHelpText>Transaction Id returned from payment processor.</inlineHelpText>
+        <label>Transaction Id</label>
+        <length>255</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Transaction_Type__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <label>Transaction Type</label>
+        <picklist>
+            <picklistValues>
+                <fullName>Payment</fullName>
+                <default>true</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Refund</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Authorization</fullName>
+                <default>false</default>
+            </picklistValues>
+            <sorted>false</sorted>
+        </picklist>
+        <trackTrending>false</trackTrending>
+        <type>Picklist</type>
+    </fields>
+    <fields>
+        <fullName>Trigger_Payment_Request__c</fullName>
+        <defaultValue>false</defaultValue>
+        <deprecated>false</deprecated>
+        <description>Used to trigger workflow rules configured to send a payment request email.</description>
+        <externalId>false</externalId>
+        <inlineHelpText>Used to trigger workflow rules configured to send a payment request email.</inlineHelpText>
+        <label>Trigger Payment Request</label>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>Trigger_Shipping_Calc__c</fullName>
+        <defaultValue>false</defaultValue>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <inlineHelpText>Used to trigger custom shipping calculations for payments with Shopping Cart Items.</inlineHelpText>
+        <label>Trigger Shipping Calc</label>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>Trigger_Tax_Calc__c</fullName>
+        <defaultValue>false</defaultValue>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <inlineHelpText>Used to trigger custom tax calculations for payments with Shopping Cart Items.</inlineHelpText>
+        <label>Trigger Tax Calc</label>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <label>Payment</label>
+    <listViews>
+        <fullName>All</fullName>
+        <columns>NAME</columns>
+        <columns>Amount__c</columns>
+        <columns>Transaction_Id__c</columns>
+        <columns>Scheduled_Payment_Date__c</columns>
+        <columns>Date__c</columns>
+        <columns>Contact__c</columns>
+        <columns>Payment_Type__c</columns>
+        <columns>Payment_Processor__c</columns>
+        <columns>Status__c</columns>
+        <filterScope>Everything</filterScope>
+        <label>All</label>
+    </listViews>
+    <listViews>
+        <fullName>Scheduled_Payments</fullName>
+        <columns>NAME</columns>
+        <columns>Scheduled_Payment_Date__c</columns>
+        <columns>Amount__c</columns>
+        <columns>Transaction_Type__c</columns>
+        <columns>Contact__c</columns>
+        <columns>Account__c</columns>
+        <columns>Payment_Method__c</columns>
+        <columns>Payment_Profile__c</columns>
+        <columns>Status__c</columns>
+        <columns>Scheduled_Payment_Number__c</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>Status__c</field>
+            <operation>equals</operation>
+            <value>Scheduled</value>
+        </filters>
+        <filters>
+            <field>Scheduled_Payment_Date__c</field>
+            <operation>notEqual</operation>
+        </filters>
+        <label>Scheduled Payments</label>
+    </listViews>
+    <listViews>
+        <fullName>Today_s_Payments</fullName>
+        <booleanFilter>1 OR 2</booleanFilter>
+        <columns>NAME</columns>
+        <columns>Scheduled_Payment_Date__c</columns>
+        <columns>Date__c</columns>
+        <columns>Amount__c</columns>
+        <columns>Contact__c</columns>
+        <columns>Account__c</columns>
+        <columns>Transaction_Id__c</columns>
+        <columns>Transaction_Type__c</columns>
+        <columns>Status__c</columns>
+        <columns>Payment_Type__c</columns>
+        <columns>Payment_Processor__c</columns>
+        <columns>Processor_Connection__c</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>Date__c</field>
+            <operation>equals</operation>
+            <value>TODAY</value>
+        </filters>
+        <filters>
+            <field>Scheduled_Payment_Date__c</field>
+            <operation>equals</operation>
+            <value>TODAY</value>
+        </filters>
+        <label>Today&apos;s Payments</label>
+    </listViews>
+    <nameField>
+        <label>Payment Name</label>
+        <type>Text</type>
+    </nameField>
+    <pluralLabel>Payments</pluralLabel>
+    <searchLayouts>
+        <customTabListAdditionalFields>Scheduled_Payment_Date__c</customTabListAdditionalFields>
+        <customTabListAdditionalFields>Date__c</customTabListAdditionalFields>
+        <customTabListAdditionalFields>Amount__c</customTabListAdditionalFields>
+        <customTabListAdditionalFields>Transaction_Id__c</customTabListAdditionalFields>
+        <customTabListAdditionalFields>Transaction_Type__c</customTabListAdditionalFields>
+        <customTabListAdditionalFields>Payment_Processor__c</customTabListAdditionalFields>
+        <customTabListAdditionalFields>Status__c</customTabListAdditionalFields>
+        <customTabListAdditionalFields>Contact__c</customTabListAdditionalFields>
+        <customTabListAdditionalFields>Opportunity__c</customTabListAdditionalFields>
+        <excludedStandardButtons>Accept</excludedStandardButtons>
+        <lookupPhoneDialogsAdditionalFields>Date__c</lookupPhoneDialogsAdditionalFields>
+        <lookupPhoneDialogsAdditionalFields>Amount__c</lookupPhoneDialogsAdditionalFields>
+        <lookupPhoneDialogsAdditionalFields>Contact__c</lookupPhoneDialogsAdditionalFields>
+        <lookupPhoneDialogsAdditionalFields>Transaction_Type__c</lookupPhoneDialogsAdditionalFields>
+        <lookupPhoneDialogsAdditionalFields>Status__c</lookupPhoneDialogsAdditionalFields>
+    </searchLayouts>
+    <sharingModel>ReadWrite</sharingModel>
+    <webLinks>
+        <fullName>Delete</fullName>
+        <availability>online</availability>
+        <description>Deletes payments selected in a list view</description>
+        <displayType>massActionButton</displayType>
+        <linkType>javascript</linkType>
+        <masterLabel>Delete</masterLabel>
+        <openType>onClickJavaScript</openType>
+        <protected>false</protected>
+        <requireRowSelection>true</requireRowSelection>
+        <url>{!REQUIRESCRIPT(&quot;/soap/ajax/17.0/connection.js&quot;)} 
+
+var records = {!GETRECORDIDS( $ObjectType.PaymentX__c)}; 
+
+ 
+if (records[0] == null) { 
+alert(&quot;Please select at least one record.&quot;) } 
+else { 
+
+var errors = []; 
+var result = sforce.connection.deleteIds(records); 
+if (result &amp;&amp; result.length){ 
+var numFailed = 0; 
+var numSucceeded = 0; 
+for (var i = 0; i &lt; result.length; i++){ 
+var res = result[i]; 
+if (res &amp;&amp; res.success == &apos;true&apos;){ 
+numSucceeded++; 
+} else { 
+var es = res.getArray(&quot;errors&quot;); 
+if (es.length &gt; 0) { 
+errors.push(es[0].message); 
+} 
+numFailed++; 
+} 
+} 
+if (numFailed &gt; 0){ 
+alert(&quot;Failed: &quot; + numFailed + &quot;\nSucceeded: &quot; + numSucceeded + &quot; \n Due to: &quot; + errors.join(&quot;\n&quot;)); 
+} else { 
+alert(&quot;Number of records deleted: &quot; + numSucceeded); 
+} 
+} 
+window.location.reload(); 
+}</url>
+    </webLinks>
+    <webLinks>
+        <fullName>Email_Receipt</fullName>
+        <availability>online</availability>
+        <description>Emails the configured Payment receipt email template.</description>
+        <displayType>button</displayType>
+        <linkType>javascript</linkType>
+        <masterLabel>Email Receipt</masterLabel>
+        <openType>onClickJavaScript</openType>
+        <protected>false</protected>
+        <url>{!REQUIRESCRIPT(&quot;/soap/ajax/19.0/connection.js&quot;)}
+
+var emailTemplateDeveloperName = &quot;Payment_Receipt_Not_Itemized&quot;;  // This template name can be changed to any custom template you choose.  Be sure to build your custom template around the pymt__PaymentX__c object.
+
+var query = &quot;Select id from EmailTemplate where isActive = true and  DeveloperName = &apos;&quot;+emailTemplateDeveloperName+&quot;&apos; &quot;;
+var result = sforce.connection.query(query);
+var templates = result.getArray(&quot;records&quot;);
+
+if (templates.length == 0) {
+   alert(&quot;Sorry, could not find an active email template named \&quot;&quot;+emailTemplateDeveloperName+&quot;\&quot;.  Please contact your Salesforce administrator for help in setting up this template.&quot;);
+
+} else if (&quot;{!PaymentX__c.Status__c}&quot; !== &quot;Completed&quot; &amp;&amp;
+    &quot;{!PaymentX__c.Status__c}&quot; !== &quot;Charged&quot; ) {
+   alert(&quot;This payment has not been processed. &quot;);
+
+} else {
+   var templateId = templates[0].Id;
+    window.location = &quot;/_ui/core/email/author/EmailAuthor?p3_lkid={!PaymentX__c.Id}&amp;p2_lkid={!PaymentX__c.ContactId__c}&amp;template_id=&quot;+templateId+&quot;&amp;cancelURL=/{!PaymentX__c.Id}&amp;retURL=/{!PaymentX__c.Id}&amp;new_template=1&quot;;
+
+}</url>
+    </webLinks>
+    <webLinks>
+        <fullName>Payment_Terminal</fullName>
+        <availability>online</availability>
+        <description>Opens the PaymentConnect virtual terminal.</description>
+        <displayType>button</displayType>
+        <encodingKey>UTF-8</encodingKey>
+        <linkType>url</linkType>
+        <masterLabel>Payment Terminal</masterLabel>
+        <openType>replace</openType>
+        <protected>false</protected>
+        <url>/apex/pymt__PaymentTerminal?id={!PaymentX__c.Id}&quot;&amp;cancelURL=/{!PaymentX__c.Id}</url>
+    </webLinks>
+    <webLinks>
+        <fullName>Retotal_Payment</fullName>
+        <availability>online</availability>
+        <description>Retotals the payment, adding up cart items, shipping and tax amounts.</description>
+        <displayType>button</displayType>
+        <linkType>javascript</linkType>
+        <masterLabel>Retotal Payment</masterLabel>
+        <openType>onClickJavaScript</openType>
+        <protected>false</protected>
+        <url>{!REQUIRESCRIPT(&quot;/soap/ajax/17.0/connection.js&quot;)}
+
+if (confirm(&quot;Would you like to retotal this Payment record using the current shopping cart items, discount, tax and shipping amounts?&quot;)) {
+var query = &quot;Select Id, Name, pymt__Total__c from pymt__Shopping_Cart_Item__c where isDeleted = false and pymt__Payment__c = &apos;{!PaymentX__c.Id}&apos;&quot;;
+
+var result = sforce.connection.query(query);
+var cartItems = result.getArray(&quot;records&quot;);
+
+
+if (cartItems.length == 0) {
+alert(&quot;No shopping cart items found.&quot;) }
+else {
+
+var subtotal = 0.0;
+for (var i = 0; i &lt; cartItems.length; i++){
+var item = cartItems[i];
+subtotal += item.getFloat(&quot;pymt__Total__c&quot;);
+
+}
+subtotal -= parseFloat(&quot;{!NULLVALUE(TEXT(PaymentX__c.Discount__c), &apos;0.0&apos;) }&quot;)
+var total = subtotal + parseFloat(&quot;{!NULLVALUE(TEXT(PaymentX__c.Tax__c), &apos;0.0&apos;) }&quot;) + parseFloat(&quot;{!NULLVALUE( PaymentX__c.Shipping__c, &apos;0&apos;) }&quot;);
+
+var payment = new sforce.SObject(&quot;pymt__PaymentX__c&quot;);
+  //update the payment  
+    
+  payment.id = &quot;{!PaymentX__c.Id}&quot;;
+  payment.pymt__Amount__c = total;
+  result = sforce.connection.update([payment]);
+ 
+  if (result[0].getBoolean(&quot;success&quot;)) {
+    alert(&quot;Updated payment amount to &quot;+total+&quot; (Subtotal = &quot;+subtotal+&quot;)&quot;);
+  } else {
+    alert(&quot;Error updating payment &quot; + result[0]);
+  }
+
+
+window.location.reload();
+}
+}</url>
+    </webLinks>
+    <webLinks>
+        <fullName>Send_Payment_Request</fullName>
+        <availability>online</availability>
+        <description>Sends an email to the payment Contact requesting payment.</description>
+        <displayType>button</displayType>
+        <linkType>javascript</linkType>
+        <masterLabel>Send Payment Request</masterLabel>
+        <openType>onClickJavaScript</openType>
+        <protected>false</protected>
+        <url>{!REQUIRESCRIPT(&quot;/soap/ajax/19.0/connection.js&quot;)}
+
+var emailTemplateDeveloperName = &quot;PaymentConnect_Payment_Request&quot;;  // This template name can be changed to any custom template you choose.  Be sure to build your custom template around the pymt__PaymentX__c object.
+
+var query = &quot;Select id from EmailTemplate where isActive = true and  DeveloperName = &apos;&quot;+emailTemplateDeveloperName+&quot;&apos; &quot;;
+var result = sforce.connection.query(query);
+var templates = result.getArray(&quot;records&quot;);
+
+if (templates.length == 0) {
+   alert(&quot;Sorry, could not find an active email template named \&quot;&quot;+emailTemplateDeveloperName+&quot;\&quot;.  Please contact your Salesforce administrator for help in setting up this template.&quot;);
+
+} else if (&quot;{!PaymentX__c.Status__c}&quot; == &quot;Completed&quot; ||
+    &quot;{!PaymentX__c.Status__c}&quot; == &quot;Charged&quot; ) {
+   alert(&quot;This payment has already been processed. &quot;);
+
+} else if (&quot;{!PaymentX__c.Processor_ConnectionId__c}&quot; == &quot;&quot;) {
+   alert(&quot;A Processor Connection must be assigned in order to request an online payment.&quot;);
+
+} else {
+   var templateId = templates[0].Id;
+    window.location = &quot;/_ui/core/email/author/EmailAuthor?p3_lkid={!PaymentX__c.Id}&amp;p2_lkid={!PaymentX__c.ContactId__c}&amp;template_id=&quot;+templateId+&quot;&amp;cancelURL=/{!PaymentX__c.Id}&amp;retURL=/{!PaymentX__c.Id}&amp;new_template=1&quot;;
+
+}</url>
+    </webLinks>
+</CustomObject>

@@ -1,0 +1,20 @@
+<apex:page controller="sma.ChatterFeed" sidebar="false" showHeader="false" showChat="false">
+	<style type='text/css'>
+		.publisherpollchoiceinput {
+            width: 230px;
+        }
+        .fileFormInputElement {
+            width: 190px;
+        }
+        .contentPublisherSlideDown table.postInput td {
+            text-align: left !important;
+        }
+        .chatterPublisherFileActionContainerLeft {
+        	display: none;
+        }
+	</style>
+
+	<a href='#' onclick='chatter.getFeed().refresh(chatter.getFeed().config); return false;' style="position: absolute; right: 0px; color: #015BA7; text-decoration: none;">Refresh Feed</a>
+	<chatter:follow entityId="{!chatterEntityId}" />
+	<chatter:feed entityId="{!chatterEntityId}"  />
+</apex:page>

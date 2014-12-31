@@ -1,0 +1,13 @@
+<apex:page standardController="Account" sidebar="true" showHeader="true" standardStylesheets="false">
+  <apex:stylesheet value="http://www.warofword.com/style.css"/>
+  <h1>Congratulations</h1>
+  This is your new Page: styled
+  <h1>My Styled Page</h1>
+    Great!
+  <ul>
+    <apex:repeat value="{!account.contacts}" var="item">
+        <li><apex:outputText value="{!item.name}"/></li>
+    </apex:repeat>
+  </ul>
+
+</apex:page>

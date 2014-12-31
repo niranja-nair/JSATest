@@ -1,0 +1,397 @@
+<apex:component >
+	<script type='text/javascript'>
+	
+		/* Loadmask Functions */
+		function showLoading($elementToMask, msg, expirationTimeout, callback)
+        {
+        	return showMessage($elementToMask, "<div class='loadmask'></div><div class='loadmask-status'><div class='status'><img src='{!URLFOR($Resource.MapAnything, 'images/chatterstatus-loader.gif')}' /><span>"+msg+"</span></div></div>", (expirationTimeout || false), callback);
+        }
+        function showSuccess($elementToMask, msg, expirationTimeout, callback)
+        {
+        	return showMessage($elementToMask, "<div class='loadmask'></div><div class='loadmask-status'><div class='status' style='border: 1px solid green;'><img src='{!URLFOR($Resource.MapAnything, 'images/check-22.png')}' /><span>"+msg+"</span></div></div>", expirationTimeout, callback);
+        }
+        function showWarning($elementToMask, msg, expirationTimeout, callback)
+        {
+        	return showMessage($elementToMask, "<div class='loadmask'></div><div class='loadmask-status'><div class='status' style='border: 1px solid #0099FF;'><img src='{!URLFOR($Resource.MapAnything, 'images/warn-22.png')}' /><span>"+msg+"</span></div></div>", expirationTimeout, callback);
+        }
+        function showError($elementToMask, msg, expirationTimeout, callback)
+        {
+        	return showMessage($elementToMask, "<div class='loadmask'></div><div class='loadmask-status'><div class='status' style='border: 1px solid red;'><img src='{!URLFOR($Resource.MapAnything, 'images/x-22.png')}' /><span>"+msg+"</span></div></div>", expirationTimeout, callback);
+        }
+        function showMessage($elementToMask, html, expirationTimeout, callback)
+        {
+        	//remove any existing loadmasks
+        	$elementToMask.find('.loadmask, .loadmask-status').remove();
+        	
+        	//add new loadmask
+        	$elementToMask.append(html);
+        	
+        	//make sure that the new loadmask is visible by scrolling to it
+        	if ($(window).scrollTop() > $elementToMask.offset().top) {
+        		$('html, body').animate({ scrollTop: $elementToMask.offset().top }, "slow");
+        	}
+        	
+        	//set a timeout to remove this loadmask if the expiration timeout is not false
+        	if (expirationTimeout != false)
+        	{
+	        	setTimeout(function () {
+	        	
+	        		//remove the loadmask
+	        		hideMessage($elementToMask);
+	        		
+	        		//fire the callback if we have one
+	        		if (callback) { callback(); }
+	        		
+	        	}, (expirationTimeout || 1500));
+	        }
+	        
+        	return $elementToMask;
+        }
+        function hideMessage($elementToMask)
+        {
+        	$elementToMask.find('.loadmask, .loadmask-status').remove();
+        }
+        
+        /* Growl Functions */
+        function growlLoading($growlLocation, msg, expirationTimeout, callback)
+        {
+        	return growlMessage($growlLocation, "<div class='growl'><img src='{!URLFOR($Resource.MapAnything, 'images/chatterstatus-loader.gif')}' /><span>"+msg+"</span></div>", (expirationTimeout || false), callback);
+        }
+        function growlSuccess($growlLocation, msg, expirationTimeout, callback)
+        {
+        	return growlMessage($growlLocation, "<div class='growl' style='border: 1px solid green;'><img src='{!URLFOR($Resource.MapAnything, 'images/check-22.png')}' /><span>"+msg+"</span></div>", expirationTimeout, callback);
+        }
+        function growlWarning($growlLocation, msg, expirationTimeout, callback)
+        {
+        	return growlMessage($growlLocation, "<div class='growl' style='border: 1px solid #0099FF;'><img src='{!URLFOR($Resource.MapAnything, 'images/warn-22.png')}' /><span>"+msg+"</span></div>", expirationTimeout, callback);
+        }
+        function growlError($growlLocation, msg, expirationTimeout, callback)
+        {
+        	return growlMessage($growlLocation, "<div class='growl' style='border: 1px solid red;'><img src='{!URLFOR($Resource.MapAnything, 'images/x-22.png')}' /><span>"+msg+"</span></div>", expirationTimeout, callback);
+        }
+        function growlMessage($growlLocation, html, expirationTimeout, callback)
+        {
+        	//either add the new growl or replace the existing growl depending on whether a growl or a wrapper was passed
+        	var $growl;
+        	if ($growlLocation.is('.growl'))
+        	{
+        		$growl = $(html).replaceAll($growlLocation);
+        	}
+        	else
+        	{
+        		$growl = $(html);
+		    	$growlLocation.append($growl);	
+        	}
+        	
+		    //set a timeout to remove this growl if the expiration timeout is not false
+        	if (expirationTimeout != false)
+        	{
+	        	setTimeout(function () {
+	        	
+	        		//remove the growl
+	        		$growl.remove();
+	        		
+	        		//fire the callback if we have one
+	        		if (callback) { callback(); }
+	        		
+	        	}, (expirationTimeout || 1500));
+	        }
+	        
+        	return $growl;
+        }
+        
+        /* Popup Functions */
+        function launchPopup($popup, settings)
+		{
+			//add the fade layer
+		    $('body').append('<div id="fade"></div>');
+		    $('#fade').css({
+		        'filter' : 'alpha(opacity=80)', 
+		        'z-index': '1000'
+		    }).fadeIn();
+			    
+			//extend default settings
+			settings = $.extend({
+				minWidth	: '600px',
+				minHeight	: 'auto',
+				buttons		: { 
+					'Close': function () { 
+						hidePopup($popup); 
+					}
+				}
+			}, settings);
+			
+			//try to calculate marginLeft for centering
+			var marginLeft = 0;
+			try {
+				marginLeft = parseInt(settings.minWidth.replace('px', '')) / 2;
+			}
+			catch (err) { }
+			
+	    	//launch editor
+		    $popup.dialog({
+		    	resizeable	: false,
+                buttons: settings.buttons
+		    })
+		    .css('min-height', '0').dialog('widget').css({
+		        minWidth	: settings.minWidth,
+		        minHeight	: settings.minHeight,
+		        left		: '50%',
+		        marginLeft	: '-' + marginLeft + 'px',
+		        top			: '30px'
+		    })
+		    .find('.ui-dialog-titlebar').hide();
+
+			//scroll to top
+		    $("html, body").animate({ scrollTop: 0 }, "slow");
+		}
+		function hidePopup($popup)
+		{
+			$popup.dialog('destroy');
+		    $('#fade').fadeOut(function() {
+		        $('#fade').remove();  
+		    });
+		}
+	
+		/* String Functions */
+		function htmlEncode(str)
+		{
+			return String(str)
+	            .replace(/&/g, '&amp;')
+	            .replace(/"/g, '&quot;')
+	            .replace(/'/g, '&#39;')
+	            .replace(/</g, '&lt;')
+	            .replace(/>/g, '&gt;');
+		}
+		
+		/* Namespace Functions */
+		function addNamespace(namespace, obj)
+		{
+			//if there is no namespace, do nothing
+			if (namespace == '') { return obj; }
+			
+			//try to add the namespace prefix to each field in the object
+			try
+			{
+				var namespacePrefix = namespace + '__';
+				switch (typeof obj)
+				{
+					case 'string':
+						if (obj.indexOf(namespacePrefix) != 0 && obj.indexOf('__c', obj.length - 3) != -1) {
+							obj = namespacePrefix + obj;
+						}
+						break;
+					case 'object':
+						$.each(obj, function (key, val) {
+							if (key.indexOf(namespacePrefix) != 0 && key.indexOf('__c', key.length - 3) != -1) {
+								obj[namespacePrefix + key] = val;
+								delete obj[key];
+							}
+						});
+						break;
+				}
+			}
+			catch (err) { }	//this is most likely due to a null value being passed.  in any case, returning the original objects seems the correct action if we can't manipulate it
+			
+			//return the updated obj
+			return obj;
+		}
+		function removeNamespace(namespace, obj)
+		{
+			try 
+			{
+				var namespacePrefix = namespace + '__';
+				$.each(obj, function (key, val) {
+					if (key.indexOf(namespacePrefix) == 0) {
+						obj[key.replace(namespacePrefix, '')] = val;
+						delete obj[key];
+						
+						//go recursive if this is an object
+						if (obj[key.replace(namespacePrefix, '')] != null && typeof obj[key.replace(namespacePrefix, '')] == 'object') {
+							removeNamespace(namespace, obj[key.replace(namespacePrefix, '')]);
+						}
+					}
+				});
+			}
+			catch (err) { }	//this is most likely due to a null value being passed.  in any case, returning the original objects seems the correct action if we can't manipulate it
+			
+			return obj;
+		}
+		
+		/* Grids */
+		function grid_Search()
+		{
+			var $gridWrapper = $(this).closest('.grid-wrapper');
+			var $grid = $gridWrapper.find('.grid-blue');
+			var $loadmaskWrapper = $grid.closest('.loadmask-wrapper');
+			
+			//clear any existing search timeouts
+        	try { clearTimeout($gridWrapper.data('searchTimeout')); } catch (err) { }
+        	
+        	//set a loadmask over the grid
+        	showLoading($loadmaskWrapper, 'Searching...');
+        	
+        	//set a search timeout to perform the search when the user is done setting filters
+        	$gridWrapper.data(
+        		'searchTimeout',
+        		setTimeout(function () {
+        			
+        			//remove existing data for matching records
+		           	$grid.data('matchingRecords', {});
+		           	
+		           	//perform the search
+		           	var matchCount = 0;
+		           	var matchingRecords = $grid.data('matchingRecords');
+		           	$.each($grid.data('records'), function (id, record) {
+		           	
+		           		var match = true;
+		           	
+		           		//text filters
+		           		$('.filter-text').each(function () {
+		           			if ($(this).val() != '')
+		           			{
+		           				try {
+		           					if (record[$(this).attr('data-field')].toLowerCase().indexOf($(this).val().toLowerCase()) == -1) {
+		           						match = false;
+		           						return false;
+		           					}
+		           				}
+		           				catch (err) { }
+		           			}
+		           		});
+		           		if (!match) { return; }
+		           		
+		           		//calendar filters
+		           		$('.filter-calendar').each(function () {
+		           			if ($(this).val() != '')
+		           			{
+		           				try {
+		           					if (($(this).is('.end') && Date.parse(record[$(this).attr('data-field')]) > Date.parse($(this).val())) || ($(this).is('.start') && Date.parse(record[$(this).attr('data-field')]) < Date.parse($(this).val()))) {
+		           						match = false;
+		           						return false;
+		           					} 
+		           				}
+		           				catch (err) { }
+		           			}
+		           		});
+		           		if (!match) { return; }
+		           		
+		           		//number filters
+		           		$('.filter-number').each(function () {
+		           			if ($(this).val() != '')
+		           			{
+		           				try {
+		           					if (($(this).is('.end') && record[$(this).attr('data-field')] > $(this).val()) || ($(this).is('.start') && record[$(this).attr('data-field')] < $(this).val())) {
+		           						match = false;
+		           						return false;
+		           					} 
+		           				}
+		           				catch (err) { }
+		           			}
+		           		});
+		           		if (!match) { return; }
+		           		
+	               		//if we got this far then it's a match so add a record in memory for this match
+	               		matchingRecords[id] = record;
+	               		matchCount++;
+	               		
+		           	});
+		           	
+		           	//hold on to the match count for user later
+		           	$grid.data('matchingRecordsCount', matchCount);
+		           	
+		           	//show page options
+		           	$gridWrapper.find('.grid-page option').remove();
+		           	for (var i = 1; i <= Math.ceil(matchCount / $grid.data('pageSize')); i++)
+		           	{
+		           		$gridWrapper.find('.grid-page').append("<option value='"+i+"'>"+i+"</option>");
+		           	}
+		           	
+		           	//remove the loadmask
+		           	hideMessage($loadmaskWrapper);
+		           	
+		           	//load the first page of data
+		           	$gridWrapper.find('.grid-page').change();
+		           	
+           		}, 800)
+        	);
+		}
+		function grid_UpdatePage()
+		{
+			var $gridWrapper = $(this).closest('.grid-wrapper');
+			var $grid = $gridWrapper.find('.grid-blue');
+			
+			//set a loadmask over the grid
+			showLoading($gridWrapper, 'Loading...');
+			
+			//remove existing rows
+			$grid.find('.grid-row').remove();
+			
+			//calculate start and end points for this page
+	    	var recordStart = ($(this).val() - 1) * $grid.data('pageSize') + 1;
+	    	var recordEnd = recordStart + $grid.data('pageSize') - 1;
+	    	
+	    	//loop over our matching records and add those that belong on this page
+	    	var index = 1;
+	    	$.each($grid.data('matchingRecords'), function (id, record) {
+	    		
+	    		//add a row for this record if we're past the starting point for this page
+	    		if (recordStart <= index)
+	    		{
+	    			//add row
+	    			var $row = $grid.data('populateRow').call($grid, $grid.data('rowTemplate').clone().addClass('grid-row').data('record', record));
+	       			$grid.append($row);
+	    		}
+	    		
+	    		//increment our index and stop looping if we're past the endpoint for this page
+	    		index++;
+	    		if (recordEnd < index) { return false; }
+	    	});
+	    	
+	    	//update page info
+	    	$gridWrapper.find('.grid-pageinfo').text('Displaying ' + Math.max(recordStart, 0) + ' - ' + Math.min(recordEnd, $grid.data('matchingRecordsCount')) + ' of ' + $grid.data('matchingRecordsCount'));
+	    	
+	    	//remove the loadmask over the grid
+			hideMessage($gridWrapper);
+		}
+		
+		/* Event Handling */
+		$(function () {
+		
+			/* Menu Buttons */
+			$('body').on('click', '.menubutton', function () {
+			
+				//toggle the visibility for this menu
+				var $menubutton = $(this);
+				$menubutton.find('.menu').css('top', $menubutton.outerHeight() + 'px').slideToggle(300);
+				
+				//attempt to fit the entire menu in the viewport
+				var windowWidth = $(window).width();
+				var menuWidth = $menubutton.find('.menu').outerWidth();
+				var menuButtonOffsetX = $menubutton.offset().left - $(window).scrollLeft();
+				if (menuButtonOffsetX + menuWidth > windowWidth && menuWidth < windowWidth)
+				{
+					//the menu would be forced out of the viewport so move it to the left
+					$menubutton.find('.menu').css('left', ((menuWidth - (windowWidth - menuButtonOffsetX)) * -1) + 'px');
+				}
+				
+				//close all other menubuttons
+				$('.menu').not($menubutton.find('.menu')).slideUp(300);
+			});
+			$('body').on('click', '.menubutton .menu', function (event) {
+			
+				//stop event propagation (which will end up closing the menu) if this menu is persistent
+				if ($(this).is('.persistent')) {
+					event.stopPropagation();
+				}
+				
+			});
+			
+			/* Grids */
+			$('.grid-wrapper .filter-text, .grid-blue .filter-number').keyup(grid_Search);
+			$('.grid-wrapper .filter-calendar').datepicker({ onSelect: grid_Search });
+			$('.grid-wrapper .grid-page').change(grid_UpdatePage);
+		});
+		
+	</script>
+</apex:component>

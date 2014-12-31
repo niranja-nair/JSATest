@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomTab xmlns="http://soap.sforce.com/2006/04/metadata">
+    <frameHeight>600</frameHeight>
+    <hasSidebar>false</hasSidebar>
+    <label>Support</label>
+    <mobileReady>false</mobileReady>
+    <motif>Custom86: Red Cross</motif>
+    <url>https://app.formassembly.com/connector_salesforce/single_sign_on/?sid={!API.Session_ID}&amp;server={!API.Partner_Server_URL_110}&amp;redirect=pages%2Fsupport&amp;company={!User.CompanyName}&amp;username={!User.Username}&amp;email={!User.Email}&amp;address={!User.Address}&amp;ssl=1</url>
+    <urlEncodingKey>UTF-8</urlEncodingKey>
+</CustomTab>

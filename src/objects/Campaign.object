@@ -1,0 +1,2102 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
+    <actionOverrides>
+        <actionName>AddCampaign</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>AdvancedSetup</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>CancelEdit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Clone</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Delete</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Edit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Follow</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>List</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>New</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>SaveEdit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Tab</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>View</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <compactLayoutAssignment>SYSTEM</compactLayoutAssignment>
+    <enableFeeds>false</enableFeeds>
+    <fields>
+        <fullName>ActualCost</fullName>
+    </fields>
+    <fields>
+        <fullName>AmountAllOpportunities</fullName>
+    </fields>
+    <fields>
+        <fullName>AmountWonOpportunities</fullName>
+    </fields>
+    <fields>
+        <fullName>BudgetedCost</fullName>
+    </fields>
+    <fields>
+        <fullName>CampaignMemberRecordTypeId</fullName>
+        <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>Description</fullName>
+    </fields>
+    <fields>
+        <fullName>Donation_Page_URL__c</fullName>
+        <externalId>false</externalId>
+        <formula>&quot;https://jsa.secure.force.com/pmtx/cmpgn__Donations?id=&quot;+ Id</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Donation Page URL</label>
+        <required>false</required>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>EndDate</fullName>
+    </fields>
+    <fields>
+        <fullName>ExpectedResponse</fullName>
+    </fields>
+    <fields>
+        <fullName>ExpectedRevenue</fullName>
+    </fields>
+    <fields>
+        <fullName>HierarchyActualCost</fullName>
+    </fields>
+    <fields>
+        <fullName>HierarchyAmountAllOpportunities</fullName>
+    </fields>
+    <fields>
+        <fullName>HierarchyAmountWonOpportunities</fullName>
+    </fields>
+    <fields>
+        <fullName>HierarchyBudgetedCost</fullName>
+    </fields>
+    <fields>
+        <fullName>HierarchyExpectedRevenue</fullName>
+    </fields>
+    <fields>
+        <fullName>HierarchyNumberOfContacts</fullName>
+    </fields>
+    <fields>
+        <fullName>HierarchyNumberOfConvertedLeads</fullName>
+    </fields>
+    <fields>
+        <fullName>HierarchyNumberOfLeads</fullName>
+    </fields>
+    <fields>
+        <fullName>HierarchyNumberOfOpportunities</fullName>
+    </fields>
+    <fields>
+        <fullName>HierarchyNumberOfResponses</fullName>
+    </fields>
+    <fields>
+        <fullName>HierarchyNumberOfWonOpportunities</fullName>
+    </fields>
+    <fields>
+        <fullName>HierarchyNumberSent</fullName>
+    </fields>
+    <fields>
+        <fullName>IsActive</fullName>
+    </fields>
+    <fields>
+        <fullName>Mini_Store_URL__c</fullName>
+        <externalId>false</externalId>
+        <formula>&quot;https://jsa.secure.force.com/pmtx/cmpgn__MiniStore?id=&quot;+ Id</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Mini-Store URL</label>
+        <required>false</required>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Name</fullName>
+    </fields>
+    <fields>
+        <fullName>NumAccepted__c</fullName>
+        <description>Number of campaign members with status equal Accepted</description>
+        <externalId>false</externalId>
+        <label># Accepted</label>
+        <summaryFilterItems>
+            <field>CampaignMember.Recruitment_Phase__c</field>
+            <operation>equals</operation>
+            <value>Accepted</value>
+        </summaryFilterItems>
+        <summaryForeignKey>CampaignMember.CampaignId</summaryForeignKey>
+        <summaryOperation>count</summaryOperation>
+        <type>Summary</type>
+    </fields>
+    <fields>
+        <fullName>NumIntends_to_Apply__c</fullName>
+        <description>Number of campaign members who intend to apply to a Summer Program</description>
+        <externalId>false</externalId>
+        <label># Intends to Apply</label>
+        <summaryFilterItems>
+            <field>CampaignMember.Recruitment_Phase__c</field>
+            <operation>equals</operation>
+            <value>Intends to Apply</value>
+        </summaryFilterItems>
+        <summaryForeignKey>CampaignMember.CampaignId</summaryForeignKey>
+        <summaryOperation>count</summaryOperation>
+        <type>Summary</type>
+    </fields>
+    <fields>
+        <fullName>NumInterested__c</fullName>
+        <description>Number of campaign members with status equal to Interested</description>
+        <externalId>false</externalId>
+        <label># Interested</label>
+        <summaryFilterItems>
+            <field>CampaignMember.Recruitment_Phase__c</field>
+            <operation>equals</operation>
+            <value>Interested - Follow up needed</value>
+        </summaryFilterItems>
+        <summaryForeignKey>CampaignMember.CampaignId</summaryForeignKey>
+        <summaryOperation>count</summaryOperation>
+        <type>Summary</type>
+    </fields>
+    <fields>
+        <fullName>NumberOfContacts</fullName>
+    </fields>
+    <fields>
+        <fullName>NumberOfConvertedLeads</fullName>
+    </fields>
+    <fields>
+        <fullName>NumberOfLeads</fullName>
+    </fields>
+    <fields>
+        <fullName>NumberOfOpportunities</fullName>
+    </fields>
+    <fields>
+        <fullName>NumberOfResponses</fullName>
+    </fields>
+    <fields>
+        <fullName>NumberOfWonOpportunities</fullName>
+    </fields>
+    <fields>
+        <fullName>NumberSent</fullName>
+    </fields>
+    <fields>
+        <fullName>OwnerId</fullName>
+        <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>ParentId</fullName>
+        <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>StartDate</fullName>
+    </fields>
+    <fields>
+        <fullName>Status</fullName>
+        <picklist>
+            <picklistValues>
+                <fullName>In Progress</fullName>
+                <default>true</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Completed</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Aborted</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Planned</fullName>
+                <default>false</default>
+            </picklistValues>
+            <sorted>false</sorted>
+        </picklist>
+        <type>Picklist</type>
+    </fields>
+    <fields>
+        <fullName>Subscription_Page_URL__c</fullName>
+        <externalId>false</externalId>
+        <formula>&quot;https://jsa.secure.force.com/pmtx/cmpgn__Subscriptions?id=&quot;+ Id</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Subscription Page URL</label>
+        <required>false</required>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Type</fullName>
+        <picklist>
+            <picklistValues>
+                <fullName>Advertisement</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Dinner</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Direct Mail</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Email</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Luncheon</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Other</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Program</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Overnight Convention</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>One Day Conference</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Institute</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Summer School</fullName>
+                <default>false</default>
+            </picklistValues>
+            <sorted>false</sorted>
+        </picklist>
+        <type>Picklist</type>
+    </fields>
+    <fields>
+        <fullName>cmpgn__Address_Form_Heading__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <inlineHelpText>Overrides the default heading displayed above the address entry form on each landing page.</inlineHelpText>
+        <label>Address Form Heading</label>
+        <length>255</length>
+        <required>false</required>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>cmpgn__Apply_Tax__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <inlineHelpText>Controls the order in which sales tax is applied when calculating purchase totals.</inlineHelpText>
+        <label>Apply Tax</label>
+        <picklist>
+            <picklistValues>
+                <fullName>Before Shipping</fullName>
+                <default>true</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>After Shipping</fullName>
+                <default>false</default>
+            </picklistValues>
+            <sorted>false</sorted>
+        </picklist>
+        <type>Picklist</type>
+    </fields>
+    <fields>
+        <fullName>cmpgn__Banner_Image__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <inlineHelpText>Deprecated: Please use a Site template file to stylize this campaign landing page.</inlineHelpText>
+        <label>Deprecated</label>
+        <length>255</length>
+        <required>false</required>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>cmpgn__Captcha_Theme__c</fullName>
+        <deprecated>false</deprecated>
+        <description>Theme to use when displaying the CAPTCHA box in Sites.</description>
+        <externalId>false</externalId>
+        <inlineHelpText>Theme to use when displaying the CAPTCHA box in Sites.</inlineHelpText>
+        <label>Captcha Theme</label>
+        <picklist>
+            <picklistValues>
+                <fullName>red</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>white</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>blackglass</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>clean</fullName>
+                <default>false</default>
+            </picklistValues>
+            <sorted>false</sorted>
+        </picklist>
+        <type>Picklist</type>
+    </fields>
+    <fields>
+        <fullName>cmpgn__Category_Split_Name__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <inlineHelpText>Name of the category split configuration to assign to each payment or recurring payment profile created using this Mini-Store add-on landing page.</inlineHelpText>
+        <label>Category Split Name</label>
+        <picklist>
+            <picklistValues>
+                <fullName>Don&apos;t Auto-Split</fullName>
+                <default>false</default>
+            </picklistValues>
+            <sorted>false</sorted>
+        </picklist>
+        <type>Picklist</type>
+    </fields>
+    <fields>
+        <fullName>cmpgn__Checkout_Options__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <inlineHelpText>Checkout options to present on the landing page.  Options vary depending on which payment processor you have assigned to the current campaign.</inlineHelpText>
+        <label>Checkout Options</label>
+        <picklist>
+            <picklistValues>
+                <fullName>Default</fullName>
+                <default>true</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>PayPal-BuyNow Button Only</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>PayPal-SiteCheckout Only</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>PayPal-SiteCheckout and BuyNow</fullName>
+                <default>false</default>
+            </picklistValues>
+            <sorted>false</sorted>
+        </picklist>
+        <type>Picklist</type>
+    </fields>
+    <fields>
+        <fullName>cmpgn__Custom_Fields_Heading__c</fullName>
+        <deprecated>false</deprecated>
+        <description>Sets the heading displayed above the custom field entry form on each landing page.</description>
+        <externalId>false</externalId>
+        <inlineHelpText>Sets the heading displayed above the custom field entry form on each landing page.</inlineHelpText>
+        <label>Custom Fields Heading</label>
+        <length>255</length>
+        <required>false</required>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>cmpgn__Donation_Options__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <inlineHelpText>Donation options to display on the landing page.</inlineHelpText>
+        <label>Donation Options</label>
+        <picklist>
+            <picklistValues>
+                <fullName>One Time</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Monthly</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Annual</fullName>
+                <default>false</default>
+            </picklistValues>
+            <sorted>false</sorted>
+        </picklist>
+        <type>MultiselectPicklist</type>
+        <visibleLines>6</visibleLines>
+    </fields>
+    <fields>
+        <fullName>cmpgn__Enable_Coupons__c</fullName>
+        <defaultValue>false</defaultValue>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <inlineHelpText>Enables Mini-Store coupon support.  Coupons may be created in the MiniStore Coupon custom setting object.</inlineHelpText>
+        <label>Enable Coupons</label>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>cmpgn__Frequency__c</fullName>
+        <defaultValue>1</defaultValue>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <inlineHelpText>Recurring billing frequency (e.g. every X months)</inlineHelpText>
+        <label>Frequency</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>cmpgn__Initial_Amount__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <inlineHelpText>Initial, one-time amount</inlineHelpText>
+        <label>Initial Amount</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <type>Currency</type>
+    </fields>
+    <fields>
+        <fullName>cmpgn__LP_Cancel_URL__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <inlineHelpText>Page that should be displayed when the user cancels a payment.</inlineHelpText>
+        <label>Payment Cancellation URL</label>
+        <required>false</required>
+        <type>Url</type>
+    </fields>
+    <fields>
+        <fullName>cmpgn__LP_Confirmation_URL__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <inlineHelpText>Page that should be displayed when the user completes a payment.</inlineHelpText>
+        <label>Payment Confirmation Page</label>
+        <required>false</required>
+        <type>Url</type>
+    </fields>
+    <fields>
+        <fullName>cmpgn__LP_Expiration_Date__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <inlineHelpText>Date page is to be removed from the web</inlineHelpText>
+        <label>Expiration Date</label>
+        <required>false</required>
+        <type>Date</type>
+    </fields>
+    <fields>
+        <fullName>cmpgn__LP_HTML_Content__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <inlineHelpText>HTML content to display on the landing page.</inlineHelpText>
+        <label>HTML Content</label>
+        <length>32000</length>
+        <type>LongTextArea</type>
+        <visibleLines>12</visibleLines>
+    </fields>
+    <fields>
+        <fullName>cmpgn__LP_Meta_Description__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <inlineHelpText>Meta description content to add to the page.</inlineHelpText>
+        <label>Meta Description</label>
+        <length>32000</length>
+        <type>LongTextArea</type>
+        <visibleLines>8</visibleLines>
+    </fields>
+    <fields>
+        <fullName>cmpgn__LP_Meta_Keywords__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <inlineHelpText>Keywords to add to the page content.</inlineHelpText>
+        <label>Keywords</label>
+        <length>32000</length>
+        <type>LongTextArea</type>
+        <visibleLines>8</visibleLines>
+    </fields>
+    <fields>
+        <fullName>cmpgn__LP_One_Time_Contribution_Options__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <label>Deprecated</label>
+        <length>255</length>
+        <required>false</required>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>cmpgn__LP_Publication_Date__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <inlineHelpText>Date page is to be made available on the web</inlineHelpText>
+        <label>Publication Date</label>
+        <required>false</required>
+        <type>Date</type>
+    </fields>
+    <fields>
+        <fullName>cmpgn__LP_Recurring_Contribution_Options__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <label>Deprecated</label>
+        <length>255</length>
+        <required>false</required>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>cmpgn__LP_Status__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <label>Landing Page Status</label>
+        <picklist>
+            <picklistValues>
+                <fullName>Draft</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Published</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Archived</fullName>
+                <default>false</default>
+            </picklistValues>
+            <sorted>false</sorted>
+        </picklist>
+        <type>Picklist</type>
+    </fields>
+    <fields>
+        <fullName>cmpgn__LP_Title__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <label>Landing Page Title</label>
+        <length>255</length>
+        <required>false</required>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>cmpgn__Landing_Page_Type__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <label>Landing Page Type</label>
+        <picklist>
+            <picklistValues>
+                <fullName>Mini-Store</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Donation Page</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Subscription Page</fullName>
+                <default>false</default>
+            </picklistValues>
+            <sorted>false</sorted>
+        </picklist>
+        <type>Picklist</type>
+    </fields>
+    <fields>
+        <fullName>cmpgn__Logo_Image__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <inlineHelpText>Deprecated: Please use a Site template file to stylize this campaign landing page.</inlineHelpText>
+        <label>Deprecated</label>
+        <length>255</length>
+        <required>false</required>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>cmpgn__New_Contact_Notifications__c</fullName>
+        <defaultValue>false</defaultValue>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <inlineHelpText>Field deprecated.</inlineHelpText>
+        <label>Deprecated</label>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>cmpgn__Number_of_Payments__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <inlineHelpText>Total number of completed payments made for this campaign.</inlineHelpText>
+        <label>Number of Payments</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>cmpgn__Occurrences__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <inlineHelpText>Number of times the recurring payment should be charged.  Leave empty for open-ended subscriptions.</inlineHelpText>
+        <label>Occurrences</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>cmpgn__On_Payment_Completed__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <inlineHelpText>Value to copy into the OnPaymentCompleted trigger field of new Payments as they are created.</inlineHelpText>
+        <label>On Payment Completed</label>
+        <length>255</length>
+        <required>false</required>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>cmpgn__Payment_Notifications__c</fullName>
+        <defaultValue>false</defaultValue>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <inlineHelpText>Field deprecated.</inlineHelpText>
+        <label>Deprecated</label>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>cmpgn__Payments_Made__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <inlineHelpText>Total of completed payments for this campaign.</inlineHelpText>
+        <label>Payments Made</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <type>Currency</type>
+    </fields>
+    <fields>
+        <fullName>cmpgn__Period__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <inlineHelpText>Length of time between each recurring payment.</inlineHelpText>
+        <label>Period</label>
+        <picklist>
+            <picklistValues>
+                <fullName>Day</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Week</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>SemiMonth</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Month</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Year</fullName>
+                <default>false</default>
+            </picklistValues>
+            <sorted>false</sorted>
+        </picklist>
+        <type>Picklist</type>
+    </fields>
+    <fields>
+        <fullName>cmpgn__Processor_Connection__c</fullName>
+        <deleteConstraint>SetNull</deleteConstraint>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <inlineHelpText>Payment processor connection to use when processing payments through your campaign landing page.</inlineHelpText>
+        <label>Processor Connection</label>
+        <referenceTo>pymt__Processor_Connection__c</referenceTo>
+        <relationshipLabel>Campaigns</relationshipLabel>
+        <relationshipName>Campaigns</relationshipName>
+        <required>false</required>
+        <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>cmpgn__Recurring_Amount__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <inlineHelpText>Amount of each recurring payment.</inlineHelpText>
+        <label>Recurring Amount</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <type>Currency</type>
+    </fields>
+    <fields>
+        <fullName>cmpgn__Shipping_Amount__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <inlineHelpText>For shipping calculations requiring an amount.</inlineHelpText>
+        <label>Shipping Amount</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <type>Currency</type>
+    </fields>
+    <fields>
+        <fullName>cmpgn__Shipping_Calc_Method__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <inlineHelpText>Shipping calculation method.</inlineHelpText>
+        <label>Shipping Calc Method</label>
+        <picklist>
+            <picklistValues>
+                <fullName>Flat Rate</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Fixed Amount Per Item</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Percentage of Total</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Product</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Weight</fullName>
+                <default>false</default>
+            </picklistValues>
+            <sorted>false</sorted>
+        </picklist>
+        <type>Picklist</type>
+    </fields>
+    <fields>
+        <fullName>cmpgn__Shipping_Percent__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <inlineHelpText>For shipping calculations requiring a percentage</inlineHelpText>
+        <label>Shipping Percent</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <type>Percent</type>
+    </fields>
+    <fields>
+        <fullName>cmpgn__Show_Captcha__c</fullName>
+        <defaultValue>false</defaultValue>
+        <deprecated>false</deprecated>
+        <description>Enables a CAPTCHA box on the event site to discourage spammers and bots.</description>
+        <externalId>false</externalId>
+        <inlineHelpText>Enables a CAPTCHA box on the event site to discourage spammers and bots.</inlineHelpText>
+        <label>Show Captcha</label>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>cmpgn__Show_Social_Links__c</fullName>
+        <defaultValue>false</defaultValue>
+        <deprecated>false</deprecated>
+        <description>Display social media links on the Sites landing page.</description>
+        <externalId>false</externalId>
+        <inlineHelpText>Display social media links on the Sites landing page.</inlineHelpText>
+        <label>Show Social Links</label>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>cmpgn__Stylesheet_URL__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <inlineHelpText>Deprecated: Please use a Site template file to stylize this campaign landing page.</inlineHelpText>
+        <label>Deprecated</label>
+        <length>255</length>
+        <required>false</required>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>cmpgn__Suggested_Donation_Amounts__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <inlineHelpText>Semi-colon separated list of suggested contribution options to show on landing page. Decimal values for donation amounts, H or V for horizontal or vertical layout of options, and ? to display an &quot;other amount&quot; input box.</inlineHelpText>
+        <label>Suggested Donation Amounts</label>
+        <length>255</length>
+        <required>false</required>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>cmpgn__Tax_Method__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <inlineHelpText>Custom tax calculation method to apply as customers are redirected to checkout.</inlineHelpText>
+        <label>Tax Method</label>
+        <picklist>
+            <picklistValues>
+                <fullName>State/Province Lookup</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>No Tax</fullName>
+                <default>false</default>
+            </picklistValues>
+            <sorted>false</sorted>
+        </picklist>
+        <type>Picklist</type>
+    </fields>
+    <fields>
+        <fullName>cmpgn__Weight_Class__c</fullName>
+        <deprecated>false</deprecated>
+        <description>Weight class to use for weight-based shipping calculations.</description>
+        <externalId>false</externalId>
+        <inlineHelpText>Weight class to use for weight-based shipping calculations.</inlineHelpText>
+        <label>Weight Class</label>
+        <picklist>
+            <picklistValues>
+                <fullName>Grams</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Kilograms</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Pounds</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Ounces</fullName>
+                <default>false</default>
+            </picklistValues>
+            <sorted>false</sorted>
+        </picklist>
+        <type>Picklist</type>
+    </fields>
+    <listViews>
+        <fullName>AllActiveCampaigns</fullName>
+        <columns>CAMPAIGN.NAME</columns>
+        <columns>CAMPAIGN.START_DATE</columns>
+        <columns>CAMPAIGN.END_DATE</columns>
+        <columns>CAMPAIGN.CAMPAIGN_TYPE</columns>
+        <columns>CAMPAIGN.STATUS</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>CAMPAIGN.ACTIVE</field>
+            <operation>equals</operation>
+            <value>1</value>
+        </filters>
+        <label>All Active Campaigns</label>
+    </listViews>
+    <listViews>
+        <fullName>All_Campaigns</fullName>
+        <columns>CAMPAIGN.NAME</columns>
+        <columns>CAMPAIGN.START_DATE</columns>
+        <columns>CAMPAIGN.END_DATE</columns>
+        <columns>CAMPAIGN.BUDGETED_COST</columns>
+        <columns>CAMPAIGN.ACTUAL_COST</columns>
+        <columns>CAMPAIGN.CAMPAIGN_TYPE</columns>
+        <columns>CAMPAIGN.STATUS</columns>
+        <filterScope>Everything</filterScope>
+        <label>All Campaigns</label>
+        <language>en_US</language>
+    </listViews>
+    <listViews>
+        <fullName>MyActiveAppeals</fullName>
+        <columns>CAMPAIGN.NAME</columns>
+        <columns>CAMPAIGN.START_DATE</columns>
+        <columns>CAMPAIGN.END_DATE</columns>
+        <columns>CAMPAIGN.CAMPAIGN_TYPE</columns>
+        <columns>CAMPAIGN.STATUS</columns>
+        <filterScope>Mine</filterScope>
+        <filters>
+            <field>CAMPAIGN.ACTIVE</field>
+            <operation>equals</operation>
+            <value>1</value>
+        </filters>
+        <label>My Active Appeals</label>
+    </listViews>
+    <recordTypes>
+        <fullName>Cabinet_Committe_or_Group</fullName>
+        <active>true</active>
+        <description>JSA Elected and Appointed Officials or Foundation Directors Trusttees and Committees</description>
+        <label>Cabinet Committe or Group</label>
+        <picklistValues>
+            <picklist>Status</picklist>
+            <values>
+                <fullName>Aborted</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Completed</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>In Progress</fullName>
+                <default>true</default>
+            </values>
+            <values>
+                <fullName>Planned</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>Type</picklist>
+            <values>
+                <fullName>Advertisement</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Dinner</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Direct Mail</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Email</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Institute</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Luncheon</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>One Day Conference</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Other</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Overnight Convention</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Program</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Summer School</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+    </recordTypes>
+    <recordTypes>
+        <fullName>FoundationEvent</fullName>
+        <active>true</active>
+        <description>Use this record type for Foundation events, including fundraisers</description>
+        <label>Foundation Event</label>
+        <picklistValues>
+            <picklist>Status</picklist>
+            <values>
+                <fullName>Aborted</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Completed</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>In Progress</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Planned</fullName>
+                <default>true</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>Type</picklist>
+            <values>
+                <fullName>Advertisement</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Dinner</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Direct Mail</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Email</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Luncheon</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Other</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Program</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+    </recordTypes>
+    <recordTypes>
+        <fullName>JSAEvent</fullName>
+        <active>true</active>
+        <description>Use this record type for school year and summer program events</description>
+        <label>JSA Event</label>
+        <picklistValues>
+            <picklist>Status</picklist>
+            <values>
+                <fullName>Aborted</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Completed</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>In Progress</fullName>
+                <default>true</default>
+            </values>
+            <values>
+                <fullName>Planned</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>Type</picklist>
+            <values>
+                <fullName>Institute</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>One Day Conference</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Overnight Convention</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Program</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Summer School</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+    </recordTypes>
+    <recordTypes>
+        <fullName>Summer_Recruitment</fullName>
+        <active>true</active>
+        <label>Summer Recruitment</label>
+        <picklistValues>
+            <picklist>Status</picklist>
+            <values>
+                <fullName>Aborted</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Completed</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>In Progress</fullName>
+                <default>true</default>
+            </values>
+            <values>
+                <fullName>Planned</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>Type</picklist>
+            <values>
+                <fullName>Advertisement</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Dinner</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Direct Mail</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Email</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Institute</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Luncheon</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>One Day Conference</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Other</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Overnight Convention</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Program</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Summer School</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>cmpgn__Apply_Tax__c</picklist>
+            <values>
+                <fullName>After Shipping</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Before Shipping</fullName>
+                <default>true</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>cmpgn__Captcha_Theme__c</picklist>
+            <values>
+                <fullName>blackglass</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>clean</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>red</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>white</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>cmpgn__Category_Split_Name__c</picklist>
+            <values>
+                <fullName>Don%27t Auto-Split</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>cmpgn__Checkout_Options__c</picklist>
+            <values>
+                <fullName>Default</fullName>
+                <default>true</default>
+            </values>
+            <values>
+                <fullName>PayPal-BuyNow Button Only</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>PayPal-SiteCheckout Only</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>PayPal-SiteCheckout and BuyNow</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>cmpgn__Donation_Options__c</picklist>
+            <values>
+                <fullName>Annual</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Monthly</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>One Time</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>cmpgn__LP_Status__c</picklist>
+            <values>
+                <fullName>Archived</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Draft</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Published</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>cmpgn__Landing_Page_Type__c</picklist>
+            <values>
+                <fullName>Donation Page</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Mini-Store</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Subscription Page</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>cmpgn__Period__c</picklist>
+            <values>
+                <fullName>Day</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Month</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>SemiMonth</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Week</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Year</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>cmpgn__Shipping_Calc_Method__c</picklist>
+            <values>
+                <fullName>Fixed Amount Per Item</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Flat Rate</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Percentage of Total</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Product</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Weight</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>cmpgn__Tax_Method__c</picklist>
+            <values>
+                <fullName>No Tax</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>State%2FProvince Lookup</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>cmpgn__Weight_Class__c</picklist>
+            <values>
+                <fullName>Grams</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Kilograms</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Ounces</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Pounds</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+    </recordTypes>
+    <recordTypes>
+        <fullName>cmpgn__Campaign_Mini_Store</fullName>
+        <active>true</active>
+        <description>Modified Campaign record supporting the sale of products from a public campaign landing page using PaymentConnect.</description>
+        <label>Mini-Store Campaign</label>
+        <picklistValues>
+            <picklist>Status</picklist>
+            <values>
+                <fullName>Aborted</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Completed</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>In Progress</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Planned</fullName>
+                <default>true</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>Type</picklist>
+            <values>
+                <fullName>Advertisement</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Direct Mail</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Email</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Other</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>cmpgn__Apply_Tax__c</picklist>
+            <values>
+                <fullName>After Shipping</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Before Shipping</fullName>
+                <default>true</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>cmpgn__Captcha_Theme__c</picklist>
+            <values>
+                <fullName>blackglass</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>clean</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>red</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>white</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>cmpgn__Category_Split_Name__c</picklist>
+            <values>
+                <fullName>Don%27t Auto-Split</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>cmpgn__Checkout_Options__c</picklist>
+            <values>
+                <fullName>Default</fullName>
+                <default>true</default>
+            </values>
+            <values>
+                <fullName>PayPal-BuyNow Button Only</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>PayPal-SiteCheckout Only</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>PayPal-SiteCheckout and BuyNow</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>cmpgn__Donation_Options__c</picklist>
+            <values>
+                <fullName>Annual</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Monthly</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>One Time</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>cmpgn__LP_Status__c</picklist>
+            <values>
+                <fullName>Archived</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Draft</fullName>
+                <default>true</default>
+            </values>
+            <values>
+                <fullName>Published</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>cmpgn__Landing_Page_Type__c</picklist>
+            <values>
+                <fullName>Mini-Store</fullName>
+                <default>true</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>cmpgn__Period__c</picklist>
+            <values>
+                <fullName>Day</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Month</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>SemiMonth</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Week</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Year</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>cmpgn__Shipping_Calc_Method__c</picklist>
+            <values>
+                <fullName>Fixed Amount Per Item</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Flat Rate</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Percentage of Total</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Product</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Weight</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>cmpgn__Tax_Method__c</picklist>
+            <values>
+                <fullName>No Tax</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>State%2FProvince Lookup</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>cmpgn__Weight_Class__c</picklist>
+            <values>
+                <fullName>Grams</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Kilograms</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Ounces</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Pounds</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+    </recordTypes>
+    <recordTypes>
+        <fullName>cmpgn__Donation_Campaign</fullName>
+        <active>true</active>
+        <description>Modified Campaign record supporting collection of donations through Sites using PaymentConnect.</description>
+        <label>Donation Campaign</label>
+        <picklistValues>
+            <picklist>Status</picklist>
+            <values>
+                <fullName>Aborted</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Completed</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>In Progress</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Planned</fullName>
+                <default>true</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>Type</picklist>
+            <values>
+                <fullName>Advertisement</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Direct Mail</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Email</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Other</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>cmpgn__Apply_Tax__c</picklist>
+            <values>
+                <fullName>After Shipping</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Before Shipping</fullName>
+                <default>true</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>cmpgn__Captcha_Theme__c</picklist>
+            <values>
+                <fullName>blackglass</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>clean</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>red</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>white</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>cmpgn__Category_Split_Name__c</picklist>
+            <values>
+                <fullName>Don%27t Auto-Split</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>cmpgn__Checkout_Options__c</picklist>
+            <values>
+                <fullName>Default</fullName>
+                <default>true</default>
+            </values>
+            <values>
+                <fullName>PayPal-BuyNow Button Only</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>PayPal-SiteCheckout Only</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>PayPal-SiteCheckout and BuyNow</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>cmpgn__Donation_Options__c</picklist>
+            <values>
+                <fullName>Annual</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Monthly</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>One Time</fullName>
+                <default>true</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>cmpgn__LP_Status__c</picklist>
+            <values>
+                <fullName>Archived</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Draft</fullName>
+                <default>true</default>
+            </values>
+            <values>
+                <fullName>Published</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>cmpgn__Landing_Page_Type__c</picklist>
+            <values>
+                <fullName>Donation Page</fullName>
+                <default>true</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>cmpgn__Period__c</picklist>
+            <values>
+                <fullName>Day</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Month</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>SemiMonth</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Week</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Year</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>cmpgn__Shipping_Calc_Method__c</picklist>
+            <values>
+                <fullName>Fixed Amount Per Item</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Flat Rate</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Percentage of Total</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Product</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Weight</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>cmpgn__Tax_Method__c</picklist>
+            <values>
+                <fullName>No Tax</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>State%2FProvince Lookup</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>cmpgn__Weight_Class__c</picklist>
+            <values>
+                <fullName>Grams</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Kilograms</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Ounces</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Pounds</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+    </recordTypes>
+    <recordTypes>
+        <fullName>cmpgn__Subscription_Campaign</fullName>
+        <active>true</active>
+        <description>Modified Campaign record supporting sale of subscriptions through Site using PaymentConnect.</description>
+        <label>Subscription Campaign</label>
+        <picklistValues>
+            <picklist>Status</picklist>
+            <values>
+                <fullName>Aborted</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Completed</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>In Progress</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Planned</fullName>
+                <default>true</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>Type</picklist>
+            <values>
+                <fullName>Advertisement</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Direct Mail</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Email</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Other</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>cmpgn__Apply_Tax__c</picklist>
+            <values>
+                <fullName>After Shipping</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Before Shipping</fullName>
+                <default>true</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>cmpgn__Captcha_Theme__c</picklist>
+            <values>
+                <fullName>blackglass</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>clean</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>red</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>white</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>cmpgn__Category_Split_Name__c</picklist>
+            <values>
+                <fullName>Don%27t Auto-Split</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>cmpgn__Checkout_Options__c</picklist>
+            <values>
+                <fullName>Default</fullName>
+                <default>true</default>
+            </values>
+            <values>
+                <fullName>PayPal-BuyNow Button Only</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>PayPal-SiteCheckout Only</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>PayPal-SiteCheckout and BuyNow</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>cmpgn__Donation_Options__c</picklist>
+            <values>
+                <fullName>Annual</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Monthly</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>One Time</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>cmpgn__LP_Status__c</picklist>
+            <values>
+                <fullName>Archived</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Draft</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Published</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>cmpgn__Landing_Page_Type__c</picklist>
+            <values>
+                <fullName>Subscription Page</fullName>
+                <default>true</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>cmpgn__Period__c</picklist>
+            <values>
+                <fullName>Day</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Month</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>SemiMonth</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Week</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Year</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>cmpgn__Shipping_Calc_Method__c</picklist>
+            <values>
+                <fullName>Fixed Amount Per Item</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Flat Rate</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Percentage of Total</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Product</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Weight</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>cmpgn__Tax_Method__c</picklist>
+            <values>
+                <fullName>No Tax</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>State%2FProvince Lookup</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>cmpgn__Weight_Class__c</picklist>
+            <values>
+                <fullName>Grams</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Kilograms</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Ounces</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Pounds</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+    </recordTypes>
+    <searchLayouts>
+        <customTabListAdditionalFields>CAMPAIGN.NAME</customTabListAdditionalFields>
+        <customTabListAdditionalFields>CAMPAIGN.STATUS</customTabListAdditionalFields>
+        <customTabListAdditionalFields>CAMPAIGN.START_DATE</customTabListAdditionalFields>
+        <lookupDialogsAdditionalFields>CAMPAIGN.NAME</lookupDialogsAdditionalFields>
+        <lookupPhoneDialogsAdditionalFields>CAMPAIGN.NAME</lookupPhoneDialogsAdditionalFields>
+        <searchResultsAdditionalFields>CAMPAIGN.NAME</searchResultsAdditionalFields>
+        <searchResultsAdditionalFields>CORE.USERS.ALIAS</searchResultsAdditionalFields>
+    </searchLayouts>
+    <sharingModel>FullAccess</sharingModel>
+    <webLinks>
+        <fullName>SendExactTargetEmail</fullName>
+        <availability>online</availability>
+        <displayType>link</displayType>
+        <encodingKey>UTF-8</encodingKey>
+        <height>600</height>
+        <linkType>url</linkType>
+        <masterLabel>Send ExactTarget Email</masterLabel>
+        <openType>sidebar</openType>
+        <protected>false</protected>
+        <url>https://members.s4.exacttarget.com/Integration/SalesforceUI/EmailSend.aspx?sendtype=Campaign&amp;sfid={!Campaign.Id}&amp;sessid={!API.Session_ID}&amp;sessurl={!API.Partner_Server_URL_60}</url>
+    </webLinks>
+    <webLinks>
+        <fullName>ViewAllCampaignMembers</fullName>
+        <availability>online</availability>
+        <displayType>link</displayType>
+        <encodingKey>UTF-8</encodingKey>
+        <hasMenubar>false</hasMenubar>
+        <hasScrollbars>true</hasScrollbars>
+        <hasToolbar>false</hasToolbar>
+        <height>500</height>
+        <isResizable>true</isResizable>
+        <linkType>url</linkType>
+        <masterLabel>View All Campaign Members</masterLabel>
+        <openType>newWindow</openType>
+        <position>none</position>
+        <protected>false</protected>
+        <showsLocation>false</showsLocation>
+        <showsStatus>false</showsStatus>
+        <url>/camp/rptcmpgncalldown.jsp?scope=1&amp;scopeid={!Campaign_Name}</url>
+        <width>500</width>
+    </webLinks>
+    <webLinks>
+        <fullName>cmpgn__Campaign_Member_Sync</fullName>
+        <availability>online</availability>
+        <description>Syncs Contacts who have made payments under a Campaign with Campaign members.</description>
+        <displayType>button</displayType>
+        <encodingKey>UTF-8</encodingKey>
+        <height>600</height>
+        <linkType>url</linkType>
+        <masterLabel>Campaign Member Sync</masterLabel>
+        <openType>noSidebar</openType>
+        <protected>false</protected>
+        <url>/apex/cmpgn__CampaignMemberSync?id={!Campaign.Id}&amp;campaignName={!Campaign.Name}&amp;retURL={!Campaign.Id}</url>
+    </webLinks>
+    <webLinks>
+        <fullName>cmpgn__Mini_Store_Help</fullName>
+        <availability>online</availability>
+        <description>Online help for the Linvio Mini-Store add-on.</description>
+        <displayType>link</displayType>
+        <encodingKey>UTF-8</encodingKey>
+        <hasMenubar>false</hasMenubar>
+        <hasScrollbars>true</hasScrollbars>
+        <hasToolbar>false</hasToolbar>
+        <height>600</height>
+        <isResizable>true</isResizable>
+        <linkType>url</linkType>
+        <masterLabel>Mini-Store Help</masterLabel>
+        <openType>newWindow</openType>
+        <position>none</position>
+        <protected>false</protected>
+        <showsLocation>false</showsLocation>
+        <showsStatus>false</showsStatus>
+        <url>/apex/cmpgn__MiniStore_Help</url>
+    </webLinks>
+    <webLinks>
+        <fullName>cmpgn__Rich_Text_Editor</fullName>
+        <availability>online</availability>
+        <description>WYSIWYG editor for landing page HTML content (supports the PaymentConnect Campaigns Add-on)</description>
+        <displayType>button</displayType>
+        <height>600</height>
+        <linkType>page</linkType>
+        <masterLabel>Rich Text Editor</masterLabel>
+        <openType>sidebar</openType>
+        <page>cmpgn__LandingPageEditor</page>
+        <protected>false</protected>
+    </webLinks>
+    <webLinks>
+        <fullName>cmpgn__Update_Payments_Made</fullName>
+        <availability>online</availability>
+        <description>Updates the payments made &quot;rollup&quot; field.</description>
+        <displayType>link</displayType>
+        <linkType>javascript</linkType>
+        <masterLabel>Update Payments Made</masterLabel>
+        <openType>onClickJavaScript</openType>
+        <protected>false</protected>
+        <url>{!REQUIRESCRIPT(&quot;/soap/ajax/16.0/connection.js&quot;)}
+{!REQUIRESCRIPT(&quot;/soap/ajax/16.0/apex.js&quot;)}
+
+var result = sforce.apex.execute(&apos;cmpgn/CampaignLandingPage&apos; ,&apos;updatePaymentTotal&apos;,{campaignIds:[&quot;{!Campaign.Id}&quot;]}, null, false);
+alert(&apos;Update requested\n&apos;+result);
+window.location.reload();</url>
+    </webLinks>
+</CustomObject>

@@ -1,0 +1,355 @@
+<apex:page showheader="false" sidebar="false" controller="myJSAchapterController" action="{!initPage}">
+<head>
+
+<title>MyJSA</title>
+
+<apex:stylesheet value="{!URLFOR($Resource.RefreshCSS)}"/>
+<apex:stylesheet value="{!URLFOR($Resource.DarkBlueCss)}"/>
+<apex:stylesheet value="{!URLFOR($Resource.jquery_ui_css)}"/>
+<link rel="stylesheet" type="text/css" href="{!URLFOR($Resource.JSAPortal, 'style-theme.css')}" />
+<link rel="stylesheet" type="text/css" href="{!URLFOR($Resource.JSAPortal, 'style.css')}" />
+
+<script>
+var _gaq = _gaq || [];
+_gaq.push(['_setAccount', 'UA-1376727-1']);
+_gaq.push(['_setDomainName', 'force.com']);
+_gaq.push(['_setAllowLinker', true]);
+_gaq.push(['_trackPageview']);
+</script>
+</head>
+
+<body>
+    <div class="mainBox">
+        <div class="topHeaderBox">
+            <div class="topLogoBox">
+                <img src="{!$Resource.jsf_cap_logo_png}" width="155px" height="20px"/>
+            </div>
+        </div>
+        <div class="headerBox" id="headerBox">
+            <img src="{!$Resource.jsf_header_logo_png}" width="484px" height="176px"/>
+            <div style="float:right; padding:15px">
+                <a style="color:white" href="/secur/logout.jsp?retUrl=/portalLogin">Logout</a>
+            </div>
+        </div>
+        
+        <div class="midBox" id="midBoxHome">
+            <ul id="nav2" class="menu">         
+                <li id="menu-item-472" class="menu-item">
+                    <a href="/apex/myJSAhome" >MyJSA Home</a>
+                </li>
+                <li class="selectedMenu">
+                    <a id="selectedMenuBtn" href="/apex/myJSAchapter">My Chapter</a>
+                </li>
+                <li class="menu-item">
+                    <a href="https://myjsa.force.com/_ui/core/chatter/ui/ChatterPage">My Chatter</a>
+                </li>
+                <apex:outputText >
+                    <li id="menu-item-482" class="menu-item">
+                        <a href="/apex/myJSAEventSummary" >My Events</a>
+                    </li>
+                </apex:outputText>
+                <li class="menu-item">
+                    <a href="/apex/myJSAProfile">My Personal Data</a>
+                </li>
+            </ul>
+
+
+<div id="columns"><!-- START MAIN CONTENT COLUMNS -->
+
+    <div class="breadcrumb"></div>
+            
+    <div class="col1">
+                
+        <div id="archivebox">
+            <h2>Chapter Details</h2>
+        </div>
+   
+        <div id="border" class="title_margin">
+            <p><em>Note: To add new members, you must log out of your account (use Logout botton on upper right), go to jsa.org/myjsa, and select Register. Make sure the correct high school is selected on the second registration screen.</em></p>
+            <p></p>
+            <h2 style="display:inline;">
+                {!contact.High_School__r.Name}
+                <input type="hidden" id="highSchoolId" value="{!contact.High_School__c}"/>
+                <input type="hidden" id="userId" value="{!$User.Id}"/>
+                <input type="hidden" id="JSARole" value="{!contact.JSA_Role__c}"/>
+            </h2>
+                <div class="print_roster" style="float:right;">
+                   <a target="_blank" id="print_roster_bytype" href="/apex/JSAChapterPrintRoster?studentType=nongraduated">Print Roster</a>                  
+                </div>
+        <div style="clear:right"></div>
+             
+        </div>
+    <div>
+
+<div class="ditch-tab-skin-default">
+    <div id="chapterTabs" class="ditch-tab-container">
+        
+        <div class="ditch-tab-pane-wrap">
+           
+
+<div id="rosterTab" class="ditch-tab-pane" style=""> 
+                            
+    <form id="chapterAction" name="rosterForm" onsubmit="return true;" action="/portal/restricted/chapterAction.xhtml" method="post">
+        <table class="tunnelFormTableMini">
+            <tbody><tr>
+                <td><select id="viewTypeSelect" style="width: 125px" >
+                        <option value="nongraduated"> Non-Graduated </option>
+                        <option value="all"> All </option>
+                        <option value="graduated"> Graduated </option>
+                        <option value="taxpaidmembers"> Tax-paid Members </option>
+                    </select></td>
+            </tr>
+            <tr>
+                <td>
+                    <p style="white-space:nowrap">
+                        <a href="#" id="declareAsMember"> Declare as Member |</a>
+                        <a href="#" id="markAsGraduated">Mark as Graduated</a>
+                    </p>
+
+                </td>
+
+            </tr>
+        </tbody></table>
+        <table class="tunnelFormTableMini bottom">
+            <tr>
+                <th></th>
+                <th>Name</th>
+                <th>JSA Role</th>
+                <th>Grad Year</th>
+                <th>Member Status</th>
+            </tr>
+            <tbody id="chapterRosterBody">
+                <tr class="rosterTemplateRow template" style="display:none;">
+                    <td class="rosterStudentId"><input type="checkbox" class="studentId template"/></td>
+                    <td class="rosterName"></td>
+                    <td class="rosterRole"></td>
+                    <td class="rosterYear"></td>
+                    <td class="rosterStatus"></td>
+                </tr>
+            </tbody>
+        </table>
+    </form>
+    
+    
+</div>
+
+    <div class="highlight">
+        <h2>Chatter</h2>
+    </div>
+    <hr class="style"></hr>
+    <chatter:feed entityId="{!contact.Id}"/>
+          
+</div><!-- ditch-tab-pane-wrap -->
+</div><!-- ditch-tab-container -->
+</div><!-- ditch-tab-skin-default -->           
+                </div>
+
+            </div>
+                
+            <div class="col2">
+                           
+           <!-- <div class="widget">
+              <h3>JSA Program Details</h3>
+              <ul class="menu">
+                <li class="menu-item"> <a target="_blank" href="http://summer.jsa.org/programs/summer-school/">JSA Summer School</a> </li>
+                <li class="menu-item"> <a target="_blank" href="http://summer.jsa.org/programs/jsa-summer-institutes/">JSA Institutes</a> </li>
+                <li class="menu-item"> <a target="_blank" href="http://summer.jsa.org/programs/summer-school/diplomat-program-beijing-china/">JSA International</a> </li>
+              </ul>
+            </div> -->
+            <div class="widget">
+              <h3>JSA News and Updates</h3>
+              <script language="JavaScript" src="https://feed2js.org//feed2js.php?src=http%3A%2F%2Fjsa.org%2Fcategory%2Fmyjsa%2Ffeed%2F&num=3&desc=140>1&targ=y&utf=y"  charset="UTF-8" type="text/javascript"></script> 
+            </div>
+            <div class="widget">
+              <h3>JSA Event Calendar</h3>
+              <script language="JavaScript" src="https://feed2js.org//feed2js.php?src=http%3A%2F%2Fevents.jsa.org%2Fevents%2Frss%2F&num=5&targ=y&utf=y"  charset="UTF-8" type="text/javascript"></script>
+              <div class="moreEvents"> <a href="http://events.jsa.org/events/">View more events</a> </div>
+            </div>
+            
+             
+<!-- Global Menu Items -->
+
+
+            </div>
+        
+    </div>
+
+
+
+        </div> <!-- end of midBox -->
+        
+        <div class="footerShadow">
+            <div class="footerBox" id="footerBox">
+                <div class="row" id="footer">
+                    <span>
+                        <div class="leftCell">
+                            <h3>Junior Statesmen Foundation</h3>
+                            <p></p>
+                            <strong>National Headquarters in California</strong>
+                            <br/>
+                            800 S. Claremont St., Suite 202, San Mateo, CA 94402
+                            <br></br>
+                            (800) 334-5353
+                            <p></p>
+                            <strong>Washington, D.C. Office</strong>
+                            <br/>
+                            1411 K St. NW, Suite 200, Washington, DC 20005<br/>
+                            (800) 317-9338
+                        </div>
+                        <div class="midCell">
+                        <h3>About JSA</h3>
+                        <br/>
+                        <p>The mission of the Junior State of America and the Junior Statesmen Foundation is to strengthen American democracy by educating and preparing high school students for life-long involvement and responsible leadership in a democratic society.</p>
+                        </div>
+                        <div class="rightCell">
+                            <h3>Additional Resources</h3><br/>
+                            <ul class="footerList">
+                                <li class="li-item-left">
+                                    <a href="http://jsa.org/contact-jsa/">Contact Us</a>
+                                </li>
+                                <li class="li-item-left">
+                                    <a href="http://jsa.org/about/">About JSA</a>
+                                </li>
+                                <li class="li-item-left">
+                                    <a href="http://jsa.org/downloads/">Downloads</a>
+                                </li>
+                                <li class="li-item-right reset">
+                                    <a href="http://summer.jsa.org">Summer Programs</a>
+                                </li>
+                                <li class="li-item-right">
+                                    <a href="http://jsa.org/portal">MyJSA</a>
+                                </li>
+                                <li class="li-item-right">
+                                    <a href="http://jsa.org/bethepeople">Be the People</a>
+                                </li>
+                            </ul>
+                        </div>
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+   
+    <div class="footer-bottom-container">
+        <h4><a href="http://jsa.org">www.jsa.org</a></h4>
+JSA is a <a href="http://jsa.org/about/the-junior-statesmen-foundation/" target="_blank">non-profit 501(c)(3) educational organization</a><br/>
+© <!--?php echo date('Y') ?--> JSA. <a href="http://jsa.org/terms-of-use-and-privacy-policy/" target="_blank">Terms of Use and Privacy Policy</a>
+    </div>
+    <script>
+    <apex:includeScript value="{!$Resource.jquery_js}"/> 
+    <apex:includeScript value="{!$Resource.jquery_ui_js}"/>
+    </script>
+
+<script>
+$(document).ready(function(){
+    
+    var userId = $('#userId').val(),
+        jsaRole = $('#JSARole').val();
+        highSchoolId = $('#highSchoolId').val(),
+        studentType = $('#viewTypeSelect').val();
+        
+        
+    //JSRemoting method fetches the data
+    var findStudents = function(school,type){
+        myJSAchapterController.findStudents(school,type, userId, function(contacts,event){
+            $('.studentRow').remove();
+            if(event.status){
+                //console.log('matching students', contacts);
+                for(var i=0; i< contacts.length; i++){
+                    var student = contacts[i],
+                        $row = $('tr.rosterTemplateRow').clone().removeClass('rosterTemplateRow').addClass('studentRow').appendTo('#chapterRosterBody').show();
+
+                    $row.children('.rosterStudentId').children('input').attr({'id':student.Id}).removeClass('template');
+                    $row.children('.rosterName').html(student.Name);
+                    $row.children('.rosterRole').html(student.JSA_Role__c);
+                    $row.children('.rosterYear').html(student.High_School_Graduation_Year__c);
+                    $row.children('.rosterStatus').html(student.Member_Status__c);
+
+                }
+            }
+        });
+    };
+    
+    findStudents(highSchoolId,studentType);
+    
+    console.log('defaultTypeSelected',studentType);
+    console.log('highSchoolId',highSchoolId);
+    
+    var filterByType = function(){
+        studentTypeSelected = $(this).val();              
+        console.log('changed type to', studentTypeSelected);
+        findStudents(highSchoolId, studentTypeSelected);  
+        $('#print_roster_bytype').attr('href','/apex/JSAChapterPrintRoster?studentType='+studentTypeSelected);      
+    }
+    
+    $('#viewTypeSelect').on('change', filterByType);
+    
+    if(jsaRole == 'Chapter President' || jsaRole == 'JSA Advisor' ||  jsaRole == 'JSA Affiliate'){
+        $('#markAsGraduated').click(function(event){
+            event.preventDefault();
+
+            $('input.studentId').each(function(){
+                var $box = $(this),
+                    gradStudents = [];
+                if($box.is(':checked')){
+                    gradStudents.push($box.attr('id'));
+                }
+                console.log(gradStudents);
+                if(gradStudents.length > 0){
+    
+                    myJSAchapterController.graduateStudents(gradStudents, userId, function(result, event){
+                        
+                        if(event.status){
+                            if(result == 'ok'){
+                                studentType = $('#viewTypeSelect').val();
+                                findStudents(highSchoolId,studentType);
+                            }else{
+                                alert('Error: ' + result);
+                            }
+                        }else{
+                            alert('problem connecting to server');
+                        }
+                        
+                    });
+                }
+            });
+            
+        });
+        
+        $('#declareAsMember').click(function(event){
+            event.preventDefault();
+            $('input.studentId').each(function(){
+                console.log('declaring:');
+                var $box = $(this),
+                    memberStudents = [];
+                if($box.is(':checked')){
+                    memberStudents.push($box.attr('id'));
+                }
+                console.log('memberStudents',memberStudents);
+                if(memberStudents.length > 0){
+                    console.log('memberStudents2',memberStudents);
+                    myJSAchapterController.declareStudentMembers(memberStudents, userId, function(result, event){
+                        
+                        if(event.status){
+                            if(result == 'ok'){
+                                studentType = $('#viewTypeSelect').val();
+                                findStudents(highSchoolId,studentType);
+                            }else{
+                                alert('Error: ' + result);
+                            }
+                        }else{
+                            alert('problem connecting to server');
+                        }
+                        
+                    });
+                }
+            });
+        });
+        
+    }else{
+        $('#markAsGraduated,#declareAsMember').remove();
+    }
+});
+</script>
+</body>
+</apex:page>

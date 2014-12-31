@@ -1,0 +1,514 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<!--  																										-->
+<!-- Schedule Payments On Opportunity																		-->
+<!-- S-control written for use with Salesforce.com															-->
+<!-- 		This script automates the process of creating and scheduling payments on a closed/won Opp. 		-->
+<!--																										-->
+<!-- Copyright 2011, Linvio, Inc.	            															-->
+<!--																										-->
+<html>
+<head>
+<title>Schedule Installment Payments on {! Substitute(Substitute(Opportunity.Name,">","&gt;"),"<","&lt")}</title>
+<link href="/dCSS/Theme2/default/common.css" type="text/css" media="handheld,print,projection,screen,tty,tv"  rel="stylesheet" >
+<link href="/dCSS/Theme2/default/custom.css" type="text/css" media="handheld,print,projection,screen,tty,tv"  rel="stylesheet" >
+<script type="text/javascript" src="/js/functions.js"></script>
+<script src="/soap/ajax/19.0/connection.js"></script>
+
+{!INCLUDE($SControl.DatePickerStyleSheet)}
+{!INCLUDE($SControl.DatePicker)}
+{!INCLUDE($SControl.PaymentXUtils)}
+
+<style>
+.alert {
+	border:1px solid #e8e8e8;
+	padding: 5px;
+	background-color: aliceblue;
+	display:none;
+	-moz-border-radius: 5px;
+	border-radius: 5px;
+}
+</style>
+<script type="text/javascript">
+
+var numberOfPayments = 1;
+var startDate = new Date();
+var selectedContactId = '';
+ 
+// Returns a list of Options (DOM elements) containing opportunity contacts and their SFIDs
+function getOppContactOptions(oppId) {
+  	var optionArray = [];
+  	var i,j;
+  	var records, record;
+  	var primaryId = "";
+
+ 	//Retrieve Partner Accounts
+	var queryResult = sforce.connection.query("Select Id, ContactId, Contact.Name, Contact.Id, IsPrimary, Role from OpportunityContactRole  where OpportunityId ='"+oppId+"'");
+	//alert(queryResult);
+    if (queryResult.className == "Fault") {
+       throw "Error retrieving opportunity contacts:\n" +queryResult;
+    } else {
+      if (queryResult.size > 0) {
+		  //get the records array and return the first object in the array
+      		records = queryResult.getArray('records');                    
+      		var newOption;
+			for (i=0; i<records.length;i++) {
+				record = records[i];
+				newOption = new Option(record.Contact.Name+" ("+record.Role+")",record.ContactId,false);
+				newOption.selected = record.getBoolean("IsPrimary");
+				optionArray.push(newOption);
+			}
+      }
+      return optionArray;
+    }
+    
+}
+
+// Returns a list of Options (DOM elements) containing paymentMethods and their SFIDs
+function getPaymentMethodOptions(contactId) {
+  	var optionArray = [];
+  	var i,j;
+  	var records, record;
+  	var primaryId = "";
+    var newOption;
+
+ 	//Retrieve payment methods
+	var queryResult = sforce.connection.query("Select Id, pymt__Default__c, Name from pymt__Payment_Method__c  where pymt__Contact__c ='"+contactId+"'");
+	//alert(queryResult);
+    if (queryResult.className == "Fault") {
+       throw "Error retrieving payment methods for the selected Contact:\n" +queryResult;
+    } else {
+      if (queryResult.size > 0) {
+		  //get the records array and return the first object in the array
+      		records = queryResult.getArray('records');                    
+      		
+			for (i=0; i<records.length;i++) {
+				record = records[i];
+				var defaultFlag = "";
+				if (record.getBoolean("pymt__Default__c")) {
+					defaultFlag = " *";
+				}
+				newOption = new Option(record.Name+defaultFlag,record.Id,false);
+				newOption.selected = record.getBoolean("pymt__Default__c");
+				optionArray.push(newOption);
+			}
+      } else {
+				newOption = new Option(" -- No Payment Methods Found -- ","",false);
+				newOption.selected = true;
+				optionArray.push(newOption);
+      
+      }
+      return optionArray;
+    }
+    
+}
+
+// Returns a list of Options (DOM elements) containing processor connections and their SFIDs
+function getProcessorConnectionOptions() {
+  	var optionArray = [];
+  	var i,j;
+  	var records, record;
+  	var primaryId = "";
+
+ 	//Retrieve Partner Accounts
+	var queryResult = sforce.connection.query("Select Id, Name from pymt__Processor_Connection__c  where isDeleted = false");
+	//alert(queryResult);
+    if (queryResult.className == "Fault") {
+       throw "Error retrieving processor connection records:\n" +queryResult;
+    } else {
+      if (queryResult.size > 0) {
+		  //get the records array and return the first object in the array
+      		records = queryResult.getArray('records');                    
+      		var newOption;
+			for (i=0; i<records.length;i++) {
+				record = records[i];
+				newOption = new Option(record.Name,record.Id,false);
+				optionArray.push(newOption);
+			}
+      }
+      return optionArray;
+    }
+    
+}
+
+function setupPage() {
+
+	// Check current opportunity stage name to ensure that payments can be scheduled.
+    if ('{!Opportunity.IsClosed}' === "0" || '{!Opportunity.IsWon}' === "0" ) {
+		var alertBox = document.getElementById("alertBox");
+		alertBox.innerHTML = "Warning: {!Opportunity.IsClosed} {!Opportunity.IsWon} This Opportunity is not currently closed/won.  You may want to close the Opportunity before scheduling payments.";
+		alertBox.style.display = "block";
+		//self.close();
+		//return false;
+	}
+
+	// Fill number of payments selection list
+  	var optionArray = [];
+  	var selected = -1;
+  	var selectionList;	
+//  	optionArray = getPicklistOptions('Opportunity','Number_of_Payments__c');
+//	selectionList = document.getElementById("numberOfPayments");
+//	for (var i=optionArray.length-1;i>=0;i--) {
+//		selectionList.options[i] = optionArray[i];
+//		if (selectionList.options[i].text == "") selected = i;
+//	}  	
+//	selectionList.selectedIndex = selected;
+
+	// Fill processing action selection list
+  	optionArray = [];
+  	optionArray = getPicklistOptions('pymt__PaymentX__c','pymt__Batch_Processing_Action__c');	
+	selectionList = document.getElementById("processingAction");
+	for (var i=optionArray.length-1;i>=0;i--) {
+		selectionList.options[i] = optionArray[i];
+	}  	
+	selectionList.selectedIndex = 0;
+	
+	// Fill processor connection selection list
+  	optionArray = [];
+  	optionArray = getProcessorConnectionOptions();	
+	selectionList = document.getElementById("processorConnection");
+	for (var i=optionArray.length-1;i>=0;i--) {
+		selectionList.options[i] = optionArray[i];
+	}  	
+	selectionList.selectedIndex = 0;
+
+	// Fill contact selection list with opportunity contacts for this opp
+  	optionArray = [];
+  	optionArray = getOppContactOptions("{!Opportunity.Id}");	
+	selectionList = document.getElementById("contact");
+	for (var i=optionArray.length-1;i>=0;i--) {
+		selectionList.options[i] = optionArray[i];
+	}  	
+
+	contactChanged();
+	processingActionChanged();
+
+
+	// Select element in payment interval list
+	selected = -1;
+	selectionList = document.getElementById("paymentInterval");
+	for (var i=selectionList.options.length-1;i>=0;i--) {
+		if (selectionList.options[i].text == "") selected = i;
+	}  	
+	selectionList.selectedIndex = selected;
+
+	
+	// Calculate new firstPaymentDueDate
+	startDate = new Date();
+	document.getElementById("startDate").value = displayDate(startDate);
+
+
+}
+
+function contactChanged() {
+    // Load payment methods for the current contact
+	// Get current contact
+	var contactList = document.getElementById("contact");
+	var optionArray = [];
+	var selectedOption = contactList.options[contactList.selectedIndex];
+	if (selectedOption !== null) {
+		selectedContactId = selectedOption.value;
+		// Fill contact selection list with opportunity contacts for this opp
+  		optionArray = getPaymentMethodOptions(selectedContactId);	
+  		selectionList = document.getElementById("paymentMethod");
+		selectionList.options.length = 0;  // clear the current options list
+		for (var i=optionArray.length-1;i>=0;i--) {
+			selectionList.options[i] = optionArray[i];
+		}
+	}
+}
+
+function processingActionChanged() {
+	var actionList = document.getElementById("processingAction");
+	var selectedOption = actionList.options[actionList.selectedIndex];
+	if (selectedOption !== null) {
+		var selectedAction = selectedOption.value;
+		switch (selectedAction) {
+			case "Process using assigned Payment Method":
+				document.getElementById('processorConnectionDiv').style.display = "none";
+				document.getElementById('leadTimeDiv').style.display = "none";
+				document.getElementById('paymentMethodDiv').style.display = "block";
+				break;
+			case "Process using default Payment Method on Contact":
+				document.getElementById('processorConnectionDiv').style.display = "none";
+				document.getElementById('leadTimeDiv').style.display = "none";
+				document.getElementById('paymentMethodDiv').style.display = "none";
+			
+				break;
+			case "Send payment request":
+				document.getElementById('processorConnectionDiv').style.display = "block";
+				document.getElementById('leadTimeDiv').style.display = "block";
+				document.getElementById('paymentMethodDiv').style.display = "none";
+			
+				break;
+			default:
+				document.getElementById('processorConnectionDiv').style.display = "none";
+				document.getElementById('leadTimeDiv').style.display = "none";
+				document.getElementById('paymentMethodDiv').style.display = "none";
+			
+		}
+	}
+}
+
+
+// Autofill the payment info fields based on the current PaymentType selection and
+// show/hide the relevant fields
+function processorConnectionChanged() {
+}
+
+
+function doWork() {
+	var opportunityId = "{!Opportunity.Id}";
+	var newPaymentId;	
+	var newPayments = [];		// Array of payment objects
+	var createResult;			// Result from inserting Payment object 
+	var logResult;				// Result from logging activity
+	var amount;					// Total opportunity amount
+	var installmentAmount;		// Payment amount for multiple installments
+	var remainder;				// Last installment amount - accounts for decimal precision errors
+	var addSuccessful = false;
+	var errorMessage = "";
+	var i;
+	var startDate;           // Date first scheduled payment is due
+	var revisedStartDate;	 	 // Holds scheduled date for each subsequent payment
+	var numberOfPayments;
+	var paymentType;
+	var creditCardType;
+	var expMonth;
+	var expYear;
+	var interval;
+	var contactId;
+
+		// Pull new training deadline and extension $ amount from form
+		startDate = new Date(document.getElementById("startDate").value);
+		revisedStartDate = new Date(document.getElementById("startDate").value);
+		leadTime = document.getElementById("leadTime").value;
+		i = document.getElementById("numberOfPayments").selectedIndex;
+		numberOfPayments = parseInt(document.getElementById("numberOfPayments").options[i].text);
+		i = document.getElementById("paymentMethod").selectedIndex;
+		paymentMethod = (i==-1?"":document.getElementById("paymentMethod").options[i].value);
+		i = document.getElementById("processorConnection").selectedIndex;
+		processorConnection = (i==-1?"":document.getElementById("processorConnection").options[i].value);
+		i = document.getElementById("paymentInterval").selectedIndex;
+		interval = (i==-1?"":document.getElementById("paymentInterval").options[i].text);
+		i = document.getElementById("processingAction").selectedIndex;
+		processingAction = (i==-1?"":document.getElementById("processingAction").options[i].value);
+		i = document.getElementById("contact").selectedIndex;
+		contactId = (i==-1?"":document.getElementById("contact").options[i].value);
+		amount = Number(document.getElementById("amount").value);
+		installmentAmount = Math.round((amount / numberOfPayments)*100)/100;
+		remainder = (amount - (installmentAmount * (numberOfPayments-1)));
+
+		//Validate form before saving data
+		if (numberOfPayments > 1 && interval == "") {
+			alert("Please select a payment interval for multiple payments.");
+			return;
+		}
+		
+		
+		var memo = "";
+
+	  	try {
+			for (i=0;i<numberOfPayments;i++) {
+				// Create new Payment object
+				newPayment = new sforce.SObject("pymt__PaymentX__c"); 
+				// Set payment values
+				var paymentCount = (numberOfPayments > 1)? " "+(i+1)+" of "+numberOfPayments: "";
+				newPayment.set("Name","Payment"+paymentCount+ ' for {!Substitute(Opportunity.Name,"\"","")}'); 
+				//newPayment.set("Date__c", new Date());
+				newPayment.set("pymt__Status__c","Scheduled");
+				newPayment.set("pymt__Scheduled_Payment_Date__c",revisedStartDate);
+				// Set payment amount (on last payment, use remainder amount to correct for any rounding error)
+			  	newPayment.set("pymt__Amount__c", ((i+1==numberOfPayments)?remainder:installmentAmount));
+			  	newPayment.set("pymt__Payment_Type__c", paymentType);
+				newPayment.set("pymt__Memo__c", memo); 
+				newPayment.set("pymt__Invoice_Number__c", "{!Opportunity.Invoice_Number__c}"); 
+				newPayment.set("pymt__Batch_Processing_Action__c", processingAction); 
+				newPayment.set("pymt__Scheduled_Payment_Number__c", i+1); 	
+				newPayment.set("pymt__Opportunity__c", opportunityId); 
+				newPayment.set("pymt__Contact__c", selectedContactId); 
+				newPayment.set("pymt__Account__c", "{!Account.Id}"); 
+				switch (processingAction) {
+					case "Process using assigned Payment Method":
+						newPayment.set("pymt__Payment_Method__c", paymentMethod);			 
+						break;
+					case "Process using default Payment Method on Contact":
+						break;
+					case "Send payment request":
+						if (leadTime == null || leadTime == "" || parseInt(leadTime) < 0 ) {
+							alert("Please enter a valid lead time (in days) for the scheduled payment requests.");
+							return;
+						}
+						if (processorConnection == null || processorConnection == '') {
+							alert("Please select a processor connection.");
+							return;
+						}
+						newPayment.set("pymt__Processor_Connection__c", processorConnection);
+						newPayment.set("pymt__Processing_Action_Lead_Time__c", leadTime);
+						break;
+					default:
+			
+				}
+				newPayments[i] = newPayment;
+
+				// Change scheduled payment date and loop
+				if (interval == "Quarterly"){
+					revisedStartDate = addMonth(revisedStartDate,3);
+				} else {
+					revisedStartDate = addMonth(revisedStartDate,1);
+				}
+
+			} // end for numberOfPayments		  
+				
+				createResult = sforce.connection.create(newPayments); 
+				//alert(createResult);
+				
+				addSuccessful = true;
+				for (var j=0;j<numberOfPayments;j++){
+					if (createResult[j].success == 'false') {
+						alert("Error creating new payment record: "+ createResult[j].errors.message);
+						addSuccessful = false;
+						errorMessage += "\nError creating Payment "+j+" of "+numberOfPayments+":"+createResults[j].errors.message;
+					}
+				}
+				newPaymentId = createResult[0].id;  
+			
+				
+		} catch(ee){
+ 			alert("Error recording payment activity:\n " + ee);
+	  	}
+
+		try {
+			if (document.getElementById("logActivity").checked == true) {
+	 	  	  var activityNote = "Created "+numberOfPayments+" scheduled payments totaling $"+amount+". \nContact: {!Substitute(Contact.Name,"\"","")} \nAccount:{!Substitute(Account.Name,"\"","")}\nFirst payment: "+ displayDate(startDate);
+				if (!addSuccessful) {activityNote = errorMessage;}
+	 		  var subject = (addSuccessful?"Scheduled "+numberOfPayments+" Payments":"Error scheduling Payments");
+			  var whoId = "{!Contact.Id}";
+			  var whatId = opportunityId;
+			  logResult = logActivity( whoId, whatId, subject, "Completed", activityNote, new Date(), "");
+			  if (logResult === null) {alert ("Error logging activity:"+logResult);}
+			  			  
+			}
+		} catch(ee){
+ 			alert("Error logging activity:\n " + ee);
+	  	}
+	  	
+	
+	// Close or redirect window according to user prefs
+	var loc = (window.opener == null)? window.top.location : window.opener.location;
+	var newUrl;
+	if (document.getElementById("viewPayment").checked) {  
+	    newUrl = '/'+newPaymentId+'?retURL={!URLFOR($Action.Opportunity.View, Opportunity.Id)}';
+	} else {
+	    newUrl = '{!URLFOR($Action.Opportunity.View, Opportunity.Id)}';
+   	}
+    loc.replace(newUrl);
+   	self.close();
+}
+
+function closeOrReturn() {
+  if (window.opener == null) {
+     window.top.location = "{!URLFOR($Action.Opportunity.View, Opportunity.Id)}";
+  } else {
+  	self.close();
+  }
+}
+
+	
+</script>
+</head>
+<body onload="setupPage();" class="opportunity">
+<!-- <body onload="setupPage();" class="custom customTab11"> -->
+<div class="bPageTitle">
+  <div class="ptBody secondaryPalette">
+    <div class="content"><img class="pageTitleIcon" alt="contact" src="/s.gif">
+      <h1 class="pageType">Schedule Installment Payments<span class="titleSeparatingColon">:</span></h1>
+      <h2 class="pageDescription">{!Substitute(Substitute(Opportunity.Name,"<","&lt;"),">","&gt;")}</h2>
+    </div>
+  </div>
+</div>
+<div class="bPageBlock secondaryPalette">
+  <div class="pbBody">
+    <div class="pbSubsection">
+      <form id="input_form" name="input_form">
+        <div id="alertBox" name="alertBox" class="alert">Warning: This Opportunity has not been marked "Closed Won"</div>
+        <textarea id="mailingAddress" style="display: none">{!Substitute(Substitute(Contact.MailingStreet,"<","&lt;"),">","&gt;")}</textarea>
+        <p> 
+        Create scheduled installment payment records for this opportunity:</p>
+          <div  style="display:inline;">Total Amount
+            <input name="amount" type="text" id="amount" value="{!TEXT(Opportunity.Total_Amount__c)}" DISABLED>
+          </div>
+          </p>
+          <p>
+        <div  style="display:inline;"> 
+			Number of Payment Records:
+          <select name="numberOfPayments" id="numberOfPayments">
+          <option>1</option>
+          <option>2</option>
+          <option>3</option>
+          <option>4</option>
+          <option>5</option>
+          <option>6</option>
+          <option>7</option>
+          <option>8</option>
+          <option>9</option>
+          <option>10</option>
+          <option>11</option>
+          <option>12</option>
+          <option>24</option>
+          <option>36</option>
+          <option>48</option>
+          </select> 
+          Interval:
+          <select name="paymentInterval" id="paymentInterval">
+            <option>Monthly</option>
+            <option>Quarterly</option>
+          </select>
+        </div>
+		<p>First Payment Due  :
+          <input name="startDate" type="text" id="startDate" value="" onclick="displayDatePicker('startDate', this);">
+          <img src="/s.gif" alt="Pick A Date"  class="datePickerIcon" title="Pick A Date" onclick="displayDatePicker('startDate', this);"/></p>
+		<p>Contact: <span style="display:inline;">
+		  <select name="contact" id="contact" onchange="contactChanged();">
+		  </select>
+		</span></p>
+		<p>Processing Action: <span style="display:inline;">
+		  <select name="processingAction" id="processingAction" onchange="processingActionChanged()">
+		  </select>
+		</span></p>
+		<div id="processorConnectionDiv" name="processorConnectionDiv">
+		<p>Processor Connection: <span style="display:inline;">
+		  <select name="processorConnection" id="processorConnection" >
+		  </select>
+		</span></p>
+		</div>
+		<div id="paymentMethodDiv" name="paymentMethodDiv">
+		<p>Payment Method: <span style="display:inline;">
+		  <select name="paymentMethod" id="paymentMethod" >
+		  </select>
+		</span></p>
+		</div>
+		<div id="leadTimeDiv" name="leadTimeDiv">
+		<p>Send payment request <input id="leadTime" name="leadTime" value="14"/> days before scheduled payment date.</p>
+		</div>
+		<hr/>
+        <p>
+          <input name="logActivity" type="checkbox" id="logActivity" value="true">
+          Log Activity (optional) <br>
+          <input name="viewPayment" type="checkbox" id="viewPayment" value="true" checked>
+        View first payment record when finished</p>
+        <p>
+          <input name="Submit" type="button" id="Submit" onclick="doWork();return false;" value="Schedule Payments">
+          <input type="button" name="Close"  value="Close" onclick="closeOrReturn();">
+        </p>
+
+        <br />
+      </form>
+      <div id="errors" style="color:red;"> </div>
+    </div>
+    <!--  END pbSubsection -->
+  </div>
+  <!--  END pbBody -->
+</div>
+<!--  END bPageBlock -->
+</body>
+</html>

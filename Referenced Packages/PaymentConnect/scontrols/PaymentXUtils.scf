@@ -1,0 +1,844 @@
+<script type="text/javascript">
+// ------------------------------------------------------------------------------------------------------
+// PaymentXchange Javascript function library
+// Javascript include file
+// Last Update: 07/2008
+// Copyright 2008, Linvio, Inc.
+// ------------------------------------------------------------------------------------------------------
+
+function isNullOrEmpty(value) {
+	if (value == null) return true;
+	if (value == "") return true;
+	return false;
+}
+
+
+// Return a boolean value telling whether 
+// the first argument is a string. 
+function isString() {if (typeof arguments[0] == 'string') return true;
+	if (typeof arguments[0] == 'object') {  
+		var criterion =  arguments[0].constructor.toString().match(/string/i); 
+ 		return (criterion != null);  
+ 	}
+ return false;
+ }
+
+function isArray(obj) {
+   if (obj.constructor.toString().indexOf("Array") == -1)
+      return false;
+   else
+      return true;
+}
+
+// Returns the left n characters of str
+function left(str, n){
+	if (n <= 0)
+	    return "";
+	else if (n > String(str).length)
+	    return str;
+	else
+	    return String(str).substring(0,n);
+}
+
+// Returns the right n characters of str
+function right(str, n){
+    if (n <= 0)
+       return "";
+    else if (n > String(str).length)
+       return str;
+    else {
+       var iLen = String(str).length;
+       return String(str).substring(iLen, iLen - n);
+    }
+}
+
+// -----------------------------------------------------------------
+// Returns a url-decoded parameter from a URL parm string
+// The parm list must start with a ? or & for the first parm to be found
+function gup( name, urlString )
+{
+  name = name.replace(/[\[]/,"\\\[").replace(/[\]]/,"\\\]");
+  var regexS = "[\\?&]"+name+"=([^&#]*)";
+  var regex = new RegExp( regexS );
+  var results = regex.exec( urlString );
+  if( results == null )
+    return "";
+  else
+    return URLDecode(results[1]);
+}
+
+var MAX_DUMP_DEPTH = 10;
+// Function to dump the contents of a javascript object to a printable format
+function dumpObj(obj, name, indent, depth) {
+   if (depth > MAX_DUMP_DEPTH) {
+                     return indent + name + ": <Maximum Depth Reached>\n";
+   }
+   if (typeof obj == "object") {
+        var child = null;
+        var output = indent + name + "\n";
+        indent += "\t";
+        for (var item in obj)
+        {
+             try {
+                 child = obj[item];
+             } catch (e) {
+                 child = "<Unable to Evaluate>";
+             }
+             if (typeof child == "object") {
+                 output += dumpObj(child, item, indent, depth + 1);
+             } else {
+                 output += indent + item + ": " + child + "\n";
+             }
+        }
+      return output;
+   } else {
+      return obj;
+   }
+} 
+
+// Returns an xml http object for use in making async calls
+function GetXmlHttpObject()
+{
+  var xmlHttp=null;
+  try
+    {
+    // Firefox, Opera 8.0+, Safari
+    xmlHttp=new XMLHttpRequest();
+    }
+  catch (e)
+    {
+    // Internet Explorer
+    try
+      {
+      xmlHttp=new ActiveXObject("Msxml2.XMLHTTP");
+      }
+    catch (e)
+      {
+      xmlHttp=new ActiveXObject("Microsoft.XMLHTTP");
+      }
+    }
+  return xmlHttp;
+}
+
+
+function trace(variable) {
+	return;  // comment this line to turn on trace messages.
+	//alert("Profile name:{!$Profile.Name}");
+	if ('{!$Profile.Name}'=='PT1')  // 'System Administrator' profile -- hide alert for other users
+	{
+		alert("TRACE:\n"+var_dump(variable));
+	}
+}
+
+function var_dump(obj) {
+   if(typeof obj == "object") {
+      return "Type: "+typeof(obj)+((obj.constructor) ? "\nConstructor: "+obj.constructor : "")+"\nValue: " + obj;
+   } else {
+      return "Type: "+typeof(obj)+"\nValue: "+obj;
+   }
+}//end function var_dump
+
+function log(variable) {
+	// alert(variable);  // comment out when running in production mode
+	// sforce.debug.log(variable);  // comment out when running in production mode
+}
+
+// Returns a list of Options (DOM elements) matching the picklist values in the field specified
+// If no picklist values are set, or the field is not a picklist then an empty array is returned
+function getPicklistOptions(objectName, fieldName) {
+  	var optionArray = [];
+  	var field;
+  	var i,j;
+	var result = sforce.connection.describeSObject(objectName);
+	for (i=0; i<result.fields.length; i++) {
+    	field = result.fields[i];
+	    if (field.type == "picklist" && field.name==fieldName) {
+    		pickListVals = field.picklistValues;
+			for (j=0; j<pickListVals.length;j++){
+				if (pickListVals[j].active) {
+					optionArray.push(new Option(pickListVals[j].label,pickListVals[j].value,pickListVals[j].defaultValue));
+				}
+			}
+		}
+  	}
+  	return(optionArray);
+}
+
+// Displays a date value in mm/dd/yyyy format.  Accepts Date objects and date strings
+function displayDate(dateVal) {
+    switch (typeof dateVal) 
+    {
+	 case "string":
+	    	dateValue = new Date(dateVal);
+	    	break;
+	 case "object":
+	   		dateValue = dateVal;
+	   		break;
+	 default:
+    		return("");
+    }
+    	
+	try {
+		if (dateValue) {
+			return((dateValue.getMonth()+1)+"/"+dateValue.getDate()+"/"+dateValue.getFullYear());
+		} else {
+			return("");
+		}
+	} catch (ee) {  
+		return("");
+	}
+}
+
+function addMonth(d,month){
+  var t  = new Date (d);
+  t.setMonth(d.getMonth()+ month) ;
+  if (t.getDate() < d.getDate())
+ {
+      t.setDate(0);
+  }
+  return t;
+} 
+
+// Displays a date value in mm/dd/yyyy format.  Accepts Date objects and date strings
+function displayDateNoDelim(dateVal) {
+    switch (typeof dateVal) 
+    {
+	 case "string":
+	    	dateValue = new Date(dateVal);
+	    	break;
+	 case "object":
+	   		dateValue = dateVal;
+	   		break;
+	 default:
+    		return("");
+    }
+    	
+    var month;
+    var day;
+	try {
+		if (dateValue) {
+			//make month and day values two digit values
+		 	month = "0" + (dateValue.getMonth()+1);  // add a leading digit
+	 		month = month.substr(month.length-2);					// and trim all but the right-most two digits
+		 	day = "0" + dateValue.getDate();
+		 	day = day.substr(day.length-2);
+		    return ( month + "" + day + "" + dateValue.getFullYear());
+		} else {
+			return("");
+		}
+	} catch (ee) {  
+		return("");
+	}
+}
+
+
+
+
+// Creates a new task (or activity) record and returns the record id, or throws an exception.
+function logActivity( whoId, whatId, subject, status, description, dueDate, type) {
+
+	var saveResult;
+	var error;
+	var newTask;
+		try {
+		// Create new task
+		newTask = new sforce.SObject("Task"); 
+		// Fill task fields
+		newTask.set("Subject",subject); 
+		newTask.set("WhoId",whoId); 
+		newTask.set("WhatId",whatId); 
+		newTask.set("Status",status); 
+		newTask.set("Description",description); 
+		newTask.set("ActivityDate", dueDate);
+		if (type !="") { newTask.set("Type", type);}
+		
+			saveResult = sforce.connection.create([newTask]); 
+		} catch (error) {
+			log(error.faultcode);
+			log(error.faultstring);
+			//alert("error: "+error+"faultstring: "+error.faultstring);
+			throw ("Error logging activity:"+error.faultstring);
+		
+		}
+		//alert("saveResult:"+saveResult);
+		if (saveResult[0].success == "true") {
+	       return(saveResult[0].id); 
+	      } else {
+	       throw (saveResult[0].errors.message);
+	      }
+	      
+}
+
+// Creates a PaymentX object.
+function createPaymentX(name, accountId, amount, checkNumber, contactId, date, memo, log, 
+		opportunityId, paymentType, scheduledPmtDate, status, transactionId, paymentProcessor, last_4 ) {
+
+	var saveResult;
+	var error;
+	var newPayment;
+		try {
+		// Create new task
+		newPayment = new sforce.SObject("pymt__PaymentX__c"); 
+		// Fill payment fields
+		if (name != null) newPayment.set("Name",name); 
+		if (accountId != null) newPayment.set("pymt__Account__c",accountId); 
+		if (amount != null) newPayment.set("pymt__Amount__c",amount); 
+		if (checkNumber != null) newPayment.set("pymt__Check_Number__c",checkNumber); 
+		if (contactId != null) newPayment.set("pymt__Contact__c",contactId); 
+		if (date != null) newPayment.set("pymt__Date__c",date); 
+		if (memo != null) newPayment.set("pymt__Memo__c",memo); 
+		newPayment.set("pymt__Log__c",((log != null)?memo:'')); 
+		if (opportunityId != null) newPayment.set("pymt__Opportunity__c",opportunityId); 
+		if (paymentType != null) newPayment.set("pymt__Payment_Type__c",paymentType); 
+		if (scheduledPmtDate != null) newPayment.set("pymt__Scheduled_Payment_Date__c",scheduledPmtDate); 
+		if (status != null) newPayment.set("pymt__Status__c",status); 
+		if (transactionId != null) newPayment.set("pymt__Transaction_Id__c",transactionId); 
+		if (paymentProcessor != null) newPayment.set("pymt__Payment_Processor__c",paymentProcessor); 
+		if (last_4 != null) newPayment.set("pymt__Last_4_Digits__c",last_4); 
+		
+			saveResult = sforce.connection.create([newPayment]); 
+		} catch (error) {
+			log(error.faultcode);
+			log(error.faultstring);
+			//alert("error: "+error+"faultstring: "+error.faultstring);
+			throw ("Error creating PaymentX record:"+error.faultstring);
+		
+		}
+		//alert("saveResult:"+saveResult);
+		if (saveResult[0].success == "true") {
+	       return(saveResult[0].id); 
+	      } else {
+	       throw (saveResult[0].errors.message);
+	      }
+}
+
+function URLEncode( plaintext )
+{
+	var SAFECHARS = "0123456789" +					// Numeric
+					"ABCDEFGHIJKLMNOPQRSTUVWXYZ" +	// Alphabetic
+					"abcdefghijklmnopqrstuvwxyz" +
+					"-_.!~*'()";					// RFC2396 Mark characters
+	var HEX = "0123456789ABCDEF";
+
+	var encoded = "";
+	for (var i = 0; i < plaintext.length; i++ ) {
+		var ch = plaintext.charAt(i);
+	    if (ch == " ") {
+		    encoded += "+";				// x-www-urlencoded, rather than %20
+		} else if (SAFECHARS.indexOf(ch) != -1) {
+		    encoded += ch;
+		} else {
+		    var charCode = ch.charCodeAt(0);
+			if (charCode > 255) {
+			    alert( "Unicode Character '" 
+                        + ch 
+                        + "' cannot be encoded using standard URL encoding.\n" +
+				          "(URL encoding only supports 8-bit characters.)\n" +
+						  "A space (+) will be substituted." );
+				encoded += "+";
+			} else {
+				encoded += "%";
+				encoded += HEX.charAt((charCode >> 4) & 0xF);
+				encoded += HEX.charAt(charCode & 0xF);
+			}
+		}
+	} // for
+
+	return encoded;
+};
+
+function URLDecode( encoded )
+{
+   // Replace + with ' '
+   // Replace %xx with equivalent character
+   // Put [ERROR] in output if %xx is invalid.
+   var HEXCHARS = "0123456789ABCDEFabcdef"; 
+   var plaintext = "";
+   var i = 0;
+   while (i < encoded.length) {
+       var ch = encoded.charAt(i);
+	   if (ch == "+") {
+	       plaintext += " ";
+		   i++;
+	   } else if (ch == "%") {
+			if (i < (encoded.length-2) 
+					&& HEXCHARS.indexOf(encoded.charAt(i+1)) != -1 
+					&& HEXCHARS.indexOf(encoded.charAt(i+2)) != -1 ) {
+				plaintext += unescape( encoded.substr(i,3) );
+				i += 3;
+			} else {
+				alert( 'Bad escape combination near ...' + encoded.substr(i) );
+				plaintext += "%[ERROR]";
+				i++;
+			}
+		} else {
+		   plaintext += ch;
+		   i++;
+		}
+	} // while
+   return plaintext;
+};
+
+// ===================================================================
+// Date Functions
+// Author: Matt Kruse <matt@mattkruse.com>
+// WWW: http://www.mattkruse.com/
+//
+// ===================================================================
+
+// HISTORY
+// ------------------------------------------------------------------
+// May 17, 2003: Fixed bug in parseDate() for dates <1970
+// March 11, 2003: Added parseDate() function
+// March 11, 2003: Added "NNN" formatting option. Doesn't match up
+//                 perfectly with SimpleDateFormat formats, but 
+//                 backwards-compatability was required.
+
+// ------------------------------------------------------------------
+// These functions use the same 'format' strings as the 
+// java.text.SimpleDateFormat class, with minor exceptions.
+// The format string consists of the following abbreviations:
+// 
+// Field        | Full Form          | Short Form
+// -------------+--------------------+-----------------------
+// Year         | yyyy (4 digits)    | yy (2 digits), y (2 or 4 digits)
+// Month        | MMM (name or abbr.)| MM (2 digits), M (1 or 2 digits)
+//              | NNN (abbr.)        |
+// Day of Month | dd (2 digits)      | d (1 or 2 digits)
+// Day of Week  | EE (name)          | E (abbr)
+// Hour (1-12)  | hh (2 digits)      | h (1 or 2 digits)
+// Hour (0-23)  | HH (2 digits)      | H (1 or 2 digits)
+// Hour (0-11)  | KK (2 digits)      | K (1 or 2 digits)
+// Hour (1-24)  | kk (2 digits)      | k (1 or 2 digits)
+// Minute       | mm (2 digits)      | m (1 or 2 digits)
+// Second       | ss (2 digits)      | s (1 or 2 digits)
+// AM/PM        | a                  |
+//
+// NOTE THE DIFFERENCE BETWEEN MM and mm! Month=MM, not mm!
+// Examples:
+//  "MMM d, y" matches: January 01, 2000
+//                      Dec 1, 1900
+//                      Nov 20, 00
+//  "M/d/yy"   matches: 01/20/00
+//                      9/2/00
+//  "MMM dd, yyyy hh:mm:ssa" matches: "January 01, 2000 12:30:45AM"
+// ------------------------------------------------------------------
+
+var MONTH_NAMES=new Array('January','February','March','April','May','June','July','August','September','October','November','December','Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec');
+var DAY_NAMES=new Array('Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday','Sun','Mon','Tue','Wed','Thu','Fri','Sat');
+function LZ(x) {return(x<0||x>9?"":"0")+x}
+
+// ------------------------------------------------------------------
+// isDate ( date_string, format_string )
+// Returns true if date string matches format of format string and
+// is a valid date. Else returns false.
+// It is recommended that you trim whitespace around the value before
+// passing it to this function, as whitespace is NOT ignored!
+// ------------------------------------------------------------------
+function isDate(val,format) {
+	var date=getDateFromFormat(val,format);
+	if (date==0) { return false; }
+	return true;
+	}
+
+// -------------------------------------------------------------------
+// compareDates(date1,date1format,date2,date2format)
+//   Compare two date strings to see which is greater.
+//   Returns:
+//   1 if date1 is greater than date2
+//   0 if date2 is greater than date1 of if they are the same
+//  -1 if either of the dates is in an invalid format
+// -------------------------------------------------------------------
+function compareDates(date1,dateformat1,date2,dateformat2) {
+	var d1=getDateFromFormat(date1,dateformat1);
+	var d2=getDateFromFormat(date2,dateformat2);
+	if (d1==0 || d2==0) {
+		return -1;
+		}
+	else if (d1 > d2) {
+		return 1;
+		}
+	return 0;
+	}
+
+// ------------------------------------------------------------------
+// formatDate (date_object, format)
+// Returns a date in the output format specified.
+// The format string uses the same abbreviations as in getDateFromFormat()
+// ------------------------------------------------------------------
+function formatDate(date,format) {
+	format=format+"";
+	var result="";
+	var i_format=0;
+	var c="";
+	var token="";
+	var y=date.getYear()+"";
+	var M=date.getMonth()+1;
+	var d=date.getDate();
+	var E=date.getDay();
+	var H=date.getHours();
+	var m=date.getMinutes();
+	var s=date.getSeconds();
+	var yyyy,yy,MMM,MM,dd,hh,h,mm,ss,ampm,HH,H,KK,K,kk,k;
+	// Convert real date parts into formatted versions
+	var value=new Object();
+	if (y.length < 4) {y=""+(y-0+1900);}
+	value["y"]=""+y;
+	value["yyyy"]=y;
+	value["yy"]=y.substring(2,4);
+	value["M"]=M;
+	value["MM"]=LZ(M);
+	value["MMM"]=MONTH_NAMES[M-1];
+	value["NNN"]=MONTH_NAMES[M+11];
+	value["d"]=d;
+	value["dd"]=LZ(d);
+	value["E"]=DAY_NAMES[E+7];
+	value["EE"]=DAY_NAMES[E];
+	value["H"]=H;
+	value["HH"]=LZ(H);
+	if (H==0){value["h"]=12;}
+	else if (H>12){value["h"]=H-12;}
+	else {value["h"]=H;}
+	value["hh"]=LZ(value["h"]);
+	if (H>11){value["K"]=H-12;} else {value["K"]=H;}
+	value["k"]=H+1;
+	value["KK"]=LZ(value["K"]);
+	value["kk"]=LZ(value["k"]);
+	if (H > 11) { value["a"]="PM"; }
+	else { value["a"]="AM"; }
+	value["m"]=m;
+	value["mm"]=LZ(m);
+	value["s"]=s;
+	value["ss"]=LZ(s);
+	while (i_format < format.length) {
+		c=format.charAt(i_format);
+		token="";
+		while ((format.charAt(i_format)==c) && (i_format < format.length)) {
+			token += format.charAt(i_format++);
+			}
+		if (value[token] != null) { result=result + value[token]; }
+		else { result=result + token; }
+		}
+	return result;
+	}
+	
+// ------------------------------------------------------------------
+// Utility functions for parsing in getDateFromFormat()
+// ------------------------------------------------------------------
+function _isInteger(val) {
+	var digits="1234567890";
+	for (var i=0; i < val.length; i++) {
+		if (digits.indexOf(val.charAt(i))==-1) { return false; }
+		}
+	return true;
+	}
+function _getInt(str,i,minlength,maxlength) {
+	for (var x=maxlength; x>=minlength; x--) {
+		var token=str.substring(i,i+x);
+		if (token.length < minlength) { return null; }
+		if (_isInteger(token)) { return token; }
+		}
+	return null;
+	}
+	
+// ------------------------------------------------------------------
+// getDateFromFormat( date_string , format_string )
+//
+// This function takes a date string and a format string. It matches
+// If the date string matches the format string, it returns the 
+// getTime() of the date. If it does not match, it returns 0.
+// ------------------------------------------------------------------
+function getDateFromFormat(val,format) {
+	val=val+"";
+	format=format+"";
+	var i_val=0;
+	var i_format=0;
+	var c="";
+	var token="";
+	var token2="";
+	var x,y;
+	var now=new Date();
+	var year=now.getYear();
+	var month=now.getMonth()+1;
+	var date=1;
+	var hh=now.getHours();
+	var mm=now.getMinutes();
+	var ss=now.getSeconds();
+	var ampm="";
+	
+	while (i_format < format.length) {
+		// Get next token from format string
+		c=format.charAt(i_format);
+		token="";
+		while ((format.charAt(i_format)==c) && (i_format < format.length)) {
+			token += format.charAt(i_format++);
+			}
+		// Extract contents of value based on format token
+		if (token=="yyyy" || token=="yy" || token=="y") {
+			if (token=="yyyy") { x=4;y=4; }
+			if (token=="yy")   { x=2;y=2; }
+			if (token=="y")    { x=2;y=4; }
+			year=_getInt(val,i_val,x,y);
+			if (year==null) { return 0; }
+			i_val += year.length;
+			if (year.length==2) {
+				if (year > 70) { year=1900+(year-0); }
+				else { year=2000+(year-0); }
+				}
+			}
+		else if (token=="MMM"||token=="NNN"){
+			month=0;
+			for (var i=0; i<MONTH_NAMES.length; i++) {
+				var month_name=MONTH_NAMES[i];
+				if (val.substring(i_val,i_val+month_name.length).toLowerCase()==month_name.toLowerCase()) {
+					if (token=="MMM"||(token=="NNN"&&i>11)) {
+						month=i+1;
+						if (month>12) { month -= 12; }
+						i_val += month_name.length;
+						break;
+						}
+					}
+				}
+			if ((month < 1)||(month>12)){return 0;}
+			}
+		else if (token=="EE"||token=="E"){
+			for (var i=0; i<DAY_NAMES.length; i++) {
+				var day_name=DAY_NAMES[i];
+				if (val.substring(i_val,i_val+day_name.length).toLowerCase()==day_name.toLowerCase()) {
+					i_val += day_name.length;
+					break;
+					}
+				}
+			}
+		else if (token=="MM"||token=="M") {
+			month=_getInt(val,i_val,token.length,2);
+			if(month==null||(month<1)||(month>12)){return 0;}
+			i_val+=month.length;}
+		else if (token=="dd"||token=="d") {
+			date=_getInt(val,i_val,token.length,2);
+			if(date==null||(date<1)||(date>31)){return 0;}
+			i_val+=date.length;}
+		else if (token=="hh"||token=="h") {
+			hh=_getInt(val,i_val,token.length,2);
+			if(hh==null||(hh<1)||(hh>12)){return 0;}
+			i_val+=hh.length;}
+		else if (token=="HH"||token=="H") {
+			hh=_getInt(val,i_val,token.length,2);
+			if(hh==null||(hh<0)||(hh>23)){return 0;}
+			i_val+=hh.length;}
+		else if (token=="KK"||token=="K") {
+			hh=_getInt(val,i_val,token.length,2);
+			if(hh==null||(hh<0)||(hh>11)){return 0;}
+			i_val+=hh.length;}
+		else if (token=="kk"||token=="k") {
+			hh=_getInt(val,i_val,token.length,2);
+			if(hh==null||(hh<1)||(hh>24)){return 0;}
+			i_val+=hh.length;hh--;}
+		else if (token=="mm"||token=="m") {
+			mm=_getInt(val,i_val,token.length,2);
+			if(mm==null||(mm<0)||(mm>59)){return 0;}
+			i_val+=mm.length;}
+		else if (token=="ss"||token=="s") {
+			ss=_getInt(val,i_val,token.length,2);
+			if(ss==null||(ss<0)||(ss>59)){return 0;}
+			i_val+=ss.length;}
+		else if (token=="a") {
+			if (val.substring(i_val,i_val+2).toLowerCase()=="am") {ampm="AM";}
+			else if (val.substring(i_val,i_val+2).toLowerCase()=="pm") {ampm="PM";}
+			else {return 0;}
+			i_val+=2;}
+		else {
+			if (val.substring(i_val,i_val+token.length)!=token) {return 0;}
+			else {i_val+=token.length;}
+			}
+		}
+	// If there are any trailing characters left in the value, it doesn't match
+	if (i_val != val.length) { return 0; }
+	// Is date valid for month?
+	if (month==2) {
+		// Check for leap year
+		if ( ( (year%4==0)&&(year%100 != 0) ) || (year%400==0) ) { // leap year
+			if (date > 29){ return 0; }
+			}
+		else { if (date > 28) { return 0; } }
+		}
+	if ((month==4)||(month==6)||(month==9)||(month==11)) {
+		if (date > 30) { return 0; }
+		}
+	// Correct hours value
+	if (hh<12 && ampm=="PM") { hh=hh-0+12; }
+	else if (hh>11 && ampm=="AM") { hh-=12; }
+	var newdate=new Date(year,month-1,date,hh,mm,ss);
+	return newdate.getTime();
+	}
+
+// ------------------------------------------------------------------
+// parseDate( date_string [, prefer_euro_format] )
+//
+// This function takes a date string and tries to match it to a
+// number of possible date formats to get the value. It will try to
+// match against the following international formats, in this order:
+// y-M-d   MMM d, y   MMM d,y   y-MMM-d   d-MMM-y  MMM d
+// M/d/y   M-d-y      M.d.y     MMM-d     M/d      M-d
+// d/M/y   d-M-y      d.M.y     d-MMM     d/M      d-M
+// A second argument may be passed to instruct the method to search
+// for formats like d/M/y (european format) before M/d/y (American).
+// Returns a Date object or null if no patterns match.
+// ------------------------------------------------------------------
+function parseDate(val) {
+	var preferEuro=(arguments.length==2)?arguments[1]:false;
+	generalFormats=new Array('y-M-d','MMM d, y','MMM d,y','y-MMM-d','d-MMM-y','MMM d');
+	monthFirst=new Array('M/d/y','M-d-y','M.d.y','MMM-d','M/d','M-d');
+	dateFirst =new Array('d/M/y','d-M-y','d.M.y','d-MMM','d/M','d-M');
+	var checkList=new Array('generalFormats',preferEuro?'dateFirst':'monthFirst',preferEuro?'monthFirst':'dateFirst');
+	var d=null;
+	for (var i=0; i<checkList.length; i++) {
+		var l=window[checkList[i]];
+		for (var j=0; j<l.length; j++) {
+			d=getDateFromFormat(val,l[j]);
+			if (d!=0) { return new Date(d); }
+			}
+		}
+	return null;
+	}
+	
+/**
+*
+*  Base64 encode / decode
+*  http://www.webtoolkit.info/
+*
+**/
+
+var Base64 = {
+    // private property
+    _keyStr : "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=",
+
+    // public method for encoding
+    encode : function (input) {
+        var output = "";
+        var chr1, chr2, chr3, enc1, enc2, enc3, enc4;
+        var i = 0;
+
+        input = Base64._utf8_encode(input);
+
+        while (i < input.length) {
+
+            chr1 = input.charCodeAt(i++);
+            chr2 = input.charCodeAt(i++);
+            chr3 = input.charCodeAt(i++);
+
+            enc1 = chr1 >> 2;
+            enc2 = ((chr1 & 3) << 4) | (chr2 >> 4);
+            enc3 = ((chr2 & 15) << 2) | (chr3 >> 6);
+            enc4 = chr3 & 63;
+
+            if (isNaN(chr2)) {
+                enc3 = enc4 = 64;
+            } else if (isNaN(chr3)) {
+                enc4 = 64;
+            }
+
+            output = output +
+            this._keyStr.charAt(enc1) + this._keyStr.charAt(enc2) +
+            this._keyStr.charAt(enc3) + this._keyStr.charAt(enc4);
+
+        }
+
+        return output;
+    },
+
+    // public method for decoding
+    decode : function (input) {
+        var output = "";
+        var chr1, chr2, chr3;
+        var enc1, enc2, enc3, enc4;
+        var i = 0;
+
+        input = input.replace(/[^A-Za-z0-9\+\/\=]/g, "");
+
+        while (i < input.length) {
+
+            enc1 = this._keyStr.indexOf(input.charAt(i++));
+            enc2 = this._keyStr.indexOf(input.charAt(i++));
+            enc3 = this._keyStr.indexOf(input.charAt(i++));
+            enc4 = this._keyStr.indexOf(input.charAt(i++));
+
+            chr1 = (enc1 << 2) | (enc2 >> 4);
+            chr2 = ((enc2 & 15) << 4) | (enc3 >> 2);
+            chr3 = ((enc3 & 3) << 6) | enc4;
+
+            output = output + String.fromCharCode(chr1);
+
+            if (enc3 != 64) {
+                output = output + String.fromCharCode(chr2);
+            }
+            if (enc4 != 64) {
+                output = output + String.fromCharCode(chr3);
+            }
+
+        }
+
+        output = Base64._utf8_decode(output);
+
+        return output;
+
+    },
+
+    // private method for UTF-8 encoding
+    _utf8_encode : function (string) {
+        string = string.replace(/\r\n/g,"\n");
+        var utftext = "";
+
+        for (var n = 0; n < string.length; n++) {
+
+            var c = string.charCodeAt(n);
+
+            if (c < 128) {
+                utftext += String.fromCharCode(c);
+            }
+            else if((c > 127) && (c < 2048)) {
+                utftext += String.fromCharCode((c >> 6) | 192);
+                utftext += String.fromCharCode((c & 63) | 128);
+            }
+            else {
+                utftext += String.fromCharCode((c >> 12) | 224);
+                utftext += String.fromCharCode(((c >> 6) & 63) | 128);
+                utftext += String.fromCharCode((c & 63) | 128);
+            }
+
+        }
+
+        return utftext;
+    },
+
+    // private method for UTF-8 decoding
+    _utf8_decode : function (utftext) {
+        var string = "";
+        var i = 0;
+        var c = c1 = c2 = 0;
+
+        while ( i < utftext.length ) {
+
+            c = utftext.charCodeAt(i);
+
+            if (c < 128) {
+                string += String.fromCharCode(c);
+                i++;
+            }
+            else if((c > 191) && (c < 224)) {
+                c2 = utftext.charCodeAt(i+1);
+                string += String.fromCharCode(((c & 31) << 6) | (c2 & 63));
+                i += 2;
+            }
+            else {
+                c2 = utftext.charCodeAt(i+1);
+                c3 = utftext.charCodeAt(i+2);
+                string += String.fromCharCode(((c & 15) << 12) | ((c2 & 63) << 6) | (c3 & 63));
+                i += 3;
+            }
+        }
+        return string;
+    }
+
+}
+</script>

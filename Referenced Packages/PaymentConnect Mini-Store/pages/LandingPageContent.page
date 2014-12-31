@@ -1,0 +1,15 @@
+<apex:page standardController="Campaign" extensions="cmpgn.CampaignLandingPageController" sidebar="false" showHeader="false" standardStyleSheets="false">
+<style>
+body {
+    /* font-family: arial; */
+    
+}
+.editLink {
+    font-family:arial;
+}
+</style>
+<apex:form >
+<apex:outputLink styleClass="editLink" value="{!URLFOR($Page.cmpgn__LandingPageEditor)}?id={!Campaign.Id}" target="_top">Rich Text Editor</apex:outputLink><br/>
+<apex:outputText value="{!Campaign.cmpgn__LP_HTML_Content__c}" escape="false"/>
+</apex:form>
+</apex:page>

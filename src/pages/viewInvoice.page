@@ -1,0 +1,166 @@
+<apex:page sidebar="false" showHeader="false"  renderAs="pdf" applyhtmltag="false" Controller="jsaPortalEventController">
+<head>
+    <style>
+    
+        body {
+            color: black;
+        }
+    
+        #invoice{
+            width:100%;
+            border:1px solid black;
+            border-collapse: collapse;
+        }
+
+        #invoice tr td {
+            
+            background-color: white;
+            border:1px solid black;
+            padding:4px;
+            color: black;
+        } 
+        
+        #invoice tr th {
+            background-color: white;
+            border:1px solid black;
+            padding:2px;
+            color: black;
+            text-align:center;
+        }
+        
+        td.description {
+            width: 50%;
+        }
+        td.totalLabel{
+            text-align:right;
+            font-weight:bold;
+        }
+        
+        table#header{
+            width:100%;
+            border:0px;
+        }
+        
+        td.info {
+            width:100%;
+            text-align:center;
+        }
+        td.price{
+            text-align:right;
+        }
+        
+        
+    </style>
+</head>
+    <table id="header">
+        <tr>
+            <td><img src="{!URLFOR($Resource.JSA_Logo)}"></img></td>
+            
+            <td class="info">
+                <h1>Invoice</h1>
+                <h2>Junior State of America</h2>
+                <h2>Convention Registration</h2>
+                <center>
+                    {!opName} - #{!orderNumber}
+                </center>
+                
+            </td>
+        </tr>
+    </table>
+    
+    
+    <div id="invoiceText">
+        <p>
+            Dear {!$User.firstName},
+        </p>
+        <p>
+            Thank you for registering your school’s delegation for the upcoming Junior State of America convention.  
+            Your registration details and invoice information are below.  Please contact us immediately if there are 
+            any changes to your registration or the information below is not correct.
+        </p>
+        
+        <p>
+            <b>Your registration fees are due now.</b>  Please send the following to the address below immediately:
+        </p>
+        
+        <p>
+            <ol>
+                <li>One inclusive check for registration fees</li>
+                <li>Signed Teacher/Advisor Responsibility Form</li>
+                <li>Copies of signed JSA Parent Permission Forms for all student delegates</li>
+            </ol>
+        </p>
+        
+        <p>
+            
+            <table>
+                
+                <tr>
+                    <td>Teacher/Advisor:</td> <td>{!advisorName}</td>
+                </tr>
+                
+                <tr>
+                    <td>Student Delegation Leader:</td> <td>{!leaderName}</td>
+                </tr>
+                
+                <tr>
+                    <td>School:</td> <td>{!hs.Name}</td>
+                </tr>
+                
+                <tr>
+                    <td>Registration #:</td> <td>{!orderNumber}</td>
+                </tr>
+            
+            </table>
+            
+        </p>
+        
+    </div>
+    
+
+    <table id="invoice" class="tunnelFormTableMini bottom">
+        <tr>
+            <th>Name</th>
+            <th>Description</th>
+            <th>Fee</th>
+        </tr>
+        <apex:repeat value="{!applicationList}" var="app">
+            <tr>
+                <td>{!app['name']}</td>
+    
+                <td class="description">
+                   {!app['product']}
+                </td>
+                
+                <td class="price">
+                   {!app['price']}
+                </td>
+            </tr>
+        </apex:repeat>
+            <tr>
+                <td colspan="2" class="totalLabel">Grand Total</td>
+                <td class="price">${!totalAmount}</td>
+            </tr>
+    </table>
+    Please remit to:  The Junior State of America<br />
+    800 S. Claremont St Suite 202 - San Mateo, CA 94402<br />
+
+    <div id="invoiceTextBottom">
+    
+        <p>
+            <b>All forms along with specific convention details are available for download at www.jsa.org</b>
+        </p>
+
+
+        
+    </div>
+    <div id="footer">
+        <hr/>
+        Northern California, Southern California, Pacific Northwest, Arizona, and Texas Delegates should send payment to:
+        800 S. Claremont St, Suite 202, San Mateo, CA 94402 - (800) 334-5353 Fax: (650) 347-7200<br />
+        <br />
+        Northeast, Mid-Atlantic, Southeast, Ohio River Valley, and Mid-West Delegates should send payment to:
+        1411 K St NW, Suite 200, Washington, DC 20005 - (800) 317-9338 Fax: (202) 296-7839
+    </div>
+
+</apex:page>

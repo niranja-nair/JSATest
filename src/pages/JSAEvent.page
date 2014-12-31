@@ -1,0 +1,390 @@
+<apex:page showHeader="false" sidebar="false" controller="jsaPortalEventController" extensions="myJSAroomSelectionContExt">
+    <title>My Event</title>
+
+    <c:NeatHeader events="active" />
+
+    <!-- Breadcrumbs - START -->
+    <div class="background-clouds breadcrumbs-container">
+        <div class="container">
+            <ol class="breadcrumb">
+                <li><a href="/JSAHome">My JSA Home</a>
+                </li>
+                <li class="active">My Event Summary</li>
+                <li class="active">My Event</li>
+            </ol>
+        </div>
+    </div>
+    <!-- Breadcrumbs - END -->
+
+    <section>
+        <div class="container">
+            <div class="row">
+                <div class="col-md-8">
+                    <div class="content">
+                        <h1><span>{!opName}</span></h1>
+                        <apex:pageMessages id="messages" />
+                        <ul class="nav nav-tabs" id="myTab">
+                            <li><a data-toggle="tab" href="#sectionOverview">1. Overview</a>
+                            </li>
+                            <li><a data-toggle="tab" href="#sectionTerms">2. Terms &amp; Conditions</a>
+                            </li>
+                            <li><a data-toggle="tab" href="#sectionDelegates">3. Delegates</a>
+                            </li>
+                            <li><a data-toggle="tab" href="#sectionRooms">4. Rooms</a>
+                            </li>
+                            <apex:outputPanel rendered="{!submissionApproved}">
+                                <li><a data-toggle="tab" href="#sectionInvoice">5. Invoice</a>
+                                </li>
+                            </apex:outputPanel>
+                        </ul>
+                        <div class="tab-content">
+                            <div id="sectionOverview" class="tab-pane fade">
+                                <p>There are four steps to complete registration for your delegation:</p>
+                                <ol>
+                                    <li>Select Delegation Leaders and <strong>click Save</strong> (see below)</li>
+                                    <li>Agree to the Terms &amp; Conditions (Tab 2)</li>
+                                    <li>Select and submit Delegates (Tab 3)</li>
+                                    <li>Assign all attendees to hotel rooms (Tab 4)</li>
+                                </ol>
+                                <p>Your registration is not complete until you have completed all four steps.</p>
+                                <apex:form >
+                                    <div class="col-md-6 contactdropdown">
+                                        <strong>Student Delegation Leader</strong>
+                                        <br/>
+                                        <apex:selectList disabled="{!OR(submissionApproved,submitted)}" value="{!selectChapterDelegate.selectedId}" multiselect="false" size="1" styleClass="col-xs-12 form-control">
+                                            <apex:selectOptions value="{!selectChapterDelegate.optionList}" />
+                                        </apex:selectList>
+                                    </div>
+                                    <div class="col-md-6 contactdropdown">
+                                        <strong>Primary Attneding Teacher or Chaperone</strong>
+                                        <br/>
+                                        <apex:selectList disabled="{!OR(submissionApproved,submitted)}" value="{!selectChaperone.selectedId}" multiselect="false" size="1" styleClass="col-xs-12 form-control">
+                                            <apex:selectOptions value="{!selectChaperone.optionList}" />
+                                        </apex:selectList>
+                                    </div>
+                                    <br/>&nbsp;
+                                    <br/>
+                                    <div class="bootbutton">
+                                        <apex:commandButton value="Save and Next" styleClass="btn btn-primary btn-lg" action="{!setDelegateAndChaparone}" />
+                                    </div>
+                                </apex:form>
+                            </div>
+                            <div id="sectionTerms" class="tab-pane fade">
+                                <p>The <strong>Teacher-Advisor</strong> for the delegation must review and indicate agreement with the terms and conditions below.</p>
+                                <textarea class="col-xs-12 form-control" rows="10" disabled="true">
+                                    REGISTRATIONS CANNOT BE CANCELLED JSA is expecting your chapter to send the number of students and teachers specified in this registration to the event. Reservations will be made at the convention hotel based on the registration information that you have entered. These reservations cannot be cancelled. FINANCIAL RESPONSIBILITY Your chapter is liable for the registration fees incurred by the number of people specified in this registration. Even if some students whom you have just registered do not attend the convention, your chapter MUST pay the registration fees generated by the registrants you have just entered. NO REDUCTIONS IN HEADCOUNT Once a registration is submitted, a chapter cannot reduce the number of registrants for an event. JSA strongly suggests that you have the following in hand for each registrant in your delegation before continuing with this online registration process: a) signed permission slip, and b) full payment. PERMISSION FROM SCHOOL ADMINISTRATION It is your responsibility to obtain any required approval from your school administration to attend the overnight convention. If you complete the registration process and your school does not grant permission to attend the convention, your chapter will still be held liable for the registration fees and no refunds can be given. SUBSTITUTION AND ADDITION OF DELEGATES Although a chapter cannot reduce the number of delegates after registration, substitution of registrants is allowed in an emergency, and JSA welcomes additional delegates to an event if space is available. To add students to your chapter delegation or to request a substitution, please call the JSA office. Additions and substitutions cannot be made online. Additional registrants may be subject to a late fee.
+                                </textarea>
+                                <apex:form id="tandcform" styleClass="bootbutton">
+                                    <apex:outputPanel rendered="{!TandC}">
+                                        <p><strong>Terms &amp; Conditions have been accepted.</strong>
+                                        </p>
+                                    </apex:outputPanel>
+                                    <apex:outputPanel rendered="{!NOT(TandC)}">
+                                        <apex:commandButton value="I Accept The Terms and Conditions" action="{!acceptTandC}" styleClass="btn btn-primary btn-xs" />
+                                        <br/>
+                                    </apex:outputPanel>
+                                    <apex:commandButton value="Previous" action="{!goToOverview}" styleClass="btn btn-primary btn-lg" />
+                                    <apex:commandButton value="Next" action="{!goToProducts}" rendered="{!TandC}" styleClass="btn btn-primary btn-lg" />
+                                </apex:form>
+                            </div>
+                            <div id="sectionDelegates" class="tab-pane fade">
+                                <p>Please select your delegates below.
+                                    <br/> For an explanation of registration packages and <strong>prices</strong>, <a target="_blank" href="http://jsa.org/conventions/spring-state/spring-state-pricing-package-details/">click here</a>.
+                                    <br /> If anyone is not listed or there are duplicates, go to <a href="/JSAChapter">Chapter Management</a>.
+                                    <br /> To add or substitute attendees after submitting your registration, <a target="_blank" href="http://jsa.org/contact-jsa/">contact us</a>.</p>
+                                <apex:form >
+                                    <div class="bootbutton">
+                                        <apex:commandButton value="Previous" action="{!goToTandC}" styleClass="btn btn-primary btn-lg" />
+                                        <apex:commandButton value="Save Delegates" action="{!saveDelegates}" disabled="{!OR(submissionApproved,submitted)}" styleClass="btn btn-primary btn-lg" />
+                                        <apex:commandButton value="Next" action="{!saveProductsAndNext}" rendered="{!NOT(OR(submissionApproved,submitted))}" styleClass="btn btn-primary btn-lg" />
+                                        <apex:commandButton value="Next" action="{!goToRooms}" rendered="{!(OR(submissionApproved,submitted))}" styleClass="btn btn-primary btn-lg" />
+                                    </div>
+                                    <table class="table">
+                                        <apex:repeat value="{!allPotentialAttendees}" var="potential">
+                                            <tr>
+                                                <th>Name</th>
+                                                <th>Registration Type</th>
+                                                <th>Price</th>
+                                            </tr>
+                                            <tr>
+                                                <td>{!potential.theContact.Name}</td>
+                                                <td class="contactdropdown">
+                                                    <apex:selectList disabled="{!OR(submissionApproved,submitted)}" value="{!potential.theProducts.selectedId}" multiselect="false" size="1" styleClass="product col-xs-12 form-control">
+                                                        <apex:selectOptions value="{!potential.theProducts.optionList}" />
+                                                    </apex:selectList>
+                                                </td>
+                                                <td class="price">&nbsp;</td>
+                                            </tr>
+                                        </apex:repeat>
+                                    </table>
+                                    <div class="bootbutton">
+                                        <apex:commandButton value="Previous" action="{!goToTandC}" styleClass="btn btn-primary btn-lg" />
+                                        <apex:commandButton value="Save Delegates" action="{!saveDelegates}" disabled="{!OR(submissionApproved,submitted)}" styleClass="btn btn-primary btn-lg" />
+                                        <apex:commandButton value="Next" action="{!saveProductsAndNext}" rendered="{!NOT(OR(submissionApproved,submitted))}" styleClass="btn btn-primary btn-lg" />
+                                        <apex:commandButton value="Next" action="{!goToRooms}" rendered="{!(OR(submissionApproved,submitted))}" styleClass="btn btn-primary btn-lg" />
+                                    </div>
+                                </apex:form>
+                            </div>
+                            <div id="sectionRooms" class="tab-pane fade">
+                                <div class="col-md-4">
+                                    <p><strong>Delegates: {!totalDelegates}</strong>
+                                    </p>
+                                    <p style="color: red;"><strong>Unassigned: {!(totalDelegates-assigned)}</strong>
+                                    </p>
+                                </div>
+                                <div class="col-md-8">
+                                    <p>Please add rooms and assign all delegates to a room.</p>
+                                </div>
+                                <apex:form >
+                                    <apex:repeat value="{!theRooms}" var="roomWrap">
+                                        <div class="col-md-12" style="border: 1px solid; margin-bottom: 15px;">
+                                            <apex:outputPanel layout="none" rendered="{!NOT(roomWrap.readyForDelegates)}">
+                                                <div class="col-md-6">
+                                                    <div class="col-md-12 contactdropdown">
+                                                        Room Type
+                                                        <br/>
+                                                        <apex:inputField value="{!roomWrap.room.Room_Type__c}" />
+                                                    </div>
+                                                    <div class="col-md-6 contactdropdown">
+                                                        Room Gender
+                                                        <br/>
+                                                        <apex:inputField value="{!roomWrap.room.Gender__c}" />
+                                                    </div>
+                                                    <div class="col-md-6 bootbutton">
+                                                        <apex:commandButton value="Select Delegates" action="{!roomWrap.delegateButtonAction}" styleClass="btn btn-primary btn-xs" />
+                                                    </div>
+                                                </div>
+                                            </apex:outputPanel>
+                                            <apex:outputPanel layout="none" rendered="{!roomWrap.readyForDelegates}">
+                                                <h4><apex:outputLabel value="{!roomWrap.room.Room_Type__c}" /> (<apex:outputLabel value="{!roomWrap.room.Gender__c}" />)</h4>
+                                                <div class="col-md-6">
+                                                    <div class="col-md-6 contactdropdown">
+                                                      Delegate 1
+                                                        <br/>
+                                                        <apex:selectList disabled="{!OR(submissionApproved,submitted)}" styleClass="col-xs-12 form-control" value="{!roomWrap.d1Contacts.selectedId}" multiselect="false" size="1">
+                                                            <apex:selectOptions value="{!roomWrap.d1Contacts.optionList}" />
+                                                            <apex:actionSupport event="onchange" reRender="r1Id" />
+                                                        </apex:selectList>
+                                                        
+                                                        <apex:inputfield value="{!roomWrap.room.R1__c}" id="r1Id" style="display:{!IF(roomWrap.d1Contacts.selectedId != ''&& (roomWrap.room.Room_Type__c =='Student') && (opType =='Congress'), 'inline', 'none')}" />
+                                                    </div>
+                                                    <div class="col-md-6 contactdropdown">
+                                                    Delegate 2
+                                                        <br/>
+                                                        <apex:selectList disabled="{!OR(submissionApproved,submitted)}" styleClass="col-xs-12 form-control" value="{!roomWrap.d2Contacts.selectedId}" multiselect="false" size="1">
+                                                            <apex:selectOptions value="{!roomWrap.d2Contacts.optionList}" />
+                                                            <apex:actionSupport event="onchange" reRender="r2Id" />
+                                                        </apex:selectList>
+                                                        <apex:inputfield value="{!roomWrap.room.R2__c}" style="display:{!IF(roomWrap.d2Contacts.selectedId != ''&& (roomWrap.room.Room_Type__c =='Student') && (opType =='Congress'), 'inline', 'none')}" id="r2Id" />
+                                                    </div>
+                                                    <div class="clearfix"></div>
+                                                    <div class="col-md-6 contactdropdown">
+                                                    Delegate 3
+                                                        <br/>
+                                                        <apex:selectList disabled="{!OR(submissionApproved,submitted)}" styleClass="col-xs-12 form-control" value="{!roomWrap.d3Contacts.selectedId}" multiselect="false" size="1">
+                                                            <apex:selectOptions value="{!roomWrap.d3Contacts.optionList}" />
+                                                            <apex:actionSupport event="onchange" reRender="r3Id" />
+                                                        </apex:selectList>
+                                                        <apex:inputfield value="{!roomWrap.room.R3__c}" style="display:{!IF(roomWrap.d3Contacts.selectedId != ''&& (roomWrap.room.Room_Type__c =='Student') && (opType =='Congress'), 'inline', 'none')}" id="r3Id" />
+                                                    </div>
+                                                    <div class="col-md-6 contactdropdown">
+                                                     Delegate 4
+                                                        <br/>
+                                                        <apex:selectList disabled="{!OR(submissionApproved,submitted)}" styleClass="col-xs-12 form-control" value="{!roomWrap.d4Contacts.selectedId}" multiselect="false" size="1">
+                                                            <apex:selectOptions value="{!roomWrap.d4Contacts.optionList}" />
+                                                            <apex:actionSupport event="onchange" reRender="r4Id" />
+                                                        </apex:selectList>
+                                                        <apex:inputfield value="{!roomWrap.room.R4__c}" style="display:{!IF(roomWrap.d4Contacts.selectedId != ''&& (roomWrap.room.Room_Type__c =='Student') && (opType =='Congress'), 'inline', 'none')}" id="r4Id" />
+                                                    </div>
+                                                    <div class="clearfix"></div>
+                                                    <div class="col-md-6">
+                                                        Check In
+                                                        <br/>
+                                                        <apex:inputField rendered="{!NOT(OR(submissionApproved,submitted))}" value="{!roomWrap.room.CheckInDate__c}" styleClass="form-control" />
+                                                    </div>
+                                                    <div class="col-md-6">
+                                                        Check Out
+                                                        <br/>
+                                                        <apex:inputField rendered="{!NOT(OR(submissionApproved,submitted))}" value="{!roomWrap.room.CheckOutDate__c}" styleClass="form-control" />
+                                                    </div>
+                                                </div>
+                                            </apex:outputPanel>
+                                            <div class="col-md-6">
+                                                Special Requirements
+                                                <br/>
+                                                <apex:inputField rendered="{!NOT(OR(submissionApproved,submitted))}" value="{!roomWrap.room.Special_Requirements__c}" styleClass="col-xs-12 form-control" />
+                                            </div>
+                                            <apex:outputPanel layout="none" rendered="{!NOT(OR(submissionApproved, submitted))}">
+                                                <div class="col-md-12 bootbutton">
+                                                    <apex:commandLink action="{!roomWrap.resetRoom}" styleClass="btn btn-primary btn-xs">Reset</apex:commandLink>
+                                                    <apex:commandLink action="{!deleteRoom}" styleClass="btn btn-primary btn-xs">
+                                                        <apex:param name="roomIndex" value="{!roomWrap.index}" assignTo="{!roomToDelete}" /> Delete Room
+                                                    </apex:commandLink>
+                                                </div>
+                                            </apex:outputPanel>
+                                        </div>
+                                    </apex:repeat>
+                                    <div class="col-md-12 bootbutton">
+                                        <apex:commandButton value="Previous" action="{!goToProducts}" styleClass="btn btn-primary btn-lg" />
+                                        <apex:commandButton value="Add Room" action="{!addRoom}" disabled="{!OR(submissionApproved,submitted)}" styleClass="btn btn-primary btn-lg" />
+                                        <apex:commandButton value="Next" action="{!goToInvoice}" rendered="{!submissionApproved}" styleClass="btn btn-primary btn-lg" />
+                                        <apex:commandButton value="Save Rooms" action="{!saveAction}" disabled="{!OR(submissionApproved,submitted)}" styleClass="btn btn-primary btn-lg" />
+                                        <apex:commandButton value="Submit Registration" onclick="return confirm('Are you sure?')" action="{!submitWithRooms}" disabled="{!OR(submissionApproved,submitted)}" styleClass="btn btn-primary btn-lg" />
+                                    </div>
+                                </apex:form>
+                            </div>
+                            <div id="sectionInvoice" class="tab-pane fade">
+                                <h2>
+                            Registrant Summary
+                            <span class="printroster bootbutton"><a target="_blank" class="btn btn-primary btn-xs" href="/apex/viewInvoice?OpId={!opId}">PDF</a></span>
+                        </h2>
+                                <table class="table">
+                                    <tr>
+                                        <th>Name</th>
+                                        <th>Description</th>
+                                        <th>Price</th>
+                                    </tr>
+                                    <apex:repeat value="{!applicationList}" var="app">
+                                        <tr>
+                                            <td>{!app['name']}</td>
+                                            <td>{!app['product']}</td>
+                                            <td>{!app['price']}</td>
+                                        </tr>
+                                    </apex:repeat>
+                                </table>
+                                Within 30 minutes of submitting your registration your invoice total will be calculated and you will receive an email outlining next steps. Charges and payments for your group will be shown below. Please note the following:
+                                <br />
+                                <br /> 1) Payment must be received by the deadline shown in the <a target="_blank" href="http://jsa.org/downloads">registration packet</a>
+                                <br /> 2) Additional charges or discounts may be applied by JSA staff
+                                <br /> 3) <a target="_blank" href="http://www.jsa.org/contact-us/contact-us.html">Contact us</a> if any adjustments to your registration are required
+                                <br/>
+                                <br/>
+                                <h2>Invoice Summary</h2>
+                                <table class="table">
+                                    <tr>
+                                        <td>Sales Order Number</td>
+                                        <td>{!orderNumber}</td>
+                                    </tr>
+                                    <!-- <tr>
+                                <td>Invoice Number</td>
+                                <td>{!OppInvoiceNumber}</td>
+                            </tr> -->
+                                    <tr>
+                                        <td>Total Amount</td>
+                                        <td>${!totalAmount}</td>
+                                    </tr>
+                                </table>
+                                <h2>Payments And Credits</h2>
+                                <table class="table">
+                                    <tr>
+                                        <td>Payments and Credits Applied to Date</td>
+                                        <td>${!totalAppliedAmount}</td>
+                                    </tr>
+                                    <tr>
+                                    </tr>
+                                    <tr>
+                                        <td class="text-right">Balance</td>
+                                        <td>${!totalBalance}</td>
+                                    </tr>
+                                </table>
+                                <div class="bootbutton">
+                                    <apex:form >
+                                        <apex:commandButton value="Previous" action="{!goToProducts}" styleClass="btn btn-primary btn-lg" />
+                                    </apex:form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <h3>JSA News and Updates</h3>
+                    <script language="JavaScript" src="https://feed2js.org//feed2js.php?src=http%3A%2F%2Fjsa.org%2Fcategory%2Fmyjsa%2Ffeed%2F&num=3&desc=140>1&targ=y&utf=y" charset="UTF-8" type="text/javascript"></script>
+                    <h3>JSA Event Calendar</h3>
+                    <script language="JavaScript" src="https://feed2js.org//feed2js.php?src=http%3A%2F%2Fevents.jsa.org%2Fevents%2Frss%2F&num=5&targ=y&utf=y" charset="UTF-8" type="text/javascript"></script>
+                    <a href="http://events.jsa.org/events/">View more events</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <c:NeatFooter />
+
+    <script>
+        $(document).ready(function() {
+
+            var tabState = {!tabState};
+            for (i = 0; i < 5; i++) {
+                if (i == tabState) {
+                    $("#myTab li:eq(" + i + ") a").tab('show');
+                } else {
+                    $("#myTab li:eq(" + i + ")").attr('class', 'disabled');
+                    $("#myTab li:eq(" + i + ") a").attr('data-toggle', '');
+                }
+            }
+
+            //object for caching prices
+            var priceCache = {};
+
+            //function to check price of PriceBookItem by Id and cache result
+            var checkAndCache = function(pbeId, $priceDisplay) {
+
+                var price;
+
+                if (pbeId != '') {
+
+
+                    if (typeof priceCache[pbeId] === 'undefined') {
+
+                        //price is not in cache, fetch with JSRemoting
+                        jsaPortalEventController.packagePrice(pbeId, function(result, event) {
+
+                            //set cache value
+                            priceCache[pbeId] = result;
+                            //set display from cached val
+                            $priceDisplay.html(priceCache[pbeId]);
+
+                        });
+
+                    } else {
+
+                        //fetch price from cache
+                        price = priceCache[pbeId];
+                        //set display from cached val
+                        $priceDisplay.html(price);
+
+                    }
+
+                } else {
+
+                    $priceDisplay.html('');
+
+                }
+
+            }
+
+            //make sure existing prices are set (and cached) when page is loaded
+            $('.product').each(function() {
+
+                var $productList = $(this),
+                    $priceDisplay = $productList.parent().siblings('.price'),
+                    pbeId = $(this).val();
+
+                checkAndCache(pbeId, $priceDisplay);
+
+            });
+
+            //reset price if product changes
+            $('body').on('change', '.product', function() {
+
+                var $productList = $(this),
+                    $priceDisplay = $productList.parent().siblings('.price'),
+                    pbeId = $productList.val(),
+                    price;
+
+                checkAndCache(pbeId, $priceDisplay);
+
+            });
+        });
+    </script>
+
+</apex:page>

@@ -1,0 +1,108 @@
+<apex:page controller="ctrlHighSchool" showHeader="false" id="page">
+    
+    <link rel="Shortcut Icon" href="http://jsa.org/images/favicon.ico"/>
+    <apex:stylesheet value="{!URLFOR($Resource.PortalCSS, '/css/Refresh.css')}"/>
+    <apex:stylesheet value="{!URLFOR($Resource.PortalCSS, '/css/header.css')}"/>
+    <apex:stylesheet value="{!URLFOR($Resource.PortalCSS, '/css/footer.css')}"/>
+    <apex:stylesheet value="{!URLFOR($Resource.PortalCSS, '/css/bt.css')}"/>
+    
+
+    <!-- wrap starts here -->
+    <div id="portalWrap">
+        <div id="portalcontent">
+            <div id="portalHead"> <a href="http://jsa.org"><img src="{!URLFOR($Resource.PortalCSS, '/images/logo_3.gif')}" alt="Junior State of America" /></a></div>
+            <div>
+                
+            </div>
+            
+            <!-- content-wrap starts here -->
+            <div id="content-wrap">
+            
+            
+            
+                <h1>High School Report</h1><br/><br/>
+                
+                <c:contentblock name="body"/>
+                
+                
+                <apex:form id="form">
+
+                    High School Search:<br/>
+                        <apex:inputText id="itHS" value="{!strHSSearch}"/>
+                        <apex:commandButton id="btnSearch" action="{!FindHSs}" value="Search" status="SearchStatus" reRender="form"/>
+                        
+                    <br/><br/>
+                    <apex:actionStatus id="SearchStatus">
+                        <apex:facet name="start"><c:enhancedActionStatus BackColor="#efefef" borderColor="#336699" borderSize="3" height="50px" width="120px" ImageUrl="{!$Resource.AjaxAnimation}" Message="Searching..." messageStyle="color:darkred;font-size:11pt;font-weight:bold;"/></apex:facet>
+                    </apex:actionStatus>
+                    
+                    <apex:outputPanel id="opHSResults">
+                        <apex:outputText rendered="{!ShowSearchResults}">{!strResult}</apex:outputText>
+                        <apex:dataTable value="{!lstPHS}" var="h" id="dtHS" rendered="{!ShowSearchResults}">
+                            <apex:column headerValue="Name" value="{!h.hs.Name}" width="250"/>
+                            <apex:column headervalue="City" value="{!h.hs.City__c}" width="100"/>
+                            <apex:column headervalue="State" value="{!h.hs.State__c}" width="50"/>
+                            <apex:column headervalue="Password">
+                                <apex:inputSecret value="{!h.pass}"/>&nbsp;
+                            </apex:column>
+                            <apex:column >
+                                <apex:commandLink action="{!LoadStudents}" value=" View Students" status="SearchStatus" reRender="form">
+                                    <apex:param name="school_id" value="{!h.hs.School_ID__c}"/>
+                                </apex:commandLink>
+                            </apex:column>
+                        </apex:dataTable>
+    
+                    </apex:outputPanel>
+                    <apex:outputText rendered="{!ShowStudents}">
+                        <h4>{!strHS}</h4><br/><br/>
+                    </apex:outputText>
+                    
+                    <apex:datatable id="dtStudents" value="{!lstStudents}" var="s" rendered="{!ShowStudents}">
+                        <apex:column headerValue="Name" width="200">
+                            {!s.FirstName} {!s.LastName}
+                        </apex:column>
+                        <apex:column headerValue="Email" value="{!s.Email}" width="280"/>
+                        <apex:column headerValue="Graduation Year" value="{!s.High_School_Graduation_Year__c}" width="120"/>
+                        <apex:column headerValue="JSA Role" value="{!s.JSA_Role__c}" width="150"/>
+                        <apex:column headerValue="Member Status" value="{!s.Member_Status__c}" width="150"/>
+                        <apex:column headerValue="Graduated" width="100">
+                            <apex:outputField value="{!s.Graduated__c}"/>
+                        </apex:column>
+                    </apex:datatable>
+                    
+                </apex:form>
+
+             
+            <!-- content-wrap ends here -->
+            <div class="clear"></div>
+        </div>
+        <div class="clear"></div>
+        <!-- wrap ends here -->
+
+    </div>
+</div>
+<div id="footer">
+    
+
+<div id="foot_wrap">
+    <p><a href="http://www.jsa.org/contact-us/contact-us.html" target="_blank">Contact JSA</a> | <a href="../help.html" target="_blank">Help</a></p>
+</div>
+
+</div>
+
+<script type = "text/javascript">
+        function handleSearchPress(evt){
+
+            var nbr;
+            if (window.event){
+                nbr = evt.keyCode;
+            } else {
+                nbr = evt.which;
+            }
+            if(nbr == 13){
+                sbutton.click();
+            }
+        
+        }
+    </script>
+</apex:page>

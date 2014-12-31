@@ -1,0 +1,1 @@
+<apex:page controller="pymt.AuthNetRelayController" action="{!processNotification}" contentType="text/plain">{!body}</apex:page>

@@ -1,0 +1,172 @@
+<apex:page showHeader="false" id="SiteTemplate" standardStylesheets="false" language="{!$CurrentPage.Parameters.lang}">
+<link rel="stylesheet" type="text/css" href="{!URLFOR($Resource.pymt__PaymentConnect,'styles/sites_basic.css')}" />
+<link rel="stylesheet" type="text/css" href="{!URLFOR($Resource.cmpgn__LinvioCampaignsResources,'styles/sites_basic.css')}" />
+<style>
+body {
+    font-family: trebuchet MS, Verdana, Geneva;
+    padding:0px;
+    margin:0px;
+    background:#97a1aa;
+    background-image: url('{!URLFOR($Resource.pymt__PaymentConnect, "/images/bkgd_gradient_blue_bar.gif")}');
+    background-repeat:repeat-x;
+}
+
+h1, h2, h3 {
+    color:#7E2217;
+}
+
+
+.pc_frame_top {
+    background-color:transparent;
+    width:960px;
+    height:100px;
+    margin-left:auto;
+    margin-right:auto;
+    padding:0px;
+}
+
+#navbar {
+    color:white;
+    padding:5px 0px;
+}
+
+#navbar a {
+    color:white;
+    padding: 5px 10px;
+    text-decoration:none;
+    border: solid 1px transparent;
+}
+#navbar a:hover {
+    border: solid 1px white;
+    
+}
+
+.clearfix
+{
+display: inline-block;
+}
+
+a {
+text-decoration: none;
+}
+
+a:hover 
+{
+text-decoration: underline;
+}
+
+a {
+   color: #E6B360;
+   color: #E69613;
+}
+
+
+.pc_frame {
+    margin-left: auto;
+    margin-right: auto;
+    margin-bottom: 20px;
+    margin-top:20px;
+    width: 960px;
+    display:block;
+    background-color:white;
+}
+
+.pc_frame_inner {
+    padding:25px 20px 20px 20px;
+}
+
+.box {
+border: 1px solid #dddddd;
+}
+
+.rounded-corners-5 {
+    border-radius: 5px;
+    -moz-border-radius: 5px;
+    -webkit-border-radius: 5px;
+}
+
+
+
+.pc_frame .message {
+    background-color:#EAF3F5;
+    border-color:#99ccff;
+    background-color:#ffffcc;
+    border-color:#ffcc00; 
+}
+
+.labelColumn {
+    width:150px;
+    /* font-weight:bold; */
+    text-align:left;
+    padding-left:6px;
+}
+
+img.optionalFieldMarker {
+    width:5px;
+    }
+.requiredFieldMarkerColumn {
+	width:5px;
+	}
+    
+.pc_page_content table {
+    border-collapse:collapse;
+    }
+        
+.pc_page_content table td {
+    padding:2px;
+    vertical-align:top;
+    }
+
+.pc_page_content img {
+    border: none;
+}
+
+.pc_page_content input {
+    margin-left:0px;
+}
+
+</style>
+
+
+<body id="htmlBody" >
+<div id="topbar" style="width:100%;" >
+<div style="color:white;padding:4px;margin:0px 0px 10px 0px;">
+Sample Site Template
+</div>
+</div>
+    
+    <!--  Edit custom banner and navigation here -->
+        <div class="pc_frame_top" >
+            <img class="pc_logo" src="/s.gif" />
+            <span style="color:white;font-size:3em;">Acme</span>
+        <div id="navbar" style="">&nbsp;
+            <a href="{!$Site.currentSiteURL}">Home</a>&nbsp;&nbsp;
+            <a href="{!$Site.currentSiteURL}cmpgn__MiniStore">Products</a>&nbsp;&nbsp;
+            <a href="{!$Site.currentSiteURL}cmpgn__Subscriptions">Subscriptions</a>&nbsp;&nbsp;
+            <a href="{!$Site.currentSiteURL}cmpgn__Donations">Donations</a>&nbsp;&nbsp; 
+
+        </div>
+        </div>
+ 
+    <div class="pc_frame rounded-corners-5 box">
+    <div class="pc_frame_inner">
+    
+    <apex:insert name="body"/>
+   
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+
+    <apex:insert name="footer">
+    <!--  Add custom footer here -->
+    <div style="text-align:center;width:100%;font-size:.5em;font-weight:bold;font:Verdana;color:#A4A4A4;">{!$Label.site.powered_by} Linvio PaymentConnect</div>
+    </apex:insert>
+    
+    </div><!--  end pc_frame_inner -->
+    </div><!--  end pc_frame -->
+
+</body>
+</apex:page>

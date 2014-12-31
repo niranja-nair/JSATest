@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Scontrol xmlns="http://soap.sforce.com/2006/04/metadata">
+    <contentSource>Snippet</contentSource>
+    <description>PaymentConnect - Utility functions (date formatting, base64 encoding/decoding, etc.)</description>
+    <encodingKey>UTF-8</encodingKey>
+    <fileName>PaymentXUtils</fileName>
+    <name>PaymentX Utils</name>
+    <supportsCaching>true</supportsCaching>
+</Scontrol>

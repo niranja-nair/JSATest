@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
+    <actionOverrides>
+        <actionName>Accept</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>CancelEdit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Clone</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Delete</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Edit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Follow</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>List</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>New</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>SaveEdit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Tab</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>View</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <compactLayoutAssignment>SYSTEM</compactLayoutAssignment>
+    <deploymentStatus>Deployed</deploymentStatus>
+    <description>Credit memos issued against the invoice.</description>
+    <enableActivities>false</enableActivities>
+    <enableBulkApi>true</enableBulkApi>
+    <enableFeeds>false</enableFeeds>
+    <enableHistory>false</enableHistory>
+    <enableReports>true</enableReports>
+    <enableSharing>true</enableSharing>
+    <enableStreamingApi>true</enableStreamingApi>
+    <fields>
+        <fullName>Credit_Memo_Amount__c</fullName>
+        <description>The total amount of the credit memo.</description>
+        <externalId>false</externalId>
+        <inlineHelpText>The total amount of the credit memo.</inlineHelpText>
+        <label>Credit Memo Amount</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackTrending>false</trackTrending>
+        <type>Currency</type>
+    </fields>
+    <fields>
+        <fullName>Credit_Memo_Applied_Amount__c</fullName>
+        <description>The amount of the credit memo applied to this invoice.</description>
+        <externalId>false</externalId>
+        <inlineHelpText>The amount of the credit memo applied to this invoice.</inlineHelpText>
+        <label>Credit Memo Applied Amount</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackTrending>false</trackTrending>
+        <type>Currency</type>
+    </fields>
+    <fields>
+        <fullName>Credit_Memo_Applied_Date__c</fullName>
+        <description>The date the credit memo applied amount was applied to the invoice.</description>
+        <externalId>false</externalId>
+        <inlineHelpText>The date the credit memo applied amount was applied to the invoice.</inlineHelpText>
+        <label>Credit Memo Applied Date</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Date</type>
+    </fields>
+    <fields>
+        <fullName>Credit_Memo_Date__c</fullName>
+        <description>The date the credit memo was issued against the invoice.</description>
+        <externalId>false</externalId>
+        <inlineHelpText>The date the credit memo was issued against the invoice.</inlineHelpText>
+        <label>Credit Memo Date</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Date</type>
+    </fields>
+    <fields>
+        <fullName>Invoice_Number__c</fullName>
+        <description>The invoice the credit memo was issued against.</description>
+        <externalId>false</externalId>
+        <inlineHelpText>The invoice the credit memo was issued against.</inlineHelpText>
+        <label>Invoice Number</label>
+        <referenceTo>QB_Invoice__c</referenceTo>
+        <relationshipLabel>QuickBooks Credit Memos</relationshipLabel>
+        <relationshipName>QuickBooks_Credit_Memos</relationshipName>
+        <relationshipOrder>0</relationshipOrder>
+        <reparentableMasterDetail>false</reparentableMasterDetail>
+        <trackTrending>false</trackTrending>
+        <type>MasterDetail</type>
+        <writeRequiresMasterRead>false</writeRequiresMasterRead>
+    </fields>
+    <fields>
+        <fullName>QB_Credit_MemoTXN_ID__c</fullName>
+        <description>The internal ID of the credit memo in QuickBooks.</description>
+        <externalId>false</externalId>
+        <inlineHelpText>The internal ID of the credit memo in QuickBooks.</inlineHelpText>
+        <label>QuickBooks Credit MemoTXN ID</label>
+        <length>36</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <label>QuickBooks Credit Memo</label>
+    <nameField>
+        <label>Credit Memo Number</label>
+        <type>Text</type>
+    </nameField>
+    <pluralLabel>QuickBooks Credit Memos</pluralLabel>
+    <searchLayouts/>
+    <sharingModel>ControlledByParent</sharingModel>
+</CustomObject>

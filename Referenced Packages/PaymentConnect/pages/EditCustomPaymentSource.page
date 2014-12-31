@@ -1,0 +1,356 @@
+<apex:page tabStyle="pymt__Custom_Payment_Source__c" standardController="pymt__Custom_Payment_Source__c" extensions="pymt.CustomPaymentSourceEditController" cache="false">
+<title>Edit Custom Payment Source</title>
+ <apex:sectionHeader title="Linvio PaymentConnect"  subtitle="{!IF(ISNULL(pymt__Custom_Payment_Source__c.Id),'New','Edit')} Custom Payment Source"  help="{!$Page.pymt__Help}"/>
+        <apex:form > 
+             
+        <apex:pageBlock title="Custom Payment Source Edit" mode="detail"> 
+		<apex:pageMessages />
+            <!-- pageBlockButtons -->
+            <!-- Dont specify rerender field. rerender whole page -->
+            <apex:pageBlockButtons >
+                <apex:commandButton action="{!saveNewCustomPaymentSource}" value="Save"/>
+                <apex:commandButton action="{!cancelNewCustomPaymentSource}" immediate="true" value="Cancel"/>
+            </apex:pageBlockButtons>
+            
+            
+            <!-- Error Messages -->
+            <apex:outputPanel id="customPaymentSourceErrMsg">
+                <apex:pageMessage title="Error:" summary="{!customPaymentSourceErrMsg}" rendered="{!customPaymentSourceErrMsgRendered}" severity="error" strength="1"/>
+            </apex:outputPanel>
+            <apex:messages />
+            
+            <!-- Record Name Section -->
+            <apex:outputPanel id="cpsNameSection">
+            <apex:pageBlockSection collapsible="false" title="Custom Payment Source Name">
+            
+                <apex:pageBlockSectionItem >
+                    <apex:outputLabel value="Custom Payment Source Name *"/>
+                    <apex:inputText required="false" value="{!cpsName}"/>
+                </apex:pageBlockSectionItem>
+            
+            </apex:pageBlockSection> 
+            </apex:outputPanel>
+            
+            
+            <!-- Custom Address Source Object Section -->
+            <apex:outputPanel id="cpsObjectSection">
+            <apex:pageBlockSection collapsible="false" title="Custom Payment Source Object">
+                        
+                <apex:pageBlockSectionItem helpText="Select the object you want to map to fields in the Payment Terminal">
+                    <apex:outputLabel value="Source Object *"/>
+                    <apex:selectList value="{!selectedSourceObjectName}" size="1" multiselect="false" >
+                        <apex:selectOptions value="{!sourceObjectOptions}"/>
+                        <apex:actionSupport event="onchange" action="{!selectedSourceObjectRefresh}"  rerender="lookupFieldSection, fieldsSection"/>
+                    </apex:selectList>
+                </apex:pageBlockSectionItem> 
+            
+                <apex:pageBlockSectionItem helpText="Select name of the custom lookup field you created for this source on the Payment record.">
+                    <apex:outputLabel value="Source Object Lookup Field (on Payment records)"/>
+                    <apex:selectList value="{!selectedSourceLookupField}" size="1" multiselect="false" disabled="{!pmtXReferenceFieldOptionsDisabled}" >
+                        <apex:selectOptions value="{!paymentXReferenceFieldOptions}"/>
+                    </apex:selectList>
+                </apex:pageBlockSectionItem>    
+
+                <apex:pageBlockSectionItem >
+					<apex:outputText value=""/>
+					<apex:outputText value=""/>
+                </apex:pageBlockSectionItem>
+                                
+                <apex:pageBlockSectionItem helpText="Select name of the custom lookup field you created for this source on the Payment Profile record.">
+                    <apex:outputLabel value="Source Object Lookup Field (on Payment Profiles)"/>
+                    <apex:selectList value="{!selectedProfileSourceLookupField}" size="1" multiselect="false" disabled="{!pmtProfileReferenceFieldOptionsDisabled}" >
+                        <apex:selectOptions value="{!paymentProfileReferenceFieldOptions}"/>
+                    </apex:selectList>
+                </apex:pageBlockSectionItem>  
+                                            
+            </apex:pageBlockSection>
+            </apex:outputPanel>
+            
+            
+            <!-- Shipment Object Lookup Field Section -->
+            <apex:outputPanel id="lookupFieldSection">
+
+            <apex:pageBlockSection collapsible="false" title="General Fields">
+        
+            
+                <apex:pageBlockSectionItem >
+                    <apex:outputLabel value="Record Name"/>
+                    <apex:selectList value="{!selectedRecordNameField}" size="1" multiselect="false" disabled="{!stringFieldOptionsDisabled}" >
+                        <apex:selectOptions value="{!stringFieldOptions}"/>
+                    </apex:selectList>
+                </apex:pageBlockSectionItem>
+                            
+                <apex:pageBlockSectionItem >
+                    <apex:outputLabel value="Invoice Number"/>
+                    <apex:selectList value="{!selectedInvoiceNumberField}" size="1" multiselect="false" disabled="{!stringFieldOptionsDisabled}" >
+                        <apex:selectOptions value="{!stringFieldOptions}"/>
+                    </apex:selectList>
+                </apex:pageBlockSectionItem>
+
+			</apex:pageBlockSection>
+			            
+            <apex:pageBlockSection collapsible="false" title="Standard Object Lookups">
+        
+            
+                <apex:pageBlockSectionItem >
+                    <apex:outputLabel value="Contact Field"/>
+                    <apex:selectList value="{!selectedContactField}" size="1" multiselect="false" disabled="{!referenceFieldOptionsDisabled}" >
+                        <apex:selectOptions value="{!referenceFieldOptions}"/>
+                    </apex:selectList>
+                </apex:pageBlockSectionItem>
+      
+                <apex:pageBlockSectionItem >
+                    <apex:outputLabel value="Account Field"/>
+                    <apex:selectList value="{!selectedAccountField}" size="1" multiselect="false" disabled="{!referenceFieldOptionsDisabled}" >
+                        <apex:selectOptions value="{!referenceFieldOptions}"/>
+                    </apex:selectList>
+                </apex:pageBlockSectionItem>
+      
+                <apex:pageBlockSectionItem >
+                    <apex:outputLabel value="Opportunity Field"/>
+                    <apex:selectList value="{!selectedOpportunityField}" size="1" multiselect="false" disabled="{!referenceFieldOptionsDisabled}" >
+                        <apex:selectOptions value="{!referenceFieldOptions}"/>
+                    </apex:selectList>
+                </apex:pageBlockSectionItem>
+      
+                
+            </apex:pageBlockSection>
+            </apex:outputPanel>
+            
+            
+            <!-- PaymentConnect Fields Section -->
+            <apex:outputPanel id="fieldsSection">
+            <apex:pageBlockSection collapsible="false" title="Address Field Mapping">
+
+                <apex:pageBlockSectionItem >
+                    <apex:outputLabel value="Billing Name Field"/>
+                    <apex:selectList value="{!selectedBillingNameField}" size="1" multiselect="false" disabled="{!stringFieldOptionsDisabled}" >
+                        <apex:selectOptions value="{!stringFieldOptions}"/>
+                    </apex:selectList>
+                </apex:pageBlockSectionItem>
+            
+                <apex:pageBlockSectionItem >
+                    <apex:outputLabel value="Shipping Name Field"/>
+                    <apex:selectList value="{!selectedShippingNameField}" size="1" multiselect="false" disabled="{!stringFieldOptionsDisabled}" >
+                        <apex:selectOptions value="{!stringFieldOptions}"/>
+                    </apex:selectList>
+                </apex:pageBlockSectionItem>
+            
+                <apex:pageBlockSectionItem >
+                    <apex:outputLabel value="Billing Street Field"/>
+                    <apex:selectList value="{!selectedBillingStreetField}" size="1" multiselect="false" disabled="{!stringFieldOptionsDisabled}" >
+                        <apex:selectOptions value="{!stringFieldOptions}"/>
+                    </apex:selectList>
+                </apex:pageBlockSectionItem>
+            
+                <apex:pageBlockSectionItem >
+                    <apex:outputLabel value="Shipping Street Field"/>
+                    <apex:selectList value="{!selectedShippingStreetField}" size="1" multiselect="false" disabled="{!stringFieldOptionsDisabled}" >
+                        <apex:selectOptions value="{!stringFieldOptions}"/>
+                    </apex:selectList>
+                </apex:pageBlockSectionItem>
+            
+                <apex:pageBlockSectionItem >
+                    <apex:outputLabel value="Billing City Field"/>
+                    <apex:selectList value="{!selectedBillingCityField}" size="1" multiselect="false" disabled="{!stringFieldOptionsDisabled}" >
+                        <apex:selectOptions value="{!stringFieldOptions}"/>
+                    </apex:selectList>
+                </apex:pageBlockSectionItem>
+                
+                <apex:pageBlockSectionItem >
+                    <apex:outputLabel value="Shipping City Field"/>
+                    <apex:selectList value="{!selectedShippingCityField}" size="1" multiselect="false" disabled="{!stringFieldOptionsDisabled}" >
+                        <apex:selectOptions value="{!stringFieldOptions}"/>
+                    </apex:selectList>
+                </apex:pageBlockSectionItem>
+                
+                <apex:pageBlockSectionItem >
+                    <apex:outputLabel value="Billing State Field"/>
+                    <apex:selectList value="{!selectedBillingStateField}" size="1" multiselect="false" disabled="{!stringFieldOptionsDisabled}" >
+                        <apex:selectOptions value="{!stringFieldOptions}"/>
+                    </apex:selectList>
+                </apex:pageBlockSectionItem>
+                
+                <apex:pageBlockSectionItem >
+                    <apex:outputLabel value="Shipping State Field"/>
+                    <apex:selectList value="{!selectedShippingStateField}" size="1" multiselect="false" disabled="{!stringFieldOptionsDisabled}" >
+                        <apex:selectOptions value="{!stringFieldOptions}"/>
+                    </apex:selectList>
+                </apex:pageBlockSectionItem>
+
+                <apex:pageBlockSectionItem >
+                    <apex:outputLabel value="Billing Postal Code Field"/>
+                    <apex:selectList value="{!selectedBillingPostalCodeField}" size="1" multiselect="false" disabled="{!stringFieldOptionsDisabled}" >
+                        <apex:selectOptions value="{!stringFieldOptions}"/>
+                    </apex:selectList>
+                </apex:pageBlockSectionItem>
+                
+                <apex:pageBlockSectionItem >
+                    <apex:outputLabel value="Shipping Postal Code Field"/>
+                    <apex:selectList value="{!selectedShippingPostalCodeField}" size="1" multiselect="false" disabled="{!stringFieldOptionsDisabled}" >
+                        <apex:selectOptions value="{!stringFieldOptions}"/>
+                    </apex:selectList>
+                </apex:pageBlockSectionItem>                
+
+                <apex:pageBlockSectionItem >
+                    <apex:outputLabel value="Billing Country Field"/>
+                    <apex:selectList value="{!selectedBillingCountryField}" size="1" multiselect="false" disabled="{!stringFieldOptionsDisabled}" >
+                        <apex:selectOptions value="{!stringFieldOptions}"/>
+                    </apex:selectList>
+                </apex:pageBlockSectionItem>
+                
+                <apex:pageBlockSectionItem >
+                    <apex:outputLabel value="Shipping Country Field"/>
+                    <apex:selectList value="{!selectedShippingCountryField}" size="1" multiselect="false" disabled="{!stringFieldOptionsDisabled}" >
+                        <apex:selectOptions value="{!stringFieldOptions}"/>
+                    </apex:selectList>
+                </apex:pageBlockSectionItem>
+
+                
+            </apex:pageBlockSection>
+            
+             <apex:pageBlockSection collapsible="false" title="Payment Amount Field Mapping">
+
+
+                <apex:pageBlockSectionItem >
+                    <apex:outputLabel value="Total Amount Field"/>
+                    <apex:selectList value="{!selectedTotalAmountField}" size="1" multiselect="false" disabled="{!decimalFieldOptionsDisabled}" >
+                        <apex:selectOptions value="{!decimalFieldOptions}"/>
+                    </apex:selectList>
+                </apex:pageBlockSectionItem>
+                
+            
+                <apex:pageBlockSectionItem helpText="Currency ISO code picklist field" >
+                    <apex:outputLabel value="Currency Code Field"/>
+                    <apex:selectList value="{!selectedCurrencyCodeField}" size="1" multiselect="false" disabled="{!picklistFieldOptionsDisabled}" >
+                        <apex:selectOptions value="{!picklistFieldOptions}"/>
+                    </apex:selectList>
+                </apex:pageBlockSectionItem>                
+            
+                <apex:pageBlockSectionItem >
+                    <apex:outputLabel value="Tax Amount Field"/>
+                    <apex:selectList value="{!selectedTaxAmountField}" size="1" multiselect="false" disabled="{!decimalFieldOptionsDisabled}" >
+                        <apex:selectOptions value="{!decimalFieldOptions}"/>
+                    </apex:selectList>
+                </apex:pageBlockSectionItem>
+
+                <apex:pageBlockSectionItem >
+                    <apex:outputLabel value="Shipping Amount Field"/>
+                    <apex:selectList value="{!selectedShippingAmountField}" size="1" multiselect="false" disabled="{!decimalFieldOptionsDisabled}" >
+                        <apex:selectOptions value="{!decimalFieldOptions}"/>
+                    </apex:selectList>
+                </apex:pageBlockSectionItem>
+
+                <apex:pageBlockSectionItem >
+					<apex:outputText value=""/>
+					<apex:outputText value=""/>
+                </apex:pageBlockSectionItem>
+                                
+                </apex:pageBlockSection>           
+
+             <apex:pageBlockSection collapsible="false" title="Subscription Field Mapping">
+
+
+                <apex:pageBlockSectionItem >
+                    <apex:outputLabel value="Initial Amount Field"/>
+                    <apex:selectList value="{!selectedInitialAmountField}" size="1" multiselect="false" disabled="{!decimalFieldOptionsDisabled}" >
+                        <apex:selectOptions value="{!decimalFieldOptions}"/>
+                    </apex:selectList>
+                </apex:pageBlockSectionItem>
+
+                <apex:pageBlockSectionItem helpText="Field to copy to subscription start date fields">
+                    <apex:outputLabel value="Start Date Field"/>
+                    <apex:selectList value="{!selectedStartDateField}" size="1" multiselect="false" disabled="{!dateFieldOptionsDisabled}" >
+                        <apex:selectOptions value="{!dateFieldOptions}"/>
+                    </apex:selectList>
+                </apex:pageBlockSectionItem>
+                
+                <apex:pageBlockSectionItem >
+                    <apex:outputLabel value="Recurring Amount Field"/>
+                    <apex:selectList value="{!selectedRecurringAmountField}" size="1" multiselect="false" disabled="{!decimalFieldOptionsDisabled}" >
+                        <apex:selectOptions value="{!decimalFieldOptions}"/>
+                    </apex:selectList>
+                </apex:pageBlockSectionItem>
+
+                <apex:pageBlockSectionItem >
+                    <apex:outputLabel value="Trial Amount Field"/>
+                    <apex:selectList value="{!selectedTrialAmountField}" size="1" multiselect="false" disabled="{!decimalFieldOptionsDisabled}" >
+                        <apex:selectOptions value="{!decimalFieldOptions}"/>
+                    </apex:selectList>
+                </apex:pageBlockSectionItem>
+
+                <apex:pageBlockSectionItem >
+                    <apex:outputLabel value="Frequency Field"/>
+                    <apex:selectList value="{!selectedFrequencyField}" size="1" multiselect="false" disabled="{!decimalFieldOptionsDisabled}" >
+                        <apex:selectOptions value="{!decimalFieldOptions}"/>
+                    </apex:selectList>
+                </apex:pageBlockSectionItem>
+
+                <apex:pageBlockSectionItem >
+                    <apex:outputLabel value="Trial Frequency Field"/>
+                    <apex:selectList value="{!selectedTrialFrequencyField}" size="1" multiselect="false" disabled="{!decimalFieldOptionsDisabled}" >
+                        <apex:selectOptions value="{!decimalFieldOptions}"/>
+                    </apex:selectList>
+                </apex:pageBlockSectionItem>
+
+                <apex:pageBlockSectionItem helpText="Days, months, etc.">
+                    <apex:outputLabel value="Period Field"/>
+                    <apex:selectList value="{!selectedPeriodField}" size="1" multiselect="false" disabled="{!picklistFieldOptionsDisabled}" >
+                        <apex:selectOptions value="{!picklistFieldOptions}"/>
+                    </apex:selectList>
+                </apex:pageBlockSectionItem>
+
+                <apex:pageBlockSectionItem helpText="Days, months, etc.">
+                    <apex:outputLabel value="Trial Period Field"/>
+                    <apex:selectList value="{!selectedTrialPeriodField}" size="1" multiselect="false" disabled="{!picklistFieldOptionsDisabled}" >
+                        <apex:selectOptions value="{!picklistFieldOptions}"/>
+                    </apex:selectList> 
+                </apex:pageBlockSectionItem> 
+
+                <apex:pageBlockSectionItem >
+                    <apex:outputLabel value="Occurrences Field"/>
+                    <apex:selectList value="{!selectedOccurrencesField}" size="1" multiselect="false" disabled="{!decimalFieldOptionsDisabled}" >
+                        <apex:selectOptions value="{!decimalFieldOptions}"/>
+                    </apex:selectList>
+                </apex:pageBlockSectionItem>
+
+                <apex:pageBlockSectionItem >
+                    <apex:outputLabel value="Trial Occurrences Field"/>
+                    <apex:selectList value="{!selectedTrialOccurrencesField}" size="1" multiselect="false" disabled="{!decimalFieldOptionsDisabled}" >
+                        <apex:selectOptions value="{!decimalFieldOptions}"/>
+                    </apex:selectList>
+                </apex:pageBlockSectionItem>
+
+
+                <apex:pageBlockSectionItem >
+					<apex:outputText value=""/>
+					<apex:outputText value=""/>
+                </apex:pageBlockSectionItem>
+                                
+                </apex:pageBlockSection> 
+
+				<apex:pageBlockSection collapsible="false" title="Workflow Field Mapping" >
+
+
+                <apex:pageBlockSectionItem helpText="Semi-colon delimited tags for triggering post-payment workflow.">
+                    <apex:outputLabel value="On Payment Completed Field"/>
+                    <apex:selectList value="{!selectedOnPaymentCompletedField}" size="1" multiselect="false" disabled="{!picklistAndStringFieldOptionsDisabled}" >
+                        <apex:selectOptions value="{!picklistAndStringFieldOptions}"/>
+                    </apex:selectList>
+                </apex:pageBlockSectionItem>
+
+                <apex:pageBlockSectionItem helpText="Semi-colon delimited tags for triggering post-payment workflow for recurring payments.">
+                    <apex:outputLabel value="Recurring On Payment Completed Field"/>
+                    <apex:selectList value="{!selectedRecurringOnPaymentCompletedField}" size="1" multiselect="false" disabled="{!picklistAndStringFieldOptionsDisabled}" >
+                        <apex:selectOptions value="{!picklistAndStringFieldOptions}"/>
+                    </apex:selectList>
+                </apex:pageBlockSectionItem>                                
+                				
+				</apex:pageBlockSection>
+
+            </apex:outputPanel>
+
+        </apex:pageBlock>
+            
+    </apex:form>
+</apex:page>

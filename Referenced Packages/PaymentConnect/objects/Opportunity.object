@@ -1,0 +1,480 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fields>
+        <fullName>Balance__c</fullName>
+        <deprecated>false</deprecated>
+        <description>Total Amount - Payments Made</description>
+        <externalId>false</externalId>
+        <formula>MAX(NULLVALUE(Total_Amount__c,0) - NULLVALUE(Payments_Made__c,0),0)</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <inlineHelpText>Total Amount - Payments Made</inlineHelpText>
+        <label>Balance</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Currency</type>
+    </fields>
+    <fields>
+        <fullName>Frequency__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <inlineHelpText>Recurring payments frequency</inlineHelpText>
+        <label>Frequency</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Invoice_Number__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <label>Invoice Number</label>
+        <length>255</length>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Number_of_Payments_Made__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <inlineHelpText>Total number of settled or completed payments related to this opportunity. Updated automatically when a payment record is added, updated or removed.</inlineHelpText>
+        <label>Number of Payments Made</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Occurrences__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <inlineHelpText>Number of recurring payment occurrences.</inlineHelpText>
+        <label>Occurrences</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>PO_Number__c</fullName>
+        <deprecated>false</deprecated>
+        <description>Purchase order number.  Used when generating PaymentConnect invoices.</description>
+        <externalId>false</externalId>
+        <inlineHelpText>Purchase order number.  Used when generating PaymentConnect invoices.</inlineHelpText>
+        <label>PO Number</label>
+        <length>50</length>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Paid_Off__c</fullName>
+        <defaultValue>false</defaultValue>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <inlineHelpText>Checked by PaymentConnect when payments equal or exceed the opportunity amount (if &gt;0).</inlineHelpText>
+        <label>Paid Off</label>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>Payments_Made__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <inlineHelpText>Total of settled payments related to this opportunity. This field is updated automatically when a payment record is added, updated or removed.</inlineHelpText>
+        <label>Payments Made</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Currency</type>
+    </fields>
+    <fields>
+        <fullName>Period__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <inlineHelpText>Recurring payments period.</inlineHelpText>
+        <label>Period</label>
+        <picklist>
+            <picklistValues>
+                <fullName>Day</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Week</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>SemiMonth</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Month</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Year</fullName>
+                <default>false</default>
+            </picklistValues>
+            <sorted>false</sorted>
+        </picklist>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Picklist</type>
+    </fields>
+    <fields>
+        <fullName>Recurring_Amount__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <label>Recurring Amount</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Currency</type>
+    </fields>
+    <fields>
+        <fullName>Shipping__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <inlineHelpText>PaymentConnect Shipping Amount</inlineHelpText>
+        <label>Shipping</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Currency</type>
+    </fields>
+    <fields>
+        <fullName>SiteQuote_Expiration__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <inlineHelpText>Date that the web-accessible quote on this opportunity expires.  Leave blank to disable the site quote entirely.</inlineHelpText>
+        <label>SiteQuote Expiration</label>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Date</type>
+    </fields>
+    <fields>
+        <fullName>SiteQuote_Recurring_Setup__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <inlineHelpText>Controls the way recurring payments are set up on the SiteQuote page.</inlineHelpText>
+        <label>SiteQuote Recurring Setup</label>
+        <picklist>
+            <picklistValues>
+                <fullName>Total Amount + Recurring Payments</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Recurring Payments = Total Amount</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Total Amount Includes First Recurring Payment</fullName>
+                <default>false</default>
+            </picklistValues>
+            <sorted>false</sorted>
+        </picklist>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Picklist</type>
+    </fields>
+    <fields>
+        <fullName>Subscription_Start_Date__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <inlineHelpText>Date to start recurring or subscription payments</inlineHelpText>
+        <label>Subscription Start Date</label>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Date</type>
+    </fields>
+    <fields>
+        <fullName>Tax__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <inlineHelpText>PaymentConnect tax amount</inlineHelpText>
+        <label>Tax</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Currency</type>
+    </fields>
+    <fields>
+        <fullName>Total_Amount__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <formula>Amount +  Shipping__c +  Tax__c</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <inlineHelpText>PaymentConnect total calculated amount (Opportunity amount + shipping + tax)</inlineHelpText>
+        <label>Total Amount</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Currency</type>
+    </fields>
+    <webLinks>
+        <fullName>AuthNet_Recurring_Billing</fullName>
+        <availability>online</availability>
+        <description>Authorize.net recurring billing setup terminal</description>
+        <displayType>button</displayType>
+        <linkType>javascript</linkType>
+        <masterLabel>AuthNet Recurring Payment</masterLabel>
+        <openType>onClickJavaScript</openType>
+        <protected>false</protected>
+        <url>{!REQUIRESCRIPT(&quot;/soap/ajax/18.0/connection.js&quot;)} 
+{!REQUIRESCRIPT(&quot;/soap/ajax/18.0/apex.js&quot;)} 
+
+var accountId = &apos;{!Account.Id}&apos;;
+var contactId = &apos;{!Contact.Id}&apos;;
+var cidParm = &quot;&quot;;
+
+if (contactId == &apos;&apos;) {
+    contactId = checkForPersonContactId(accountId);
+}
+if (contactId !== &apos;&apos;) {
+cidParm = &apos;&amp;cid=&apos;+contactId;
+}
+if (cidParm == &quot;&quot;) {
+   alert(&apos;No Contact Id could be pulled from the current opportunity.  Please make sure you have added a primary contact to the opportunity before opening the recurring billing terminal&apos;);
+} else {
+window.location.href=&quot;/apex/pymt__AuthNetARBTerminal?csid={!Opportunity.Id}&quot;+cidParm+&quot;&amp;cancel_url=%2F{!Opportunity.Id}&quot;;
+}
+
+function checkForPersonContactId(aid) {
+    if (aid == null || aid == &apos;&apos;) return &apos;&apos;;
+    try {
+        var connection = sforce.connection; 
+        var q = &quot;Select Id, IsPersonAccount, PersonContactId from Account where Id = &apos;&quot;+aid+&quot;&apos; and IsPersonAccount = true&quot;;
+        var queryResult = sforce.connection.query(q); 
+        var records = queryResult.getArray(&apos;records&apos;); 
+        return records[0].get(&quot;PersonContactId&quot;);
+    } catch(err) {
+         // PersonAccounts not supported or invalid account Id
+    }
+    return &apos;&apos;;
+}</url>
+    </webLinks>
+    <webLinks>
+        <fullName>Calculate_Tax</fullName>
+        <availability>online</availability>
+        <description>Retrieves the tax percentage from the PaymentConnect State/Province tax percentage custom object and applies it to the opportunity amount and shipping, storing the result in the tax field.</description>
+        <displayType>button</displayType>
+        <linkType>javascript</linkType>
+        <masterLabel>Calculate Tax</masterLabel>
+        <openType>onClickJavaScript</openType>
+        <protected>false</protected>
+        <url>{!REQUIRESCRIPT(&quot;/soap/ajax/18.0/connection.js&quot;)}
+{!REQUIRESCRIPT(&quot;/soap/ajax/18.0/apex.js&quot;)}
+
+
+    var connection = sforce.connection;
+    var aid = &apos;{!Account.Id}&apos;;
+    var cid = &apos;{!Contact.Id}&apos;;
+
+
+    function calculateTax() {
+        if (aid === null || aid === &apos;&apos;) {
+              alert(&quot;Please add an account to this opportunity and try again.&quot;);
+              return;
+        }
+        try {
+             var q = &quot;Select Id, billingstreet, billingcity, billingstate, billingpostalcode, billingcountry from Account where Id = &apos;&quot;+aid+&quot;&apos; &quot;;
+             var queryResult = sforce.connection.query(q);
+             var records = queryResult.getArray(&apos;records&apos;);
+             //alert(records[0]);
+             if (records.length &lt; 1) {
+                 alert (&quot;No account record found.&quot;);
+                 return;
+             }
+        } catch(err) {
+            // Error retrieving record
+            alert(&quot;An error was encountered retrieving the related account record: &quot;+err);
+        }
+       var state = records[0].get(&quot;BillingState&quot;);
+       var country = records[0].get(&quot;BillingCountry&quot;);
+       var result = sforce.apex.execute(&apos;pymt/PaymentX&apos; ,&apos;stateProvinceTaxLookup&apos;,{country:country, state:state},  null, false);
+       //alert(result);
+       if (result.success == &quot;true&quot;) {
+          if (result.value == null || result.value.valueOf() &gt;0) {
+              var amount = {!TEXT(NULLVALUE( Opportunity.Amount ,0))};
+              var shipping = {!TEXT(NULLVALUE( Opportunity.Shipping__c ,0))};
+              var tax = ((amount + shipping) *  result.value.valueOf() / 100);
+              tax = tax.toFixed(2);
+              alert(&quot;Updating tax amount to &quot;+tax+  &quot; (&quot;+result.value+&quot;%)&quot;);
+              try {
+                    var opp = new sforce.SObject(&quot;Opportunity&quot;);
+                    opp.Id = &apos;{!Opportunity.Id}&apos;;
+                    opp.pymt__Tax__c = tax;
+                    updateresult = sforce.connection.update([opp]);
+ 
+                     if (updateresult[0].getBoolean(&quot;success&quot;)) {
+                        window.location.reload();
+                        return;
+                     } else {
+                        alert(&quot;failed to update account &quot; + updateresult[0]);
+                     }
+
+              } catch(err) {
+                   alert(&quot;An error was encountered updating the account tax field: &quot;+err);
+              }
+          }
+       } else {
+          alert(result.message);
+       }
+       return;
+
+   }
+
+
+
+ calculateTax();</url>
+    </webLinks>
+    <webLinks>
+        <fullName>PayPal_Recurring_Billing</fullName>
+        <availability>online</availability>
+        <description>PayPal recurring billing setup terminal</description>
+        <displayType>button</displayType>
+        <linkType>javascript</linkType>
+        <masterLabel>PayPal Recurring Payment</masterLabel>
+        <openType>onClickJavaScript</openType>
+        <protected>false</protected>
+        <url>{!REQUIRESCRIPT(&quot;/soap/ajax/18.0/connection.js&quot;)} 
+{!REQUIRESCRIPT(&quot;/soap/ajax/18.0/apex.js&quot;)} 
+
+var accountId = &apos;{!Account.Id}&apos;;
+var contactId = &apos;{!Contact.Id}&apos;;
+
+var cidParm = &quot;&quot;;
+if (contactId == &apos;&apos;) {
+    contactId = checkForPersonContactId(accountId);
+}
+if (contactId !== &apos;&apos;) {
+cidParm = &apos;&amp;cid=&apos;+contactId;
+}
+
+if (cidParm == &quot;&quot;) {
+   alert(&apos;No Contact Id could be pulled from the current opportunity.  Please make sure you have added a primary contact to the opportunity before opening the PayPal recurring payments terminal&apos;);
+} else {
+window.location.href=&quot;/apex/pymt__PayPalARBTerminal?csid={!Opportunity.Id}&quot;+cidParm+&quot;&amp;cancel_url=%2F{!Opportunity.Id}&quot;;
+}
+
+function checkForPersonContactId(aid) {
+    if (aid == null || aid == &apos;&apos;) return &apos;&apos;;
+    try {
+        var connection = sforce.connection; 
+        var q = &quot;Select Id, IsPersonAccount, PersonContactId from Account where Id = &apos;&quot;+aid+&quot;&apos; and IsPersonAccount = true&quot;;
+        var queryResult = sforce.connection.query(q); 
+        var records = queryResult.getArray(&apos;records&apos;); 
+        return records[0].get(&quot;PersonContactId&quot;);
+    } catch(err) {
+         // PersonAccounts not supported or invalid account Id
+    }
+    return &apos;&apos;;
+}</url>
+    </webLinks>
+    <webLinks>
+        <fullName>Payment_Terminal</fullName>
+        <availability>online</availability>
+        <description>Opens the PaymentConnect virtual terminal.</description>
+        <displayType>button</displayType>
+        <linkType>javascript</linkType>
+        <masterLabel>Payment Terminal</masterLabel>
+        <openType>onClickJavaScript</openType>
+        <protected>false</protected>
+        <url>{!REQUIRESCRIPT(&quot;/soap/ajax/18.0/connection.js&quot;)} 
+{!REQUIRESCRIPT(&quot;/soap/ajax/18.0/apex.js&quot;)} 
+
+var accountId = &apos;{!Account.Id}&apos;;
+var contactId = &apos;{!Contact.Id}&apos;;
+var cidParm = &quot;&quot;;
+if (contactId == &apos;&apos;) {
+    contactId = checkForPersonContactId(accountId);
+}
+if (contactId !== &apos;&apos;) {
+  cidParm = &apos;&amp;cid=&apos;+contactId;
+} else {
+   alert(&apos;A related Contact record could not be found to pass to the payment terminal.  To make a contact accessible to this script, please add a primary opportunity contact or add a PersonAccount to the Account lookup for this opportunity.&apos;);
+}
+if (accountId !== &apos;&apos;) {
+  aidParm = &apos;&amp;aid={!Account.Id}&apos;;
+}
+window.location.href=&quot;/apex/pymt__PaymentTerminal?csid={!Opportunity.Id}&quot;+cidParm+&quot;&amp;cancelURL=%2F{!Opportunity.Id}&quot;;
+
+function checkForPersonContactId(aid) {
+    if (aid == null || aid == &apos;&apos;) return &apos;&apos;;
+    try {
+        var connection = sforce.connection; 
+        var q = &quot;Select Id, IsPersonAccount, PersonContactId from Account where Id = &apos;&quot;+aid+&quot;&apos; and IsPersonAccount = true&quot;;
+        var queryResult = sforce.connection.query(q); 
+        var records = queryResult.getArray(&apos;records&apos;); 
+        return records[0].get(&quot;PersonContactId&quot;);
+    } catch(err) {
+         // PersonAccounts not supported or invalid account Id
+    }
+    return &apos;&apos;;
+}</url>
+    </webLinks>
+    <webLinks>
+        <fullName>Schedule_Payments</fullName>
+        <availability>online</availability>
+        <description>Sets up multiple scheduled Payment records for the current opportunity.</description>
+        <displayType>link</displayType>
+        <hasMenubar>false</hasMenubar>
+        <hasScrollbars>true</hasScrollbars>
+        <hasToolbar>false</hasToolbar>
+        <height>500</height>
+        <isResizable>true</isResizable>
+        <linkType>sControl</linkType>
+        <masterLabel>Schedule Installment Payments</masterLabel>
+        <openType>newWindow</openType>
+        <position>none</position>
+        <protected>false</protected>
+        <scontrol>Schedule_Payments</scontrol>
+        <showsLocation>false</showsLocation>
+        <showsStatus>false</showsStatus>
+        <width>600</width>
+    </webLinks>
+</CustomObject>

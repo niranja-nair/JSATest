@@ -1,0 +1,277 @@
+<apex:page showHeader="false" sidebar="false" controller="mainPortalController">
+    <title>My JSA Home</title>
+
+    <c:NeatHeader home="active" container="chatteronpage" />
+
+    <!-- Breadcrumbs - START -->
+    <div class="background-clouds breadcrumbs-container">
+      <div class="container">
+        <ol class="breadcrumb">
+          <li><a href="#">My JSA Home</a></li>
+        </ol>
+      </div>
+    </div>
+    <!-- Breadcrumbs - END -->
+
+    <section>
+      <div class="container">
+        <div class="row">
+          <div class="col-md-8">
+            <div class="content">
+                <h1><span>My JSA Home</span></h1>
+                <p>MyJSA is your online portal for JSA events and program registration. If you are a Chapter President or Teacher/Advisor, you can also use MyJSA to manage your chapter roster and register delegations for conventions.</p>
+                <div class="bootbutton">
+                    <a href="#" class="btn btn-primary btn-xs" id="newSummerSchool">Start New Summer School Application</a><br/>
+                <!-- <a href="#" class="btn btn-primary btn-xs" id="newSymposia">Start New Institute or Symposium Application</a> -->
+                </div>
+                <h1><span>Chatter</span></h1>
+              <div class="chatterarea">
+                  <chatter:feed entityId="{!contact.Id}"/>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <h3>JSA Program Details</h3>
+            <ul class="side-list">
+              <li><a target="_blank" href="http://jsa.org/conventions/congress/">JSA Winter Congress</a></li>
+              <li><a target="_blank" href="http://summer.jsa.org/programs/summer-school/">JSA Summer School</a></li>
+              <li><a target="_blank" href="http://summer.jsa.org/programs/jsa-summer-institutes/">JSA Institutes</a></li>
+              <li><a target="_blank" href="http://summer.jsa.org/programs/summer-school/diplomat-program-beijing-china/">JSA International</a></li>
+            </ul>
+            <h3>JSA News and Updates</h3>
+            <script language="JavaScript" src="https://feed2js.org//feed2js.php?src=http%3A%2F%2Fjsa.org%2Fcategory%2Fmyjsa%2Ffeed%2F&num=3&desc=140>1&targ=y&utf=y"  charset="UTF-8" type="text/javascript"></script>
+            <h3>JSA Event Calendar</h3>
+            <script language="JavaScript" src="https://feed2js.org//feed2js.php?src=http%3A%2F%2Fevents.jsa.org%2Fevents%2Frss%2F&num=5&targ=y&utf=y"  charset="UTF-8" type="text/javascript"></script>
+            <a href="http://events.jsa.org/events/">View more events</a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+<!-- Modal -->
+<apex:form >
+<div class="modal fade" id="summerModal" tabindex="-1" role="dialog" aria-labelledby="summerModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+        <h4 class="modal-title" id="summerModalLabel">Summer School {!SSLatestYear} Application</h4>
+      </div>
+      <div class="modal-body">
+        We are currently accepting applications for {!SSLatestYear}. Please provide the following information and click start application.
+        <br/><br/>
+        <div class="alert SSAlert background-sun-flower">
+          <a class="close" data-dismiss="alert">×</a>
+          Please fill out the highlighted fields.
+        </div>
+        <div class="SSSession contactdropdown">
+          <b>Campus/Session</b><br/>
+          <apex:selectList id="campus" value="{!SelectedSSSession}" multiselect="false" size="1" styleClass="col-xs-12 form-control" onchange="onSessionSelected()">
+              <apex:selectOptions value="{!SSProductNames}" />
+              <apex:actionFunction action="{!onSessionSelected}" rerender="summerSchoolCourses" name="onSessionSelected" />
+            </apex:selectList>
+        </div>
+          <div class="col-md-6 SSCourse contactdropdown" style="padding-top: 10px">
+              <b>Course Selection</b><br/>
+              <apex:outputPanel id="summerSchoolCourses">
+                  <apex:selectList id="course" value="{!SelectedSSCourse}" multiselect="false" size="1" styleClass="col-xs-12 form-control">
+                      <apex:selectOptions value="{!SSCourses}" />
+                  </apex:selectList>
+              </apex:outputPanel>
+          </div>
+          <div class="col-md-6 SSLearn contactdropdown">
+              <b>How did you learn about the program?</b><br/>
+              <apex:selectList id="ssrefsource" value="{!SelectedSSRefSource}" multiselect="false" size="1" styleClass="col-xs-12 form-control">
+                  <apex:selectOptions value="{!ReferralOptions}" />
+              </apex:selectList>
+          </div>
+          <br clear="both" /><br/>
+          <b>Need Scholarship / Fundraising Packet?</b>&nbsp;&nbsp;
+          <apex:inputCheckbox id="SSScholarshipFlag" value="{!IsScholarshipNeeded}" />
+          <!-- Suyati Modified - 25/Nov/2014 -->
+          <!-- Added the input element for Honor Student Code -->
+          <br clear="both" /><br/>
+          <b>Honor Student Code</b>&nbsp;&nbsp;
+          <apex:inputText id="SSHonorStudentCode" value="{!HonorStudentCode}" styleClass="form-control" maxlength="6" style="width:50%; max-width:100%"/>
+      </div>
+      <div class="bootbutton modal-footer">
+        <button type="button" class="btn btn-primary" id="startSummer" data-loading-text="Starting...">Start Application</button>
+        <button type="button" class="btn btn-primary" data-dismiss="modal">Cancel</button>
+      </div>
+    </div>
+  </div>
+</div>
+</apex:form>
+
+<!-- Modal -->
+<apex:form >
+<div class="modal fade" id="sympModal" tabindex="-1" role="dialog" aria-labelledby="sympModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+        <h4 class="modal-title" id="sympModalLabel">Institute {!SymposiaLatestYear} Application</h4>
+      </div>
+      <div class="modal-body">
+        We are currently accepting applications for {!SymposiaLatestYear}. Please provide the following information and click start application.
+        <br/><br/>
+        <div class="alert SympAlert background-sun-flower">
+          <a class="close" data-dismiss="alert">×</a>
+          Please fill out the highlighted fields.
+        </div>
+        <div class="col-md-6 SympInstitute contactdropdown">
+          <b>Institute</b><br/>
+          <apex:selectList id="institute" value="{!SelectedSympSession}" multiselect="false" size="1" styleClass="col-xs-12 form-control">
+            <apex:selectOptions value="{!SymposiaProductNames}" />
+          </apex:selectList>
+        </div>
+        <div class="col-md-6 SympLearn contactdropdown">
+          <b>How did you learn about us?</b><br/>
+          <apex:selectList id="symprefsource" value="{!SelectedSympRefSource}" multiselect="false" size="1" styleClass="col-xs-12 form-control">
+            <apex:selectOptions value="{!ReferralOptions}" />
+          </apex:selectList>
+        </div>
+        <br clear="both" /><br/>
+        <b>Need Scholarship / Fundraising Packet?</b>&nbsp;&nbsp;
+        <apex:inputCheckbox id="SympScholarshipFlag" value="{!IsScholarshipNeeded}" />
+        <!-- Suyati Modified - 25/Nov/2014 -->
+        <!-- Added the input element for Honor Student Code -->
+        <br clear="both" /><br/>
+        <b>Honor Student Code</b>&nbsp;&nbsp;
+        <apex:inputText id="SympHonorStudentCode" value="{!HonorStudentCode}" styleClass="form-control" maxlength="6"/>
+      </div>
+      <div class="bootbutton modal-footer">
+        <button type="button" class="btn btn-primary" id="startSymp" data-loading-text="Starting...">Start Application</button>
+        <button type="button" class="btn btn-primary" data-dismiss="modal">Cancel</button>
+      </div>
+    </div>
+  </div>
+</div>
+</apex:form>
+
+    <c:NeatFooter />
+
+<script>
+
+$(document).ready(function(){
+
+    $('#newSummerSchool').click(function(event){
+    event.preventDefault();
+    $('.SSAlert').hide();
+    $("#summerModal").modal();
+  });
+
+  $('#newSymposia').click(function(event){
+    event.preventDefault();
+    $('.SympAlert').hide();
+    $("#sympModal").modal();
+  });
+
+  $('#startSummer').click(function(event){
+    var hasError = false;
+
+    $('.SSSession').removeClass('has-error');
+    $('.SSCourse').removeClass('has-error');
+    $('.SSLearn').removeClass('has-error');
+
+    var session = $('[id$=campus]').val();
+    if (session == 'None') {
+      $('.SSSession').addClass('has-error');
+      hasError = true;
+    }
+    var course = $('[id$=course]').val();
+    if (course == 'None') {
+      $('.SSCourse').addClass('has-error');
+      hasError = true;
+    }
+    var learn = $('[id$=ssrefsource]').val();
+    if (learn == 'None') {
+      $('.SSLearn').addClass('has-error');
+      hasError = true;
+    }
+
+    if (hasError) {
+      $('.SSAlert').show();
+    } else {
+      session = $('[id$=campus]').find("option:selected").text();
+      course = $('[id$=course]').find("option:selected").text();
+      var scholshipFlag = $('[id$=SSScholarshipFlag]').is(':checked');
+      //-- Suyati Modified - 25/Nov/2014
+      //-- Included Honor Student Code      
+      var HonorStudentCode = $('[id$=SSHonorStudentCode]').val();      
+      $(this).button('loading');
+      Visualforce.remoting.Manager.invokeAction(
+        '{!$RemoteAction.mainPortalController.getOpportunity}',
+         session,
+         '',
+         course,
+         learn,
+         '{!SSLatestYear}',
+         '{!contact.AccountId}',
+         true,
+         scholshipFlag,
+         HonorStudentCode,
+         function(result,event) {
+                if(event.status) {
+                     window.location="/apex/JSAApplication?OpId="+result+"&ApplicationType=SS";
+                }       
+         },
+         {escape:true}
+      );
+    }
+
+  });
+
+  $('#startSymp').click(function(event){
+    var hasError = false;
+
+    $('.SympInstitute').removeClass('has-error');
+    $('.SympLearn').removeClass('has-error');
+
+    var institute = $('[id$=institute]').val();
+    if (institute == 'None') {
+      $('.SympInstitute').addClass('has-error');
+      hasError = true;
+    }
+    var learn = $('[id$=symprefsource]').val();
+    if (learn == 'None') {
+      $('.SympLearn').addClass('has-error');
+      hasError = true;
+    }
+
+    if (hasError) {
+      $('.SympAlert').show();
+    } else {
+      institute = $('[id$=institute]').find("option:selected").text();
+      var scholshipFlag = $('[id$=SympScholarshipFlag]').is(':checked');
+      //-- Suyati Modified - 25/Nov/2014
+      //-- Included Honor Student Code
+      var HonorStudentCode = $('[id$=SympHonorStudentCode]').val();  
+      $(this).button('loading');
+      Visualforce.remoting.Manager.invokeAction(
+        '{!$RemoteAction.mainPortalController.getOpportunity}',
+         institute,
+         '',
+         '',
+         learn,
+         '{!SymposiaLatestYear}',
+         '{!contact.AccountId}',
+         false,
+         scholshipFlag,
+         HonorStudentCode,
+         function(result,event) {
+                if(event.status) {
+                     window.location="/apex/JSAApplication?OpId="+result+"&ApplicationType=Symp";
+                }       
+         },
+         {escape:true}
+      );
+    }
+
+  });
+
+});
+
+</script>
+
+</apex:page>

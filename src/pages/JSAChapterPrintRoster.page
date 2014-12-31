@@ -1,0 +1,108 @@
+<apex:page showheader="false" sidebar="false" controller="myJSAchapterController" action="{!initPage}" >
+    <head>
+
+        <title>MyJSA</title>
+        
+        <apex:stylesheet value="{!URLFOR($Resource.RefreshCSS)}"/>
+        <apex:stylesheet value="{!URLFOR($Resource.DarkBlueCss)}"/>
+        <apex:stylesheet value="{!URLFOR($Resource.jquery_ui_css)}"/>
+        <link rel="stylesheet" type="text/css" href="{!URLFOR($Resource.JSAPortal, 'style-theme.css')}" />
+        <link rel="stylesheet" type="text/css" href="{!URLFOR($Resource.JSAPortal, 'style.css')}" />
+
+    </head>
+    <body>
+        <div class="mainBox">
+            <div class="topHeaderBox">
+                <div class="topLogoBox">
+                    <img src="{!$Resource.jsf_cap_logo_png}" width="155px" height="20px"/>
+                </div>
+            </div>
+            <div class="headerBox" id="headerBox">
+                <img src="{!$Resource.jsf_header_logo_png}" width="484px" height="176px"/>               
+            </div>
+            
+            <div class="midBox" id="midBoxHome">                
+                
+                            
+                    <div>                
+                        <div id="archivebox">
+                            <h2>{!contact.High_School__r.Name}</h2>
+                        </div>   
+                        <div id="border" class="title_margin">            
+                            <h2 style="display:inline; padding:8px;">
+                                Member Roster
+                                <input type="hidden" id="highSchoolId" value="{!contact.High_School__c}"/>
+                                <input type="hidden" id="userId" value="{!$User.Id}"/>
+                                <input type="hidden" id="JSARole" value="{!contact.JSA_Role__c}"/>
+                                <input type="hidden" id="studentType" value="{!studentType}" />
+                            </h2>                                               
+                       </div>
+                       <div>
+                          <div class="ditch-tab-skin-default" style="margin:10px;">
+                              <div id="chapterTabs" class="ditch-tab-container">        
+                                 <div class="ditch-tab-pane-wrap">          
+                                    <div id="rosterTab" class="ditch-tab-pane" style="">                             
+                                       <form id="chapterAction" name="rosterForm" onsubmit="return true;" action="/portal/restricted/chapterAction.xhtml" method="post">
+                                            <table class="tunnelFormTableMini bottom">
+                                                <tr>                                                    
+                                                    <th>Name</th>
+                                                    <th>JSA Role</th>
+                                                    <th>Grad Year</th>
+                                                    <th>Member Status</th>
+                                                </tr>
+                                                <tbody id="chapterRosterBody">
+                                                    <tr class="rosterTemplateRow template" style="display:none;">                                                        
+                                                        <td class="rosterName"></td>
+                                                        <td class="rosterRole"></td>
+                                                        <td class="rosterYear"></td>
+                                                        <td class="rosterStatus"></td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </form>    
+                                     </div>
+                                  </div>
+                               </div>
+                           </div>
+                       </div>
+                 </div>
+             </div>
+        </div>
+        <script>
+            <apex:includeScript value="{!$Resource.jquery_js}"/> 
+            <apex:includeScript value="{!$Resource.jquery_ui_js}"/>
+        </script>
+        <script>
+            $(document).ready(function(){
+    
+            var userId = $('#userId').val(),
+                jsaRole = $('#JSARole').val();
+                highSchoolId = $('#highSchoolId').val(),
+                studentType = $('#studentType').val();
+                
+            //JSRemoting method fetches the data
+            var findStudents = function(school,type){
+                myJSAchapterController.findStudents(school,type, userId, function(contacts,event){
+                    $('.studentRow').remove();
+                    if(event.status){
+                        //console.log('matching students', contacts);
+                        for(var i=0; i< contacts.length; i++){
+                            var student = contacts[i],
+                                $row = $('tr.rosterTemplateRow').clone().removeClass('rosterTemplateRow').addClass('studentRow').appendTo('#chapterRosterBody').show();
+        
+                            $row.children('.rosterStudentId').children('input').attr({'id':student.Id}).removeClass('template');
+                            $row.children('.rosterName').html(student.Name);
+                            $row.children('.rosterRole').html(student.JSA_Role__c);
+                            $row.children('.rosterYear').html(student.High_School_Graduation_Year__c);
+                            $row.children('.rosterStatus').html(student.Member_Status__c);
+        
+                        }
+                    }
+                });
+            };
+            
+            findStudents(highSchoolId,studentType);
+          });
+        </script>
+    </body>
+</apex:page>

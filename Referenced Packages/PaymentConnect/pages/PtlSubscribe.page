@@ -1,0 +1,98 @@
+<apex:page controller="pymt.PtlSubscribeController"   cache="false" action="{!redirect}"  tabStyle="pymt__Payment_Profile__c" language="{!$CurrentPage.Parameters.lang}">
+
+    
+      <apex:form id="checkoutForm" styleClass="{!IF($CurrentPage.parameters.form_class == NULL,'pc_subscription_checkout_form',$CurrentPage.parameters.form_class)}"  onsubmit="return validateForm();">
+        <script language="javascript">
+
+		function addLoadEvent(func) {
+		  var oldonload = window.onload;
+		  if (typeof window.onload != 'function') {
+		    window.onload = func;
+		  } else {
+		    window.onload = function() { 
+		      if (oldonload) {
+		        oldonload();
+		      }
+		      func();
+		    }
+		  }
+		}
+
+	        
+        var enableValidation=false;
+        function validateForm() {
+
+            if (!enableValidation) return true;
+            enableValidation=false;
+            
+              if (document.getElementById('{!$Component.checkoutForm.createSubscription}').disabled==true) {
+                 // validation done only on createSubscription action.  Skip if createSubscription button is disabled.
+                 return true;
+              }
+              
+              // Insert field value checking here .... display an error alert and return false for any fields that fail validation
+              
+              return true;
+          }
+          </script>
+        <apex:outputPanel id="cardEntryPanel" > 
+          <apex:pageMessages />
+          <apex:outputPanel rendered="{!showPageContents}">
+	          <apex:sectionHeader title="{!$Label.SiteSubscribeARB_CheckoutHeading}"/>
+	          <br/>
+	          <div class="pc_subscription_item_name">{!profile.Name}</div>
+	          <br/>
+				<apex:panelGrid columns="2" columnClasses="labelCol, term_column"  id="subscription_terms">
+					<apex:outputLabel value="Start Date" />
+					<apex:outputField value="{!profile.pymt__Subscription_Start_Date__c}"/>
+	          
+					<apex:outputLabel value="{!$Label.Label_InitialAmount}"  rendered="{!NOT(ISNULL(profile.pymt__Initial_Amount__c))}"/>          
+					<apex:outputField value="{!profile.pymt__Initial_Amount__c}"  rendered="{!NOT(ISNULL(profile.pymt__Initial_Amount__c))}"/>
+	
+	             <apex:outputLabel value="{!$Label.Label_TrialAmount}"  rendered="{!NOT(ISNULL(profile.pymt__Trial_Occurrences__c))}"/> 
+				<apex:outputPanel layout="inline" rendered="{!NOT(ISNULL(profile.pymt__Trial_Occurrences__c))}">
+	              <apex:outputField value="{!profile.pymt__Trial_Amount__c}"/> 
+	              every {!profile.Trial_Frequency__c} {!profile.Trial_Period__c} x &nbsp;
+	              <apex:outputField value="{!profile.pymt__Trial_Occurrences__c}"/>
+				</apex:outputPanel>
+	
+	         	<apex:outputLabel value="{!$Label.Label_SubscriptionAmount}"/> 
+	 			<apex:outputPanel layout="inline">
+	            	<apex:outputField value="{!profile.pymt__Amount__c}"/>
+	            	every {!profile.pymt__Frequency__c} {!profile.pymt__Period__c} {!IF(NOT(ISNULL(profile.pymt__Total_Occurrences__c)), "x "+TEXT(profile.pymt__Total_Occurrences__c),"")}
+	 			</apex:outputPanel>
+	
+				</apex:panelGrid>
+				<br/>          
+	          
+	 
+	          <apex:outputPanel id="buttons">
+	            <table>
+	              <tr>
+	                <td class="labelColumn">&nbsp;</td>
+	                <td><apex:commandButton id="cancel" value="{!$Label.SiteSubscribeARB_CancelButton}"
+	                        action="{!cancelTransaction}" onclick="enableValidation=false;" rendered="{!(cancelURL<>null && NOT(ISNULL(cancelURL)))}"/>
+	                  <apex:commandButton id="createSubscription" value="Subscribe" status="formActionStatus"
+	                        action="{!createSubscription}" onclick="enableValidation=false;" disabled="{!disableForm}" rerender="checkoutForm" />
+	                 	  <apex:actionStatus id="formActionStatus" onstart="document.getElementById('{!$Component.checkoutForm.createSubscription}').disabled=true;" onstop="document.getElementById('{!$Component.checkoutForm.createSubscription}').disabled=false;">
+	                    <apex:facet name="start">
+	                      <apex:outputPanel >&nbsp;
+	                        <apex:image value="{!URLFOR($Resource.pymt__PaymentConnect, 'images/icon-spinner.gif')}"
+	                                    style="vertical-align:middle;" alt="" />
+	                        &nbsp;Processing... </apex:outputPanel>
+	                    </apex:facet>
+	                    <apex:facet name="stop">
+	                      <apex:image value="{!URLFOR('/s.gif')}" alt="" style="height:17px;" />
+	                    </apex:facet>
+	                  </apex:actionStatus></td>
+	                <td></td>
+	                <td></td>
+	              </tr>
+	            </table>
+	          </apex:outputPanel>
+          </apex:outputPanel>
+        </apex:outputPanel> 
+
+      </apex:form>
+
+</apex:page>

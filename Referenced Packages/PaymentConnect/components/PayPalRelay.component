@@ -1,0 +1,3 @@
+<apex:component controller="pymt.PayPalRelayController" allowDML="true" >
+    <p>PayPal IPN parameters received: {!body}</p>
+</apex:component>

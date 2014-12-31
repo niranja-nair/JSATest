@@ -1,0 +1,155 @@
+<apex:page controller="pymt.ExportController" action="{!checkSettings}"  standardStylesheets="true"  tabStyle="pymt__PaymentConnect_Admin__tab" >
+<script type="text/javascript" src="{!URLFOR($Resource.PaymentConnect, 'includes/tooltip/wz_tooltip.js')}"></script>
+
+<style>
+#topbar {
+    background: #0051ba;
+    color: white;
+    padding: 5px;
+}
+
+#topbar h1 {
+    color: white;
+    font-size: 1.2em;
+}
+.accountNameField {
+    width:150px;
+}
+th {
+	text-align:center;
+	}
+	
+</style>
+<script type="text/javascript">
+function addLoadEvent(func) {
+  var oldonload = window.onload;
+  if (typeof window.onload != 'function') {
+    window.onload = func;
+  } else {
+    window.onload = function() {
+      if (oldonload) {
+        oldonload();
+      }
+      func();
+    }
+  }
+}
+
+function setFocusAwayFromDate() {	
+	document.getElementById('{!$Component.exportForm.exportPageBlock.formatPicklist}').focus();
+}
+
+
+</script>
+    <div id="topbar">
+    <table>
+        <tr>
+            <td><image src="/servlet/servlet.ImageServer?id=01540000000ReTA&oid=00D40000000IWCP&lastMod=1238175863000" /></td>
+            <td style="width: 350px;">
+            <h1>PaymentConnect Export (Beta)</h1> 
+            </td>
+            <td></td>
+        </tr>
+    </table>
+    </div>
+<div id="exportBody">
+<apex:pageMessages id="messages" />
+<br/>
+<apex:form id="exportForm" >
+<apex:pageBlock id="exportPageBlock" title="Export Completed Transactions" >
+
+Format: &nbsp;<apex:selectList multiselect="false" size="1" id="formatPicklist" value="{!selectedFormat}" >
+    <apex:selectOptions value="{!formatOptions}"/>
+    <apex:actionSupport event="onchange" rerender="exportform, exportPageBlock"  status="nextStatus"/>
+</apex:selectList>&nbsp; <apex:actionstatus id="nextStatus" startText="Updating..." stopText="" /> 
+<br/>
+<br/>Export completed transactions from: &nbsp; <apex:inputField value="{!startEvent.ActivityDate}" /> &nbsp; to &nbsp; <apex:inputField value="{!endEvent.ActivityDate}" />
+<br/><br/>
+Include test transactions: <apex:inputCheckbox value="{!includeTestTransactions}" /><br/>
+<br/>
+<apex:actionFunction action="{!nullAction}" name="showHideAccounts" rerender="accountFields" status="nextStatus"  />
+<apex:outputPanel rendered="{!BEGINS(selectedFormat,'qbo')}" id="xfoFields">
+<apex:panelGrid columns="2">
+	<apex:outputLabel value="Export Payments processed using:"/>
+<apex:selectList value="{!selectedProcessorConnectionId}">
+	<apex:selectOptions value="{!processorConnectionOptions}"/>  
+</apex:selectList>
+
+	<apex:outputLabel value=""/>
+	<apex:outputPanel >
+		<apex:inputCheckbox value="{!splitFees}"/>&nbsp;<apex:outputText value="Split transaction fees into separate transactions"/>
+	</apex:outputPanel>
+
+	<apex:outputLabel value="Ledger Balance"/>
+	<apex:inputText value="{!ledgerBalance}"/>
+</apex:panelGrid>
+	
+</apex:outputPanel>
+<apex:outputPanel rendered="{!BEGINS(selectedFormat,'iif')}" id="accountFields">
+<p>Please enter your account names exactly as they appear in your QuickBooks software.</p>
+<br/>
+<table>
+<thead>
+<th>Export</th>
+<th>Processor Connection</th>
+<th>Income Account
+      <span id="incomeAcctName-_help" class="helpbutton" 
+            onMouseover="Tip('(Required) The name of the Quickbooks income account to which transaction total amounts will be posted (e.g. Software Sales, Professional Services, Other Income ...)', WIDTH, -240);" onMouseout="UnTip();" ><apex:image url="/s.gif" styleClass="helpOrb" />
+      </span>                        
+</th>
+<th>Bank Account
+      <span id="bankAcctName-_help" class="helpbutton" 
+            onMouseover="Tip('(Required) The name of the Quickbooks bank account to which net transaction amounts will be posted.  For PayPal and Google transactions this may be a corresponding PayPal or Google account you\'ve created in Quickbooks, while AuthNet transactions might be posted to the actual merchant bank account associated with your authorize.net gateway account.', WIDTH, -240);" onMouseout="UnTip();" ><apex:image url="/s.gif" styleClass="helpOrb" />
+      </span>                        
+</th>
+<th>Fee Account
+      <span id="feeAcctName-_help" class="helpbutton" 
+            onMouseover="Tip('(Optional) The name of the Quickbooks account to which transaction fee amounts will be posted (e.g. Other Expense, Transaction Fees, etc.).  If left blank, fee amounts will not be included in the transaction split.  ', WIDTH, -240);" onMouseout="UnTip();" ><apex:image url="/s.gif" styleClass="helpOrb" />
+      </span>                        
+</th>
+<th>Tax Account
+      <span id="taxAcctName-_help" class="helpbutton" 
+            onMouseover="Tip('(Optional) The name of the Quickbooks account to which transaction tax amounts will be posted (e.g. Sales Tax Payable).  If left blank, tax amounts will not be included in the transaction split.  ', WIDTH, -240);" onMouseout="UnTip();" ><apex:image url="/s.gif" styleClass="helpOrb" />
+      </span>                        
+</th>
+</thead>
+
+<apex:repeat value="{!connectionLineItems}" var="procConn" >
+<tr>
+<td><apex:inputField value="{!procConn.accountMapping.pymt__Export__c}"/></td>
+<td>
+{!procConn.connection.name} ({!procConn.connection.pymt__Processor_Id__c}):</td>
+<td>
+<apex:inputField value="{!procConn.accountMapping.pymt__Income_Account__c}" styleClass="accountNameField"/></td>
+<td>
+<apex:inputField value="{!procConn.accountMapping.pymt__Bank_Account__c}" styleClass="accountNameField"/></td>
+<td>
+<apex:inputField value="{!procConn.accountMapping.pymt__Fee_Account__c}" styleClass="accountNameField"/></td>
+<td>
+<apex:inputField value="{!procConn.accountMapping.pymt__Tax_Account__c}" styleClass="accountNameField"/></td>
+</tr>
+</apex:repeat>
+<tr>
+<td><apex:inputField value="{!exportSettings.pymt__Export_Unassigned__c}"  /></td>
+<td><span style="font-style:italic;">Unassigned transactions</span>
+      <span id="unassignedTransactions-_help" class="helpbutton" 
+            onMouseover="Tip('Transactions that have not been assigned to a Payment Processor record.  (e.g. Check/Money Order/Cash receipts entered manually or imported as Payment Records)', WIDTH, -240);" onMouseout="UnTip();" ><apex:image url="/s.gif" styleClass="helpOrb" />
+      </span>                        
+</td>
+<td><apex:inputField value="{!exportSettings.pymt__Income_Account__c}"  styleClass="accountNameField"/></td>
+<td><apex:inputField value="{!exportSettings.pymt__Bank_Account__c}"  styleClass="accountNameField"/></td>
+<td><apex:inputField value="{!exportSettings.pymt__Fee_Account__c}"  styleClass="accountNameField"/></td>
+<td><apex:inputField value="{!exportSettings.pymt__Tax_Account__c}"  styleClass="accountNameField"/></td>
+
+</tr>
+</table><br/>
+
+</apex:outputPanel>
+<br/><apex:commandButton value="Export Transactions" action="{!doExport}" /> 
+<apex:commandButton value="Cancel" action="{!cancel}"/>
+</apex:pageBlock>
+</apex:form>
+
+
+</div>
+</apex:page>

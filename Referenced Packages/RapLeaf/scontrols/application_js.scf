@@ -1,0 +1,656 @@
+<script src="/soap/ajax/10.0/connection.js" type="text/javascript"></script>
+<script src="/soap/ajax/10.0/apex.js" type="text/javascript"></script>
+<script src="/js/functions.js" type="text/javascript"></script>
+<script src="/js/dojo/0.9/dojo/dojo.js" type="text/javascript"></script>
+
+<script language="javascript" type="text/javascript">
+  //settings
+  var regrab_notfound = 1;
+  var regrab_found = 90;
+  var photos_order = [ "facebook.com", "plaxo.com", "twitter.com",
+      "myspace.com", "perfspot.com" ];
+  var apikey = "";
+  var output_email = "none";
+  var query_rapleaf = 'SELECT Id,LastModifiedDate,RapLeaf__APIKey__c, RapLeaf__UsersCount__c, RapLeaf__LeadsCount__c, RapLeaf__ContactsCount__c FROM RapLeaf__RapLeaf__c Limit 1';
+  var qr_rapleaf = "";
+  var email;
+  var parent;
+  var querying = false;
+  var cur_tab_content = 'profiles';
+  var times = 0;
+  var parent_type = "{!$Request.parent_type}"
+  var parent_path;
+  var email_field = "Email";
+  
+  if (parent_type == "Contact") {
+    parent_path = "{!Contact.Id}";
+  } else if (parent_type == "Lead")  {
+    parent_path = "{!Lead.Id}";
+  } else if (parent_type == "Account") {
+    parent_path = "{!Account.Id}";
+    email_field = "PersonEmail";
+  }
+  
+  // pre-caching is off now
+  var precache_every = 10000;
+  var precache_limit = 0;
+  var precache_i = 0;
+    if (precache_limit > 0) {
+    var query_precache = 'SELECT Id,'+ email_field +' from '+ parent_type +' where RapLeaf__RapLeafInfo__c=\'\' Limit ' + precache_limit;
+    var qr_precache = sforce.connection.query(query_precache);
+  }
+
+  
+  function go() {
+    qr_rapleaf = sforce.connection.query(query_rapleaf);
+    rapleaf_select();
+
+    info = info_select(parent_path);
+
+    /* // uncomment to debug report_invite
+    if (times==0) {
+        apikey="";
+        info = [];
+        times++;
+    }*/
+
+    if (info[0] > 0) {
+      if (info[2] == "notfound") {
+        if (info[1] >= regrab_notfound) {
+          api(parent_path, true);
+        } else {
+          output_email = "email";
+          output();
+        }
+      } else {
+        if (days_old >= regrab_found) {
+          api(parent_path, true);
+        } else {
+          output_email = "email";
+          output(info[2], info[3], info[4], info[5], info[6], info[7], info[8],
+              info[9], info[10], info[11], info[12], info[13], info[14]);
+        }
+      }
+    } else {
+      api(parent_path, true);
+    }
+    if (apikey != "" && precache_limit > 0) {
+      setTimeout('precache()', precache_every);
+    }
+  }
+
+  function precache() {
+    if (precache_i <= qr_precache.size - 1) {
+      record = qr_precache.getArray("records")[precache_i];
+      if (!querying) {
+        api(record.get("Id"), false);
+        precache_i = precache_i + 1;
+      }
+      setTimeout('precache()', precache_every);
+    }
+  }
+
+  function api(parent_path, do_output) {
+    if (apikey != "" && !querying) {
+      querying = true;
+      qr_parent = sforce.connection
+          .query('SELECT Id,RapLeaf__RapLeafInfo__c,'+ email_field +' FROM '+ parent_type +' WHERE Id=\'' + parent_path + '\'');
+      parent = qr_parent.getArray("records")[0];
+      email = parent.get(email_field);
+      if (!email) {
+        if (do_output) {
+          output();
+        }
+      } else {
+        if (do_output)
+          output_email = email;
+        if (parent.get("RapLeaf__RapLeafInfo__c") != ""
+            && parent.get("RapLeaf__RapLeafInfo__c")) {
+          sforce.connection
+              .deleteIds( [ parent.get("RapLeaf__RapLeafInfo__c") ]);
+        }
+        sforce.connection
+            .remoteFunction( {
+              url :"http://api.rapleaf.com/v2/person/" + email,
+              requestHeaders : {
+                "Content-Type" :"text/xml",
+                "Authorization" :apikey
+              },
+              mimeType :"text/xml",
+              method :"GET",
+              onSuccess : function(response) {
+                if (response.parentNode
+                    && response.getElementsByTagName("basics")[0]) {
+                  photo_1 = "";
+                  photo_2 = "";
+                  photos = new Array();
+                  if (response.getElementsByTagName("name")[0]) {
+                    name = response.getElementsByTagName("name")[0].firstChild.nodeValue;
+                  } else {
+                    name = "";
+                  }
+                  if (response.getElementsByTagName("age")[0]) {
+                    age = response.getElementsByTagName("age")[0].firstChild.nodeValue;
+                  } else {
+                    age = "";
+                  }
+                  if (response.getElementsByTagName("gender")[0]) {
+                    gender = response.getElementsByTagName("gender")[0].firstChild.nodeValue;
+                  } else {
+                    gender = "";
+                  }
+                  if (response.getElementsByTagName("location")[0]) {
+                    place = response.getElementsByTagName("location")[0].firstChild.nodeValue;
+                  } else {
+                    place = "";
+                  }
+                  if (response.getElementsByTagName("occupations")[0]) {
+                    job_title = response.getElementsByTagName("occupations")[0].firstChild
+                        .getAttribute("job_title");
+                    company = response.getElementsByTagName("occupations")[0].firstChild
+                        .getAttribute("company");
+                  } else {
+                    job_title = "";
+                    company = "";
+                  }
+                  if (response.getElementsByTagName("universities")[0]) {
+                    university = response.getElementsByTagName("universities")[0].firstChild.firstChild.nodeValue;
+                  } else {
+                    university = "";
+                  }
+                  if (response.getElementsByTagName("earliest_known_activity")[0]) {
+                    first_activity = response
+                        .getElementsByTagName("earliest_known_activity")[0].firstChild.nodeValue;
+                  } else {
+                    first_activity = "";
+                  }
+                  if (response.getElementsByTagName("latest_known_activity")[0]) {
+                    last_activity = response
+                        .getElementsByTagName("latest_known_activity")[0].firstChild.nodeValue;
+                  } else {
+                    last_activity = "";
+                  }
+                  if (response.getElementsByTagName("num_friends")[0]) {
+                    num_friends = response.getElementsByTagName("num_friends")[0].firstChild.nodeValue;
+                  } else {
+                    num_friends = "";
+                  }
+                  memberships = response.getElementsByTagName("membership");
+                  memberships_array = new Array();
+                  for (i = 0; i < memberships.length; i++) {
+                    if (memberships[i].getAttribute("profile_url")) {
+                      if (memberships[i].getAttribute("image_url")) {
+                        photos[memberships[i].getAttribute("site")] = memberships[i]
+                            .getAttribute("image_url");
+                        memberships_array.push(memberships[i]
+                            .getAttribute("site")
+                            + ',,'
+                            + memberships[i].getAttribute("profile_url")
+                            + ',,' + memberships[i].getAttribute("image_url"));
+                      } else {
+                        memberships_array
+                            .push(memberships[i].getAttribute("site") + ',,'
+                                + memberships[i].getAttribute("profile_url"));
+                      }
+                    }
+                  }
+                  memberships_csv = memberships_array.join(';;');
+                  for (i in photos_order) {
+                    if (photos[photos_order[i]] && !photo_1) {
+                      photo_1 = photos[photos_order[i]];
+                    }
+                    if (photos[photos_order[i]] && photo_1 && !photo_2) {
+                      photo_2 = photos[photos_order[i]];
+                    }
+                  }
+                  info_insert(parent_path, parent, name, age, gender, place,
+                      job_title, company, university, first_activity,
+                      last_activity, num_friends, memberships_csv, photo_1,
+                      photo_2);
+                  if (do_output)
+                    output(name, age, gender, place, job_title, company,
+                        university, first_activity, last_activity, num_friends,
+                        memberships_csv, photo_1, photo_2);
+                } else {
+                  info_insert_error(parent_path);
+                  if (do_output)
+                    output();
+                }
+                querying = false;
+              },
+              onFailure : function(response) {
+                info_insert_error(parent_path);
+                if (do_output)
+                  output();
+                querying = false;
+              }
+            });
+      }
+    } else {
+      if (do_output)
+        output();
+    }
+  }
+  
+  function info_select(parent_path) {
+    query_info = 'Select Id,LastModifiedDate,RapLeaf__Name__c,RapLeaf__Age__c,RapLeaf__Gender__c,RapLeaf__Job_Title__c,RapLeaf__Company__c,RapLeaf__University__c,RapLeaf__First_Activity__c,RapLeaf__Last_Activity__c,RapLeaf__Location__c,RapLeaf__Number_of_Friends__c,RapLeaf__Memberships__c,RapLeaf__Photo_1__c,RapLeaf__Photo_2__c,RapLeaf__'+ parent_type +'__c From RapLeaf__RapLeafInfo__c where RapLeaf__'+ parent_type +'__c=\'' + parent_path + '\'';
+    qr_info = sforce.connection.query(query_info);
+    if (qr_info.size > 0) {
+      info = qr_info.getArray("records")[0];
+      now = new Date();
+      last_modified = Date.parse(info.get("LastModifiedDate").substr(0, 10)
+          .split("-").join("/"));
+      days_old = Math.round((now - last_modified) / 86400000);
+      name = info.get("RapLeaf__Name__c");
+      age = info.get("RapLeaf__Age__c");
+      gender = info.get("RapLeaf__Gender__c");
+      place = info.get("RapLeaf__Location__c");
+      job_title = info.get("RapLeaf__Job_Title__c");
+      company = info.get("RapLeaf__Company__c");
+      university = info.get("RapLeaf__University__c");
+      first_activity = info.get("RapLeaf__First_Activity__c");
+      last_activity = info.get("RapLeaf__Last_Activity__c");
+      num_friends = info.get("RapLeaf__Number_of_Friends__c");
+      memberships_csv = info.get("RapLeaf__Memberships__c");
+      photo_1 = info.get("RapLeaf__Photo_1__c");
+      photo_2 = info.get("RapLeaf__Photo_2__c");
+      return [ qr_info.size, days_old, name, age, gender, place, job_title,
+          company, university, first_activity, last_activity, num_friends,
+          memberships_csv, photo_1, photo_2 ];
+    } else {
+      return [ 0 ];
+    }
+  }
+  function info_insert_error(parent_path) {
+    rapleafinfo = new sforce.SObject("RapLeaf__RapLeafInfo__c");
+    rapleafinfo.set('RapLeaf__'+ parent_type +'__c', parent_path);
+    rapleafinfo.set("RapLeaf__Name__c", "notfound");
+    rapleafinfo.set("Name", "");
+    result = sforce.connection.create( [ rapleafinfo ]);
+    parent.set("RapLeaf__RapLeafInfo__c", result[0].id);
+    sforce.connection.update( [ parent ]);
+  }
+  function info_insert(parent_path, parent, name, age, gender, place,
+      job_title, company, university, first_activity, last_activity,
+      num_friends, memberships_csv, photo_1, photo_2) {
+    rapleafinfo = new sforce.SObject("RapLeaf__RapLeafInfo__c");
+    rapleafinfo.set('RapLeaf__'+ parent_type +'__c', parent_path);
+    rapleafinfo.set("Name", name);
+    rapleafinfo.set("RapLeaf__Name__c", name);
+    rapleafinfo.set("RapLeaf__Age__c", (age ? age : undefined));
+    rapleafinfo.set("RapLeaf__Gender__c", gender);
+    rapleafinfo.set("RapLeaf__Location__c", place);
+    rapleafinfo.set("RapLeaf__Job_Title__c", job_title);
+    rapleafinfo.set("RapLeaf__Company__c", company);
+    rapleafinfo.set("RapLeaf__University__c", university);
+    rapleafinfo.set("RapLeaf__First_Activity__c", first_activity);
+    rapleafinfo.set("RapLeaf__Last_Activity__c", last_activity);
+    rapleafinfo.set("RapLeaf__Number_of_Friends__c", (num_friends ? num_friends
+        : undefined));
+    rapleafinfo.set("RapLeaf__Memberships__c", memberships_csv);
+    rapleafinfo.set("RapLeaf__Photo_1__c", photo_1);
+    rapleafinfo.set("RapLeaf__Photo_2__c", photo_2);
+    result = sforce.connection.create( [ rapleafinfo ]);
+    parent.set("RapLeaf__RapLeafInfo__c", result[0].id);
+    sforce.connection.update( [ parent ]);
+  }
+  function rapleaf_select() {
+    if (qr_rapleaf.size > 0) {
+      record = qr_rapleaf.getArray("records")[0];
+      apikey = record.get("RapLeaf__APIKey__c");
+      sforce.connection.update( [ record ]);
+    }
+  }
+  function test_key(newkey) {
+    if (!newkey || newkey.length < 10) {
+      return false;
+    }
+    return true;
+  }
+
+  function rapleaf_insert() {
+    var newkey = document.getElementById("apikey").value;
+    if (!test_key(newkey)) {
+      alert("Please enter a valid Rapleaf API key.");
+      return;
+    }
+
+    // display loading screen
+    hide(document.getElementById('message'));
+    show(document.getElementById('loading'));
+
+    var qr_leads = sforce.connection.query('SELECT Email from Lead');
+    var qr_contacts = sforce.connection.query('SELECT Email from Contact');
+    var qr_users = sforce.connection.query('SELECT Email from User');
+
+    // clear the old record?
+    if (qr_rapleaf.size > 0) {
+      record = qr_rapleaf.getArray("records")[0];
+      sforce.connection.deleteIds( [ record.Id ]);
+    }
+    rapleaf = new sforce.SObject("RapLeaf__RapLeaf__c");
+    rapleaf.set("RapLeaf__APIKey__c", newkey);
+    rapleaf.set("RapLeaf__UsersCount__c", qr_users.size);
+    rapleaf.set("RapLeaf__ContactsCount__c", qr_contacts.size);
+    rapleaf.set("RapLeaf__LeadsCount__c", qr_leads.size);
+    sforce.connection.create( [ rapleaf ]);
+
+    //email a summary
+    var email_body = "This is an automated message. I just entered my API key ("
+        + document.getElementById("apikey").value
+        + "). I have "
+        + qr_users.size
+        + " users, "
+        + qr_leads.size
+        + " leads, "
+        + qr_contacts.size + " contacts.";
+    email_alert("install!", email_body);
+
+    if (document.getElementById('do_report_invite').checked) {
+      //parse out the email addresses and concat into one list
+      var included = emails_from_query(qr_contacts);
+      included = included.concat(emails_from_query(qr_leads),
+          emails_from_query(qr_users));
+
+      //upload emails using report invite API
+      report_invite(newkey, included);
+    }
+
+    // tear down loading screen
+    hide(document.getElementById('loading'));
+    show(document.getElementById('message'));
+
+    //go!
+    go();
+  }
+
+  function report_invite(newkey, included) {
+    if (!newkey || included.length < 1)
+      return;
+
+    var limit = 1000;
+    var priority = 1;
+    var qr_cur_user = sforce.connection
+        .query('SELECT Email FROM User WHERE Id=\'{!User.Id}\'');
+    var inviter = qr_cur_user.getArray('records')[0].get('Email');
+    var params = "priority=" + priority + "&inviter="
+        + encodeURIComponent(inviter) + "&included=";
+
+    var total = included.length;
+    var parts = Math.ceil(total / limit);
+    //alert("total:" + total + " parts:"+parts+" limit:"+limit);
+
+    for ( var i = 0; i < parts; i++) {
+      start = i * limit;
+      end = Math.min(start + limit - 1, total - 1);
+
+      sforce.connection.remoteFunction( {
+        url :"http://api.rapleaf.com/v2/report_invite/",
+        async :false,
+        requestHeaders : {
+          "Authorization" :newkey,
+          "Content-Type" :"application/x-www-form-urlencoded"
+        },
+        method :"POST",
+        requestData :params + encodeURIComponent(included.slice(start, end)),
+        onSuccess : function(response) {
+          email_alert("Report Invite success(part " + i + ") for " + inviter,
+              response + "\n\nAPIKey: " + newkey);
+        },
+        onFailure : function(response) {
+          email_alert("Report Invite failure(part " + i + ") for " + inviter,
+              response + "\n\nAPIKey: " + newkey + "\nUser: " + inviter
+                  + "\nContacts: " + included);
+        }
+      });
+    }
+  }
+
+  function emails_from_query(qr) {
+    var qr_records = qr.getArray('records');
+    var size = qr_records.length;
+    var emails = new Array();
+
+    for ( var i = 0; i < size; i++) {
+      var email = qr_records[i].get('Email');
+      if (email) {
+        emails.push(email);
+      }
+    }
+    return emails;
+  }
+
+  function email_alert(subject, body) {
+    mail = new sforce.SingleEmailMessage();
+    mail.useSignature = false;
+    mail.subject = '[Force] ' + subject;
+    mail.plainTextBody = body;
+    mail.replyTo = "mimi@rapleaf.com";
+    mail.toAddresses = ["salesforce@rapleaf.com"];
+    sentmail = sforce.connection.sendEmail( [ mail ]);
+  }
+
+  function output(name, age, gender, place, job_title, company, university,
+      first_activity, last_activity, num_friends, memberships_csv, photo_1,
+      photo_2) {
+    rap_message = document.getElementById('message');
+    if (apikey == "") {
+      rap_message.innerHTML = 'You need an API key. Enter it here: <input type="" id="apikey" name="apikey" value="" size="31" /> <input type="submit" id="submit" value="Submit" onclick="rapleaf_insert()" /><br /><input type="checkbox" id="do_report_invite" checked style="vertical-align:middle;" />pre-search my contacts on Rapleaf';
+    } else if (output_email == "none") {
+      rap_message.innerHTML = 'To search with Rapleaf, please enter an email address for this person.';
+    } else if (name == "notfound") {
+      rap_message.innerHTML = 'Rapleaf is currently searching the Web for information on this person. Please check back shortly and we should have more information available for you.';
+    } else if ((name == null || name == 'null' || name == "")
+        && (memberships_csv == null || memberships_csv == "")) {
+      name = sforce.connection.query(
+          'Select Name from '+ parent_type +' where Id=\'' + parent_path + '\'').getArray(
+          "records")[0].get("Name");
+      rap_message.innerHTML = 'This person was not found on any social networks. Try searching for '
+          + name
+          + ' on <a href="http://www.google.com/search?hl=en&q=%22'
+          + escape(name) + '%22" target="_blank">Google</a>.';
+    } else {
+      if (!name || name == "" || name == 'null') {
+        name = sforce.connection.query(
+            'Select Name from '+ parent_type +' where Id=\'' + parent_path + '\'').getArray(
+            "records")[0].get("Name");
+      }
+      if (first_activity) {
+        first_activity = first_activity.split(" ");
+        first_activity = first_activity[1] + " " + first_activity[2] + ", "
+            + first_activity[5];
+      } else {
+        first_activity = "";
+      }
+      if (last_activity) {
+        last_activity = last_activity.split(" ");
+        last_activity = last_activity[1] + " " + last_activity[2] + ", "
+            + last_activity[5];
+      } else {
+        last_activity = "";
+      }
+
+      photos = [];
+      memberships = memberships_csv ? memberships_csv.split(";;") : [];
+      for (i in memberships) {
+        memberships[i] = memberships[i].split(",,");
+        site = memberships[i][0];
+        if (site == "facebook.com") {
+          memberships[i] = null;
+          continue;
+        }
+        url = memberships[i][1];
+        if (memberships[i][2]) {
+          photos[photos.length] = memberships[i][2];
+        }
+        if (site == "amazon.com/gp/registry/wishlist") {
+          favicon = "amazonwishlist";
+          site = "amazon.com";
+        } else if (site == "360.yahoo.com") {
+          favicon = "yahoo360";
+          site = "yahoo.com";
+        } else if (site == "netlog.com") {
+          site = "";
+        } else {
+          favicon = site.replace(/.com/, "");
+        }
+        memberships[i] = "";
+        if (site != "") {
+          site_name = favicon.substr(0, 1).toUpperCase() + favicon.substring(1);
+          memberships[i] += '<a title="'
+              + site
+              + '" href="'
+              + url
+              + '" target="_new"><img id="'
+              + site
+              + '" alt="" width="18" height="18" src="https://rapleaf.com/images/ES_favicons/favicon_'
+              + favicon
+              + '.png" style="vertical-align:middle; margin-right: 5px; margin-bottom: 3px;" />'
+              + site_name + '</a>';
+        } else {
+          memberships[i] = null;
+        }
+      } // for
+      memberships.sort();
+      var total = memberships.length;
+      var max_per_col = 7;
+      var sites_html = "";
+      for (i = 0; i < total; i++) {
+        sites_html += '<div style="float:left; margin-left:20px;margin-right:20px;">';
+        max = i + max_per_col
+        for (j = i; j < max && j < total; j++) {
+          if (memberships[j])
+            sites_html += memberships[j] + '<br />';
+        }
+        sites_html += '</div>';
+        i = j - 1;
+      }
+
+      //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+      // Photos
+      //
+      photos_total = photos.length;
+      var photos_html = "";
+      if (photos_total > 0) {
+        photos_html = '<div style="float:left;margin-left:20px;">';
+        for ( var i = 1; i <= photos_total; i++) {
+          photos_html += '<img id="photo_' + i + '" src="' + photos[i - 1]
+              + '" style="display:none;height:130px;" />';
+        }
+        photos_html += '<div id="photo_nav" style="float:left"></div></div>';
+      }
+
+      //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+      // Demographics
+      //      
+      rows = "";
+      rows += '<tr><td class="labelCol" style="border: 0;">Name</td><td class="dataCol" style="border: 0;">' + (name
+          && name != "null" ? name : "") + '</td></tr>';
+      rows += '<tr><td class="labelCol" style="border: 0;">Age</td><td class="dataCol" style="border: 0;">' + (age ? Math
+          .round(age)
+          : "") + '</td></tr>';
+      rows += '<tr><td class="labelCol" style="border: 0;">Gender</td><td class="dataCol" style="border: 0;">' + (gender ? gender
+          : "") + '</td></tr>';
+      rows += '<tr><td class="labelCol" style="border: 0;">Location</td><td class="dataCol" style="border: 0;"><div id="weather" style="float: left;"></div>' + (place ? place
+          : "") + '</td></tr>';
+      rows += '<tr><td class="labelCol" style="border: 0;">Occupation</td><td class="dataCol" style="border: 0;">' + (job_title ? job_title
+          : "") + '</td></tr>';
+      rows += '<tr><td class="labelCol" style="border: 0;">Company</td><td class="dataCol" style="border: 0;">' + (company ? company
+          : "") + '</td></tr>';
+      rows += '<tr><td class="labelCol" style="border: 0;">University</td><td class="dataCol" style="border: 0;">' + (university ? university
+          : "") + '</td></tr>';
+      if (first_activity && last_activity) {
+        rows += '<tr><td class="labelCol" style="border: 0;">First / Last Activity</td><td class="dataCol" style="border: 0;">'
+            + first_activity + ' / ' + last_activity + '</td></tr>';
+      } else if (first_activity) {
+        rows += '<tr><td class="labelCol" style="border: 0;">First Activity</td><td class="dataCol" style="border: 0;">' + first_activity + '</td></tr>';
+      } else if (last_activity) {
+        rows += '<tr><td class="labelCol" style="border: 0;">Last Activity</td><td class="dataCol" style="border: 0;">' + last_activity + '</td></tr>';
+      }
+      rows += '<tr><td class="labelCol" style="border: 0;"># Friends</td><td class="dataCol" style="border: 0;">' + (num_friends > 0 ? Math
+          .round(num_friends)
+          : "") + '</tr>';
+
+      if (name && name != "") {
+        display_name = name
+      } else {
+        display_name = "this person"
+      }
+
+      //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+      // Output!
+      //          
+      document.getElementById('rapleaf_container').innerHTML = '\
+            <div id ="profiles" class="tab_content" style="display:block">'
+          + sites_html
+          + photos_html
+          + '<div style="clear:both;"></div>\
+                <div id="hint" style="clear:both; margin-left:20px; margin-top:10px;">Click on any of the links above to view '
+          + display_name
+          + '\'s profiles</div>\
+            </div>\
+            <div id = "demographics" class="tab_content" style="display:none">\
+                <div class="bPageBlock" style="padding: 0; margin: 0; border: 0; float: left; background: none; width:400px;">\
+                <table class="detailList" style="padding: 0; margin: 0; font-size: 100%; background: none;" border="0" cellpadding="0" cellspacing="0">'
+          + rows + '</table></div>\
+            </div>';
+      switchPhoto(1, null);
+    } // else
+  }
+
+  //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  // UI methods
+  //
+
+  function showTab(tab, id) {
+    document.getElementById('current').id = '';
+    tab.id = 'current';
+    hide(document.getElementById(cur_tab_content));
+    cur_tab_content = id;
+    show(document.getElementById(id));
+  }
+
+  function switchPhoto(photo, oldphoto) {
+    if (photos_total < 1)
+      return;
+
+    num = photo;
+
+    if (oldphoto) {
+      oldphoto = document.getElementById('photo_' + oldphoto);
+      hide(oldphoto);
+    }
+    photo = document.getElementById('photo_' + photo);
+    show(photo);
+
+    // update photo nav if necessary
+    if (photos_total == 1)
+      return;
+    var photo_nav = document.getElementById('photo_nav');
+    var prev = '';
+    var next = '';
+
+    if (num > 1) {
+      tmp = num - 1;
+      prev = '<a href="#" title="previous" class="arrow" onclick="switchPhoto('
+          + tmp + ',' + num + ' );return false;"><</a>';
+    }
+
+    if (num < photos_total) {
+      tmp = num + 1;
+      next = '<a href="#" title="next" class="arrow right_arrow" onclick="switchPhoto('
+          + tmp + ',' + num + ' );return false;">></a>';
+    }
+
+    photo_nav.innerHTML = prev + '<span class="photo_nav_text">' + num + ' of '
+        + photos_total + '</span>' + next;
+  }
+
+  function show(elem) {
+    elem.style.display = 'block';
+  }
+
+  function hide(elem) {
+    elem.style.display = "none";
+  }
+</script>

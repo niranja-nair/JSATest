@@ -1,0 +1,2183 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
+    <actionOverrides>
+        <actionName>Accept</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>CancelEdit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>ChangeStatus</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Clone</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>CloneAsChild</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>CloseCase</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Delete</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Edit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Follow</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>List</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>MassClose</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>NewCase</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>SaveEdit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Tab</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>View</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <businessProcesses>
+        <fullName>Case Support Process</fullName>
+        <description>Master Case Support Process</description>
+        <isActive>true</isActive>
+        <values>
+            <fullName>Closed</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Escalated</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>New</fullName>
+            <default>true</default>
+        </values>
+        <values>
+            <fullName>On Hold</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Open</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Verified</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Waiting on customer</fullName>
+            <default>false</default>
+        </values>
+    </businessProcesses>
+    <compactLayoutAssignment>SYSTEM</compactLayoutAssignment>
+    <enableFeeds>true</enableFeeds>
+    <fields>
+        <fullName>AccountId</fullName>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>Account_City__c</fullName>
+        <externalId>false</externalId>
+        <formula>Account.BillingCity</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <inlineHelpText>City from the Account associated with this case.  Account should be a high school.</inlineHelpText>
+        <label>Account City</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Account_State__c</fullName>
+        <externalId>false</externalId>
+        <formula>Account.BillingState</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <inlineHelpText>State from the Account associated with this case.  Account should be a high school.</inlineHelpText>
+        <label>Account State</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Active_Teacher_Advisor__c</fullName>
+        <externalId>false</externalId>
+        <formula>IF( High_School__r.Active_T_A__c , &quot;Yes&quot;, &quot;No&quot;)</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <inlineHelpText>This field references the High School object, if one is entered in the &quot;High School Link&quot; field.  Update the checkbox on the High School when a T/A has been found, (and make sure the T/A is entered in Salesforce.</inlineHelpText>
+        <label>Active Teacher/Advisor?</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>AssetId</fullName>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>true</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>BusinessHoursId</fullName>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>Chapter_Materials__c</fullName>
+        <externalId>false</externalId>
+        <inlineHelpText>Please select the chapter materials you need.  If you need more than the quantities indicated, please specify below.</inlineHelpText>
+        <label>Chapter Materials</label>
+        <picklist>
+            <picklistValues>
+                <fullName>JSA Introductory Brochures (25)</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>&quot;We Want You for JSA&quot; Posters (25)</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>JSA Handbooks (10)</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Upcoming Convention Flyers (25)</fullName>
+                <default>false</default>
+            </picklistValues>
+            <sorted>false</sorted>
+        </picklist>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>MultiselectPicklist</type>
+        <visibleLines>4</visibleLines>
+    </fields>
+    <fields>
+        <fullName>ClosedDate</fullName>
+        <trackTrending>false</trackTrending>
+    </fields>
+    <fields>
+        <fullName>Comments</fullName>
+        <trackTrending>false</trackTrending>
+    </fields>
+    <fields>
+        <fullName>CommunityId</fullName>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>Constitution__c</fullName>
+        <externalId>false</externalId>
+        <formula>IF( High_School__r.Constitution__c , &quot;Yes&quot;, &quot;No&quot;)</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <inlineHelpText>This field references the High School object, if one is entered in the &quot;High School Link&quot; field.  Update the checkbox on the High School when a constitution document has been received.</inlineHelpText>
+        <label>Constitution?</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>ContactEmail</fullName>
+        <trackTrending>false</trackTrending>
+    </fields>
+    <fields>
+        <fullName>ContactFax</fullName>
+        <trackTrending>false</trackTrending>
+    </fields>
+    <fields>
+        <fullName>ContactId</fullName>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>true</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>ContactMobile</fullName>
+        <trackTrending>false</trackTrending>
+    </fields>
+    <fields>
+        <fullName>ContactPhone</fullName>
+        <trackTrending>false</trackTrending>
+    </fields>
+    <fields>
+        <fullName>Description</fullName>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>true</trackHistory>
+        <trackTrending>false</trackTrending>
+    </fields>
+    <fields>
+        <fullName>Due_Date__c</fullName>
+        <description>Requested date by which the case should be closed.</description>
+        <externalId>false</externalId>
+        <inlineHelpText>Requested date by which the case should be closed.</inlineHelpText>
+        <label>Due Date</label>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Date</type>
+    </fields>
+    <fields>
+        <fullName>First_meeting__c</fullName>
+        <externalId>false</externalId>
+        <formula>IF( High_School__r.First_meeting__c , &quot;Yes&quot;, &quot;No&quot;)</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <inlineHelpText>This field references the High School object, if one is entered in the &quot;High School Link&quot; field.  Update the checkbox on the High School when the chapter has held its first meeting.</inlineHelpText>
+        <label>First meeting?</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>High_School_Graudation_Year__c</fullName>
+        <externalId>false</externalId>
+        <label>High School Graudation Year</label>
+        <picklist>
+            <picklistValues>
+                <fullName>2013</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>2014</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>2015</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>2016</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>2017</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>2018</fullName>
+                <default>false</default>
+            </picklistValues>
+            <sorted>false</sorted>
+        </picklist>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Picklist</type>
+    </fields>
+    <fields>
+        <fullName>High_School__c</fullName>
+        <deleteConstraint>SetNull</deleteConstraint>
+        <externalId>false</externalId>
+        <inlineHelpText>Link to High School object for related school.</inlineHelpText>
+        <label>High School Link</label>
+        <referenceTo>High_School__c</referenceTo>
+        <relationshipLabel>Cases</relationshipLabel>
+        <relationshipName>Cases</relationshipName>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>I_am_a_cp_ta__c</fullName>
+        <externalId>false</externalId>
+        <inlineHelpText>Used for web-to-case form requesting update of jsa_role for portal account.</inlineHelpText>
+        <label>CP/TA?</label>
+        <picklist>
+            <picklistValues>
+                <fullName>Chapter President</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Teacher-Advisor</fullName>
+                <default>false</default>
+            </picklistValues>
+            <sorted>false</sorted>
+        </picklist>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Picklist</type>
+    </fields>
+    <fields>
+        <fullName>IsClosedOnCreate</fullName>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+    </fields>
+    <fields>
+        <fullName>IsEscalated</fullName>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+    </fields>
+    <fields>
+        <fullName>IsSelfServiceClosed</fullName>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+    </fields>
+    <fields>
+        <fullName>IsVisibleInSelfService</fullName>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>true</trackHistory>
+        <trackTrending>false</trackTrending>
+    </fields>
+    <fields>
+        <fullName>Origin</fullName>
+        <picklist>
+            <picklistValues>
+                <fullName>Email</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Phone</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Web</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Salesforce</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Chatter Answers</fullName>
+                <default>false</default>
+            </picklistValues>
+            <sorted>false</sorted>
+        </picklist>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>true</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Picklist</type>
+    </fields>
+    <fields>
+        <fullName>OwnerId</fullName>
+        <trackFeedHistory>true</trackFeedHistory>
+        <trackHistory>true</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>ParentId</fullName>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>Priority</fullName>
+        <picklist>
+            <picklistValues>
+                <fullName>High</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Medium</fullName>
+                <default>true</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Low</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>P1 - Urgent</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>P2 - High</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>P3 - Medium</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>P4 - Low</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>P5 - Wish List</fullName>
+                <default>false</default>
+            </picklistValues>
+            <sorted>false</sorted>
+        </picklist>
+        <trackFeedHistory>true</trackFeedHistory>
+        <trackHistory>true</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Picklist</type>
+    </fields>
+    <fields>
+        <fullName>QuestionId</fullName>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>Reason</fullName>
+        <picklist>
+            <picklistValues>
+                <fullName>New Request</fullName>
+                <cssExposed>false</cssExposed>
+                <default>true</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Closed Request</fullName>
+                <cssExposed>false</cssExposed>
+                <default>false</default>
+            </picklistValues>
+            <sorted>false</sorted>
+        </picklist>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>true</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Picklist</type>
+    </fields>
+    <fields>
+        <fullName>Request_Scholarship_Information__c</fullName>
+        <defaultValue>false</defaultValue>
+        <externalId>false</externalId>
+        <label>Request Scholarship Information</label>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>School_Approval__c</fullName>
+        <externalId>false</externalId>
+        <formula>IF(High_School__r.School_Approval__c, &quot;Yes&quot;, &quot;No&quot;)</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <inlineHelpText>This field references the High School object, if one is entered in the &quot;High School Link&quot; field.  Update the checkbox on the High School when school approval has been received.</inlineHelpText>
+        <label>School Approval?</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Scope_Range__c</fullName>
+        <externalId>false</externalId>
+        <label>Scope range (hours)</label>
+        <picklist>
+            <picklistValues>
+                <fullName>0 - 1</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>1 - 5</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>5 - 10</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>10 - 20</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>20 - 40</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>40+</fullName>
+                <default>false</default>
+            </picklistValues>
+            <sorted>false</sorted>
+        </picklist>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Picklist</type>
+    </fields>
+    <fields>
+        <fullName>Severity__c</fullName>
+        <externalId>false</externalId>
+        <inlineHelpText>Severity of the problem, based on impact on work or revenue stream.</inlineHelpText>
+        <label>Severity</label>
+        <picklist>
+            <picklistValues>
+                <fullName>S1 - Critical</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>S2 - High</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>S3 - Medium</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>S4 - Low</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>S5 - Very Low</fullName>
+                <default>false</default>
+            </picklistValues>
+            <sorted>false</sorted>
+        </picklist>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Picklist</type>
+    </fields>
+    <fields>
+        <fullName>Status</fullName>
+        <picklist>
+            <picklistValues>
+                <fullName>New</fullName>
+                <closed>false</closed>
+                <default>true</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Open</fullName>
+                <closed>false</closed>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Waiting on customer</fullName>
+                <closed>false</closed>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Escalated</fullName>
+                <closed>false</closed>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>On Hold</fullName>
+                <closed>false</closed>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Closed</fullName>
+                <closed>true</closed>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Verified</fullName>
+                <closed>true</closed>
+                <default>false</default>
+            </picklistValues>
+            <sorted>false</sorted>
+        </picklist>
+        <trackFeedHistory>true</trackFeedHistory>
+        <trackHistory>true</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Picklist</type>
+    </fields>
+    <fields>
+        <fullName>Subject</fullName>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>true</trackHistory>
+        <trackTrending>false</trackTrending>
+    </fields>
+    <fields>
+        <fullName>Summer_Program_Inquiry__c</fullName>
+        <description>List of summer programs.</description>
+        <externalId>false</externalId>
+        <inlineHelpText>Please select one or more of these JSA Summer Programs</inlineHelpText>
+        <label>Summer Program Inquiry</label>
+        <picklist>
+            <picklistValues>
+                <fullName>JSA Summer School at Georgetown</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>JSA Summer School at Stanford</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>JSA Summer School at Princeton</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>JSA Symposium at the RNC and DNC</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>JSA Institute</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Other/I don&apos;t know</fullName>
+                <default>false</default>
+            </picklistValues>
+            <sorted>false</sorted>
+        </picklist>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>MultiselectPicklist</type>
+        <visibleLines>6</visibleLines>
+    </fields>
+    <fields>
+        <fullName>SuppliedCompany</fullName>
+        <trackTrending>false</trackTrending>
+    </fields>
+    <fields>
+        <fullName>SuppliedEmail</fullName>
+        <trackTrending>false</trackTrending>
+    </fields>
+    <fields>
+        <fullName>SuppliedName</fullName>
+        <trackTrending>false</trackTrending>
+    </fields>
+    <fields>
+        <fullName>SuppliedPhone</fullName>
+        <trackTrending>false</trackTrending>
+    </fields>
+    <fields>
+        <fullName>Taxes_Submitted__c</fullName>
+        <externalId>false</externalId>
+        <formula>IF( High_School__r.Taxes__c &gt;0, &quot;Yes&quot;, &quot;No&quot;)</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <inlineHelpText>This field references the High School Account, if one is entered in the &quot;High School Link&quot; field.  When taxes are received, enter them on the High School account.</inlineHelpText>
+        <label>Taxes Submitted?</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Type</fullName>
+        <picklist>
+            <picklistValues>
+                <fullName>Chapter Start-Up</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Chapter Materials Request</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Summer Program Inquiry</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Question</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Problem</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>MyJSA Portal</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Kintera</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Website</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Feature Request</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Salesforce</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Email</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Quickbooks</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Netforum</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Hardware</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>PC software</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Telephone</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Other</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Network/Internet</fullName>
+                <default>false</default>
+            </picklistValues>
+            <sorted>false</sorted>
+        </picklist>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>true</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Picklist</type>
+    </fields>
+    <fields>
+        <fullName>Web_Address__c</fullName>
+        <description>User imputted address from web to case form</description>
+        <externalId>false</externalId>
+        <inlineHelpText>If you are requesting Chapter Materials, please enter a valid mailing address.</inlineHelpText>
+        <label>Web Address</label>
+        <length>255</length>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Web_City__c</fullName>
+        <description>City</description>
+        <externalId>false</externalId>
+        <label>Web City</label>
+        <length>100</length>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Web_High_School__c</fullName>
+        <description>Web-to-case entered high school</description>
+        <externalId>false</externalId>
+        <inlineHelpText>Please enter the name of your high school</inlineHelpText>
+        <label>Web High School</label>
+        <length>50</length>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Web_State__c</fullName>
+        <description>State</description>
+        <externalId>false</externalId>
+        <label>Web State</label>
+        <length>2</length>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Web_Zipcode__c</fullName>
+        <description>zipcode</description>
+        <externalId>false</externalId>
+        <label>Web Zipcode</label>
+        <length>5</length>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Web_type__c</fullName>
+        <externalId>false</externalId>
+        <label>Type of Contact</label>
+        <picklist>
+            <picklistValues>
+                <fullName>Student</fullName>
+                <default>true</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Teacher/Administrator</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Parent</fullName>
+                <default>false</default>
+            </picklistValues>
+            <sorted>false</sorted>
+        </picklist>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Picklist</type>
+    </fields>
+    <listViews>
+        <fullName>AllOpenCases</fullName>
+        <columns>CASES.CASE_NUMBER</columns>
+        <columns>CASES.CREATED_DATE_DATE_ONLY</columns>
+        <columns>NAME</columns>
+        <columns>CASES.NAME</columns>
+        <columns>CASES.SUBJECT</columns>
+        <columns>CASES.STATUS</columns>
+        <columns>CASES.TYPE</columns>
+        <columns>CASES.PRIORITY</columns>
+        <columns>CASES.RECORDTYPE</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>CASES.CLOSED</field>
+            <operation>equals</operation>
+            <value>0</value>
+        </filters>
+        <label>All Open Cases</label>
+        <language>en_US</language>
+    </listViews>
+    <listViews>
+        <fullName>MyCases</fullName>
+        <filterScope>Mine</filterScope>
+        <label>My Cases</label>
+    </listViews>
+    <listViews>
+        <fullName>MyOpenCases</fullName>
+        <filterScope>Mine</filterScope>
+        <filters>
+            <field>CASES.CLOSED</field>
+            <operation>equals</operation>
+            <value>0</value>
+        </filters>
+        <label>My Open Cases</label>
+    </listViews>
+    <listViews>
+        <fullName>Open_Chapter_Start_Up_Cases</fullName>
+        <columns>NAME</columns>
+        <columns>ACCOUNT.NAME</columns>
+        <columns>CASES.SUBJECT</columns>
+        <columns>CASES.STATUS</columns>
+        <columns>CASES.PRIORITY</columns>
+        <columns>CASES.CREATED_DATE</columns>
+        <columns>OWNER_NAME</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>CASES.RECORDTYPE</field>
+            <operation>equals</operation>
+            <value>Case.Chapter_Start_Up</value>
+        </filters>
+        <label>Open Chapter Start-Up Cases</label>
+    </listViews>
+    <listViews>
+        <fullName>Open_IT_Cases</fullName>
+        <columns>CASES.CREATED_DATE</columns>
+        <columns>CASES.SUBJECT</columns>
+        <columns>CASES.STATUS</columns>
+        <columns>CASES.TYPE</columns>
+        <columns>CASES.PRIORITY</columns>
+        <columns>Severity__c</columns>
+        <columns>CASES.ESCALATION_STATE</columns>
+        <columns>OWNER_NAME</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>CASES.RECORDTYPE</field>
+            <operation>equals</operation>
+            <value>Case.IT_Case</value>
+        </filters>
+        <filters>
+            <field>CASES.CLOSED</field>
+            <operation>notEqual</operation>
+            <value>1</value>
+        </filters>
+        <label>Open IT Cases</label>
+    </listViews>
+    <recordTypeTrackFeedHistory>false</recordTypeTrackFeedHistory>
+    <recordTypeTrackHistory>true</recordTypeTrackHistory>
+    <recordTypes>
+        <fullName>Chapter_Materials</fullName>
+        <active>true</active>
+        <businessProcess>Case Support Process</businessProcess>
+        <description>Use the record type for chapter materials requests</description>
+        <label>Chapter Materials</label>
+        <picklistValues>
+            <picklist>Chapter_Materials__c</picklist>
+            <values>
+                <fullName>%22We Want You for JSA%22 Posters %2825%29</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>JSA Handbooks %2810%29</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>JSA Introductory Brochures %2825%29</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Upcoming Convention Flyers %2825%29</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>High_School_Graudation_Year__c</picklist>
+            <values>
+                <fullName>2013</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>2014</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>2015</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>2016</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>2017</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>2018</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>I_am_a_cp_ta__c</picklist>
+            <values>
+                <fullName>Chapter President</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Teacher-Advisor</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>Origin</picklist>
+            <values>
+                <fullName>Email</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Phone</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Salesforce</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Web</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>Priority</picklist>
+            <values>
+                <fullName>High</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Low</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Medium</fullName>
+                <default>true</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>Reason</picklist>
+            <values>
+                <fullName>Closed Request</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>New Request</fullName>
+                <default>true</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>Scope_Range__c</picklist>
+            <values>
+                <fullName>0 - 1</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>1 - 5</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>10 - 20</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>20 - 40</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>40%2B</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>5 - 10</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>Severity__c</picklist>
+            <values>
+                <fullName>S1 - Critical</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>S2 - High</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>S3 - Medium</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>S4 - Low</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>S5 - Very Low</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>Summer_Program_Inquiry__c</picklist>
+            <values>
+                <fullName>JSA Institute</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>JSA Summer School at Georgetown</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>JSA Summer School at Princeton</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>JSA Summer School at Stanford</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>JSA Symposium at the RNC and DNC</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Other%2FI don%27t know</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>Type</picklist>
+            <values>
+                <fullName>Chapter Materials Request</fullName>
+                <default>true</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>Web_type__c</picklist>
+            <values>
+                <fullName>Parent</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Student</fullName>
+                <default>true</default>
+            </values>
+            <values>
+                <fullName>Teacher%2FAdministrator</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+    </recordTypes>
+    <recordTypes>
+        <fullName>Chapter_Start_Up</fullName>
+        <active>true</active>
+        <businessProcess>Case Support Process</businessProcess>
+        <description>Use this record type for inquiries about starting or re-starting a chapter</description>
+        <label>Chapter Start-Up</label>
+        <picklistValues>
+            <picklist>Chapter_Materials__c</picklist>
+            <values>
+                <fullName>%22We Want You for JSA%22 Posters %2825%29</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>JSA Handbooks %2810%29</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>JSA Introductory Brochures %2825%29</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Upcoming Convention Flyers %2825%29</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>High_School_Graudation_Year__c</picklist>
+            <values>
+                <fullName>2013</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>2014</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>2015</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>2016</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>2017</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>2018</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>I_am_a_cp_ta__c</picklist>
+            <values>
+                <fullName>Chapter President</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Teacher-Advisor</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>Origin</picklist>
+            <values>
+                <fullName>Email</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Phone</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Salesforce</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Web</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>Priority</picklist>
+            <values>
+                <fullName>High</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Low</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Medium</fullName>
+                <default>true</default>
+            </values>
+            <values>
+                <fullName>P1 - Urgent</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>P2 - High</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>P3 - Medium</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>P4 - Low</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>P5 - Wish List</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>Reason</picklist>
+            <values>
+                <fullName>Closed Request</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>New Request</fullName>
+                <default>true</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>Scope_Range__c</picklist>
+            <values>
+                <fullName>0 - 1</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>1 - 5</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>10 - 20</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>20 - 40</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>40%2B</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>5 - 10</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>Severity__c</picklist>
+            <values>
+                <fullName>S1 - Critical</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>S2 - High</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>S3 - Medium</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>S4 - Low</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>S5 - Very Low</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>Summer_Program_Inquiry__c</picklist>
+            <values>
+                <fullName>JSA Institute</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>JSA Summer School at Georgetown</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>JSA Summer School at Princeton</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>JSA Summer School at Stanford</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>JSA Symposium at the RNC and DNC</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Other%2FI don%27t know</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>Type</picklist>
+            <values>
+                <fullName>Chapter Materials Request</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Chapter Start-Up</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Email</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Feature Request</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Hardware</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Kintera</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>MyJSA Portal</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Netforum</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Other</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>PC software</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Problem</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Question</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Quickbooks</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Salesforce</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Telephone</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Website</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>Web_type__c</picklist>
+            <values>
+                <fullName>Parent</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Student</fullName>
+                <default>true</default>
+            </values>
+            <values>
+                <fullName>Teacher%2FAdministrator</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+    </recordTypes>
+    <recordTypes>
+        <fullName>IT_Case</fullName>
+        <active>true</active>
+        <businessProcess>Case Support Process</businessProcess>
+        <description>Use this record type for technology cases</description>
+        <label>IT Case</label>
+        <picklistValues>
+            <picklist>Chapter_Materials__c</picklist>
+            <values>
+                <fullName>%22We Want You for JSA%22 Posters %2825%29</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>JSA Handbooks %2810%29</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>JSA Introductory Brochures %2825%29</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Upcoming Convention Flyers %2825%29</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>High_School_Graudation_Year__c</picklist>
+            <values>
+                <fullName>2013</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>2014</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>2015</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>2016</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>2017</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>2018</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>I_am_a_cp_ta__c</picklist>
+            <values>
+                <fullName>Chapter President</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Teacher-Advisor</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>Origin</picklist>
+            <values>
+                <fullName>Email</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Phone</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Salesforce</fullName>
+                <default>true</default>
+            </values>
+            <values>
+                <fullName>Web</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>Priority</picklist>
+            <values>
+                <fullName>P1 - Urgent</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>P2 - High</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>P3 - Medium</fullName>
+                <default>true</default>
+            </values>
+            <values>
+                <fullName>P4 - Low</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>P5 - Wish List</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>Reason</picklist>
+            <values>
+                <fullName>Closed Request</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>New Request</fullName>
+                <default>true</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>Scope_Range__c</picklist>
+            <values>
+                <fullName>0 - 1</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>1 - 5</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>10 - 20</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>20 - 40</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>40%2B</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>5 - 10</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>Severity__c</picklist>
+            <values>
+                <fullName>S1 - Critical</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>S2 - High</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>S3 - Medium</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>S4 - Low</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>S5 - Very Low</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>Summer_Program_Inquiry__c</picklist>
+            <values>
+                <fullName>JSA Institute</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>JSA Summer School at Georgetown</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>JSA Summer School at Princeton</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>JSA Summer School at Stanford</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>JSA Symposium at the RNC and DNC</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Other%2FI don%27t know</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>Type</picklist>
+            <values>
+                <fullName>Email</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Hardware</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Kintera</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>MyJSA Portal</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Netforum</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Network%2FInternet</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Other</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>PC software</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Quickbooks</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Salesforce</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Telephone</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Website</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>Web_type__c</picklist>
+            <values>
+                <fullName>Parent</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Student</fullName>
+                <default>true</default>
+            </values>
+            <values>
+                <fullName>Teacher%2FAdministrator</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+    </recordTypes>
+    <recordTypes>
+        <fullName>Standard_Case</fullName>
+        <active>true</active>
+        <businessProcess>Case Support Process</businessProcess>
+        <description>All other cases</description>
+        <label>Standard Case</label>
+        <picklistValues>
+            <picklist>Chapter_Materials__c</picklist>
+            <values>
+                <fullName>%22We Want You for JSA%22 Posters %2825%29</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>JSA Handbooks %2810%29</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>JSA Introductory Brochures %2825%29</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Upcoming Convention Flyers %2825%29</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>High_School_Graudation_Year__c</picklist>
+            <values>
+                <fullName>2013</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>2014</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>2015</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>2016</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>2017</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>2018</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>I_am_a_cp_ta__c</picklist>
+            <values>
+                <fullName>Chapter President</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Teacher-Advisor</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>Origin</picklist>
+            <values>
+                <fullName>Email</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Phone</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Salesforce</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Web</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>Priority</picklist>
+            <values>
+                <fullName>High</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Low</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Medium</fullName>
+                <default>true</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>Reason</picklist>
+            <values>
+                <fullName>Closed Request</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>New Request</fullName>
+                <default>true</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>Scope_Range__c</picklist>
+            <values>
+                <fullName>0 - 1</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>1 - 5</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>10 - 20</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>20 - 40</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>40%2B</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>5 - 10</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>Severity__c</picklist>
+            <values>
+                <fullName>S1 - Critical</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>S2 - High</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>S3 - Medium</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>S4 - Low</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>S5 - Very Low</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>Summer_Program_Inquiry__c</picklist>
+            <values>
+                <fullName>JSA Institute</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>JSA Summer School at Georgetown</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>JSA Summer School at Princeton</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>JSA Summer School at Stanford</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>JSA Symposium at the RNC and DNC</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Other%2FI don%27t know</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>Type</picklist>
+            <values>
+                <fullName>Chapter Materials Request</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Chapter Start-Up</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Feature Request</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Problem</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Question</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>Web_type__c</picklist>
+            <values>
+                <fullName>Parent</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Student</fullName>
+                <default>true</default>
+            </values>
+            <values>
+                <fullName>Teacher%2FAdministrator</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+    </recordTypes>
+    <recordTypes>
+        <fullName>Summer_Recruitment</fullName>
+        <active>true</active>
+        <businessProcess>Case Support Process</businessProcess>
+        <description>Cases related to Summer Recruitment</description>
+        <label>Summer Recruitment</label>
+        <picklistValues>
+            <picklist>Chapter_Materials__c</picklist>
+            <values>
+                <fullName>%22We Want You for JSA%22 Posters %2825%29</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>JSA Handbooks %2810%29</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>JSA Introductory Brochures %2825%29</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Upcoming Convention Flyers %2825%29</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>High_School_Graudation_Year__c</picklist>
+            <values>
+                <fullName>2013</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>2014</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>2015</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>2016</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>2017</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>2018</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>I_am_a_cp_ta__c</picklist>
+            <values>
+                <fullName>Chapter President</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Teacher-Advisor</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>Origin</picklist>
+            <values>
+                <fullName>Email</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Phone</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Salesforce</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Web</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>Priority</picklist>
+            <values>
+                <fullName>High</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Low</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Medium</fullName>
+                <default>true</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>Reason</picklist>
+            <values>
+                <fullName>Closed Request</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>New Request</fullName>
+                <default>true</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>Scope_Range__c</picklist>
+            <values>
+                <fullName>0 - 1</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>1 - 5</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>10 - 20</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>20 - 40</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>40%2B</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>5 - 10</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>Severity__c</picklist>
+            <values>
+                <fullName>S1 - Critical</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>S2 - High</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>S3 - Medium</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>S4 - Low</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>S5 - Very Low</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>Summer_Program_Inquiry__c</picklist>
+            <values>
+                <fullName>JSA Institute</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>JSA Summer School at Georgetown</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>JSA Summer School at Princeton</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>JSA Summer School at Stanford</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>JSA Symposium at the RNC and DNC</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Other%2FI don%27t know</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>Type</picklist>
+            <values>
+                <fullName>Chapter Materials Request</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Chapter Start-Up</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Feature Request</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Problem</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Question</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>Web_type__c</picklist>
+            <values>
+                <fullName>Parent</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Student</fullName>
+                <default>true</default>
+            </values>
+            <values>
+                <fullName>Teacher%2FAdministrator</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+    </recordTypes>
+    <searchLayouts>
+        <customTabListAdditionalFields>CASES.CASE_NUMBER</customTabListAdditionalFields>
+        <customTabListAdditionalFields>CASES.SUBJECT</customTabListAdditionalFields>
+        <customTabListAdditionalFields>CASES.CREATED_DATE</customTabListAdditionalFields>
+        <customTabListAdditionalFields>CASES.PRIORITY</customTabListAdditionalFields>
+        <lookupDialogsAdditionalFields>CASES.CASE_NUMBER</lookupDialogsAdditionalFields>
+        <lookupDialogsAdditionalFields>CASES.SUBJECT</lookupDialogsAdditionalFields>
+        <lookupDialogsAdditionalFields>ACCOUNT.NAME</lookupDialogsAdditionalFields>
+        <lookupDialogsAdditionalFields>CASES.STATUS</lookupDialogsAdditionalFields>
+        <lookupPhoneDialogsAdditionalFields>CASES.CASE_NUMBER</lookupPhoneDialogsAdditionalFields>
+        <lookupPhoneDialogsAdditionalFields>CASES.SUBJECT</lookupPhoneDialogsAdditionalFields>
+        <lookupPhoneDialogsAdditionalFields>ACCOUNT.NAME</lookupPhoneDialogsAdditionalFields>
+        <lookupPhoneDialogsAdditionalFields>CASES.STATUS</lookupPhoneDialogsAdditionalFields>
+        <searchResultsAdditionalFields>CASES.CASE_NUMBER</searchResultsAdditionalFields>
+        <searchResultsAdditionalFields>CASES.SUBJECT</searchResultsAdditionalFields>
+        <searchResultsAdditionalFields>CASES.STATUS</searchResultsAdditionalFields>
+        <searchResultsAdditionalFields>CASES.CREATED_DATE</searchResultsAdditionalFields>
+        <searchResultsAdditionalFields>CORE.USERS.ALIAS</searchResultsAdditionalFields>
+    </searchLayouts>
+    <sharingModel>Private</sharingModel>
+    <webLinks>
+        <fullName>CreateContactfromWebInfo</fullName>
+        <availability>online</availability>
+        <displayType>link</displayType>
+        <encodingKey>UTF-8</encodingKey>
+        <hasMenubar>false</hasMenubar>
+        <hasScrollbars>true</hasScrollbars>
+        <hasToolbar>false</hasToolbar>
+        <height>600</height>
+        <isResizable>true</isResizable>
+        <linkType>url</linkType>
+        <masterLabel>Create Contact from Web Info</masterLabel>
+        <openType>newWindow</openType>
+        <position>none</position>
+        <protected>false</protected>
+        <showsLocation>false</showsLocation>
+        <showsStatus>false</showsStatus>
+        <url>https://emea.salesforce.com/003/e?retURL=%2F003%2Fo&amp;name_lastcon2={!Case_SuppliedName}&amp;con15={!Case_SuppliedEmail}&amp;con10={!Case_SuppliedPhone}&amp;con4={!Case_SuppliedCompany}</url>
+    </webLinks>
+</CustomObject>

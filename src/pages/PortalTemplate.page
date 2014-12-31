@@ -1,0 +1,40 @@
+<apex:page showHeader="false" id="page">
+
+    <link rel="Shortcut Icon" href="http://jsa.org/images/favicon.ico"/>
+    <apex:stylesheet value="{!URLFOR($Resource.PortalCSS, '/css/Refresh.css')}"/>
+    <apex:stylesheet value="{!URLFOR($Resource.PortalCSS, '/css/header.css')}"/>
+    <apex:stylesheet value="{!URLFOR($Resource.PortalCSS, '/css/footer.css')}"/>
+    <apex:stylesheet value="{!URLFOR($Resource.PortalCSS, '/css/bt.css')}"/>
+    <!-- wrap starts here -->
+    <div id="portalWrap">
+        <div id="portalcontent">
+            <div id="portalHead"> <a href="http://jsa.org"><img src="{!URLFOR($Resource.PortalCSS, '/images/logo_3.gif')}" alt="Junior State of America" /></a></div>
+            <div>
+                
+            </div>
+            <!-- content-wrap starts here -->
+            <div id="content-wrap">
+            
+            
+            <div id="main">
+                <c:contentblock name="body"/>
+            </div>
+            
+            <!-- content-wrap ends here -->
+            <div class="clear"></div>
+        </div>
+        <div class="clear"></div>
+        <!-- wrap ends here -->
+
+    </div>
+</div>
+<div id="footer">
+    
+
+<div id="foot_wrap">
+    <p><a href="http://www.jsa.org/contact-us/contact-us.html" target="_blank">Contact JSA</a> | <a href="../help.html" target="_blank">Help</a></p>
+</div>
+
+</div>
+
+</apex:page>

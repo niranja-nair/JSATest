@@ -1,0 +1,128 @@
+<apex:page controller="pymt.EWayHostedResultController" action="{!processNotification}" cache="false" sidebar="false" showHeader="false" standardStyleSheets="false">
+
+<apex:composition template="{!$Site.Template}">
+  <apex:define name="body">
+    <div class="pc_page_content_top"></div>
+    <div class="pc_page_content">
+    <div class="pc_page_content_inner"> 
+    
+    <apex:form >
+        <apex:outputPanel id="ewayHostedResultPanel">
+           <apex:pageMessages />
+        
+        <apex:outputPanel id="failedPaymentPanel" rendered="{!pageview='failed'}">
+            <p>&nbsp;</p>
+            <apex:commandButton action="{!retryPayment}" value="Try Again" />
+        
+        </apex:outputPanel>
+        
+        <apex:outputPanel id="receiptPanel" rendered="{!pageview='receipt'}">
+        
+        
+            <apex:outputPanel rendered="{!NOT($Label.SiteCheckout_CompletedHeading == '-')}">
+            <h1>{!$Label.SiteCheckout_CompletedHeading}</h1>
+            </apex:outputPanel>
+            <apex:outputPanel rendered="{!NOT($Label.SiteCheckout_CompletedMessage == '-')}">
+            <p>{!$Label.SiteCheckout_CompletedMessage}</p> 
+            </apex:outputPanel>
+            <apex:outputPanel rendered="{!NOT($Label.SiteCheckout_ReceiptDetailsHeading == '-')}">            
+            <h2>{!$Label.SiteCheckout_ReceiptDetailsHeading}</h2>
+            </apex:outputPanel>
+
+            <apex:outputText value="{!$Label.Label_Date}"/>:&nbsp;
+                <apex:outputField value="{!payment.pymt__Date__c}"/>
+
+            <apex:outputPanel rendered="{!hasCartItems}" >
+            
+            <apex:outputPanel rendered="{!NOT($Label.SiteCheckout_ItemListHeading == '-')}">            
+            <h3>{!$Label.SiteCheckout_ItemListHeading}</h3>
+            </apex:outputPanel>
+            <apex:dataTable styleClass="pc_cart_item_table"  id="cartItemTable2" value="{!attachedCartItems}" var="item" columnClasses="itemDescriptionColumn,itemQuantityColumn,currency_column,currency_column" rowClasses="evenRow,oddRow">
+                <apex:column >
+                    <apex:facet name="header">{!$ObjectType.pymt__Shopping_Cart_Item__c.fields.Name.label}</apex:facet>
+                    <apex:outputText value="{!item.name}" />&nbsp;<apex:outputText styleClass="product_code" value="({!item.pymt__Product_Code__c})" rendered="{!NOT(ISNULL(item.pymt__Product_Code__c))}" />
+                </apex:column>
+                <apex:column >
+                    <apex:facet name="header">{!$ObjectType.pymt__Shopping_Cart_Item__c.fields.pymt__Quantity__c.label}</apex:facet>
+                    <apex:outputText value="{0}" >
+                        <apex:param value="{!item.pymt__Quantity__c}" />
+                    </apex:outputText>
+                </apex:column>
+                <apex:column >
+                    <apex:facet name="header">{!$ObjectType.pymt__Shopping_Cart_Item__c.fields.pymt__Unit_Price__c.label}</apex:facet>
+                    <apex:outputField value="{!item.pymt__Unit_Price__c}" />
+                </apex:column>
+                <apex:column >
+                    <apex:facet name="header">{!$ObjectType.pymt__Shopping_Cart_Item__c.fields.pymt__Total__c.label}</apex:facet>
+                    <apex:outputField value="{!item.pymt__Total__c}" />
+                </apex:column>
+            </apex:dataTable>
+            </apex:outputPanel>
+            
+            <apex:outputPanel rendered="{!NOT(hasCartItems)}" >
+            <apex:panelGrid styleClass="pc_cart_item_table"  id="paymentDescriptionTable2"  columnClasses="itemDescriptionColumn" >
+                <apex:facet name="header">Description</apex:facet>
+                <apex:outputText value="{!payment.name}" />     
+            </apex:panelGrid>
+            </apex:outputPanel>
+            
+            <div class="pc_checkout_totals2" >
+            <apex:panelGrid columns="3" columnClasses="totalsLabelColumn,currency_column,currencyCodeColumn">
+
+
+                <apex:outputLabel value="Discount" rendered="{!NOT(OR(ISNULL(payment.pymt__Discount__c),payment.pymt__Discount__c==0))}"/>
+                <apex:outputField value="{!discount.pymt__Amount__c}" styleClass="discountAmount" rendered="{!NOT(OR(ISNULL(payment.pymt__Discount__c),payment.pymt__Discount__c==0))}"/>
+                <apex:outputText value="" rendered="{!NOT(OR(ISNULL(payment.pymt__Discount__c),payment.pymt__Discount__c==0))}"/>
+                
+                <apex:outputLabel value="{!$Label.Label_TaxAmount}" rendered="{!NOT(OR(ISNULL(payment.pymt__Tax__c),payment.pymt__Tax__c==0))}"/>
+                <apex:outputField value="{!payment.pymt__Tax__c}" styleClass="taxAmount" rendered="{!NOT(OR(ISNULL(payment.pymt__Tax__c),payment.pymt__Tax__c==0))}"/>
+                <apex:outputText value=""  rendered="{!NOT(OR(ISNULL(payment.pymt__Tax__c),payment.pymt__Tax__c==0))}"/>
+                
+                <apex:outputLabel value="{!$Label.Label_ShippingAmount}" rendered="{!NOT(OR(ISNULL(payment.pymt__Shipping__c),payment.pymt__Shipping__c==0))}"/>
+                <apex:outputField value="{!shipping.pymt__Amount__c}" styleClass="shippingAmount" rendered="{!NOT(OR(ISNULL(payment.pymt__Shipping__c),payment.pymt__Shipping__c==0))}"/>
+                <apex:outputText value="" rendered="{!NOT(OR(ISNULL(payment.pymt__Shipping__c),payment.pymt__Shipping__c==0))}"/>
+                
+                <apex:outputLabel value="{!$Label.Label_AmountReceived}"/>
+                <apex:outputField styleClass="totalAmount" value="{!payment.pymt__Amount__c}" />
+                <apex:outputField value="{!payment.pymt__Currency_ISO_Code__c}" />                
+                
+            </apex:panelGrid>
+
+            </div>
+            
+
+            <apex:outputPanel rendered="{!NOT($Label.SiteCheckout_ReceivedFromHeading == '-')}">
+            <h2>{!$Label.SiteCheckout_ReceivedFromHeading}</h2>
+            </apex:outputPanel>
+            <p>
+            {!payment.pymt__Contact__r.Name}<br/>
+            {!payment.pymt__Contact__r.mailingstreet}<br/>
+            {!payment.pymt__Contact__r.mailingcity}, {!payment.pymt__Contact__r.mailingstate}&nbsp;{!payment.pymt__Contact__r.mailingpostalcode}<br/>
+            {!payment.pymt__Contact__r.mailingcountry}<br/></p>
+            <apex:outputPanel rendered="{!NOT($Label.SiteCheckout_PaidToHeading == '-')}">
+            <h2>{!$Label.SiteCheckout_PaidToHeading}</h2>
+            </apex:outputPanel>
+            <p>
+            {!$Organization.Name}<br/>
+            {!$Organization.Street}<br/>
+            {!$Organization.City}, {!$Organization.State}&nbsp;{!$Organization.PostalCode}<br/>
+            {!$Organization.Country}<br/>
+            {!$Organization.Phone}<br/></p>
+            <br/>
+            <apex:commandButton id="finish" value="{!$Label.SiteCheckout_FinishedButton}" onclick="" action="{!finishTransaction}" rendered="{!finishURL <> null}"/> 
+ 
+        
+            </apex:outputPanel>
+        
+        </apex:outputPanel>
+    
+    </apex:form>
+
+
+    </div>
+    </div>
+    </apex:define>
+</apex:composition>
+
+
+</apex:page>

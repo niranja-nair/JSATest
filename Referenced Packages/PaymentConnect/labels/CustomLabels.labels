@@ -1,0 +1,531 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomLabels xmlns="http://soap.sforce.com/2006/04/metadata">
+    <labels>
+        <fullName>Label_Amount</fullName>
+        <categories>PaymentConnect, Labels</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Label Amount</shortDescription>
+        <value>Amount</value>
+    </labels>
+    <labels>
+        <fullName>Label_AmountReceived</fullName>
+        <categories>PaymentConnect, Labels</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Label Amount Received</shortDescription>
+        <value>Amount Received</value>
+    </labels>
+    <labels>
+        <fullName>Label_CardExpiration</fullName>
+        <categories>PaymentConnect, Labels</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Label Card Expiration</shortDescription>
+        <value>Card Expiration</value>
+    </labels>
+    <labels>
+        <fullName>Label_CardIssueDate</fullName>
+        <categories>PaymentConnect, Labels</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Label Card Issue Date</shortDescription>
+        <value>Card Issue Date</value>
+    </labels>
+    <labels>
+        <fullName>Label_CardIssueNumber</fullName>
+        <categories>PaymentConnect, Labels</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Label Card Issue Number</shortDescription>
+        <value>Issue Number</value>
+    </labels>
+    <labels>
+        <fullName>Label_CardNumber</fullName>
+        <categories>PaymentConnect, Labels</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Label Card Number</shortDescription>
+        <value>Card Number</value>
+    </labels>
+    <labels>
+        <fullName>Label_CardType</fullName>
+        <categories>PaymentConnect, Labels</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Label Card Type</shortDescription>
+        <value>Card Type</value>
+    </labels>
+    <labels>
+        <fullName>Label_City</fullName>
+        <categories>PaymentConnect, Labels</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Label City</shortDescription>
+        <value>City</value>
+    </labels>
+    <labels>
+        <fullName>Label_Country</fullName>
+        <categories>PaymentConnect, Labels</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Label Country</shortDescription>
+        <value>Country</value>
+    </labels>
+    <labels>
+        <fullName>Label_Date</fullName>
+        <categories>PaymentConnect, Labels</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Label Date</shortDescription>
+        <value>Date</value>
+    </labels>
+    <labels>
+        <fullName>Label_Description</fullName>
+        <categories>PaymentConnect, Labels</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Label Description</shortDescription>
+        <value>Description</value>
+    </labels>
+    <labels>
+        <fullName>Label_DiscountAmount</fullName>
+        <categories>PaymentConnect, Labels</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Label Discount Amount</shortDescription>
+        <value>Discount</value>
+    </labels>
+    <labels>
+        <fullName>Label_FirstName</fullName>
+        <categories>PaymentConnect, Labels</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Label FirstName</shortDescription>
+        <value>First Name</value>
+    </labels>
+    <labels>
+        <fullName>Label_InitialAmount</fullName>
+        <categories>PaymentConnect, Labels</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Label Initial Amount</shortDescription>
+        <value>Initial Amount</value>
+    </labels>
+    <labels>
+        <fullName>Label_ItemName</fullName>
+        <categories>PaymentConnect, Labels</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Label Item Name</shortDescription>
+        <value>Item Name</value>
+    </labels>
+    <labels>
+        <fullName>Label_LastName</fullName>
+        <categories>PaymentConnect, Labels</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Label Last Name</shortDescription>
+        <value>Last Name</value>
+    </labels>
+    <labels>
+        <fullName>Label_Notes</fullName>
+        <categories>PaymentConnect, Labels</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Label Notes</shortDescription>
+        <value>Notes</value>
+    </labels>
+    <labels>
+        <fullName>Label_PostalCode</fullName>
+        <categories>PaymentConnect, Labels</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Label Postal Code</shortDescription>
+        <value>Postal Code</value>
+    </labels>
+    <labels>
+        <fullName>Label_Quantity</fullName>
+        <categories>PaymentConnect, Labels</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Label Quantity</shortDescription>
+        <value>Quantity</value>
+    </labels>
+    <labels>
+        <fullName>Label_SecurityCode</fullName>
+        <categories>PaymentConnect, Labels</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Label Security Code</shortDescription>
+        <value>CVV Number</value>
+    </labels>
+    <labels>
+        <fullName>Label_ShippingAmount</fullName>
+        <categories>PaymentConnect, Labels</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Label Shipping Amount</shortDescription>
+        <value>Shipping</value>
+    </labels>
+    <labels>
+        <fullName>Label_StartDate</fullName>
+        <categories>PaymentConnect, Labels</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Label Start Date</shortDescription>
+        <value>Start Date</value>
+    </labels>
+    <labels>
+        <fullName>Label_StateProvince</fullName>
+        <categories>PaymentConnect, Labels</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Label StateProvince</shortDescription>
+        <value>State/Province</value>
+    </labels>
+    <labels>
+        <fullName>Label_StreetAddress</fullName>
+        <categories>PaymentConnect, Labels</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Label StreetAddress</shortDescription>
+        <value>Address</value>
+    </labels>
+    <labels>
+        <fullName>Label_SubscriptionAmount</fullName>
+        <categories>PaymentConnect, Labels</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Label Subscription Amount</shortDescription>
+        <value>Subscription Amount</value>
+    </labels>
+    <labels>
+        <fullName>Label_SubscriptionFor</fullName>
+        <categories>PaymentConnect, Labels</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Label Subscription For</shortDescription>
+        <value>Subscription For</value>
+    </labels>
+    <labels>
+        <fullName>Label_TaxAmount</fullName>
+        <categories>PaymentConnect, Labels</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Label Tax Amount</shortDescription>
+        <value>Tax</value>
+    </labels>
+    <labels>
+        <fullName>Label_TotalAmount</fullName>
+        <categories>PaymentConnect, Labels</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Label Total Amount</shortDescription>
+        <value>Total</value>
+    </labels>
+    <labels>
+        <fullName>Label_TrialAmount</fullName>
+        <categories>PaymentConnect, Labels</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Label Trial Amount</shortDescription>
+        <value>Trial Amount</value>
+    </labels>
+    <labels>
+        <fullName>Label_UnitPrice</fullName>
+        <categories>PaymentConnect, Labels</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Label Unit Price</shortDescription>
+        <value>Unit Price</value>
+    </labels>
+    <labels>
+        <fullName>SiteCheckout_AuthCompletedHeading</fullName>
+        <categories>PaymentConnect, SiteCheckout</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>SiteCheckout Authorization Completed Heading</shortDescription>
+        <value>Transaction Completed</value>
+    </labels>
+    <labels>
+        <fullName>SiteCheckout_AuthCompletedMessage</fullName>
+        <categories>PaymentConnect, SiteCheckout</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>SiteCheckout Authorization Completed Message</shortDescription>
+        <value>Your authorization has been processed.  Thank you!  Please print this page for your records.</value>
+    </labels>
+    <labels>
+        <fullName>SiteCheckout_AuthorizationButton</fullName>
+        <categories>PaymentConnect, SiteCheckout</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>SiteCheckout Authorization Button</shortDescription>
+        <value>Submit Authorization</value>
+    </labels>
+    <labels>
+        <fullName>SiteCheckout_BillingInfoHeading</fullName>
+        <categories>PaymentConnect, SiteCheckout</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>SiteCheckout Billing Info Heading</shortDescription>
+        <value>Billing Information</value>
+    </labels>
+    <labels>
+        <fullName>SiteCheckout_BillingInfoInstructions</fullName>
+        <categories>PaymentConnect, SiteCheckout</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>SiteCheckout Billing Info Instructions</shortDescription>
+        <value>Please provide your billing information in the form below:</value>
+    </labels>
+    <labels>
+        <fullName>SiteCheckout_CancelButton</fullName>
+        <categories>PaymentConnect, SiteCheckout</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>SiteCheckout Cancel Button</shortDescription>
+        <value>Cancel</value>
+    </labels>
+    <labels>
+        <fullName>SiteCheckout_CardInstructions</fullName>
+        <categories>PaymentConnect, SiteCheckout</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>SiteCheckout CardInstructions</shortDescription>
+        <value>Please enter your card information in the form below:</value>
+    </labels>
+    <labels>
+        <fullName>SiteCheckout_ChargeCompletedHeading</fullName>
+        <categories>PaymentConnect, SiteCheckout</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>SiteCheckout Charge Completed Heading</shortDescription>
+        <value>Transaction Completed</value>
+    </labels>
+    <labels>
+        <fullName>SiteCheckout_ChargeCompletedMessage</fullName>
+        <categories>PaymentConnect, SiteCheckout</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>SiteCheckout Charge Completed Message</shortDescription>
+        <value>Your payment has been received. Thank you! Please print this page for your records.</value>
+    </labels>
+    <labels>
+        <fullName>SiteCheckout_CheckoutHeading</fullName>
+        <categories>PaymentConnect, SiteCheckout</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>SiteCheckout Checkout Heading</shortDescription>
+        <value>Checkout</value>
+    </labels>
+    <labels>
+        <fullName>SiteCheckout_CheckoutInstructions</fullName>
+        <categories>PaymentConnect, SiteCheckout</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>SiteCheckout Checkout Instructions</shortDescription>
+        <value>-</value>
+    </labels>
+    <labels>
+        <fullName>SiteCheckout_CompletedHeading</fullName>
+        <categories>PaymentConnect, SiteCheckout</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>SiteCheckout Completed Heading</shortDescription>
+        <value>Transaction Completed</value>
+    </labels>
+    <labels>
+        <fullName>SiteCheckout_CompletedMessage</fullName>
+        <categories>PaymentConnect, SiteCheckout</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>SiteCheckout Completed Message</shortDescription>
+        <value>Your payment has been received. Thank you!  Please print this page for your records.</value>
+    </labels>
+    <labels>
+        <fullName>SiteCheckout_FinishedButton</fullName>
+        <categories>PaymentConnect, SiteCheckout</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>SiteCheckout Finished Button</shortDescription>
+        <value>Finished</value>
+    </labels>
+    <labels>
+        <fullName>SiteCheckout_ItemListHeading</fullName>
+        <categories>PaymentConnect, SiteCheckout</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>SiteCheckout ItemListHeading</shortDescription>
+        <value>Items</value>
+    </labels>
+    <labels>
+        <fullName>SiteCheckout_PaidToHeading</fullName>
+        <categories>PaymentConnect, SiteCheckout</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>SiteCheckout Paid To Heading</shortDescription>
+        <value>Paid To</value>
+    </labels>
+    <labels>
+        <fullName>SiteCheckout_PaymentButton</fullName>
+        <categories>PaymentConnect, SiteCheckout</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>SiteCheckout PaymentButton</shortDescription>
+        <value>Submit Payment</value>
+    </labels>
+    <labels>
+        <fullName>SiteCheckout_ReceiptDetailsHeading</fullName>
+        <categories>PaymentConnect, SiteCheckout</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>SiteCheckout Receipt Details Heading</shortDescription>
+        <value>Transaction Details</value>
+    </labels>
+    <labels>
+        <fullName>SiteCheckout_ReceivedFromHeading</fullName>
+        <categories>PaymentConnect, SiteCheckout</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>SiteCheckout Received From Heading</shortDescription>
+        <value>Received From:</value>
+    </labels>
+    <labels>
+        <fullName>SiteCheckout_WorldPayButton</fullName>
+        <categories>PaymentConnect, SiteCheckout</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>SiteCheckout WorldPayButton</shortDescription>
+        <value>Pay with WorldPay</value>
+    </labels>
+    <labels>
+        <fullName>SiteCheckout_eCheckInstructions</fullName>
+        <categories>PaymentConnect, SiteCheckout</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>SiteCheckout eCheck Instructions</shortDescription>
+        <value>Please enter your bank account information below.</value>
+    </labels>
+    <labels>
+        <fullName>SiteSubscribeARB_BillingInfoHeading</fullName>
+        <categories>PaymentConnect, SiteSubscribeARB</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>SiteSubscribeARB Billing Info Heading</shortDescription>
+        <value>Billing Information</value>
+    </labels>
+    <labels>
+        <fullName>SiteSubscribeARB_BillingInfoInstructions</fullName>
+        <categories>PaymentConnect, SiteSubscribeARB</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>SiteSubscribeARB Billing Info Instructions</shortDescription>
+        <value>Please provide your billing information in the form below:</value>
+    </labels>
+    <labels>
+        <fullName>SiteSubscribeARB_CancelButton</fullName>
+        <categories>PaymentConnect, SiteSubscribeARB</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>SiteSubscribeARB Cancel Button</shortDescription>
+        <value>Cancel</value>
+    </labels>
+    <labels>
+        <fullName>SiteSubscribeARB_CheckoutHeading</fullName>
+        <categories>PaymentConnect, SiteSubscribeARB</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>SiteSubscribeARB Checkout Heading</shortDescription>
+        <value>Recurring Payment Summary</value>
+    </labels>
+    <labels>
+        <fullName>SiteSubscribeConfirm_CompletedMessage</fullName>
+        <categories>PaymentConnect, SiteSubscribeConfirm</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>SiteSubscribeConfirm Completed Message</shortDescription>
+        <value>Your subscription has been processed. Thank you! Please print this page for your records.</value>
+    </labels>
+    <labels>
+        <fullName>SiteSubscribeConfirm_FinishedButton</fullName>
+        <categories>PaymentConnect, SiteSubscribeConfirm</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>SiteSubscribeConfirm Finished Button</shortDescription>
+        <value>Finished</value>
+    </labels>
+    <labels>
+        <fullName>SiteSubscribeConfirm_Heading</fullName>
+        <categories>PaymentConnect, SiteSubscribeConfirm</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>SiteSubscribeConfirm Heading</shortDescription>
+        <value>Receipt</value>
+    </labels>
+    <labels>
+        <fullName>SiteSubscribeConfirm_PaidToHeading</fullName>
+        <categories>PaymentConnect, SiteSubscribeConfirm</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>SiteSubscribeConfirm Paid To Heading</shortDescription>
+        <value>Paid To</value>
+    </labels>
+    <labels>
+        <fullName>SiteSubscribeConfirm_ReceiptDetailsHeading</fullName>
+        <categories>PaymentConnect, SiteSubscribeConfirm</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>SiteSubscribeConfirm Receipt Details Heading</shortDescription>
+        <value>Recurring Payment Details</value>
+    </labels>
+    <labels>
+        <fullName>SiteSubscribeConfirm_ReceivedFromHeading</fullName>
+        <categories>PaymentConnect, SiteSubscribeConfirm</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>SiteSubscribeConfirm Received From Heading</shortDescription>
+        <value>Received From</value>
+    </labels>
+    <labels>
+        <fullName>SiteSubscribePRB_BillingInfoHeading</fullName>
+        <categories>PaymentConnect, SiteSubscribePRB</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>SiteSubscribePRB Billing Info Heading</shortDescription>
+        <value>Billing Information</value>
+    </labels>
+    <labels>
+        <fullName>SiteSubscribePRB_BillingInfoInstructions</fullName>
+        <categories>PaymentConnect, SiteSubscribePRB</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>SiteSubscribePRB Billing Info Instructions</shortDescription>
+        <value>Please provide your billing information in the form below:</value>
+    </labels>
+    <labels>
+        <fullName>SiteSubscribePRB_CancelButton</fullName>
+        <categories>PaymentConnect, SiteSubscribePRB</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>SiteSubscribePRB Cancel Button</shortDescription>
+        <value>Cancel</value>
+    </labels>
+    <labels>
+        <fullName>SiteSubscribePRB_CheckoutHeading</fullName>
+        <categories>PaymentConnect, SiteSubscribePRB</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>SiteSubscribePRB Checkout Heading</shortDescription>
+        <value>Recurring Payment Summary</value>
+    </labels>
+    <labels>
+        <fullName>SiteSubscribePRB_SubscribeButton</fullName>
+        <categories>PaymentConnect, SiteSubscribePRB</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>SiteSubscribePRB Subscribe Button</shortDescription>
+        <value>Subscribe</value>
+    </labels>
+</CustomLabels>

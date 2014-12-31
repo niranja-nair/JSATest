@@ -1,0 +1,76 @@
+<apex:page id="siteSubscribePage" controller="pymt.SiteSubscribeConfirmController" showHeader="false" sidebar="false" cache="false" standardStylesheets="false">
+<head>
+<title>Checkout Complete</title>
+</head>
+<apex:composition template="{!$Site.Template}">
+  <apex:define name="body">
+    <div class="pc_page_content_top"></div>
+    <div class="pc_page_content" id="pc_site_subscribe_confirm_page">
+    <div class="pc_page_content_inner"> 
+    <apex:form id="checkoutConfirmForm"  >
+    	<apex:outputPanel id="checkoutConfirmFormPanel" >
+
+            <apex:pageMessages id="messages"/>
+        	<apex:outputPanel rendered="{!showPageContents}"> 
+	            <apex:outputPanel rendered="{!NOT($Label.SiteSubscribeConfirm_Heading == '-')}">
+	            <h1>{!$Label.SiteSubscribeConfirm_Heading}</h1>
+	            </apex:outputPanel>
+	            <apex:outputPanel rendered="{!NOT($Label.SiteSubscribeConfirm_CompletedMessage == '-')}">
+	            <p>{!$Label.SiteSubscribeConfirm_CompletedMessage}</p> 
+	            </apex:outputPanel>
+	            <apex:outputPanel rendered="{!NOT($Label.SiteSubscribeConfirm_ReceiptDetailsHeading == '-')}">            
+	            <h2>{!$Label.SiteSubscribeConfirm_ReceiptDetailsHeading}</h2>
+	            </apex:outputPanel>
+
+	          
+				<apex:panelGrid columns="2" columnClasses="labelColumn,term_column" id="subscription_terms2">
+				
+					<apex:outputLabel value="{!$Label.Label_SubscriptionFor}" />
+					<apex:outputField value="{!profile.Name}"/>
+	
+					<apex:outputLabel value="{!$Label.Label_Description}" rendered="{!NOT(ISNULL(profile.pymt__Description__c))}" />
+					<apex:outputField value="{!profile.pymt__Description__c}" rendered="{!NOT(ISNULL(profile.pymt__Description__c))}"/>
+								
+					<apex:outputLabel value="Start Date" />
+					<apex:outputField value="{!profile.pymt__Subscription_Start_Date__c}"/>
+	          
+	             <apex:outputLabel value="{!$Label.Label_TrialAmount}"  rendered="{!NOT(ISNULL(profile.pymt__Trial_Occurrences__c))}"/> 
+				<apex:outputPanel layout="inline" rendered="{!NOT(ISNULL(profile.pymt__Trial_Occurrences__c))}">
+	              <apex:outputField value="{!profile.pymt__Trial_Amount__c}"/> 
+	              every&nbsp;<apex:outputText value="{0}"><apex:param value="{!profile.pymt__Frequency__c}"/></apex:outputText>&nbsp;{!profile.Period__c} x &nbsp;
+	              <apex:outputField value="{!profile.pymt__Trial_Occurrences__c}"/>
+				</apex:outputPanel>
+	
+	         	<apex:outputLabel value="{!$Label.Label_SubscriptionAmount}"/> 
+	 			<apex:outputPanel layout="inline">
+	            	<apex:outputField value="{!profile.pymt__Amount__c}"/>
+	            	every&nbsp;<apex:outputText value="{0}"><apex:param value="{!profile.pymt__Frequency__c}"/></apex:outputText>&nbsp;{!profile.Period__c} {!IF(NOT(ISNULL(profile.Total_Occurrences__c)), "x "+TEXT(profile.Total_Occurrences__c),"")}
+	 			</apex:outputPanel>
+	
+				</apex:panelGrid>
+	          
+	          
+	          <h2>{!$Label.SiteSubscribeConfirm_ReceivedFromHeading}</h2>
+	          <p>{!profile.Billing_First_Name__c} {!profile.Billing_Last_Name__c}<br/>
+	            {!profile.Billing_Street__c}<br/>
+	            {!profile.Billing_City__c}, {!profile.Billing_State__c}&nbsp;{!profile.Billing_Postal_Code__c}<br/>
+	            {!profile.Billing_Country__c}<br/>
+	          </p>
+	          <h2>{!$Label.SiteSubscribeConfirm_PaidToHeading}</h2>
+	          <p>{!$Organization.Name}<br/>
+	          	{!$Organization.Street}<br/>
+	            {!$Organization.City}, {!$Organization.State}&nbsp;{!$Organization.PostalCode}<br/>
+	            {!$Organization.Country}<br/>
+	            {!$Organization.Phone}<br/>
+	          </p>
+	          <apex:commandButton id="finish" value="{!$Label.SiteSubscribeConfirm_FinishedButton}" action="{!finishTransaction}" onclick="" rendered="{!finishURL <> null}"/>
+ 
+        	</apex:outputPanel>
+		</apex:outputPanel>
+    </apex:form>
+    </div><!--  pc_page_content_inner -->
+    </div><!--  pc_page_content -->
+
+    </apex:define>
+</apex:composition>
+</apex:page>

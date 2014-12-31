@@ -1,0 +1,2554 @@
+<apex:page title="MapAnything Settings" controller="sma.MapAnythingBaseObjects" setup="true" >
+
+	<!-- Nokia Here API -->
+    <script type="text/javascript" charset="UTF-8" src="https://api.maps.nlp.nokia.com/2.2.3/jsl.js?with=all"></script>
+
+    <script type='text/javascript'>
+        if (typeof $ == 'undefined')
+        {
+            document.write("<script type='text/javascript' src='{!URLFOR($Resource.MapAnything, 'js/jquery-1.7.1.min.js')}'></script"+">");
+            document.write("<script type='text/javascript' src='{!URLFOR($Resource.MapAnything, 'jquery/jquery-ui.min.js')}'></script"+">");
+            document.write("<link rel='stylesheet' type='text/css' href='{!URLFOR($Resource.MapAnything, 'jquery/jquery-ui.css')}'></link"+">");
+            document.write("<script type='text/javascript' src='{!URLFOR($Resource.AdminSettings, 'js/date.js')}'></script"+">");
+        }
+    </script>
+    
+    <!-- jQuery Combo Box (depends on jQuery UI) -->
+    <script src="{!URLFOR($Resource.AdminSettings, 'js/combobox/jquery.combobox.js')}" type="text/javascript"></script>
+    <link rel="stylesheet" type="text/css" href="{!URLFOR($Resource.AdminSettings, 'js/combobox/jquery.combobox.css')}" />
+    
+    <!-- jQuery Notify (growl messages) -->
+    <script type='text/javascript' src="{!URLFOR($Resource.MapAnything, 'notify/jquery.notify.js')}"></script>
+    <link rel='stylesheet' type='text/css' href="{!URLFOR($Resource.MapAnything, 'notify/ui.notify.css')}" />
+
+    <!-- CSS -->
+    <apex:stylesheet value="{!URLFOR($Resource.sma__MapAnything, 'css/style.css')}"/>
+    <apex:stylesheet value="{!URLFOR($Resource.sma__MapAnything, 'style.css')}"/>
+    <c:CSSHelperBlue />
+    <style>
+        html, body {
+            width: 100%;
+            height: 100%;
+        }
+        
+        /* Boxes */
+        #adminsettings .box.gray {
+            border: 1px solid #C7C7C7;
+            padding:5px;
+            margin:5px 0 10px 0;
+            background:#efefef;
+        }
+        #adminsettings .section-header {
+            color: #2265BB;
+        }
+        
+        /* Forms */
+        #adminsettings .form td {
+        	vertical-align: middle;
+        }
+        
+        /* Tabs */
+        #adminsettings .TopTabs
+        {
+            background: none;
+            border: none;
+        }
+        #adminsettings .TopTabs > ul
+        {
+            width: auto;
+            padding: 0 8px;
+            background: none;
+            border: none;
+            border-bottom: 1px solid #CCC;
+            border-top-right-radius: 0;
+            border-top-left-radius: 0;
+            border-bottom-right-radius: 0;
+            border-bottom-left-radius: 0;
+        }
+        #adminsettings .TopTabs > ul li
+        {
+            background-color: #006DB4;
+            background: #006DB4;
+            background: url('images/blue-tab-bg.png');
+            background-repeat: repeat-x;
+            background-position: top;
+            background: -webkit-gradient(linear, 0% 0%, 0% 100%, from(#197BBB), to(#0059A0));
+            background: -webkit-linear-gradient(top, #197BBB, #0059A0);
+            background: -moz-linear-gradient(center top , #197BBB 20%, #0059A0 100%) repeat scroll 0 0 transparent;
+            background: -ms-linear-gradient(top, #197BBB, #0059A0);
+            background: -o-linear-gradient(top, #197BBB, #0059A0);
+            border: medium none;
+            border-radius: 3px 3px 0 0;
+            border: 1px solid #19508C;
+            box-shadow: 0 1px 0 rgba(255, 255, 255, 0.3) inset, 0 0 4px rgba(255, 255, 255, 0.2) inset;
+            
+            
+            
+            filter: progid:DXImageTransform.Microsoft.gradient(startColorstr = '#197BBB', endColorstr = '#0059A0');
+            -ms-filter: "progid:DXImageTransform.Microsoft.gradient(startColorstr = '#197BBB', endColorstr = '#0059A0')";
+        }
+        #adminsettings .TopTabs > ul li.ui-tabs-selected
+        {
+            background: none;
+            border: 1px solid #CCC;
+            border-top-right-radius: 3px;
+            border-top-left-radius: 3px;
+            background: white;
+            color: #222;
+            
+            filter: progid:DXImageTransform.Microsoft.gradient(startColorstr = '#FFFFFF', endColorstr = '#FFFFFF');
+            -ms-filter: "progid:DXImageTransform.Microsoft.gradient(startColorstr = '#FFFFFF', endColorstr = '#FFFFFF')";
+        }
+        #adminsettings .TopTabs > ul li a
+        {
+            color: #ffffff;
+            font-size: 12px;
+        }
+        #adminsettings .TopTabs > ul li.ui-tabs-selected a
+        {
+            color: #2265BB;
+        }
+        #adminsettings .TopTabs > .ui-tabs-panel
+        {
+            padding: 15px;
+            margin-bottom: 10px;
+            border-bottom: 1px solid silver;
+            //max-height: 420px;
+            overflow-x: hidden;
+            overflow-y: auto;
+            position: relative;
+        }
+        
+        /* Loadmasks */
+        .loadmask {
+            position: absolute;
+            top: 0;
+            left: 0;
+            z-index: 99;
+            width: 100%;
+            height: 100%;
+            padding: 0;
+            margin: 0;
+            background-color: #ffffff;
+            opacity: 0.4;
+            -ms-filter: progid:DXImageTransform.Microsoft.Alpha(Opacity = 40);
+            filter: alpha(opacity = 40);
+        }
+        .loadmask-status {
+        	position: absolute;
+        	width: 100%;
+        	text-align: center;
+        	z-index: 999999;
+        	top: 50px;
+        }
+        .loadmask-status .status {
+        	margin: 0 auto;
+			background-color: white;
+			display: inline-block;
+			padding: 15px;
+			font-size: 10px;
+			-moz-border-radius: 12px;
+			-webkit-border-radius: 12px;
+			border-radius: 12px;
+			-moz-box-shadow: 0px 0px 8px #000000;
+			-webkit-box-shadow: 0px 0px 8px #000000;
+			box-shadow: 0px 0px 8px #000000;
+        }
+        .loadmask-status .status * {
+        	vertical-align: middle;
+        }
+        .loadmask-status .status img {
+        	margin-right: 5px;
+        }
+        
+        /* Comboboxes */
+        #adminsettings .ui-combobox
+        {
+            padding-right: 0;
+        }
+        #adminsettings .ui-combobox input
+        {
+            background-color: white;
+            background: white;
+            padding-right: 30px;
+            font-weight: bold;
+            width: 300px;
+        }
+        #adminsettings .ui-combobox a
+        {
+            background: transparent;
+            border: none;
+            position: absolute;
+            right: 0;
+        }
+        #adminsettings .ui-combobox a .ui-button-icon-primary
+        {
+            background: transparent url("{!URLFOR($Resource.sma__QueryEditor, 'images/icons/combobox-arrow-16.png')}") no-repeat center;
+        }
+        
+        /* Buttons */
+        #adminsettings .buttons {
+            padding: 0 10px;
+        }
+        #adminsettings .btn {
+            width: 70px;
+        }
+        .btn-blue {
+        	cursor: pointer;
+        }
+        .btn-blue.btn-white {
+        	color: black;
+        	border: 1px solid gray;
+        	filter: progid:DXImageTransform.Microsoft.gradient(startColorstr = '#f7f7f7', endColorstr = '#cfcfcf');
+			-ms-filter: "progid:DXImageTransform.Microsoft.gradient(startColorstr = '#f7f7f7', endColorstr = '#cfcfcf')";
+			background-image: -moz-linear-gradient(top, #f7f7f7, #cfcfcf);
+			background-image: -ms-linear-gradient(top, #f7f7f7, #cfcfcf);
+			background-image: -o-linear-gradient(top, #f7f7f7, #cfcfcf);
+			background-image: -webkit-gradient(linear, center top, center bottom, from(#f7f7f7), to(#cfcfcf));
+			background-image: -webkit-linear-gradient(top, #f7f7f7, #cfcfcf);
+			background-image: linear-gradient(top, #f7f7f7, #cfcfcf);
+        }
+        .btn-blue.btn-white:hover {
+        	color: black;
+        	border: 1px solid gray;
+        	filter: progid:DXImageTransform.Microsoft.gradient(startColorstr = '#e3e3e3', endColorstr = '#bcbcbc');
+			-ms-filter: "progid:DXImageTransform.Microsoft.gradient(startColorstr = '#e3e3e3', endColorstr = '#bcbcbc')";
+			background-image: -moz-linear-gradient(top, #e3e3e3, #bcbcbc);
+			background-image: -ms-linear-gradient(top, #e3e3e3, #bcbcbc);
+			background-image: -o-linear-gradient(top, #e3e3e3, #bcbcbc);
+			background-image: -webkit-gradient(linear, center top, center bottom, from(#e3e3e3), to(#bcbcbc));
+			background-image: -webkit-linear-gradient(top, #e3e3e3, #bcbcbc);
+			background-image: linear-gradient(top, #e3e3e3, #bcbcbc);
+        }
+        
+        /* Permissions Filters */
+        #permissions-filters td:nth-child(odd) {
+        	font-weight: bold;
+        	vertical-align: middle;
+        }
+        
+        /* Permissions Grid */
+        #permissions-grid {
+        	width: 100%;
+        	border-spacing: 0;
+        	border-padding: 0;
+        }
+        #permissions-grid tr {
+        	height: 35px;
+        }
+        #permissions-grid th { 
+        	padding: 5px;       	
+        	font-size: 12px;
+        	color: white;
+        	background-color: #006DB4;
+			background: #006DB4;
+			background: url('images/blue-tab-bg.png');
+			background-repeat: repeat-x;
+			background-position: top;
+			background: -webkit-gradient(linear, 0% 0%, 0% 100%, from(#197BBB), to(#0059A0));
+			background: -webkit-linear-gradient(top, #197BBB, #0059A0);
+			background: -moz-linear-gradient(center top , #197BBB 20%, #0059A0 100%) repeat scroll 0 0 transparent;
+			background: -ms-linear-gradient(top, #197BBB, #0059A0);
+			background: -o-linear-gradient(top, #197BBB, #0059A0);
+			border: medium none;
+			border: 1px solid #19508C;
+			box-shadow: 0 1px 0 rgba(255, 255, 255, 0.3) inset, 0 0 4px rgba(255, 255, 255, 0.2) inset;
+			filter: progid:DXImageTransform.Microsoft.gradient(startColorstr = '#197BBB', endColorstr = '#0059A0');
+			-ms-filter: "progid:DXImageTransform.Microsoft.gradient(startColorstr = '#197BBB', endColorstr = '#0059A0')";
+        }
+        #permissions-grid th table {
+        	width: 100%;
+        	border-spacing: 0;
+        }
+		#permissions-grid th table td {
+			background: transparent;
+			filter: none;
+			-ms-filter: none;
+			border: none;
+			color: white;
+			padding: 0;
+		}
+		#permissions-grid th table td:first-child {
+			padding-right: 5px;
+		}
+		#permissions-grid th table td:last-child {
+			text-align: right;
+		}
+        #permissions-grid th .link {
+        	font-size: 8px;
+        	cursor: pointer;
+        }
+        #permissions-grid td {
+        	vertical-align: middle;
+        	padding: 5px;
+        	filter: progid:DXImageTransform.Microsoft.gradient(startColorstr = '#f0f0ed', endColorstr = '#c9c4c3');
+			-ms-filter: "progid:DXImageTransform.Microsoft.gradient(startColorstr = '#f0f0ed', endColorstr = '#c9c4c3')";
+			background-image: -moz-linear-gradient(top, #f0f0ed, #c9c4c3);
+			background-image: -ms-linear-gradient(top, #f0f0ed, #c9c4c3);
+			background-image: -o-linear-gradient(top, #f0f0ed, #c9c4c3);
+			background-image: -webkit-gradient(linear, center top, center bottom, from(#f0f0ed), to(#c9c4c3));
+			background-image: -webkit-linear-gradient(top, #f0f0ed, #c9c4c3);
+			background-image: linear-gradient(top, #f0f0ed, #c9c4c3);
+			border: 1px solid #757575;
+        }
+        #permissions-grid tr:nth-child(even) td {
+        	filter: progid:DXImageTransform.Microsoft.gradient(startColorstr = '#fafafa', endColorstr = '#f0f0f0');
+			-ms-filter: "progid:DXImageTransform.Microsoft.gradient(startColorstr = '#fafafa', endColorstr = '#f0f0f0')";
+			background-image: -moz-linear-gradient(top, #fafafa, #f0f0f0);
+			background-image: -ms-linear-gradient(top, #fafafa, #f0f0f0);
+			background-image: -o-linear-gradient(top, #fafafa, #f0f0f0);
+			background-image: -webkit-gradient(linear, center top, center bottom, from(#fafafa), to(#f0f0f0));
+			background-image: -webkit-linear-gradient(top, #fafafa, #f0f0f0);
+			background-image: linear-gradient(top, #fafafa, #f0f0f0);
+        }
+        #permissions-grid input.autosave[type=text] {
+        	width: 35px;
+        	font-size: 10px;
+        }
+        #permissions-grid a:link, #permissions-grid a:active, #permissions-grid a:visited {
+        	text-decoration: none;
+        	color: black;
+        }
+        #permissions-grid a:hover {
+        	text-decoration: none;
+        	color: #757575;
+        }
+        #permissions-grid-wrapper {
+        	position: relative;
+        	min-height: 150px;
+        }
+        #permissions-grid-wrapper.permissions-grid-loading #permissions-grid-loadmask {
+        	display: none;
+            position: absolute;
+            top: 0;
+            left: 0;
+            z-index: 99;
+            width: 100%;
+            height: 100%;
+            padding: 0;
+            margin: 0;
+            background-color: #ffffff;
+            opacity: 0.4;
+            -ms-filter: progid:DXImageTransform.Microsoft.Alpha(Opacity = 40);
+            filter: alpha(opacity = 40);
+        }
+        #permissions-grid-wrapper.permissions-grid-loading #permissions-grid-loadmask {
+        	display: block;
+        }
+        #permissions-grid-status {
+        	display: none;
+        	position: absolute;
+        	width: 100%;
+        	text-align: center;
+        	z-index: 999999;
+        	top: 100px;
+        }
+        #permissions-grid-wrapper.permissions-grid-loading #permissions-grid-status {
+        	display: block;
+        }
+        #permissions-grid-status .status {
+        	margin: 0 auto;
+			background-color: white;
+			display: inline-block;
+			padding: 15px;
+			font-size: 10px;
+			-moz-border-radius: 12px;
+			-webkit-border-radius: 12px;
+			border-radius: 12px;
+			-moz-box-shadow: 0px 0px 8px #000000;
+			-webkit-box-shadow: 0px 0px 8px #000000;
+			box-shadow: 0px 0px 8px #000000;
+        }
+        #permissions-grid-status * {
+        	vertical-align: middle;
+        }
+        #permissions-grid-status img {
+        	margin-right: 5px;
+        }
+        
+        /* Action Buttons */
+        #dialog-actionbuttons .actionbutton {
+        	width: 100px;
+        	padding: 4px 9px;
+        	background: #fff;
+			box-shadow: 0 1px 0 rgba(255, 255, 255, 0.3) inset, 0 0 4px rgba(255, 255, 255, 0.2) inset, 0 1px 2px rgba(0, 0, 0, 0.2);
+			color: #666;
+			text-decoration: none;
+			border-radius: 3px 3px 3px 3px;
+			border: 1px solid #bbb;
+			text-align: center;
+			font-family: 'Helvetica Neue', Helvetica, arial, sans-serif;
+			font-size: 10px;
+			font-weight: normal;
+			cursor: pointer;
+        }
+        #dialog-actionbuttons .actionbutton.on {
+        	background: #2265bb;
+        	color: white;
+        }
+        
+        /* Notifications */
+        #notifications {
+        	position: fixed;
+        	top: auto;
+        	bottom: 10px;
+        }
+        
+        /* Dialogs */
+        .ui-dialog {
+        	-moz-box-shadow: 0px 0px 20px #000000;
+			-webkit-box-shadow: 0px 0px 20px #000000;
+			box-shadow: 0px 0px 20px #000000;
+        }
+        .ui-dialog-titlebar {
+        	display: none;
+        }
+        .ui-widget-overlay {
+        	background: #000000;
+        }
+        .dialog-instructions {
+        	font-size: 10px;
+        	color: #808080;
+        }
+        
+        /* Button Sets */
+        #TopTabs-ButtonSets .section-header {
+        	font-weight: bold;
+        	border-bottom: 2px solid silver;
+        }
+        .layout-availablebuttons {
+        	overflow: hidden;
+        	padding: 3px;
+        	-moz-box-shadow: inset 0px 0px 4px #000000;
+			-webkit-box-shadow: inset 0px 0px 4px #000000;
+			box-shadow: inset 0px 0px 4px #000000;
+        }
+        .layout-availablebuttons.hovering {
+        	-moz-box-shadow: inset 0px 0px 6px #000000;
+			-webkit-box-shadow: inset 0px 0px 6px #000000;
+			box-shadow: inset 0px 0px 6px #000000;
+        }
+        .buttonset-section-columns {
+        	overflow: hidden;
+        }
+        .buttoncolumn {
+        	float: left;
+        	width: 116px;
+        }
+        .buttoncolumn .actionbutton {
+        	width: 100px;
+        	height: 10px;
+        	line-height: 10px;
+        	font-size: 8px;
+        	font-weight: bold;
+        	overflow: hidden;
+        	padding: 3px 5px;
+        	margin: 5px 3px;
+        	cursor: move;
+        	
+			-moz-box-shadow: 0px 0px 1px #000000;
+			-webkit-box-shadow: 0px 0px 1px #000000;
+			box-shadow: 0px 0px 1px #000000;
+			filter: progid:DXImageTransform.Microsoft.gradient(startColorstr = '#FCFCFC', endColorstr = '#FAFAFA');
+			-ms-filter: "progid:DXImageTransform.Microsoft.gradient(startColorstr = '#FCFCFC', endColorstr = '#FAFAFA')";
+			background-image: -moz-linear-gradient(top, #FCFCFC, #FAFAFA);
+			background-image: -ms-linear-gradient(top, #FCFCFC, #FAFAFA);
+			background-image: -o-linear-gradient(top, #FCFCFC, #FAFAFA);
+			background-image: -webkit-gradient(linear, center top, center bottom, from(#FCFCFC), to(#FAFAFA));
+			background-image: -webkit-linear-gradient(top, #FCFCFC, #FAFAFA);
+			background-image: linear-gradient(top, #FCFCFC, #FAFAFA);
+			-moz-background-clip: padding;
+			-webkit-background-clip: padding-box;
+			background-clip: padding-box;
+        }
+        .buttonset-section {
+        	position: relative;
+        	padding-left: 12px;
+        }
+        .buttonset-section-header {
+        	border-bottom: 2px solid #C0C0C0;
+			font-weight: bold;
+			font-size: 10px;
+        }
+        .buttonset-section .buttonset-section-draghandle {
+        	display: none;
+        	position: absolute;
+        	top: 5px;
+        	left: 0;
+        }
+        .buttonset-section:hover .buttonset-section-draghandle {
+        	display: block;
+        }
+        .buttonset-section-columns .buttoncolumn .actionbutton {
+        	margin: 2px 3px;
+        }
+        .layout-tooltip-wrapper {
+        	border: 2px solid #000;
+			width: 500px;
+			min-height: 50px;
+        }
+        .layout-tooltip {
+        }
+        .layout-tooltip .actionbutton[data-type="Blank"] {
+        	height: 10px; 
+        	line-height: 10px; 
+        	font-weight: normal; 
+        	font-style: italic; 
+        	color: #C0C0C0; 
+        	text-align: center;
+        	-moz-box-shadow: none;
+			-webkit-box-shadow: none;
+			box-shadow: none;
+			background: none;
+        }
+        .layout-tooltip .section-dropzone {
+        	width: 100%;
+        	height: 2px;
+        }
+        .layout-tooltip .button-dropzone {
+        	width: 100%;
+        	height: 2px;
+        }
+        .layout-tooltip .button-dropzone-handle {
+        	width: 1px;
+        	height: 1px;
+        	margin: 0 auto;
+        }
+        .layout-tooltip .section-dropzone.hovering, .layout-tooltip .button-dropzone.hovering {
+        	background: green;
+        }
+        
+        /* Map Lock */
+        .dragzoomproxy
+        {
+            position: absolute;
+            z-index: 1003;
+            
+            background-color: #666666;
+            border: 3px solid #000000;
+            opacity: 0.44;
+            -ms-filter: progid:DXImageTransform.Microsoft.Alpha(Opacity = 44);
+            filter: alpha(opacity = 44);
+        }
+        
+        /* Temporary fix for header links divider */
+        span.divider {
+        	float: none;
+			display: inline;
+			background: none;
+			margin: 0;
+        }
+   	</style>
+   	
+   	<!-- JS -->
+   	<c:JSHelperFunctions />
+   	<c:JSActionFramework />
+   	<script>
+   		var pageSize = 30;
+   		var map;
+        $(function() {
+        
+        	//init tabs        
+            $( "#adminsettings .TopTabs" ).tabs();
+            
+            //init notifications
+		    $("#notifications").notify({ speed: 200, expires: false });
+		    
+		    //init dialogs
+		    $('.dialogs > div').dialog({ autoOpen: false, modal:true, resizable: false, width: 'auto', height: 'auto' });
+            
+            //combobox settings
+            $('#adminsettings').on('focus', '.ui-autocomplete-input', function () { var $me = $(this); setTimeout(function () {$me.select();}, 100); });
+            
+			//get users for permissions grid
+			load();
+			
+            //get settings
+            showTabLoading($('#TopTabs-General'), 'Loading...');
+            $.getJSON("/apex/MAAdminAJAXResources","securityToken={!securityToken}&action=get_settings", function(json)
+            { 
+                if(json.success)
+                {
+                	//remove namespace
+                	removeNamespace('{!namespace}', (json.data.serial || {}));
+                	removeNamespace('{!namespace}', (json.data.FolderPermissionsEnabled || {}));
+                
+                	//try to populate settings.  if we can't, we're just assuming that means the setting does not yet exist
+                    try { $('#adminsettings input.serial').val(json.data.serial.Value__c); } catch (err) { }
+                    try { $('#adminsettings input.feature-folderpermissions').attr('checked', json.data.FolderPermissionsEnabled.Value__c == 'true' ? 'checked' : false); } catch (err) { }
+                    
+                    showTabSuccess($('#TopTabs-General'), 'Settings Loaded', 1);
+                }
+                else
+                {  
+                    showTabError($('#TopTabs-General'), 'Unknown Error: Unable to load settings', false);
+                }
+            })
+            .error(function(jqXHR, textStatus, errorThrown) {        
+                showTabError($('#TopTabs-General'), 'Unknown Error: Unable to load settings', false);
+            });
+            
+            //init minimap for map lock settings
+            nokia.Settings.set("appId", "cL2-LKZ0bcVr0BcDu7P-"); 
+		    nokia.Settings.set("authenticationToken", "ygeWiBoAwmMHKgSwNCgxQw");
+		    (document.location.protocol == "https:") && nokia.Settings.set("secureConnection", "force");
+			map = new nokia.maps.map.Display($('.dialog-maplock-map')[0], {
+			   	center: [37.5740108, -98.4801102],
+			   	zoomLevel: 4,
+			   	copyrightAlignment: 'topright',
+			   	components: [
+			       	new nokia.maps.map.component.Behavior()
+			   	]
+			});
+			
+			//handle holding shift to allow selecting an area on the minimap
+			var shiftDown = false;
+			$(document).on('keydown', function (e) {
+				if (!shiftDown && e.which == 16) {
+					$('.dialog-maplock-map-dragzoomlayer').show();
+					$('#dialog-maplock').data('lockSettings', {});
+					map.objects.clear();
+					shiftDown = true;
+				}
+			});
+			$(document).on('keyup', function (e) {
+				if (e.which == 16) {
+					$('.dialog-maplock-map-dragzoomlayer').hide();
+					$('.dragzoomproxy').remove();
+					shiftDown = false;
+				}
+			});
+			
+			//handle drag actions on the minimap dragzoom layer
+			$('.dialog-maplock-map-dragzoomlayer').draggable({
+				helper: function () {
+					return $("<div />");
+				},
+				start: function (event, ui) {
+					$("<div class='dragzoomproxy'></div>").appendTo(document.body).data('startPosition', { x: event.originalEvent.pageX, y: event.originalEvent.pageY });
+				},
+				drag: function (event, ui) {
+				
+					//do nothing if shift has already been released
+					if ($('.dragzoomproxy').length == 0) {
+						return;
+					}
+				
+					//place the proxy in the correct location with the correct dimensions
+		        	$('.dragzoomproxy').css({
+		        		top: Math.min(event.originalEvent.pageY, $('.dragzoomproxy').data('startPosition').y),
+			            left: Math.min(event.originalEvent.pageX, $('.dragzoomproxy').data('startPosition').x),
+			            height: Math.abs(ui.position.top),
+		             	width: Math.abs(ui.position.left)
+		            });
+				},
+				stop: function (event, ui) {
+				
+					//do nothing if shift has already been released
+					if ($('.dragzoomproxy').length == 0) {
+						return;
+					}
+				
+		            //get the proper offsets    
+		           	var offset = $('.dialog-maplock-map-dragzoomlayer').offset();
+		            var StartX = $('.dragzoomproxy').data('startPosition').x - offset.left;
+		            var StartY = $('.dragzoomproxy').data('startPosition').y - offset.top;
+		            var PageX = event.originalEvent.pageX - offset.left;
+		            var PageY = event.originalEvent.pageY - offset.top;
+		            
+		            //remove the proxy
+		        	$('.dragzoomproxy').remove();
+		            
+		            //figure out the topleft and bottomright corners of our box
+		            var pointValues = [StartX + StartY, PageX + PageY, StartX + PageY, PageX + StartY];
+		            var pointValueToGeoMap = {};
+		            pointValueToGeoMap[StartX + StartY] = map.pixelToGeo(StartX, StartY);
+		            pointValueToGeoMap[PageX + PageY] = map.pixelToGeo(PageX, PageY);
+		            pointValueToGeoMap[StartX + PageY] = map.pixelToGeo(StartX, PageY);
+		            pointValueToGeoMap[PageX + StartY] = map.pixelToGeo(PageX, StartY);
+		            var TopLeft = pointValueToGeoMap[Math.min.apply(null, pointValues)];
+		          	var BottomRight = pointValueToGeoMap[Math.max.apply(null, pointValues)];
+		          	
+		          	//create polygon
+		          	map.objects.clear();
+		          	map.objects.add(new nokia.maps.map.Polygon(
+                        [
+                        	TopLeft,
+                        	new nokia.maps.geo.Coordinate(TopLeft.latitude, BottomRight.longitude),
+                        	BottomRight,
+                        	new nokia.maps.geo.Coordinate(BottomRight.latitude, TopLeft.longitude),
+                        	TopLeft
+                        ],
+                        {
+                            pen: { strokeColor:  '#000', lineWidth: 1 },
+                            brush: { color: '#2C2A' }
+                        }
+                    ));
+                    
+                    //keep track of these settings
+                    $('#dialog-maplock').data('lockSettings', {
+                    	topLeft: {
+                    		latitude: TopLeft.latitude,
+                    		longitude: TopLeft.longitude
+                    	},
+                    	bottomRight: {
+                    		latitude: BottomRight.latitude,
+                    		longitude: BottomRight.longitude
+                    	}
+                    });
+				}
+			});
+			
+			//handle saving map lock settings
+			$('.dialog-maplock-save, .dialog-maplock-remove').click(function () {
+				
+				//show loading msg
+            	var $loadMask = showTabLoading($('#dialog-maplock .loadmask-wrapper'), 'Updating...');
+				
+				//build the lock settings to be saved
+				var lockSettings = {};
+				if ($(this).is('.dialog-maplock-save')) 
+				{
+					$.extend(lockSettings, ($('#dialog-maplock').data('lockSettings') || {}));
+				}
+			
+            	//start preparing data for this request
+            	var requestData = {
+            		action		: 'save_permission',
+					field		: addNamespace('{!namespace}', 'MapAnythingSettings__c'),            		
+            		type		: 'setting',
+            		setting		: 'MapLockSettings',
+            		value		: JSON.stringify(lockSettings)
+            	};
+            	
+            	//if this is a mass action, we need to add the user ids
+            	var userIds = [];
+            	if ($('#dialog-maplock').data('massAction'))
+            	{
+            		//change the action for this call to be a mass action
+            		requestData.action = 'save_permissions_mass';
+            		
+            		//send batch requests to update these records
+            		$('#permissions-grid').data('batchCount', 0);
+	            	$.each($('#permissions-grid').data('matchingRecords'), function (userId, record) {
+	            		userIds.push(userId);
+	            		
+	            		//send out this batch if it's ready
+	            		if (userIds.length > 200)
+	            		{
+	            			requestData.userIds = JSON.stringify(userIds);
+	            			$.getJSON("/apex/MAAdminAJAXResources?securityToken={!securityToken}&action=save_permissions_mass", requestData, function(json)
+			                { 
+			                    if(json.success)
+			                    {
+			                    }
+			                    else { }
+			                    
+			                    //decrement the batches we have out
+			                    $('#permissions-grid').data('batchCount', $('#permissions-grid').data('batchCount') - 1);
+			                    showTabLoading($loadMask, 'Updating...' + $('#permissions-grid').data('batchCount') + ' batches remaining');
+			                })
+			                .error(function(jqXHR, textStatus, errorThrown) {        
+			                    //decrement the batches we have out
+			                    $('#permissions-grid').data('batchCount', $('#permissions-grid').data('batchCount') - 1);
+			                    showTabLoading($loadMask, 'Updating...' + $('#permissions-grid').data('batchCount') + ' batches remaining');
+			                });
+			                
+			                //increment the batches that we have out and restart the id list
+			                $('#permissions-grid').data('batchCount', $('#permissions-grid').data('batchCount') + 1);
+			                userIds = [];
+	            		}
+	            	});
+	            	requestData.userIds = JSON.stringify(userIds);
+	            	
+	            	//send the last batch if needed
+	            	if (userIds.length > 0)
+	           		{
+	           			requestData.userIds = JSON.stringify(userIds);
+	           			$.getJSON("/apex/MAAdminAJAXResources?securityToken={!securityToken}&action=save_permissions_mass", requestData, function(json)
+		                { 
+		                    if(json.success)
+		                    {
+		                    }
+		                    else { }
+		                    
+		                    //decrement the batches we have out
+		                    $('#permissions-grid').data('batchCount', $('#permissions-grid').data('batchCount') - 1);
+		                    showTabLoading($loadMask, 'Updating...' + $('#permissions-grid').data('batchCount') + ' batches remaining');
+		                })
+		                .error(function(jqXHR, textStatus, errorThrown) {        
+		                    //decrement the batches we have out
+		                    $('#permissions-grid').data('batchCount', $('#permissions-grid').data('batchCount') - 1);
+		                    showTabLoading($loadMask, 'Updating...' + $('#permissions-grid').data('batchCount') + ' batches remaining');
+		                });
+		                
+		                //increment the batches that we have out and restart the id list
+		                $('#permissions-grid').data('batchCount', $('#permissions-grid').data('batchCount') + 1);
+		                userIds = [];
+	           		}
+	            	
+	            	//done sending batches, update status message
+	            	showTabLoading($loadMask, 'Updating...' + $('#permissions-grid').data('batchCount') + ' batches remaining');
+	            	
+	            	//set an interval to track when all the batches have returned
+	            	$('#permissions-grid').data(
+	            		'batchInterval',
+	            		setInterval(function () {
+		            	
+		            		if ($('#permissions-grid').data('batchCount') == 0) 
+		            		{
+				                //update all rows
+	                         	$.each($('#permissions-grid').data('matchingRecords'), function (userId, record) {
+				            		record.Settings.MapLockSettings = JSON.parse(requestData.value);
+				            	});
+				            	
+				            	//refresh this page to update the visible data
+				            	$('#permissions-page').change();
+				            	
+				            	//clear this interval because we're done
+				            	clearInterval($('#permissions-grid').data('batchInterval'));
+				            	
+				            	//we're done, close the dialog
+		                        hideTabMessage($loadMask);
+		                        $('#dialog-maplock').data('lockSettings', {});
+		                        map.objects.clear();
+		                        $('#dialog-maplock').dialog('close');
+		                    	
+				            }
+		                
+	                	}, 1000)
+	                );
+            	}
+            	else
+            	{
+            		//this is not a mass action so pass the userId
+            		requestData.userId = $('#dialog-maplock').data('relatedTo').closest('.permissions-row').data('record').Id;
+            
+	            	//send the request
+	            	$.getJSON("/apex/MAAdminAJAXResources?securityToken={!securityToken}", requestData, function(json)
+	                { 
+	                    if(json.success)
+	                    {
+                        	//update this row
+                         	$('#dialog-maplock').data('relatedTo').closest('.permissions-row').data('record').Settings.MapLockSettings = JSON.parse(requestData.value);
+                         	populatePermissionsRow($('#dialog-maplock').data('relatedTo').closest('.permissions-row'));
+	                         
+	                        //we're done, close the dialog
+	                        hideTabMessage($loadMask);
+	                        $('#dialog-maplock').data('lockSettings', {});
+		                    map.objects.clear();
+	                        $('#dialog-maplock').dialog('close');
+	                    }
+	                    else
+	                    {
+	                    	showTabError($loadMask, 'Unable to save');
+	                    }
+	                })
+	                .error(function(jqXHR, textStatus, errorThrown) {        
+	                    //show error
+	                    showTabError($loadMask, 'Unable to save');
+	                });
+	            }
+								
+			});
+			
+			//handle closing action button dialog
+            $('#dialog-maplock .closebtn').click(function () {
+            	$('#dialog-maplock').dialog('close');
+            });
+		
+            //get available buttons and sets
+            var $currentButtonColumn = $("<div class='buttoncolumn' />").appendTo($('.layout-availablebuttons'));
+            $.each(MAActionFramework.availableButtons, function (index, button) {
+            	if ($currentButtonColumn.children().length >= 4)
+            	{
+            		$currentButtonColumn = $("<div class='buttoncolumn' />").appendTo($('.layout-availablebuttons'));
+            	}
+            	
+            	$currentButtonColumn.append($("<div class='actionbutton' />").text(button.Label).attr('data-type', button.Type));
+            });
+            
+            //handle dragging action buttons
+            $('.layout-availablebuttons .actionbutton').draggable({
+            	opacity: 0.7,
+            	helper: 'clone'
+            });
+            
+            //handle dropping sections
+            $('.layout-tooltip .section-dropzone').droppable({
+            	accept: '.actionbutton[data-type="Section"]',
+            	tolerance: 'touch',
+            	hoverClass: 'hovering',
+            	drop: ButtonSet_InsertSection
+            });
+            
+            //handle dropping buttons back in the available buttons section
+            $('.layout-availablebuttons').droppable({
+            	accept: '.buttonset-button',
+            	tolerance: 'fit',
+            	hoverClass: 'hovering',
+            	drop: function (event, ui) {
+            		var buttonDataType = ui.draggable.find('.actionbutton').attr('data-type'); 
+            		var buttonText = ui.draggable.find('.actionbutton').text();
+            		$('.layout-availablebuttons .actionbutton').each(function () {
+            			if ($(this).attr('data-type') == buttonDataType && $(this).text() == buttonText) {
+            				$(this).draggable('enable');
+            			}
+            		});
+            		ui.draggable.remove();
+            	}
+            });
+            
+            //handle saving settings
+            $('#adminsettings .buttons .savebtn').click(function () 
+            {
+                var $tab = showTabLoading($(this).closest('.ui-tabs-panel'), 'Saving...');
+                
+                //put all settings in a request obj
+                var requestData = {
+                	settings: JSON.stringify({
+	                	serial						: $('#adminsettings input.serial').val(),
+	                	FolderPermissionsEnabled	: $('#adminsettings input.feature-folderpermissions').is(':checked') ? 'true' : 'false'
+	                })
+                };
+                
+                //send request to save settings
+                $.getJSON("/apex/MAAdminAJAXResources?securityToken={!securityToken}&action=save_settings", requestData, function(json)
+                { 
+                    if(json.success)
+                    {
+                         showTabSuccess($tab, 'Settings Saved');
+                    }
+                    else
+                    {  
+                        showTabError($tab, 'Save Error: Please try again');
+                    }
+                })
+                .error(function(jqXHR, textStatus, errorThrown) {        
+                    showTabError($tab, 'Unknown Error');
+                });                
+            });
+            
+            //handle saving checkbox permissions
+            $('#permissions-grid').on('change', '.autosave[type=checkbox]', function () {
+           		var $checkbox = $(this);
+           		
+           		//build request data to update the permission
+           		var requestData = {
+           			userId		: $checkbox.closest('.permissions-row').data('record').Id,
+           			field		: addNamespace('{!namespace}', $checkbox.attr('data-field')),
+           			type		: 'boolean',
+           			value		: $checkbox.is(':checked')
+           		};
+           		
+           		//replace the checkbox with a loader and send the request to update the permission
+           		var $loader = $('.templates .loader').clone();
+           		$checkbox.replaceWith($loader);
+           		$.getJSON("/apex/MAAdminAJAXResources?securityToken={!securityToken}&action=save_permission", requestData, function(json)
+                { 
+                    if(json.success)
+                    {
+                    	//update this data in our raw data (this is needed to prevent data loss during searching)
+                        $('#permissions-grid').data('records')[$loader.closest('.permissions-row').data('record').Id][requestData.field] = requestData.value;
+                        	
+                        //replace the loader with the original checkbox
+                        $loader.replaceWith($checkbox);
+                    }
+                    else
+                    {
+                    	//replace the loader with the original checkbox
+                        $loader.replaceWith($checkbox);
+                    }
+                })
+                .error(function(jqXHR, textStatus, errorThrown) {        
+                    //show error
+                    $loader.replaceWith($checkbox);
+                });
+            });
+            
+            //handle saving picklist permissions
+            $('#permissions-grid').on('change', 'select.autosave', function () {
+           		var $picklist = $(this);
+           		
+           		//build request data to update the permission
+           		var requestData = {
+           			userId		: $picklist.closest('.permissions-row').data('record').Id,
+           			field		: addNamespace('{!namespace}', $picklist.attr('data-field')),
+           			type		: 'picklist',
+           			value		: $picklist.val().indexOf('-') == 0 ? '' : $picklist.val()
+           		};
+           		
+           		
+           		//modify request data if this is a picklist that should modify a setting instead of a field
+           		if ($picklist.is('.setting')) {
+           			requestData.field = addNamespace('{!namespace}', 'MapAnythingSettings__c');
+           			requestData.type = 'setting';
+           			requestData.setting = $picklist.attr('data-field');
+           		} 
+           		
+           		//replace the checkbox with a loader and send the request to update the permission
+           		var $loader = $('.templates .loader').clone();
+           		$picklist.replaceWith($loader);
+           		$.getJSON("/apex/MAAdminAJAXResources?securityToken={!securityToken}&action=save_permission", requestData, function(json)
+                { 
+                    if(json.success)
+                    {
+                    	//update this data in our raw data (this is needed to prevent data loss during searching)
+                        $('#permissions-grid').data('records')[$loader.closest('.permissions-row').data('record').Id][requestData.field] = requestData.value;
+                        	
+                        //replace the loader with the original checkbox
+                        $loader.replaceWith($picklist);
+                    }
+                    else
+                    {
+                    	//replace the loader with the original checkbox
+                        $loader.replaceWith($picklist);
+                    }
+                })
+                .error(function(jqXHR, textStatus, errorThrown) {        
+                    //show error
+                    $loader.replaceWith($picklist);
+                });
+            });
+            
+            //handle saving text/number permissions
+            $('#permissions-grid').on('keyup', 'td .autosave[type=text]', function () {
+            	var $textbox = $(this);
+            	
+            	//cancel any existing timeout
+           		try { clearTimeout($textbox.data('saveTimeout')); } catch (err) { }
+            		
+           		//set a timeout so we can save this value when the user stops typing
+           		$(this).data(
+           			'saveTimeout', 
+           			setTimeout(function () {
+           				
+           				//build request data to update the permission
+		           		var requestData = {
+		           			userId		: $textbox.closest('.permissions-row').data('record').Id,
+		           			field		: addNamespace('{!namespace}', $textbox.attr('data-field')),
+		           			type		: 'number',
+		           			value		: parseFloat($textbox.val())
+		           		};
+		           		
+		           		//replace the textbox with a loader and send the request to update the permission
+		           		var $loader = $('.templates .loader').clone();
+           				$textbox.replaceWith($loader);
+		           		$.getJSON("/apex/MAAdminAJAXResources?securityToken={!securityToken}&action=save_permission", requestData, function(json)
+		                { 
+		                    if(json.success)
+		                    {
+		                    	//update this data in our raw data (this is needed to prevent data loss during searching)
+		                        $('#permissions-grid').data('records')[$loader.closest('.permissions-row').data('record').Id][requestData.field] = requestData.value;
+		                        	
+		                        //replace the loader with the original textbox
+		                        $loader.replaceWith($textbox);
+		                    }
+		                    else
+		                    {
+		                    	//replace the loader with the original textbox
+		                        $loader.replaceWith($textbox);
+		                    }
+		                })
+		                .error(function(jqXHR, textStatus, errorThrown) {        
+		                    //show error
+		                    $loader.replaceWith($textbox);
+		                });
+           				
+           			}, 800)
+           		);
+            });
+            
+            //handle mass saving checkbox permissions
+            $('#permissions-grid').on('click', 'th span.massaction', updatePermissionsMass);
+            
+            //handle mass saving select list permissions
+            $('#permissions-grid').on('change', 'th select.massaction', updatePermissionsMass);
+            
+            //handle mass saving text/number permissions
+            $('#permissions-grid').on('keyup', 'th input', function () {
+            
+            	var $textbox = $(this);
+            
+            	//clear any existing timeouts
+            	try { clearTimeout($textbox.data('saveTimeout')); } catch (err) { }
+            
+            	//set a timeout to save this data when the user stops typing
+            	$textbox.data(
+            		'saveTimeout',
+            		setTimeout(function () {
+            		
+            			//set a loadmask over the permissions grid
+        				$('#permissions-grid-wrapper').addClass('permissions-grid-loading');
+        				$('#permissions-grid-status .status span').text('Preparing...');
+
+		            	//start preparing data for this request
+		            	var requestData = {
+		            		field		: addNamespace('{!namespace}', $textbox.closest('th').attr('data-field')),
+		            		type		: $textbox.closest('th').attr('data-type')
+		            	};
+		            	
+		            	//get the new value based on the type and what was clicked
+		            	switch (requestData.type)
+		            	{
+		            		case 'number':
+		            			requestData.value = parseFloat($textbox.val());
+		            			break;
+		            	}
+		            	
+		            	//collect all of the records that need to be modified
+		            	var userIds = [];
+		            	$('#permissions-grid').data('batchCount', 0);
+		            	$.each($('#permissions-grid').data('matchingRecords'), function (userId, record) {
+		            		userIds.push(userId);
+		            		
+		            		//send out this batch if it's ready
+		            		if (userIds.length > 200)
+		            		{
+		            			requestData.userIds = JSON.stringify(userIds);
+		            			$.getJSON("/apex/MAAdminAJAXResources?securityToken={!securityToken}&action=save_permissions_mass", requestData, function(json)
+				                { 
+				                    if(json.success)
+				                    {
+				                    	//update this data in our raw data (this is needed to prevent data loss during searching)
+				                        $.each($('#permissions-grid').data('matchingRecords'), function (userId, record) {
+				                        	record[requestData.field] = requestData.value;
+				                        });
+				                    }
+				                    else { }
+				                    
+				                    //decrement the batches we have out
+				                    $('#permissions-grid').data('batchCount', $('#permissions-grid').data('batchCount') - 1);
+				                    $('#permissions-grid-status .status span').text('Updating...' + $('#permissions-grid').data('batchCount') + ' batches remaining');
+				                })
+				                .error(function(jqXHR, textStatus, errorThrown) {        
+				                    //decrement the batches we have out
+				                    $('#permissions-grid').data('batchCount', $('#permissions-grid').data('batchCount') - 1);
+				                    $('#permissions-grid-status .status span').text('Updating...' + $('#permissions-grid').data('batchCount') + ' batches remaining');
+				                });
+				                
+				                //increment the batches that we have out and restart the id list
+				                $('#permissions-grid').data('batchCount', $('#permissions-grid').data('batchCount') + 1);
+				                userIds = [];
+		            		}
+		            	});
+		            	requestData.userIds = JSON.stringify(userIds);
+		            	
+		            	//send the last batch if needed
+		            	if (userIds.length > 0)
+		           		{
+		           			requestData.userIds = JSON.stringify(userIds);
+		           			$.getJSON("/apex/MAAdminAJAXResources?securityToken={!securityToken}&action=save_permissions_mass", requestData, function(json)
+			                { 
+			                    if(json.success)
+			                    {
+			                    	//update this data in our raw data (this is needed to prevent data loss during searching)
+			                        $.each($('#permissions-grid').data('matchingRecords'), function (userId, record) {
+			                        	record[requestData.field] = requestData.value;
+			                        });
+			                    }
+			                    else { }
+			                    
+			                    //decrement the batches we have out
+			                    $('#permissions-grid').data('batchCount', $('#permissions-grid').data('batchCount') - 1);
+			                    $('#permissions-grid-status .status span').text('Updating...' + $('#permissions-grid').data('batchCount') + ' batches remaining');
+			                })
+			                .error(function(jqXHR, textStatus, errorThrown) {        
+			                    //decrement the batches we have out
+			                    $('#permissions-grid').data('batchCount', $('#permissions-grid').data('batchCount') - 1);
+			                    $('#permissions-grid-status .status span').text('Updating...' + $('#permissions-grid').data('batchCount') + ' batches remaining');
+			                });
+			                
+			                //increment the batches that we have out and restart the id list
+			                $('#permissions-grid').data('batchCount', $('#permissions-grid').data('batchCount') + 1);
+			                userIds = [];
+		           		}
+		            	
+		            	//done sending batches, update status message
+		            	$('#permissions-grid-status .status span').text('Updating...' + $('#permissions-grid').data('batchCount') + ' batches remaining');
+		            	
+		            	//set an interval to track when all the batches have returned
+		            	$('#permissions-grid').data(
+		            		'batchInterval',
+		            		setInterval(function () {
+			            	
+			            		if ($('#permissions-grid').data('batchCount') == 0) 
+			            		{
+			            			//update this data in our raw data (this is needed to prevent data loss during searching)
+					                $.each($('#permissions-grid').data('matchingRecords'), function (userId, record) {
+										record[requestData.field] = requestData.value;
+					                });
+					                
+					            	//update the current page of data and remove the loadmask
+					            	$('#permissions-grid-wrapper').removeClass('permissions-grid-loading');
+					            	$('#permissions-page').change();
+					            	
+					            	//clear this interval because we're done
+					            	clearInterval($('#permissions-grid').data('batchInterval'));
+					            }
+			                
+		                	}, 1000)
+		                );
+		            	
+                	}, 800)
+            	);
+            });
+            
+            //handle editing settings permissions
+            $('#permissions-grid').on('click', '.editsettings', function () {
+
+				switch ($(this).attr('data-field'))
+				{
+					case 'EnabledActionButtons':
+					
+						var $dialog = $('#dialog-actionbuttons');
+		
+						//keep track of the related record for later				
+						var massAction = $(this).is('.massaction');
+						$.extend($dialog.data(), {
+							massAction	: massAction,
+							relatedTo	: $(this).closest('.permissions-row').data('record')
+						});
+		
+						//populate the action buttons
+						$dialog.find('.actionbutton').addClass('on');
+						if (!massAction && $(this).closest('.permissions-row').data('record').Settings.EnabledActionButtons) {
+							$dialog.find('.actionbutton').removeClass('on');
+							$.each($(this).closest('.permissions-row').data('record').Settings.EnabledActionButtons, function (index, buttonText) {
+								$dialog.find('.actionbutton[data-label="'+buttonText+'"]').addClass('on');
+							});
+			        	}
+		
+		            	//open the settings popup
+		            	$dialog.data('relatedTo', $(this)).dialog('open');
+		            	break;
+		            
+		            case 'MapLockSettings':
+		            
+		            	var $dialog = $('#dialog-maplock');
+		
+						//keep track of the related record for later				
+						var massAction = $(this).is('.massaction');
+						var userRecord = $(this).closest('.permissions-row').data('record');
+						$.extend($dialog.data(), {
+							massAction	: massAction,
+							relatedTo	: userRecord
+						});
+						
+						//put the current lock polygon on the map if this is for a specific locked user
+						if (!massAction && userRecord.Settings.MapLockSettings && userRecord.Settings.MapLockSettings.topLeft) {
+							map.objects.clear();
+				          	map.objects.add(new nokia.maps.map.Polygon(
+		                        [
+		                        	new nokia.maps.geo.Coordinate(userRecord.Settings.MapLockSettings.topLeft.latitude, userRecord.Settings.MapLockSettings.topLeft.longitude),
+		                        	new nokia.maps.geo.Coordinate(userRecord.Settings.MapLockSettings.topLeft.latitude, userRecord.Settings.MapLockSettings.bottomRight.longitude),
+		                        	new nokia.maps.geo.Coordinate(userRecord.Settings.MapLockSettings.bottomRight.latitude, userRecord.Settings.MapLockSettings.bottomRight.longitude),
+		                        	new nokia.maps.geo.Coordinate(userRecord.Settings.MapLockSettings.bottomRight.latitude, userRecord.Settings.MapLockSettings.topLeft.longitude),
+		                        	new nokia.maps.geo.Coordinate(userRecord.Settings.MapLockSettings.topLeft.latitude, userRecord.Settings.MapLockSettings.topLeft.longitude),
+		                        ],
+		                        {
+		                            pen: { strokeColor:  '#000', lineWidth: 1 },
+		                            brush: { color: '#2C2A' }
+		                        }
+		                    ));
+		                    setTimeout(function () {map.zoomTo(map.getBoundingBox(), false, 'default')}, 500);
+						}
+		
+		            	//open the settings popup
+		            	$dialog.data('relatedTo', $(this)).dialog('open');
+		            	break;
+		            
+		            default:
+		            	break;
+		        }
+            });
+            
+            //handle clicking action buttons
+            $('#dialog-actionbuttons .actionbutton').click(function () {
+            	$(this).toggleClass('on');
+            });
+            
+            //handle closing action button dialog
+            $('#dialog-actionbuttons .closebtn').click(function () {
+            	$('#dialog-actionbuttons').dialog('close');
+            });
+            
+            //handle saving action buttons
+            $('#dialog-actionbuttons .savebtn').click(function () {
+            
+            	//show loading msg
+            	var $button = $(this);
+            	if ($button.attr('value') == 'Saving...') { return false; }
+            	else { $button.attr('value', 'Saving...'); };
+            	
+            	//hide any existing messages
+            	$('#dialog-actionbuttons .msgs').text('');
+            
+            	//start preparing data for this request
+            	var requestData = {
+            		action		: 'save_permission',
+					field		: addNamespace('{!namespace}', 'MapAnythingSettings__c'),            		
+            		type		: 'setting',
+            		setting		: 'EnabledActionButtons',
+            		value		: JSON.stringify($('#dialog-actionbuttons .actionbutton.on').map(function () { return $(this).attr('data-label'); }).get())
+            	};
+            	
+            	//if this is a mass action, we need to add the user ids
+            	var userIds = [];
+            	if ($('#dialog-actionbuttons').data('massAction'))
+            	{
+            		//change the action for this call to be a mass action
+            		requestData.action = 'save_permissions_mass';
+            		
+            		//send batch requests to update these records
+            		$('#permissions-grid').data('batchCount', 0);
+	            	$.each($('#permissions-grid').data('matchingRecords'), function (userId, record) {
+	            		userIds.push(userId);
+	            		
+	            		//send out this batch if it's ready
+	            		if (userIds.length > 200)
+	            		{
+	            			requestData.userIds = JSON.stringify(userIds);
+	            			$.getJSON("/apex/MAAdminAJAXResources?securityToken={!securityToken}&action=save_permissions_mass", requestData, function(json)
+			                { 
+			                    if(json.success)
+			                    {
+			                    }
+			                    else { }
+			                    
+			                    //decrement the batches we have out
+			                    $('#permissions-grid').data('batchCount', $('#permissions-grid').data('batchCount') - 1);
+			                    $('#dialog-actionbuttons .msgs').text('Updating...' + $('#permissions-grid').data('batchCount') + ' batches remaining');
+			                })
+			                .error(function(jqXHR, textStatus, errorThrown) {        
+			                    //decrement the batches we have out
+			                    $('#permissions-grid').data('batchCount', $('#permissions-grid').data('batchCount') - 1);
+			                    $('#dialog-actionbuttons .msgs').text('Updating...' + $('#permissions-grid').data('batchCount') + ' batches remaining');
+			                });
+			                
+			                //increment the batches that we have out and restart the id list
+			                $('#permissions-grid').data('batchCount', $('#permissions-grid').data('batchCount') + 1);
+			                userIds = [];
+	            		}
+	            	});
+	            	requestData.userIds = JSON.stringify(userIds);
+	            	
+	            	//send the last batch if needed
+	            	if (userIds.length > 0)
+	           		{
+	           			requestData.userIds = JSON.stringify(userIds);
+	           			$.getJSON("/apex/MAAdminAJAXResources?securityToken={!securityToken}&action=save_permissions_mass", requestData, function(json)
+		                { 
+		                    if(json.success)
+		                    {
+		                    }
+		                    else { }
+		                    
+		                    //decrement the batches we have out
+		                    $('#permissions-grid').data('batchCount', $('#permissions-grid').data('batchCount') - 1);
+		                    $('#dialog-actionbuttons .msgs').text('Updating...' + $('#permissions-grid').data('batchCount') + ' batches remaining');
+		                })
+		                .error(function(jqXHR, textStatus, errorThrown) {        
+		                    //decrement the batches we have out
+		                    $('#permissions-grid').data('batchCount', $('#permissions-grid').data('batchCount') - 1);
+		                    $('#dialog-actionbuttons .msgs').text('Updating...' + $('#permissions-grid').data('batchCount') + ' batches remaining');
+		                });
+		                
+		                //increment the batches that we have out and restart the id list
+		                $('#permissions-grid').data('batchCount', $('#permissions-grid').data('batchCount') + 1);
+		                userIds = [];
+	           		}
+	            	
+	            	//done sending batches, update status message
+	            	$('#dialog-actionbuttons .msgs').text('Updating...' + $('#permissions-grid').data('batchCount') + ' batches remaining');
+	            	
+	            	//set an interval to track when all the batches have returned
+	            	$('#permissions-grid').data(
+	            		'batchInterval',
+	            		setInterval(function () {
+		            	
+		            		if ($('#permissions-grid').data('batchCount') == 0) 
+		            		{
+				                //update all rows
+	                         	$.each($('#permissions-grid').data('matchingRecords'), function (userId, record) {
+				            		record.Settings.EnabledActionButtons = JSON.parse(requestData.value);
+				            	});
+				            	
+				            	//refresh this page to update the visible data
+				            	$('#permissions-page').change();
+				            	
+				            	//clear this interval because we're done
+				            	clearInterval($('#permissions-grid').data('batchInterval'));
+				            	
+				            	//we're done, close the dialog
+		                        $button.attr('value', 'Save');
+		                        $('#dialog-actionbuttons .msgs').text('');
+		                        $('#dialog-actionbuttons').dialog('close');
+		                    	
+				            }
+		                
+	                	}, 1000)
+	                );
+            	}
+            	else
+            	{
+            		//this is not a mass action so pass the userId
+            		requestData.userId = $('#dialog-actionbuttons').data('relatedTo').closest('.permissions-row').data('record').Id;
+            
+	            	//send the request
+	            	$.getJSON("/apex/MAAdminAJAXResources?securityToken={!securityToken}", requestData, function(json)
+	                { 
+	                    if(json.success)
+	                    {
+                        	//update this row
+                         	$('#dialog-actionbuttons').data('relatedTo').closest('.permissions-row').data('record').Settings.EnabledActionButtons = JSON.parse(requestData.value);
+                         	populatePermissionsRow($('#dialog-actionbuttons').data('relatedTo').closest('.permissions-row'));
+	                         
+	                        //we're done, close the dialog
+	                        $button.attr('value', 'Save');
+	                        $('#dialog-actionbuttons').dialog('close');
+	                    }
+	                    else
+	                    {
+	                    	$button.attr('value', 'Save');
+	                    	$('#dialog-actionbuttons .msgs').text('Unable to save').show();
+	                    }
+	                })
+	                .error(function(jqXHR, textStatus, errorThrown) {        
+	                    //show error
+	                    $button.attr('value', 'Save');
+	                    $('#dialog-actionbuttons .msgs').text('Unable to save').show();
+	                });
+	            }
+            });
+            
+            //handle searching for users (profile searching is handled in the autocomplete settings)
+            $('#permissionsfilter-name').keyup(search);
+            $('#permissionsfilter-profile').change(search);
+            $('#permissionsfilter-includeinactive').change(load);
+            $('#permissionsfilter-includeportal').change(load);
+            
+            //handle changing page number
+            $('#permissions-page').change(function () {
+            
+            	//set a loadmask over the permissions grid
+        		$('#permissions-grid-wrapper').addClass('permissions-grid-loading');
+        		$('#permissions-grid-status .status span').text('Loading...');
+        		
+        		//remove existing rows
+        		$permissionsGrid = $('#permissions-grid');
+        		$permissionsGrid.find('.permissions-row').remove();
+        		
+        		//calculate start and end points for this page
+            	var recordStart = ($(this).val() - 1) * pageSize + 1;
+            	var recordEnd = recordStart + pageSize - 1;
+            	
+            	//loop over our matching records and add those that belong on this page
+            	var index = 1;
+            	$.each($permissionsGrid.data('matchingRecords'), function (userId, record) {
+            		
+            		//add a row for this record if we're past the starting point for this page
+            		if (recordStart <= index)
+            		{
+            			//add row
+            			var $row = populatePermissionsRow($('.templates .permissions-row').clone().data('record', record));
+			            $permissionsGrid.append($row);
+            		}
+            		
+            		//increment our index and stop looping if we're past the endpoint for this page
+            		index++;
+            		if (recordEnd < index) { return false; }
+            	});
+            	
+            	//update page info
+            	$('#permissions-pageinfo').text('Displaying users ' + Math.max(recordStart, 0) + ' - ' + Math.min(recordEnd, $permissionsGrid.data('matchingRecordsCount')) + ' of ' + $permissionsGrid.data('matchingRecordsCount'));
+            	
+            	//remove the loadmask over the permissions grid
+        		$('#permissions-grid-wrapper').removeClass('permissions-grid-loading');
+            });
+            
+            /*****************************
+            *	Button Sets OnReady
+            *****************************/
+            
+            //get existing button sets
+            //ButtonSet_GetExisting();
+            
+            //handle selecting a button set
+            $('.buttonsets-selectedbuttonset').change(function () {
+            	
+            	//clear previous layouts
+            	$('.layout-availablebuttons .actionbutton').draggable('enable');
+            	$('.layout-tooltip .buttonset-section').remove();
+            	
+            	if ($(this).val() == 'New')
+            	{
+            		//creating a new button set.  set defaults
+            		$('#TopTabs-ButtonSets .basicinfo-name').val('New Button Set');
+            	}
+            	else
+            	{
+            		//load the selected button set
+            		$.ajax({
+		                url: 'MAAdminAJAXResources?securityToken={!securityToken}&action=get_buttonset',
+		                type: 'POST',
+		                dataType: 'JSON',
+		                data: {
+		                	id: $(this).val()
+		                },
+		                success: function (response) 
+		                {
+		                	console.log(response);
+		                	if (response.success)
+		                	{
+		                		//clean the result and populate basic settings
+		                		removeNamespace('{!namespace}', response.result);
+			                	$('#TopTabs-ButtonSets .basicinfo-name').val(response.result.Name);
+			                	
+			                	//parse the tooltip layout and populate
+			                	var tooltipLayout = JSON.parse(response.result.TooltipLayout__c);
+			                	var $tooltipLayout = $('.layout-tooltip');
+			                	$.each(tooltipLayout, function (sectionIndex, section) {
+			                		
+			                		//add this section
+			                		var $section = $('.templates .buttonset-section').clone().appendTo($tooltipLayout);
+			                		$section.find('.buttonset-section-name').text(section.Label);
+			                		
+			                		//loop over each column in this section
+			                		$.each(section.Columns, function (columnIndex, column) {
+			                			
+			                			//loop over each button in this column
+			                			var $column = $section.find('.buttoncolumn').eq(columnIndex);
+			                			$.each(column, function (buttonIndex, button) {
+			                				
+			                				//add this button
+			                				var $button = $('.templates .buttonset-button').clone().prepend(
+			                					$('<div class="actionbutton" />').attr('data-type', button.Type).text(button.Label)
+			                				).appendTo($column);
+			                				
+			                				//disable this button in the available button list
+			                				if (button.Type == 'StandardButton') {
+			                					$('.layout-availablebuttons .actionbutton[data-type="StandardButton"]').each(function () {
+			                						if ($(this).text() == button.Label) {
+			                							$(this).draggable('disable');
+			                						}
+			                					});
+			                				}
+			                				else if (button.Type == 'CustomButton') {
+			                					$('.layout-availablebuttons[data-type="CustomButton"][data-id="'+button.Id+'"]').draggable('disable');
+			                				}
+			                			
+			                			});
+			                			
+			                		});
+			                		
+			                	});
+			                	
+			                	//add handlers
+			                	ButtonSet_AddHandlers();
+			            	}
+			            	else {
+			            		console.log('Error loading button set: ' + response.details);
+			            	}
+		                },
+		                error: function (response) { console.log('Unknown error loading button set'); }
+		            });
+            	}
+            });
+        });
+
+        function updatePermissionsMass()
+        {
+        	//start preparing data for this request
+           	var requestData = {
+           		field		: addNamespace('{!namespace}', $(this).closest('th').attr('data-field')),
+           		type		: $(this).closest('th').attr('data-type')
+           	};
+           	
+        	//handle non-update use cases
+        	if ($(this).is('select') && $(this).val() == '')
+        	{
+        		//this is a picklist with no value selected.  do nothing
+        		return;
+        	}
+        
+        	//set a loadmask over the permissions grid
+       		$('#permissions-grid-wrapper').addClass('permissions-grid-loading');
+       		$('#permissions-grid-status .status span').text('Preparing...');
+           
+           	//get the new value based on the type and what was clicked
+           	switch (requestData.type)
+           	{
+           		case 'boolean':
+           			requestData.value = $(this).text() == 'All';
+           			break;
+           		case 'picklist':
+           			requestData.value = $(this).val();
+           			$(this).val('');
+           			break;
+           		default:
+           			//invalid type.  just do nothing
+           			$('#permissions-grid-wrapper').removeClass('permissions-grid-loading');
+           			return;
+           	}
+           	
+           	//send batch requests to update these records
+           	var userIds = [];
+           	$('#permissions-grid').data('batchCount', 0);
+           	$.each($('#permissions-grid').data('matchingRecords'), function (userId, record) {
+           		userIds.push(userId);
+           		
+           		//send out this batch if it's ready
+           		if (userIds.length > 200)
+           		{
+           			requestData.userIds = JSON.stringify(userIds);
+           			$.getJSON("/apex/MAAdminAJAXResources?securityToken={!securityToken}&action=save_permissions_mass", requestData, function(json)
+	                { 
+	                    if(json.success)
+	                    {
+	                    	//update this data in our raw data (this is needed to prevent data loss during searching)
+	                        $.each($('#permissions-grid').data('matchingRecords'), function (userId, record) {
+	                        	record[requestData.field] = requestData.value;
+	                        });
+	                    }
+	                    else { }
+	                    
+	                    //decrement the batches we have out
+	                    $('#permissions-grid').data('batchCount', $('#permissions-grid').data('batchCount') - 1);
+	                    $('#permissions-grid-status .status span').text('Updating...' + $('#permissions-grid').data('batchCount') + ' batches remaining');
+	                })
+	                .error(function(jqXHR, textStatus, errorThrown) {        
+	                    //decrement the batches we have out
+	                    $('#permissions-grid').data('batchCount', $('#permissions-grid').data('batchCount') - 1);
+	                    $('#permissions-grid-status .status span').text('Updating...' + $('#permissions-grid').data('batchCount') + ' batches remaining');
+	                });
+	                
+	                //increment the batches that we have out and restart the id list
+	                $('#permissions-grid').data('batchCount', $('#permissions-grid').data('batchCount') + 1);
+	                userIds = [];
+           		}
+           	});
+           	
+           	//send the last batch if needed
+           	if (userIds.length > 0)
+          	{
+       			requestData.userIds = JSON.stringify(userIds);
+       			$.getJSON("/apex/MAAdminAJAXResources?securityToken={!securityToken}&action=save_permissions_mass", requestData, function(json)
+                { 
+                    if(json.success)
+                    {
+                    	//update this data in our raw data (this is needed to prevent data loss during searching)
+                        $.each($('#permissions-grid').data('matchingRecords'), function (userId, record) {
+                        	record[requestData.field] = requestData.value;
+                        });
+                    }
+                    else { }
+                    
+                    //decrement the batches we have out
+                    $('#permissions-grid').data('batchCount', $('#permissions-grid').data('batchCount') - 1);
+                    $('#permissions-grid-status .status span').text('Updating...' + $('#permissions-grid').data('batchCount') + ' batches remaining');
+                })
+                .error(function(jqXHR, textStatus, errorThrown) {        
+                    //decrement the batches we have out
+                    $('#permissions-grid').data('batchCount', $('#permissions-grid').data('batchCount') - 1);
+                    $('#permissions-grid-status .status span').text('Updating...' + $('#permissions-grid').data('batchCount') + ' batches remaining');
+                });
+                
+                //increment the batches that we have out and restart the id list
+                $('#permissions-grid').data('batchCount', $('#permissions-grid').data('batchCount') + 1);
+                userIds = [];
+          	}
+           	
+           	//done sending batches, update status message
+           	$('#permissions-grid-status .status span').text('Updating...' + $('#permissions-grid').data('batchCount') + ' batches remaining');
+           	
+           	//set an interval to track when all the batches have returned
+           	$('#permissions-grid').data(
+           		'batchInterval',
+           		setInterval(function () {
+            	
+            		if ($('#permissions-grid').data('batchCount') == 0) 
+            		{
+            			//update this data in our raw data (this is needed to prevent data loss during searching)
+		                $.each($('#permissions-grid').data('matchingRecords'), function (userId, record) {
+		                	if (requestData.type == 'setting') {
+		                		switch (requestData.setting)
+		                		{
+		                			case 'ButtonSetId':
+		                				record.Settings.ButtonSetSettings = { Id: requestData.value };
+		                				break;
+		                			default:
+		                				break;
+		                		}
+		                	}
+		                	else {
+								record[requestData.field] = requestData.value;
+							}
+		                });
+		                
+		            	//update the current page of data and remove the loadmask
+		            	$('#permissions-grid-wrapper').removeClass('permissions-grid-loading');
+		            	$('#permissions-page').change();
+		            	
+		            	//clear this interval because we're done
+		            	clearInterval($('#permissions-grid').data('batchInterval'));
+		            }
+                
+               	}, 1000)
+			);
+        }
+        
+        //load the list of users and profiles based on the filter criteria
+        function load()
+        {
+        	//show loading
+        	showTabLoading($('#TopTabs-Permissions'), 'Loading...');
+        
+        	//get users
+        	$('#permissions-grid').data('records', {});
+			$.getJSON("/apex/MAAdminAJAXResources","securityToken={!securityToken}&action=get_user_permissions_batch&offset=0&includeInactive="+$('#permissionsfilter-includeinactive').is(':checked')+"&includePortal="+$('#permissionsfilter-includeportal').is(':checked'), function userPermissionsResponse (json)
+            {
+                if(json.success)
+                {
+                	//grab the permissions grid for easy access
+                	var $permissionsGrid = $('#permissions-grid');
+                	
+                	//loop through the returned users and add each as a row
+                	$.each(json.users, function (index, user) {
+                	
+                		//remove namespace
+                		removeNamespace('{!namespace}', user);
+                	
+                		//parse user settings
+                		user.Settings = JSON.parse(user.MapAnythingSettings__c || '{}');
+                		
+                		//add this user to the list in memory
+                		$permissionsGrid.data('records')[user.Id] = user;
+                		
+                	});
+                	
+                	//if this call returned 5k records then there might be more and we need to make another call.  otherwise, we're done
+                	if (json.users.length >= 5000) {
+	                	var newOffset = json.offset + json.users.length;
+	                	$.getJSON("/apex/MAAdminAJAXResources","securityToken={!securityToken}&action=get_user_permissions_batch&offset="+newOffset+"&includeInactive="+$('#permissionsfilter-includeinactive').is(':checked')+"&includePortal="+$('#permissionsfilter-includeportal').is(':checked'),userPermissionsResponse);
+	                }
+	                else {
+	                	$permissionsGrid.data('doneLoading', true);
+	                }
+                }
+                else
+                {
+                	$permissionsGrid.data('doneLoading', true);
+                }
+            })
+            .error(function(jqXHR, textStatus, errorThrown) {
+            	$permissionsGrid.data('doneLoading', true);
+            });
+            
+            //get user profiles for the permissions grid
+            $('#permissionsfilter-profile').data('autocompleteItems', []);
+            $.getJSON("/apex/MAAdminAJAXResources","securityToken={!securityToken}&action=get_user_profiles_batch&offset=0", function userProfilesResponse(json)
+            {
+            	if (json.success)
+            	{
+	            	//loop through the returned profiles and add each to the profile filter
+	               	var profileAutocompleteItems = $('#permissionsfilter-profile').data('autocompleteItems');
+	               	$.each(json.profiles, function (index, profile) {
+	               		profileAutocompleteItems.push({
+	               			label	: profile.Name,
+	               			value	: profile.Name
+	               		});
+	               	});
+	               	
+	               	//if this call returned 5k records then there might be more and we need to make another call.  otherwise, we're done
+	               	if (json.profiles.length >= 5000) {
+		               	var newOffset = json.offset + json.profiles.length;
+		               	$.getJSON("/apex/MAAdminAJAXResources","securityToken={!securityToken}&action=get_user_profiles_batch&offset="+newOffset,userProfilesResponse);
+		            }
+		            else {
+		            	$('#permissionsfilter-profile').data('doneLoading', true);
+		            }
+	            }
+	            else
+	            {
+	            	$('#permissionsfilter-profile').data('doneLoading', true);
+	            }
+            })
+            .error(function(jqXHR, textStatus, errorThrown) {
+            	$('#permissionsfilter-profile').data('doneLoading', true);        
+            });
+            
+            //set up a poller to determine when the user permissions have fully loaded
+            $('#permissionsfilter-profile').data(
+            	'loadingInterval',
+            	setInterval(function () {
+            		
+            		if ($('#permissions-grid').data('doneLoading') && $('#permissionsfilter-profile').data('doneLoading'))
+            		{
+            			//clear this interval because we're done
+            			clearInterval($('#permissionsfilter-profile').data('loadingInterval'));
+            		
+	            		//enable the profile filter
+	            		$('#permissionsfilter-profile').removeAttr('disabled').val('');
+	                	
+	                	//set up the autocomplete options for profile filtering
+	                	$('#permissionsfilter-profile').autocomplete({
+	                		select: search,
+	                		search: function () {
+	                			$('#permissionsfilter-profile').addClass('searching');
+	                		},
+	                		source: function(request, response) {
+						        var results = $.ui.autocomplete.filter($('#permissionsfilter-profile').data('autocompleteItems'), request.term);
+								
+								$('#permissionsfilter-profile').removeClass('searching');
+						        response(results.slice(0, 10));
+						    }
+	                	});
+	                	
+	                	//hide the loading message
+	                	hideTabMessage($('#TopTabs-Permissions'), 'Loading...');
+	                	
+	                	//run a default search to populate the grid
+	                	search();
+	                }
+            		
+            	}, 1000)
+            );
+        }
+        
+        //filter the list of users based on the entered search criteria
+        function search()
+        {
+        	//clear any existing search timeouts
+        	try { clearTimeout($('#permissions-filters').data('searchTimeout')); } catch (err) { }
+        	
+        	//set a loadmask over the permissions grid
+        	$('#permissions-grid-wrapper').addClass('permissions-grid-loading');
+        	$('#permissions-grid-status .status span').text('Searching...');
+        	
+        	//set a search timeout to perform the search when the user is done setting filters
+        	$('#permissions-filters').data(
+        		'searchTimeout',
+        		setTimeout(function () {
+        			
+        			//remove existing data for matching records
+		        	var $permissionsGrid = $('#permissions-grid');
+		           	$permissionsGrid.data('matchingRecords', {});
+		           	
+		           	//perform the search
+		           	var matchCount = 0;
+		           	var matchingRecords = $permissionsGrid.data('matchingRecords');
+		           	$.each($permissionsGrid.data('records'), function (userId, record) {
+		           		if (($('#permissionsfilter-name').val() == '' || record.Name.toLowerCase().indexOf($('#permissionsfilter-name').val().toLowerCase()) != -1) && ($('#permissionsfilter-profile').val() == '' || record.Profile.Name.toLowerCase().indexOf($('#permissionsfilter-profile').val().toLowerCase()) != -1)) 
+		           		{
+		               		//add a record in memory for this match
+		               		matchingRecords[userId] = record;
+		               		matchCount++;
+		           		}
+		           	});
+		           	
+		           	//hold on to the match count for user later
+		           	$permissionsGrid.data('matchingRecordsCount', matchCount);
+		           	
+		           	//show page options
+		           	$('#permissions-page option').remove();
+		           	for (var i = 1; i <= Math.ceil(matchCount / pageSize); i++)
+		           	{
+		           		$('#permissions-page').append("<option value='"+i+"'>"+i+"</option>");
+		           	}
+		           	
+		           	//remove the loadmask
+		           	$('#permissions-grid-wrapper').removeClass('permissions-grid-loading');
+		           	
+		           	//load the first page of data
+		           	$('#permissions-page').change();
+		           	
+           		}, 800)
+        	);
+        }
+        
+        //populate a permissions row based on the data inside it.  return the row
+        function populatePermissionsRow($row)
+        {
+        	//populate basic record data
+        	var record = removeNamespace('{!namespace}', $row.data('record'));
+        	$row.find('.name').html('').append($("<a target='_blank'></a>").attr('href', '/'+record.Id).text(record.Name));
+        	$row.find('.profile').html('').append($("<a target='_blank'></a>").attr('href', '/'+record.Profile.Id).text(record.Profile.Name));
+        	$row.find('.corporateadmin input').attr('checked', record.EditMapAnythingOrgWirdeQueries__c ? 'checked' : false);
+        	$row.find('.allowexports input').attr('checked', record.AllowMapAnythingExports__c ? 'checked' : false);
+        	$row.find('.version select').val(record.MAVersion__c || 'Current');
+        	$row.find('.maxquerysize input').val(record.MAMaxQuerySize__c);
+        	$row.find('.maxexportsize input').val(record.MAMaxExportSize__c);
+        	
+        	//populate map lock settings
+        	if (record.Settings.MapLockSettings && record.Settings.MapLockSettings.topLeft) {
+        		$row.find('.maplock .autosave').css('color', 'red').text('Locked');
+        	}
+        	else {
+        		$row.find('.maplock .autosave').css('color', 'green').text('Unlocked');
+        	}
+        	
+        	//populate button set settings
+        	var $buttonSetSelect = $row.find('select[data-field="ButtonSetId"]').html($('#permissions-grid th select[data-field="ButtonSetId"]').html());
+        	if (record.Settings.ButtonSetSettings) {
+        		$buttonSetSelect.val(record.Settings.ButtonSetSettings.Id);
+        	}
+        	
+        	//populate action button settings
+        	if (record.Settings.EnabledActionButtons) {
+        		$row.find('.actionbuttons .autosave').text(record.Settings.EnabledActionButtons.join(','));
+        	}
+        	else {
+        		$row.find('.actionbuttons .autosave').text($('#dialog-actionbuttons .actionbutton').map(function () { return $(this).text(); }).get().join(','));
+        	}
+        	
+        	//return the row
+        	return $row;
+        }
+        
+        /********************************
+        *	Button Set Handlers
+        *********************************/
+        function ButtonSet_GetExisting ()
+        {
+        	$.ajax({
+                url: 'MAAdminAJAXResources?securityToken={!securityToken}&action=get_buttonsets',
+                type: 'POST',
+                dataType: 'JSON',
+                data: {},
+                success: function (response) 
+                {
+                	var $buttonSetSelects = $('#permissions-grid select[data-field="ButtonSetId"]');
+                
+                	var $buttonSets = $('.buttonsets-selectedbuttonset').html($('<option value="New">--Create New--</option>'));
+                	$.each((response.results || []), function (index, buttonSet) {
+                		$buttonSets.append($('<option />').attr('value', buttonSet.Id).text(buttonSet.Name));
+                		$buttonSetSelects.append($('<option />').attr('value', buttonSet.Id).text(buttonSet.Name));
+                	});
+                	$buttonSets.combobox();
+                	
+                	//refresh the permissions grid if it already has rows so the buttons set options will be populated
+                	if ($('#permissions-grid .permissions-row').length > 0){
+                		search();
+                	}
+                },
+                error: function (response) { console.log('Error getting button sets: ' + response.details); }
+            });
+        }
+        function ButtonSet_InsertSection (event, ui)
+        {
+        	var $newSection = $('.templates .buttonset-section').clone();
+       		$(this).after($newSection).next().find('.section-dropzone').droppable({
+       			accept: '.actionbutton[data-type="Section"]',
+       			tolerance: 'touch',
+       			hoverClass: 'hovering',
+       			drop: ButtonSet_InsertSectionAfterSection
+       		});
+       		
+       		$newSection.on('click', '.buttonset-section-name.editable', function () {
+       			var $nameEl = $(this);
+       			$nameEl.removeClass('editable').addClass('editing').html($('<input type="text" />').val($(this).text())).find('input').focus().select().blur(function () {
+       				$nameEl.removeClass('editing').addClass('editable').text($nameEl.find('input').val());
+       			});
+       		});
+       		
+       		//button drop zone handling
+       		$newSection.find('.button-dropzone-handle').droppable({
+        		accept: '.actionbutton[data-type="StandardButton"], .actionbutton[data-type="CustomButton"], .actionbutton[data-type="Blank"], .buttonset-button',
+        		tolerance: 'touch',
+        		hoverClass: 'hovering',
+        		drop: ButtonSet_InsertButton,
+        		over: ButtonSet_OverButton,
+        		out: ButtonSet_OutButton
+        	});
+        }
+        function ButtonSet_InsertSectionAfterSection (event, ui) 
+        {
+        	var $newSection = $('.templates .buttonset-section').clone();
+       		$(this).closest('.buttonset-section').after($newSection);
+       		
+       		$newSection.on('click', '.buttonset-section-name.editable', function () {
+       			var $nameEl = $(this);
+       			$nameEl.removeClass('editable').addClass('editing').html($('<input type="text" />').val($(this).text())).find('input').focus().select().blur(function () {
+       				console.log('blur');
+       				$nameEl.removeClass('editing').addClass('editable').text($nameEl.find('input').val());
+       			});
+       		});
+       		
+       		//section drop zone handling
+       		$newSection.find('.section-dropzone').droppable({
+       			accept: '.actionbutton[data-type="Section"]',
+       			tolerance: 'touch',
+       			hoverClass: 'hovering',
+       			drop: ButtonSet_InsertSectionAfterSection
+       		});
+       		
+       		//button drop zone handling
+       		$newSection.find('.button-dropzone-handle').droppable({
+        		accept: '.actionbutton[data-type="StandardButton"], .actionbutton[data-type="CustomButton"], .actionbutton[data-type="Blank"], .buttonset-button',
+        		tolerance: 'touch',
+        		hoverClass: 'hovering',
+        		drop: ButtonSet_InsertButton,
+        		over: ButtonSet_OverButton,
+        		out: ButtonSet_OutButton
+        	});
+        }
+        function ButtonSet_InsertButton (event, ui)
+        {
+        	var $newButton;
+        	if (ui.draggable.is('.buttonset-button'))
+        	{
+        		//make sure we aren't dragging this button onto itself
+        		if ($.contains(ui.draggable.get(0), this)) { $(this).closest('.button-dropzone').removeClass('hovering'); return; }
+        		$newButton = ui.draggable;
+        	}
+        	else
+        	{
+        		$newButton = $('.templates .buttonset-button').clone().prepend(ui.draggable.clone());
+        		if (ui.draggable.is('[data-type="StandardButton"], [data-type="CustomButton"]')) {
+        			ui.draggable.draggable('disable');
+        		}
+        	}
+        	
+        	$(this).closest('.button-dropzone').removeClass('hovering').after($newButton).next().find('.button-dropzone-handle').droppable({
+        		accept: '.actionbutton[data-type="StandardButton"], .actionbutton[data-type="CustomButton"], .actionbutton[data-type="Blank"], .buttonset-button',
+        		tolerance: 'touch',
+        		hoverClass: 'hovering',
+        		drop: ButtonSet_InsertButtonAfterButton,
+        		over: ButtonSet_OverButton,
+        		out: ButtonSet_OutButton
+        	});
+        	$newButton.draggable({
+	        	opacity: 0.7,
+	        	helper: 'clone'
+	        });
+        }
+        function ButtonSet_InsertButtonAfterButton (event, ui)
+        {
+        	var $newButton;
+        	if (ui.draggable.is('.buttonset-button'))
+        	{
+        		//make sure we aren't dragging this button onto itself
+        		if ($.contains(ui.draggable.get(0), this)) { $(this).closest('.button-dropzone').removeClass('hovering'); return; }
+        		$newButton = ui.draggable;
+        	}
+        	else
+        	{
+        		$newButton = $('.templates .buttonset-button').clone().prepend(ui.draggable.clone());
+        		if (ui.draggable.is('[data-type="StandardButton"], [data-type="CustomButton"]')) {
+        			ui.draggable.draggable('disable');
+        		}
+        	}
+        
+        	$(this).closest('.button-dropzone').removeClass('hovering').closest('.buttonset-button').after($newButton).next().find('.button-dropzone-handle').droppable({
+        		accept: '.actionbutton[data-type="StandardButton"], .actionbutton[data-type="CustomButton"], .actionbutton[data-type="Blank"], .buttonset-button',
+        		tolerance: 'touch',
+        		hoverClass: 'hovering',
+        		drop: ButtonSet_InsertButtonAfterButton,
+        		over: ButtonSet_OverButton,
+        		out: ButtonSet_OutButton
+        	});
+        	$newButton.draggable({
+	        	opacity: 0.7,
+	        	helper: 'clone'
+	        });
+        }
+        function ButtonSet_OverButton (event, ui)
+        {
+        	$(this).closest('.button-dropzone').addClass('hovering');
+        }
+        function ButtonSet_OutButton (event, ui)
+        {
+        	$(this).closest('.button-dropzone').removeClass('hovering');
+        }
+        function ButtonSet_AddHandlers()
+        {
+        	//handle dragging buttons
+        	$('.layout-tooltip .buttonset-button').draggable({
+        		opacity: 0.7,
+        		helper: 'clone'
+        	});
+        
+        	//handle dropping sections
+            $('.layout-tooltip > .section-dropzone').droppable({
+            	accept: '.actionbutton[data-type="Section"]',
+            	tolerance: 'touch',
+            	hoverClass: 'hovering',
+            	drop: ButtonSet_InsertSection
+            });
+            $('.layout-tooltip .buttonset-section .section-dropzone').droppable({
+            	accept: '.actionbutton[data-type="Section"]',
+            	tolerance: 'touch',
+            	hoverClass: 'hovering',
+            	drop: ButtonSet_InsertSectionAfterSection
+            });
+            
+            //handle dropping buttons
+            $('.layout-tooltip .buttoncolumn > .button-dropzone .button-dropzone-handle').droppable({
+        		accept: '.actionbutton[data-type="StandardButton"], .actionbutton[data-type="CustomButton"], .actionbutton[data-type="Blank"], .buttonset-button',
+        		tolerance: 'touch',
+        		hoverClass: 'hovering',
+        		drop: ButtonSet_InsertButton,
+        		over: ButtonSet_OverButton,
+        		out: ButtonSet_OutButton
+        	});
+        	$('.layout-tooltip .buttoncolumn .buttonset-button .button-dropzone-handle').droppable({
+        		accept: '.actionbutton[data-type="StandardButton"], .actionbutton[data-type="CustomButton"], .actionbutton[data-type="Blank"], .buttonset-button',
+        		tolerance: 'touch',
+        		hoverClass: 'hovering',
+        		drop: ButtonSet_InsertButtonAfterButton,
+        		over: ButtonSet_OverButton,
+        		out: ButtonSet_OutButton
+        	});
+        }
+        function ButtonSet_Save ()
+        {
+        	var $tooltipLayout = $('.layout-tooltip');
+        	
+        	//start building this button set
+        	var buttonSet = {
+        		Name: $('#TopTabs-ButtonSets .basicinfo-name').val(),
+        		TooltipLayout__c: [] 
+        	};
+        	
+        	//add the id if this is an existing set
+        	if ($('.buttonsets-selectedbuttonset').val() != 'New') {
+        		buttonSet.Id = $('.buttonsets-selectedbuttonset').val();
+        	}
+        	
+        	//loop over each section in the tooltip layout
+        	$tooltipLayout.find('.buttonset-section').each(function () {
+        		
+        		//start building this section
+        		var section = { Label: $(this).find('.buttonset-section-name').text(), Columns: [] };
+        		buttonSet.TooltipLayout__c.push(section);
+        		
+        		//loop over each button column
+        		$(this).find('.buttonset-section-columns .buttoncolumn').each(function () {
+        			
+        			//start building this column
+        			var column = [];
+        			section.Columns.push(column);
+        			
+        			//loop over each button
+        			$(this).find('.buttonset-button').each(function () {
+        				
+        				//add this button to the column
+        				column.push({
+        					Label: $(this).find('.actionbutton').text(),
+        					Type: $(this).find('.actionbutton').attr('data-type')
+        				});
+        				
+        			});
+        			
+        		});
+        		
+        	});
+        
+        	//transform the button set fields by stringifying those that will be stored as JSON text
+        	buttonSet.TooltipLayout__c = JSON.stringify(buttonSet.TooltipLayout__c);
+        	
+        	//send request to save this button set
+        	$.ajax({
+                url: 'MAAdminAJAXResources?securityToken={!securityToken}&action=save_buttonset',
+                type: 'POST',
+                dataType: 'JSON',
+                data: { serializedButtonSet: JSON.stringify(addNamespace('{!namespace}', buttonSet)) },
+                success: function (response) {
+                	console.log(response);
+                	
+                	if (response.success)
+                	{
+	                	if ($('.buttonsets-selectedbuttonset').val() != 'New') 
+	                	{
+	                		//update the list of button sets with this new information
+	                		$('.buttonsets-selectedbuttonset option:selected').text(response.result.Name);
+	                		$('.buttonsets-selectedbuttonset').next().find('input').val(response.result.Name);
+	                	}
+	                	else
+	                	{
+	                		//this is a new button set.  add it to the list of existing sets and select it
+	                		$('.buttonsets-selectedbuttonset').append($('<option />').attr('value', response.result.Id).text(response.result.Name)).val(response.result.Id).next().find('input').val(response.result.Name);
+	                	}
+	                }
+	                else
+	                {
+	                }
+                },
+                error: function (response) { console.log(response); }
+            });
+        }
+        
+        //notification helpers
+        function showNotification(template, title, message)
+        {
+        	$('#notifications').notify('create', template, { title: title, text: message } );
+        }
+        function success(title, message) { 
+        	showNotification('notifications-success', title, message); 
+        }
+        function error(title, message) {
+        	showNotification('notifications-error', title, message); 
+        }
+        
+        //tab message helpers
+        function showTabLoading($tab, msg, expirationTimeout)
+        {
+        	$tab.find('.loadmask, .loadmask-status').remove();
+        	$tab.append("<div class='loadmask'></div><div class='loadmask-status'><div class='status'><img src='{!URLFOR($Resource.MapAnything, 'images/chatterstatus-loader.gif')}' /><span>"+msg+"</span></div></div>")
+        	return $tab;
+        }
+        function showTabSuccess($tab, msg, expirationTimeout)
+        {
+        	$tab.find('.loadmask, .loadmask-status').remove();
+        	$tab.append("<div class='loadmask'></div><div class='loadmask-status'><div class='status' style='border: 1px solid green;'><img src='{!URLFOR($Resource.MapAnything, 'images/check-22.png')}' /><span>"+msg+"</span></div></div>")
+        	if (expirationTimeout != false)
+        	{
+	        	setTimeout(function () {
+	        		$tab.find('.loadmask, .loadmask-status').remove();
+	        	}, (expirationTimeout || 1500));
+	        }
+        	return $tab;
+        }
+        function showTabError($tab, msg, expirationTimeout)
+        {
+        	$tab.find('.loadmask, .loadmask-status').remove();
+        	$tab.append("<div class='loadmask'></div><div class='loadmask-status'><div class='status' style='border: 1px solid red;'><img src='{!URLFOR($Resource.MapAnything, 'images/x-22.png')}' /><span>"+msg+"</span></div></div>")
+        	if (expirationTimeout != false)
+        	{
+	        	setTimeout(function () {
+	        		$tab.find('.loadmask, .loadmask-status').remove();
+	        	}, (expirationTimeout || 1500));
+	        }
+        	return $tab;
+        }
+        function hideTabMessage($tab)
+        {
+        	$tab.find('.loadmask, .loadmask-status').remove();
+        	return $tab;
+        }
+    </script>  
+    
+    <!-- Header -->
+    <c:MAAdminHeader PageTitle="Settings"/>
+    
+    <!-- Main Content -->
+    <div id="adminsettings">
+    
+    	<!-- Tab Panel -->
+        <div class="TopTabs">
+        	
+        	<!-- Tab Handles -->
+            <ul>
+                <li><a href="#TopTabs-General">General</a></li>
+                <li><a href="#TopTabs-Permissions">Permissions</a></li>
+                <li style='display: none;'><a href="#TopTabs-ButtonSets">Button Sets</a></li>
+            </ul>
+            
+            <!-- General Tab -->
+            <div id="TopTabs-General">
+                      
+                <!-- Licensing -->
+                <div class='gray box'>
+                	<div class='section-header'>Licensing</div>
+                    <table class='form'>
+                        <tr>
+                            <td>Serial</td>
+                            <td><input type='text' class='serial' style='width: 300px;' /></td>
+                        </tr>                        
+                    </table>                    
+                </div>
+                
+                <!-- Enabled Features -->
+                <div class='gray box'>
+                	<div class='section-header'>Enabled Features</div>
+                    <table class='form'>
+                        <tr>
+                            <td><input type='checkbox' class='feature-folderpermissions' /></td>
+                            <td>Folder Permissions</td>
+                        </tr>                        
+                    </table>                    
+                </div>
+                
+                <!-- Buttons -->
+		        <div class='buttons'>
+		            <input type='button' class='savebtn btn btn-blue' value='Save' />
+		            <span class='msgs' style='color: red; font-size: 10px; display: none;'></span>
+		        </div>
+                
+            </div>
+            
+            <!-- Permissions Tab -->
+            <div id="TopTabs-Permissions">
+            
+            	<!-- Permissions Grid Options -->
+            	<table style='width: 100%;'>
+            		<tr>
+            			<td>
+            				<!-- Permissions Grid Filters -->
+			            	<table id="permissions-filters">
+			            		<tr>
+			            			<td>Name</td>
+			            			<td><input type='text' id='permissionsfilter-name' /></td>
+			            			
+			            			<td>Profile</td>
+			            			<td><input type='text' id='permissionsfilter-profile' class='autocomplete' /></td>
+			            			
+			            			<td><input type='checkbox' id='permissionsfilter-includeinactive' /> Include Inactive Users</td>
+			            			<td></td>
+			            			
+			            			<td><input type='checkbox' id='permissionsfilter-includeportal' /> Include Portal Users</td>
+			            		</tr>
+			            	</table>
+            			</td>
+            			<td>
+            				<!-- Permissions Grid Paging -->
+            				<table style='float: right;'>
+            					<tr>
+            						<td id='permissions-pageinfo'></td>
+            					</tr>
+            					<tr>
+            						<td style='text-align: right; verticle-align: middle;'>Go to page <select id='permissions-page'></select></td>
+            					</tr>
+            				</table>
+            			</td>
+            		</tr>
+            	
+            	</table>
+            
+            	<!-- Permissions Grid -->
+            	<div id="permissions-grid-wrapper">
+            		<div id="permissions-grid-loadmask"></div>
+            		<div id="permissions-grid-status">
+            			<div class='status'>
+            				<img src="{!URLFOR($Resource.MapAnything, 'images/chatterstatus-loader.gif')}" />
+            				<span></span>
+            			</div>
+            		</div>
+            	
+	            	<table id="permissions-grid">
+	            		<tr>
+	            			<th style='display: none;'><span class='link'>All</span>|<span class='link'>None</span></th>
+	            			<th>Name</th>
+	            			<th>Profile</th>
+	            			<th data-field='EditMapAnythingOrgWirdeQueries__c' data-type='boolean'><table><tr><td>Folder Admin</td><td><span class='link massaction'>All</span> | <span class='link massaction'>None</span></td></tr></table></th>
+	            			<th data-field='AllowMapAnythingExports__c' data-type='boolean'><table><tr><td>Allow Exports</td><td><span class='link massaction'>All</span> | <span class='link massaction'>None</span></td></tr></table></th>
+	            			<th data-field='MAVersion__c' data-type='picklist'><table><tr><td>Version</td><td><select class='massaction'><option value=''>--Select--</option><option value='Previous'>Previous</option><option value='Current'>Current</option><option value='Beta'>Beta</option></select></td></tr></table></th>
+	            			<th data-field='MAMaxQuerySize__c' data-type='number'><table><tr><td>Max Query Size</td><td><input type='text' style='width:35px;font-size:10px;' /></td></tr></table></th>
+	            			<th data-field='MAMaxExportSize__c' data-type='number'><table><tr><td>Max Export Size</td><td><input type='text' style='width:35px;font-size:10px;' /></td></tr></table></th>
+	            			<th data-field='MapAnythingSettings__c' data-type='setting'><table><tr><td>Map Lock</td><td><span class='link massaction editsettings' data-field='MapLockSettings'>Edit</span></td></tr></table></th>
+	            			<th data-field='MapAnythingSettings__c' data-type='setting'><table><tr><td>Button Set</td><td><select class='massaction setting' data-field='ButtonSetId'><option value='--'>--Select--</option></select></td></tr></table></th>
+	            			<th data-field='MapAnythingSettings__c' data-type='setting'><table><tr><td>Action Buttons</td><td><span class='link massaction editsettings' data-field='EnabledActionButtons'>Edit</span></td></tr></table></th>
+	            		</tr>
+	            	</table>
+	            </div>
+            	
+            </div>
+            
+            <!-- Button Sets Tab -->
+            <div id="TopTabs-ButtonSets">
+                      
+                <!-- Existing Button Sets -->
+                <div>
+                	<b>Button Sets</b>
+                	<select class='buttonsets-selectedbuttonset'></select>
+                </div>
+                
+                <!-- Basic Info -->
+                <div class='section basicinfo'>
+                	<div class='section-header'>Basic Info</div>
+                	
+                	<table>
+                		<tr>
+                			<td>Name</td>
+                			<td><input type='text' class='basicinfo-name' /></td>
+                		</tr>
+                	</table>
+                </div>
+                
+                <!-- Layout -->
+                <div class='section layout'>
+                	<div class='section-header'>Layout</div>
+                	
+                	<!-- Available Buttons -->
+                	<h2 style='margin-top: 10px;'>Available Buttons</h2>
+                	<div class='layout-availablebuttons'></div>
+                	
+                	<!-- Tooltip Layout -->
+                	<h2 style='margin-top: 10px;'>Tooltip Layout</h2>
+                	<div class='layout-tooltip-wrapper'>
+	                	<div class='layout-tooltip'>
+	                		<div class='section-dropzone'></div>
+	                	</div>
+	                </div>
+	                
+	                <!-- Mass Action Layout -->
+	                <h2 style='margin-top: 10px;'>Mass Action Layout</h2>
+	                <div class='layout-massaction-wrapper'>
+	                	<div class='layout-massaction'>
+	                		<div class='section-dropzone'></div>
+	                	</div>
+	                </div>
+                	
+                </div>
+                
+                <!-- Buttons -->
+		        <div class='buttons'>
+		            <input type='button' class='buttonset-savebtn btn btn-blue' value='Save' onclick="ButtonSet_Save();" />
+		            <span class='msgs' style='color: red; font-size: 10px; display: none;'></span>
+		        </div>
+                
+            </div>
+            
+        </div>
+    </div>
+    
+    <!-- Notifications Container -->
+    <div id='notifications'>
+    
+    	<!-- Success -->
+    	<div id="notifications-success" class='success'>
+			<a class="ui-notify-close ui-notify-cross" href="#">x</a>
+			<h1>#{title}</h1>
+			<p>#{text}</p>
+		</div>
+		
+		<!-- Error -->
+		<div id="notifications-error" class='error'>
+			<a class="ui-notify-close ui-notify-cross" href="#">x</a>
+			<h1>#{title}</h1>
+			<p>#{text}</p>
+		</div>
+		
+    </div>
+    
+    <!-- Templates -->
+    <div class='templates' style='display: none;'>
+    
+    	<!-- Permissions Grid Templates -->
+    	<table>
+    		<tr class='permissions-row'>
+    			<td class='checkbox' style='display: none;'><input type='checkbox' /></td>
+    			<td class='name'></td>
+    			<td class='profile'></td>
+    			<td class='corporateadmin'><input type='checkbox' class='autosave' data-field='EditMapAnythingOrgWirdeQueries__c' /></td>
+    			<td class='allowexports'><input type='checkbox' class='autosave' data-field='AllowMapAnythingExports__c' /></td>
+    			<td class='version'><select class='autosave' data-field='MAVersion__c'><option value='Previous'>Previous</option><option value='Current'>Current</option><option value='Beta'>Beta</option></select></td>
+    			<td class='maxquerysize'><input type='text' class='autosave' data-field='MAMaxQuerySize__c' /></td>
+    			<td class='maxexportsize'><input type='text' class='autosave' data-field='MAMaxExportSize__c' /></td>
+    			<td class='maplock'><table style='width: 100%; border-spacing: 0;'><tr><td style='border: none;'><span class='autosave' data-field='MapLockSettings' style='font-size: 8px;'></span></td><td style='border: none; text-align: right;'><span class='editsettings' data-field='MapLockSettings' style='font-size: 10px; font-weight: bold; cursor: pointer; color: blue;'>Edit</span></td></tr></table></td>
+    			<td class='buttonset'><select class='autosave setting' data-field='ButtonSetId'></select></td>
+    			<td class='actionbuttons'><table style='width: 100%; border-spacing: 0;'><tr><td style='border: none;'><span class='autosave' data-field='EnabledActionButtons' style='font-size: 8px;'></span></td><td style='border: none; text-align: right;'><span class='editsettings' data-field='EnabledActionButtons' style='font-size: 10px; font-weight: bold; cursor: pointer; color: blue;'>Edit</span></td></tr></table></td>
+    		</tr>
+    	</table>
+    	
+    	<!-- Button Set Templates -->
+    	<div class='buttonset-section'>
+    	
+    		<!-- Drag Handle -->
+    		<div class='buttonset-section-draghandle'>
+    			<div class='arrow-up' style='margin-bottom: 3px;'></div>
+	    		<div class='arrow-down'></div>
+    		</div>
+    	
+    		<!-- Header -->
+    		<div class='buttonset-section-header'>
+	    		<div class='buttonset-section-name editable'>New Section</div>
+    		</div>
+    		
+    		<!-- Buttons -->
+    		<div class='buttonset-section-columns'>
+    			<div class='buttoncolumn'>
+    				<div class='button-dropzone'><div class='button-dropzone-handle'></div></div>
+    			</div>
+    			<div class='buttoncolumn'>
+    				<div class='button-dropzone'><div class='button-dropzone-handle'></div></div>
+    			</div>
+    			<div class='buttoncolumn'>
+    				<div class='button-dropzone'><div class='button-dropzone-handle'></div></div>
+    			</div>
+    		</div>
+    		
+    		<!-- Dropzone -->
+    		<div class='section-dropzone'></div>
+    		
+    	</div>
+    	<div class='buttonset-button'>
+    		<div class='button-dropzone'><div class='button-dropzone-handle'></div></div>
+    	</div>
+    	
+    	<!-- Loader Template -->
+    	<img class='loader' src="{!URLFOR($Resource.MapAnything, 'images/chatterstatus-loader.gif')}" />
+    	
+    </div>
+    
+    <!-- Dialogs -->
+    <div class='dialogs' style='display: none;'>
+    
+    	<!-- Action Buttons Dialog -->
+    	<div id='dialog-actionbuttons'>
+    	
+    		<!-- Header -->
+    		<h2>Select Action Buttons</h2>
+    		
+    		<!-- Action Buttons -->
+    		<table style='margin: 10px 0 15px 0;'>
+    			<tr>
+    				<td><div class='actionbutton' data-label='Add to Trip'>Add to Trip</div></td>
+    				<td><div class='actionbutton' data-label='Set Proximity Center'>Set Proximity Center</div></td>
+    				<td><div class='actionbutton' data-label='Remove Marker'>Remove Marker</div></td>
+    			</tr>
+    			<tr>
+    				<td><div class='actionbutton' data-label='Set Verified Location'>Set Verified Location</div></td>
+    				<td><div class='actionbutton' data-label='Add to Campaign'>Add to Campaign</div></td>
+    				<td><div class='actionbutton' data-label='Change Owner'>Change Owner</div></td>
+    			</tr>
+    			<tr>
+    				<td><div class='actionbutton' data-label='Send Email'>Send Email</div></td>
+    				<td><div class='actionbutton' data-label='Log a Call'>Log a Call</div></td>
+    				<td><div class='actionbutton' data-label='New Task'>New Task</div></td>
+    			</tr>
+    			<tr>
+    				<td><div class='actionbutton' data-label='New Event'>New Event</div></td>
+    				<td><div class='actionbutton' data-label='Check In'>Check In</div></td>
+    				<td></td>
+    			</tr>
+    		</table>
+    		
+    		<!-- Buttons -->
+    		<div>
+    			<input type='button' class='btn-blue savebtn' value='Save' />
+    			<input type='button' class='btn-blue btn-white closebtn' value='Close' />
+    			<span class='msgs'></span>
+    		</div>
+    		
+    	</div>
+    	
+    	<!-- Map Lock Dialog -->
+    	<div id='dialog-maplock'>
+    		<div class='loadmask-wrapper'>
+    	
+	    		<!-- Header -->
+	    		<h2>Set Map Lock</h2>
+	    		
+	    		<!-- Instructions -->
+	    		<p class='dialog-instructions' style='width: 400px;'>Hold the shift key and drag the mouse to create a box that will control where the user is able to plot records</p>
+	    		
+	    		<!-- Map -->
+	    		<div class='dialog-maplock-map' style='width: 400px; height: 400px; margin: 15px 0; position: relative;'>
+	    			<div class='dialog-maplock-map-dragzoomlayer' style='position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 1; cursor: crosshair; display: none;'></div>
+	    		</div>
+	    		
+	    		<!-- Buttons -->
+	    		<div>
+	    			<input type='button' class='btn-blue dialog-maplock-save' value='Save Map Lock' />
+	    			<input type='button' class='btn-blue dialog-maplock-remove' value='Remove Map Lock' />
+	    			<input type='button' class='btn-blue btn-white closebtn' value='Close' />
+	    			<span class='msgs'></span>
+	    		</div>
+	    		
+    		</div>
+    	</div>
+    
+    </div>
+</apex:page>

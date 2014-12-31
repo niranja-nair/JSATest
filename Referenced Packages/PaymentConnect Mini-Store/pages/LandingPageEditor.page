@@ -1,0 +1,13 @@
+<apex:page standardController="Campaign" extensions="cmpgn.CampaignLandingPageController" cache="false">
+<apex:form >
+<apex:messages id="messages" />
+<apex:pageBlock title="{!Campaign.Name}" >
+
+<p>Edit and save HTML content for your campaign landing page using the rich text editor below:</p>
+<br/>
+<c:richeditor height="500" value="{!campaign.cmpgn__LP_HTML_Content__c}"/>
+<apex:commandButton action="{!saveRecord}" value="Save"/>
+<apex:commandButton action="{!returnToCampaign}" value="Return"/>
+</apex:pageBlock>
+</apex:form>
+</apex:page>

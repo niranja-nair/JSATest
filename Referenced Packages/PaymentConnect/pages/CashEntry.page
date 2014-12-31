@@ -1,0 +1,155 @@
+<apex:page standardController="pymt__PaymentX__c" extensions="pymt.CashEntryController">
+  <apex:form >
+  <apex:inputHidden value="{!pymt__PaymentX__c.pymt__OnPaymentCompleted_Trigger__c}"/>
+  <apex:inputHidden value="{!pymt__PaymentX__c.pymt__Invoice_Number__c}"/>
+  <apex:sectionHeader title="Linvio PaymentConnect"  subtitle="Cash Entry"/>
+    <!-- Error Messages -->
+    <apex:pagemessages />
+  
+          <apex:pageBlock title="Record a cash, check or money order payment"  mode="edit"> 
+
+            <!-- pageBlockButtons -->
+            <!-- Dont specify rerender field. rerender whole page -->
+            <apex:pageBlockButtons >
+                <apex:commandButton action="{!saveCashEntry}" value="Save"/>
+                <apex:commandButton action="{!cancelFromTerminal}" immediate="true" value="Cancel"/>
+            </apex:pageBlockButtons>
+            
+           
+            
+            <apex:outputPanel >
+            <apex:pageBlockSection collapsible="false" title="Transaction Details">
+            
+            
+                <apex:pageBlockSectionItem >
+                    <apex:outputLabel value="Transaction Name"/>
+                    <apex:inputField value="{!pymt__PaymentX__c.Name}" required="true"/>
+                </apex:pageBlockSectionItem>
+                            
+                <apex:pageBlockSectionItem >
+                    <apex:outputLabel value="Payment Date"/>
+                    <apex:inputField value="{!pymt__PaymentX__c.pymt__Date__c}" required="true"/>
+                </apex:pageBlockSectionItem>
+
+
+                <apex:pageBlockSectionItem >
+                    <apex:outputLabel value="Transaction Type"/>
+                    <apex:inputField value="{!pymt__PaymentX__c.pymt__Transaction_Type__c}"  required="true"/>
+                </apex:pageBlockSectionItem>
+
+                <apex:pageBlockSectionItem >
+                    <apex:outputLabel value="Payment Type"/>
+                    <apex:inputField value="{!pymt__PaymentX__c.pymt__Payment_Type__c}"  required="true"/>
+                </apex:pageBlockSectionItem>
+
+                      
+
+                <apex:pageBlockSectionItem >
+                    <apex:outputLabel value="Shipping"/>
+                    <apex:inputField value="{!pymt__PaymentX__c.pymt__Shipping__c}"/>
+                </apex:pageBlockSectionItem>
+
+           
+            
+                <apex:pageBlockSectionItem >
+                    <apex:outputLabel value="Check Number"/>
+                    <apex:inputField value="{!pymt__PaymentX__c.pymt__Check_Number__c}"/>
+                </apex:pageBlockSectionItem>
+
+                <apex:pageBlockSectionItem >
+                    <apex:outputLabel value="Tax"/>
+                    <apex:inputField value="{!pymt__PaymentX__c.pymt__Tax__c}"/>
+                </apex:pageBlockSectionItem>
+                
+                <apex:pageBlockSectionItem >
+                    <apex:outputLabel value="Status"/>
+                    <apex:inputField value="{!pymt__PaymentX__c.pymt__Status__c}"  required="true"/>
+                </apex:pageBlockSectionItem>
+
+                <apex:pageBlockSectionItem >
+                    <apex:outputLabel value="Total Amount"/>
+                    	<apex:inputField value="{!pymt__PaymentX__c.pymt__Amount__c}"  required="true"/>
+                </apex:pageBlockSectionItem>
+                            
+                <apex:pageBlockSectionItem >
+                    <apex:outputLabel value="Currency"/>
+                	<apex:inputField value="{!pymt__PaymentX__c.pymt__Currency_ISO_Code__c}"  required="true"/>
+                </apex:pageBlockSectionItem>
+                            
+                            
+            </apex:pageBlockSection> 
+            <apex:pageBlockSection collapsible="false" title="Related To">
+            
+                <apex:pageBlockSectionItem >
+                    <apex:outputLabel value="Contact"/>
+                    <apex:inputField value="{!pymt__PaymentX__c.pymt__Contact__c}"/>
+                </apex:pageBlockSectionItem>
+            
+                <apex:pageBlockSectionItem >
+                    <apex:outputLabel value="Account"/>
+                    <apex:inputField value="{!pymt__PaymentX__c.pymt__Account__c}"/>
+                </apex:pageBlockSectionItem>
+
+                <apex:pageBlockSectionItem >
+                    <apex:outputLabel value="Opportunity"/>
+                    <apex:inputField value="{!pymt__PaymentX__c.pymt__Opportunity__c}"/>
+                </apex:pageBlockSectionItem>
+
+			</apex:pageBlockSection>                 
+
+            <apex:pageBlockSection collapsible="true" title="Shipping Information" columns="2" rendered="{!NOT(terminalsettings.pymt__Hide_Cash_Entry_Shipping_Address_Fields__c)}">
+             
+                <apex:pageBlockSectionItem >
+		            <apex:outputLabel for="shipToName" value="Shipping Name"/>
+        		    <apex:inputField id="shipToName" value="{!pymt__PaymentX__c.pymt__Ship_To_Name__c}" />
+				</apex:pageBlockSectionItem>
+				
+                <apex:pageBlockSectionItem >
+		            <apex:outputLabel for="shipToStreet" value="Shipping Street"/>
+        		    <apex:inputField id="shipToStreet" value="{!pymt__PaymentX__c.pymt__Ship_To_Street__c}" />
+				</apex:pageBlockSectionItem>
+				
+                <apex:pageBlockSectionItem >
+		            <apex:outputLabel for="shipToCity" value="Shipping City"/>
+        		    <apex:inputField id="shipToCity" value="{!pymt__PaymentX__c.pymt__Ship_To_City__c}" />
+				</apex:pageBlockSectionItem>
+				
+                <apex:pageBlockSectionItem >
+		            <apex:outputLabel for="shipToState" value="Shipping State/Province"/>
+        		    <apex:inputField id="shipToState" value="{!pymt__PaymentX__c.pymt__Ship_To_State__c}" />
+				</apex:pageBlockSectionItem>
+				
+                <apex:pageBlockSectionItem >
+		            <apex:outputLabel for="shipToPostalCode" value="Shipping Postal Code"/>
+        		    <apex:inputField id="shipToPostalCode" value="{!pymt__PaymentX__c.pymt__Ship_To_Postal_Code__c}" />
+				</apex:pageBlockSectionItem>
+				
+                <apex:pageBlockSectionItem >
+		            <apex:outputLabel for="shipToCountry" value="Shipping Country"/>
+        		    <apex:inputField id="shipToCountry" value="{!pymt__PaymentX__c.pymt__Ship_To_Country__c}" />
+				</apex:pageBlockSectionItem>
+				
+            </apex:pageBlockSection> 
+            
+            <apex:pageBlockSection collapsible="false" title="Transaction Notes" columns="1">
+            
+                <apex:pageBlockSectionItem >
+		            <apex:outputLabel for="memo" value="Memo"/>
+        		    <apex:inputField id="memo" value="{!pymt__PaymentX__c.pymt__Memo__c}" style="width:600px;"/>
+				</apex:pageBlockSectionItem>
+            </apex:pageBlockSection> 
+ 
+            <apex:pageBlockSection collapsible="false" title="Category Splits" columns="1" rendered="{!NOT(terminalsettings.pymt__Hide_Cash_Entry_Cat_Split_Names__c)}">
+            
+                <apex:pageBlockSectionItem >
+		            <apex:outputLabel for="categorySplit" value="Category Split Name"/>
+        		    <apex:inputField id="categorySplit" value="{!pymt__PaymentX__c.pymt__Category_Split_Name__c}" />
+				</apex:pageBlockSectionItem>
+            </apex:pageBlockSection> 
+            
+            </apex:outputPanel>
+
+      </apex:pageBlock>
+  
+  </apex:form>
+</apex:page>

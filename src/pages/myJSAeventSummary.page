@@ -1,0 +1,582 @@
+<apex:page controller="mainPortalController" showheader="false" sidebar="false">
+
+<head>
+    <title>MyJSA</title>
+    
+    <apex:stylesheet value="{!URLFOR($Resource.jquery_ui_css)}" /> 
+    <apex:stylesheet value="{!URLFOR($Resource.myJSAbaseStyle)}" />
+    <link rel="stylesheet" type="text/css" href="{!URLFOR($Resource.JSAPortal, 'style-theme.css')}" />
+    <link rel="stylesheet" type="text/css" href="{!URLFOR($Resource.JSAPortal, 'style.css')}" />
+    <script src="http://code.jquery.com/jquery-1.9.1.js"></script>
+    <script src="http://code.jquery.com/ui/1.10.3/jquery-ui.js"></script>
+    <style>
+        div.well
+        {
+            min-height: 20px;
+            padding: 19px;
+            margin-bottom: 20px;
+            background-color: #f5f5f5;
+            border: 1px solid #e3e3e3;
+            -webkit-border-radius: 4px;
+            -moz-border-radius: 4px;
+            border-radius: 4px;
+            -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.05);
+            -moz-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.05);
+            box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.05);
+        }
+        
+        .columns
+        {
+            margin-top:10px;
+            float: left;
+            width: 930px;
+            margin-left: 15px;
+        }
+        
+        .col1
+        {
+            float: left;
+            width: 595px;
+            padding-right: 15px;
+        }
+        
+        .col2
+        {
+            float: left;
+            width: 320px;
+        }
+        
+        .widget h3 
+        {
+            color: #FFFFFF;
+            background-color: #0C4384;
+            display: block;
+            padding: 5px;
+        }
+        
+        div.striped > div:nth-child(odd) 
+        {
+            background-color: #f5f5f5;
+        }
+        
+        div.striped > div
+        {
+            padding:5px;
+        }
+        
+        .subheader
+        {
+            font-size: 15px;
+        }
+        .dialogForm
+        {
+            padding: 15px;
+            margin: 17px;
+        }
+        #dialog-form2 {display: none;}
+        #dialog-form {display:none;}
+    </style>
+
+<script>
+var _gaq = _gaq || [];
+_gaq.push(['_setAccount', 'UA-1376727-1']);
+_gaq.push(['_setDomainName', 'force.com']);
+_gaq.push(['_setAllowLinker', true]);
+_gaq.push(['_trackPageview']);
+</script>
+</head>
+
+<body>
+    
+    <input type="hidden" id="SSLatestYear" value="{!SSLatestYear}" />
+    <input type="hidden" id="SympLatestYear" value= "{!SymposiaLatestYear}" />
+    <input type="hidden" id="useraccount" value="{!contact.AccountId}" />
+    <div id="dialog-form2" class="dialogForm">
+        <h1 class="subheader">Institute {!SymposiaLatestYear} Application</h1>
+        <p class="validateTips">We are currently accepting applications for {!SymposiaLatestYear}. Please provide the following information and click start application. </p>
+        <br/>
+        <apex:form >
+            <table>
+                <tr>
+                    <td class="one">
+                        <div class="label"><b>Institute?</b></div>
+                        <div class="action">
+                            <apex:selectList id="institute" value="{!SelectedSympSession}" multiselect="false" size="1" >
+                                <apex:selectOptions value="{!SymposiaProductNames}" />
+                            </apex:selectList>
+                        </div>
+                    </td>
+                    <td class="two">
+                        <div class="label">How did you hear about us?</div>
+                        <div class="action">
+                             <apex:selectList id="sympreferralsource" value="{!SelectedSympRefSource}" multiselect="false" size="1">
+                                <apex:selectOptions value="{!ReferralOptions}"/>
+                            </apex:selectList>
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="2">
+                        <div class="label"><b>Need Scholarship / Fundraising Packet?</b>
+                            <apex:inputCheckbox id="SympScholarshipFlag"  value="{!IsScholarshipNeeded}" />
+                        </div>
+                    </td>
+                </tr>
+            </table>
+        </apex:form>
+    </div>
+    
+    <div id="dialog-form" class="dialogForm" >
+      <h1 class="subheader">Summer School {!SSLatestYear} Application</h1>
+      <p class="validateTips">We are currently accepting applications for {!SSLatestYear}. Please provide the following information and click start application.</p>
+      <br/>      
+      <apex:form >
+      <table>
+          <tr>
+             <td class="one">
+                 <div class="label"><b>Campus/Session </b><span class="vfHelpText"><apex:outputLink value="javascript:return false;"><img src="{!URLFOR($Resource.help2)}"/><span>{!$ObjectType.Opportunity.fields.Campus_Session__c.inlineHelpText}</span></apex:outputLink></span></div>
+                 <div class="action">
+                 <apex:selectList id="campus" value="{!SelectedSSSession}" multiselect="false" size="1" onchange="onSessionSelected()">
+                 <apex:selectOptions value="{!SSProductNames}"/>
+                  <apex:actionFunction action="{!onSessionSelected}" rerender="summerSchoolCourses" name="onSessionSelected"/>
+                  </apex:selectList>
+                 </div>
+             </td>
+             <!--  <td class="two">
+                 <div class="label"><b>Second Choice Session?</b></div>
+                 <div class="action">
+                 <apex:selectList id="secondchoicesession" value="{!SelectedSecondSSSession}" multiselect="false" size="1" required="true">
+                 <apex:selectOptions value="{!SSProductNames}"/>
+                 </apex:selectList>
+                 </div>
+             </td>  -->              
+          </tr>
+          <tr>            
+              <td class="one">
+                  <div class="label"><b>Course Selection?</b></div>
+                 <apex:outputPanel id="summerSchoolCourses">
+                 <div class="action" id="courses">               
+                 <apex:selectList id="course" value="{!SelectedSSCourse}" multiselect="false" size="1">
+                 <apex:selectOptions value="{!SSCourses}"/>
+                 </apex:selectList>                 
+                 </div>
+                 </apex:outputPanel>
+              </td>
+              
+              <td class="two">
+                 <div class="label"><b>How did you learn about the program?</b></div>
+                 <div class="action">
+                 <apex:selectList id="ssrefsource" value="{!SelectedSSRefSource}" multiselect="false" size="1">
+                 <apex:selectOptions value="{!ReferralOptions}"/>
+                 </apex:selectList>
+                 </div>
+              </td>
+          </tr>
+          <tr>
+            <td colspan="2">
+                <div class="label"><b>Need Scholarship / Fundraising Packet?</b>                
+                    <apex:inputCheckbox id="SSScholarshipFlag"  value="{!IsScholarshipNeeded}" />
+                </div>
+            </td>
+          </tr>
+      
+      </table>
+      </apex:form>
+    </div>
+    
+    <div class="mainBox">
+        <div class="topHeaderBox">
+            <div class="topLogoBox">
+                <img src="{!$Resource.jsf_cap_logo_png}" width="155px" height="20px"></img>
+            </div>
+        </div>
+        
+        <div class="headerBox" id="headerBox">
+            <img src="{!$Resource.jsf_header_logo_png}" width="484px" height="176px"></img>
+            <div style="float:right; padding:15px">
+                <a style="color:white" href="/secur/logout.jsp?retUrl=/portalLogin">Logout</a>
+            </div>
+        </div>
+        
+        <div class="midBox" id="midBoxHome">
+            <ul id="nav2" class="menu">
+                <li id="menu-item-472" class="menu-item">
+                    <a href="/apex/myJSAhome" >MyJSA Home</a>
+                </li>
+                <li class="menu-item">
+                    <a href="/apex/myJSAchapter">My Chapter</a>
+                </li>
+                <li class="menu-item">
+                    <a href="https://myjsa.force.com/_ui/core/chatter/ui/ChatterPage">My Chatter</a>
+                </li>
+                <li id="menu-item-482" class="selectedMenu">
+                    <a href="/apex/myJSAEventSummary" id="selectedMenuBtn">My Events</a>
+                </li>
+                <li class="menu-item">
+                    <a href="/apex/myJSAProfile">My Personal Data</a>
+                </li>
+            </ul>
+            
+            <div class="columns">
+                <div class="breadcrumb"></div>
+                <apex:pageMessages id="messages"></apex:pageMessages>
+            
+                <apex:outputPanel layout="none" id="theSummary">
+                    <div class="col1">
+                        <div id="archivebox"> 
+                            <h2>My Events</h2> 
+                        </div>
+                        
+                        <div>
+                            <apex:outputPanel layout="none" rendered="{!NOT(ISBLANK(theSchool))}" id="eventsList">
+                                <apex:outputPanel rendered="{!showEvents}">
+                                <h2 class="subheader">Convention Registrations</h2>
+                                <div class="striped">           
+                                    <apex:repeat value="{!openChapterConvnKeys}" var="opId">
+                                        <div class="eventBox">
+                                            <h3><a href="/apex/myJSAEvent?OpId={!opId}">{!chapterConvnRegOpps[opId]}</a></h3>
+                                        </div>
+                                    </apex:repeat>
+                                <!--  <div class="eventBox">                                        
+                                        <h3>
+                                            <apex:outputLink rendered="{!notAllChaptConvnShown}">
+                                                View All
+                                            </apex:outputLink>
+                                        </h3>
+                                    </div> -->
+                                </div>
+                                </apex:outputPanel>
+                                <br/>
+                                <h2 class="subheader">Summer School Applications</h2><br/>
+                                <div class="striped">
+                                                                        
+                                    <apex:repeat value="{!openSummerSchoolKeys}" var="opId">
+                                        <div class="eventBox">
+                                            <h3><a href="/apex/myJSAApplication?OpId={!opId}&ApplicationType=SS">{!summerSchoolRegOpps[opId]}</a></h3>
+                                        </div>
+                                    </apex:repeat>
+                                    <apex:outputLink ></apex:outputLink>
+                                   <!--   <div class="eventBox">
+                                        <h3>
+                                        <apex:outputLink rendered="{!notAllSummerSchoolShown}">
+                                            View All
+                                        </apex:outputLink>
+                                        </h3>
+                                    </div>  -->
+                                </div>
+                                <br/>
+                                <h2 class="subheader">Institute Registrations</h2><br/>
+                                <div class="striped">                                                                     
+                                    <apex:repeat value="{!openSymposiumKeys}" var="opId">
+                                        <div class="eventBox">
+                                            <h3><a href="/apex/myJSAApplication?OpId={!opId}&ApplicationType=Symp">{!SymposiumRegOpps[opId]}</a></h3>
+                                        </div>
+                                    </apex:repeat>
+                                 <!--   <div class="eventBox" >
+                                        <apex:outputLink rendered="{!notAllSymposiumShown}">
+                                            View All
+                                        </apex:outputLink>
+                                    </div> -->
+                                </div>
+                                <!--
+                                <apex:repeat value="{!openKeys}" var="opId">
+                                    <div class="eventBox">
+                                        <h3><a href="/apex/myJSAEvent?OpId={!opId}">{!openOpps[opId]}</a></h3>
+                                    </div>
+                                </apex:repeat> -->
+                            </apex:outputPanel>
+                        </div>
+                    </div>
+                    <div class="col2">
+                                                             
+                            <div class="widget">
+                            <apex:outputPanel rendered="{!showEvents}">
+                                <h3>Register for a New Event?</h3>
+                                <p>When a new convention is available you'll see a dropdown list in this section. Select the convention and click start registration to sign up your chapter.</p>
+                                <p>For information about upcoming conventions, dates and locations - <a href="http://jsa.org/conventions/fall-state/dates-and-locations/" target="blank">Click Here</a></p>
+                                
+                                <apex:outputPanel rendered="{!NOT(ISBLANK(theSchool))}">
+                                <apex:form >   
+                                <apex:selectList value="{!selectedConvention}" multiselect="false" size="1" styleClass="conventionPicker">
+                                    <apex:selectOptions value="{!conSelection}"/>
+                                </apex:selectList>
+                                
+                                <apex:commandButton action="{!saveOp}" value="Start Registration"  styleClass="conventionButton" ></apex:commandButton>
+                                </apex:form>
+                                </apex:outputPanel>
+                            </apex:outputPanel>
+                            </div>
+                            
+                            <div class="widget">
+                                <h3>Start a New Application</h3>
+                                
+                                    <p>
+                                        <a id="newSummerSchoolAppl" >Start New Summer School Application</a>
+                                    </p>
+                                    <!-- TEMP COMMENT OUT UNTIL INSTITUTES ARE FINALIZED -->
+                                    <p>
+                                        <a id="newSymposiumAppl">Start New Institute or Symposium Application</a>
+                                    </p>
+                                    <p>It is not necessary to fill out multiple applications. Once accepted to the
+                                    JSA Summer School, you may contact the JSA Office at 1-800-317-9338 to
+                                    discuss changing your summer school location.</p>
+                               
+                            </div>
+                            
+                            <div class="widget">    
+                                    <h3>JSA Program Details</h3>
+                                      <ul class="menu">
+                                      <li class="menu-item">
+                                        <a target="_blank" href="http://summer.jsa.org/programs/summer-school/">JSA Summer School</a>
+                                      </li> 
+                                      <li class="menu-item">
+                                        <a target="_blank" href="http://summer.jsa.org/programs/summer-institutes/">JSA Institutes</a>
+                                      </li> 
+                                      <li class="menu-item">
+                                        <a target="_blank" href="http://summer.jsa.org/programs/summer-school/diplomat-program-beijing-china/">JSA International</a>
+                                      </li>   
+                                    </ul>  
+                                </div>
+                            
+                            <div class="widget">    
+                                <h3>JSA News and Updates</h3>
+                                
+                                <script language="JavaScript" src="https://feed2js.org//feed2js.php?src=http%3A%2F%2Fjsa.org%2Fcategory%2Fmyjsa%2Ffeed%2F&num=3&desc=140>1&targ=y&utf=y"  charset="UTF-8" type="text/javascript"></script>
+                                
+                            </div>
+
+                            <div class="widget">
+                                <h3>JSA Event Calendar</h3>
+                                
+                                <script language="JavaScript" src="https://feed2js.org//feed2js.php?src=http%3A%2F%2Fevents.jsa.org%2Fevents%2Frss%2F&num=5&targ=y&utf=y"  charset="UTF-8" type="text/javascript"></script>
+                                
+                                <div class="moreEvents">
+                                    <a href="http://events.jsa.org/events/">View more events</a>
+                                </div>
+                            </div>
+                        
+                    </div>
+                </apex:outputPanel>
+                <apex:outputPanel rendered="{!ISBLANK(theSchool)}">
+                    Please update your High School in the personal information section
+                </apex:outputPanel>
+            </div>
+        </div> <!-- end of midBox -->
+        
+        <div class="footerShadow">
+            <div class="footerBox" id="footerBox">
+                <div class="row" id="footer">
+                    <span>
+                        <div class="leftCell">
+                            <h3>Junior Statesmen Foundation</h3>
+                            <p></p>
+                            <strong>National Headquarters in California</strong>
+                            <br></br>
+                            800 S. Claremont St., Suite 202, San Mateo, CA 94402
+                            <br></br>
+                            (800) 334-5353
+                            <p></p>
+                            <strong>Washington, D.C. Office</strong>
+                            <br></br>
+                            1411 K St. NW, Suite 200, Washington, DC 20005<br></br>
+                            (800) 317-9338
+                        </div>
+                        
+                        <div class="midCell">
+                            <h3>About JSA</h3>
+                            <br></br>
+                            <p>The mission of the Junior State of America and the Junior Statesmen Foundation is to strengthen American democracy by educating and preparing high school students for life-long involvement and responsible leadership in a democratic society.</p>
+                        </div>
+                        
+                        <div class="rightCell">
+                            <h3>Additional Resources</h3><br></br>
+                            <ul class="footerList">
+                                <li class="li-item-left">
+                                    <a href="http://jsa.org/contact-jsa/">Contact Us</a>
+                                </li>
+                                <li class="li-item-left">
+                                    <a href="http://jsa.org/about/">About JSA</a>
+                                </li>
+                                <li class="li-item-left">
+                                    <a href="http://jsa.org/downloads/">Downloads</a>
+                                </li>
+                                <li class="li-item-right reset">
+                                    <a href="http://summer.jsa.org">Summer Programs</a>
+                                </li>
+                                <li class="li-item-right">
+                                    <a href="http://jsa.org/portal">MyJSA</a>
+                                </li>
+                                <li class="li-item-right">
+                                    <a href="http://jsa.org/bethepeople">Be the People</a>
+                                </li>
+                            </ul>
+                        </div>
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="footer-bottom-container">
+        <h4><a href="http://jsa.org">www.jsa.org</a></h4>
+        JSA is a <a href="http://jsa.org/about/the-junior-statesmen-foundation/" target="_blank">non-profit 501(c)(3) educational organization</a><br></br>
+        © <!--?php echo date('Y') ?--> JSA. <a href="http://jsa.org/terms-of-use-and-privacy-policy/" target="_blank">Terms of Use and Privacy Policy</a>
+    </div>
+    <apex:includeScript value="{!$Resource.jquery_js}"/> 
+    <apex:includeScript value="{!$Resource.jquery_ui_js}"/>
+<script>
+$(document).ready(function(){
+    
+    //hide convention picker if empty
+    if($('.conventionPicker').children().length == 0){
+        $('.conventionPicker,.conventionButton').hide();
+    }
+    
+});
+
+//-- Suyati Modified - 25/Nov/2014
+//-- Included a blank value for Honor Student Code
+function getSSOpportunityId() {
+    var session = $('[id$=campus]').find("option:selected").text();
+    var secondChoiceSession = $('[id$=secondchoicesession]').find("option:selected").text();
+    var course = $('[id$=course]').find("option:selected").text();
+    var refSource = $('[id$=ssrefsource]').val();
+    var SSlatestYr = $('[id$=SSLatestYear]').val();
+    var userAccount = $("#useraccount").val();
+    var scholshipFlag = $('[id$=SSScholarshipFlag]').is(':checked');
+    
+    Visualforce.remoting.Manager.invokeAction(
+        '{!$RemoteAction.mainPortalController.getOpportunity}',
+         session,
+         secondChoiceSession,
+         course,
+         refSource,
+         SSlatestYr,
+         userAccount,
+         true,
+         scholshipFlag,
+         '',
+         function(result,event) {
+                if(event.status) {
+                     window.location="/apex/myJSAApplication?OpId="+result+"&ApplicationType=SS";
+                }       
+         },
+         {escape:true}
+    );    
+}
+
+//-- Suyati Modified - 25/Nov/2014
+//-- Included a blank value for Honor Student Code
+function getSympOpportunityId() {
+     var session = $('[id$=institute]').find("option:selected").text();
+     var refSource = $('[id$=sympreferralsource]').val();
+     var symplatestYr = $('[id$=SympLatestYear]').val();
+     var userAccount = $("#useraccount").val();
+     var scholshipFlag = $('[id$=SympScholarshipFlag]').val();
+     Visualforce.remoting.Manager.invokeAction (
+        '{!$RemoteAction.mainPortalController.getOpportunity}',
+         session,
+         '',
+         '',
+         refSource,
+         symplatestYr,
+         userAccount,
+         false, 
+         scholshipFlag,
+         '',
+         function(result,event) {
+            if(event.status) {
+                window.location = "/apex/myJSAApplication?OpId=" + result+"&ApplicationType=Symp";
+            }
+         },
+         {escape:true}
+     );
+     
+}
+
+
+
+</script>
+<script>
+  $(function() {
+    var campus =  $('[id$=campus]'),
+      institute = $('[id$=institute]'),
+      secondchoicesession = $( "#secondchoicesession" ),      
+      allFields = $( [] ).add( campus ).add( secondchoicesession );
+     
+ 
+    $( "#dialog-form" ).dialog({
+      autoOpen: false,
+      height: 350,
+      width: 850,
+      modal: true,
+      buttons: {
+        "Start Application": function() {
+          var bValid = true;
+          allFields.removeClass( "ui-state-error" );
+          var session = $('[id$=campus]').val();
+          if(session == 'None') {
+            campus.addClass( "ui-state-error" );
+            updateTips( n );
+          }
+          else {
+            getSSOpportunityId();                
+              if ( bValid ) {            
+                $( this ).dialog( "close" );
+              }
+          }          
+        },
+        Cancel: function() {
+          $( this ).dialog( "close" );
+        }
+      },
+      close: function() {
+        allFields.val( "" ).removeClass( "ui-state-error" );
+      }
+    });
+    
+    $("#dialog-form2").dialog({
+       autoOpen: false,
+      height: 300,
+      width: 850,
+      modal: true,
+      buttons: {
+        "Start Application": function() {
+          var bValid = true;
+          allFields.removeClass( "ui-state-error" );
+          var session = $('[id$=institute]').val();
+          if(session == 'None') {
+            institute.addClass( "ui-state-error" );
+            updateTips( n );
+          }
+          else {
+              getSympOpportunityId();    
+              if ( bValid ) {               
+                $( this ).dialog( "close" );
+              }
+            }          
+        },
+        Cancel: function() {
+          $( this ).dialog( "close" );
+        }
+      },
+      close: function() {
+        allFields.val( "" ).removeClass( "ui-state-error" );
+      }    
+    });
+ 
+    $( "#newSummerSchoolAppl" )
+      .click(function() {
+        $( "#dialog-form" ).dialog( "open" );
+      });
+      
+    $("#newSymposiumAppl").click(function() {
+        $("#dialog-form2").dialog("open");
+    });
+    
+  });
+  </script>
+    
+</body>
+
+</apex:page>

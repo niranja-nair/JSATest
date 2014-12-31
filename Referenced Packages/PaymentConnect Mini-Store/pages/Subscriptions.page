@@ -1,0 +1,375 @@
+<apex:page standardController="Campaign" extensions="cmpgn.SubscriptionPageController" showHeader="false" sidebar="false" cache="false" standardStylesheets="false" >
+<title>{!campaign.cmpgn__LP_Title__c}</title>
+<meta name="keywords" content="{!campaign.LP_Meta_Keywords__c}" />
+<meta name="description" content="{!campaign.LP_Meta_Description__c}" />
+
+<apex:composition template="{!$Site.Template}">
+  <apex:define name="body">
+<apex:outputPanel layout="none" rendered="{!campaign.cmpgn__Show_Captcha__c = true}">
+<script src="http://api.recaptcha.net/js/recaptcha_ajax.js" type="text/javascript" />
+<script>
+function showRecaptcha(element) {
+	  Recaptcha.create("{!recaptcha.publicKey}", element, {
+	        theme: '{!IF(ISNULL(campaign.cmpgn__Captcha_Theme__c),"red",campaign.cmpgn__Captcha_Theme__c)}',
+	        tabindex: 0,
+	        lang: '{!CASE(lang,"fr","fr","de","de","nl","nl","tr","tr","ru","ru","es","es","pt","pt","en")}'
+	        //callback: Recaptcha.focus_response_field
+	  });
+}
+</script>  
+</apex:outputPanel>  
+    <div class="pc_page_content_top"></div>
+    <div class="pc_page_content" id="pc_donations_page"> 
+    <div class="pc_page_content_inner"> 
+    <apex:pageMessages id="messageBox" /> 
+
+    <apex:outputPanel id="campaignNotFound" rendered="{!IF(viewState =='campaign_not_found', true,false)}" >
+        <h1>{!$Label.site.page_not_found}</h1>
+        <apex:outputPanel layout="none" rendered="{!otherCampaignsFound}">
+        <p>Perhaps you were looking for one of these?</p>
+        <br/>
+            <apex:repeat value="{!otherCampaigns}" var="campaign" >
+            <p><apex:outputLink value="{!$Page.cmpgn__Subscriptions}?id={!campaign.Id}">{!campaign.cmpgn__LP_Title__c}</apex:outputLink> </p>
+            </apex:repeat>
+        </apex:outputPanel>
+    </apex:outputPanel>
+    
+    <apex:outputPanel id="campaignHtmlContent"
+        rendered="{!IF(viewState == 'get_customer_info',true,false)}">
+        <apex:outputText value="{!campaign.cmpgn__LP_HTML_Content__c}" escape="false" />
+    </apex:outputPanel> 
+    <apex:outputPanel id="donorInformation"
+            rendered="{!IF(viewState == 'get_customer_info',true,false)}">
+        <apex:form id="pc_subscription_form" styleclass="pc_billing_info_form" onsubmit="return validateForm();">
+       <script language="javascript">
+       
+       function isValidEmailAddress_1(email) {
+            AtPos = email.indexOf("@")
+            StopPos = email.lastIndexOf(".")
+            var result = true;
+
+            if (email == "") {
+                result = false;
+            }
+
+            if (AtPos == -1 || StopPos == -1) {
+                result = false;
+            }
+
+            if (StopPos < AtPos) {
+                result = false;
+            }
+
+            if (StopPos - AtPos == 1) {
+                result = false;
+            }
+
+            return result;
+        }
+
+        var enableValidation = false;
+
+          function validateForm() {
+ 
+    		//if (!enableValidation) { return true;}
+    		//	enableValidation=false; 
+
+              // check required fields
+              var fname = document.getElementById("{!$Component.pc_subscription_form.mailingfirstname}");
+              var lname = document.getElementById("{!$Component.pc_subscription_form.mailinglastname}");
+              if (fname.value == "" || lname.value == "") {
+                  alert("Please enter your name.");
+                  return false;
+              }
+          
+              var emailaddress = document.getElementById("{!$Component.pc_subscription_form.emailaddress}");
+              if (emailaddress.value == "") {
+                  alert("Please provide your email address.");
+                  return false;
+              }
+              if (!isValidEmailAddress_1(emailaddress.value)) {
+                  alert("Please enter a valid email address.");
+                  return false;              
+              }
+          
+              var address = document.getElementById("{!$Component.pc_subscription_form.mailingstreet}");
+              if (address.value == "") {
+                  alert("Please provide your street address.");
+                  return false;
+              }
+          
+              var city = document.getElementById("{!$Component.pc_subscription_form.mailingcity}");
+              if (city.value == "") {
+                  alert("Please provide your city.");
+                  return false;
+              }
+          
+              var state = document.getElementById("{!$Component.pc_subscription_form.mailingstate}");
+              if (state.value == "") {
+                  alert("Please provide your state/province.");
+                  return false;
+              }
+          
+              var zip = document.getElementById("{!$Component.pc_subscription_form.mailingpostalcode}");
+              if (zip.value == "") {
+                  alert("Please provide your postal code.");
+                  return false;
+              }
+          
+              var country = document.getElementById("{!$Component.pc_subscription_form.mailingcountry}");
+              if (country.value == "") {
+                  alert("Please provide your 2 character country code.");
+                  return false;
+              }
+          
+            var domId = "";
+            var cfld = "";
+              <apex:repeat value="{!customFields}" var="cf">
+
+                fieldType = "{!cf.mapping.cmpgn__Type__c}";
+                domIdPrefix = "{!$Component.pc_subscription_form.customFieldTable}";
+                fieldIndex = {!cf.index};
+                fieldName = "{!JSENCODE(cf.mapping.name)}";
+                required = "{!If(cf.mapping.cmpgn__Required__c == true,'1','0')}";
+                            
+                if (!pc_check_custom_field(fieldType, domIdPrefix, required, fieldIndex, fieldName)) return false;
+            
+              </apex:repeat>
+                            
+              return true;
+          }
+          
+          function pc_check_custom_field(fieldType, domIdPrefix, required, fieldIndex, fieldName) {
+                if (fieldType == "Text") {
+                    domId = domIdPrefix+':'+fieldIndex+':customText';
+                    cfld = document.getElementById(domId);
+                    if (cfld !== null) {
+                        if (cfld.value == "" && required == "1") {
+                            alert("Please enter a value for the field: "+fieldName );
+                            return false;
+                        }
+                    }                   
+                } else if (fieldType == "Number") {
+                    domId = domIdPrefix+':'+fieldIndex+':customNumber';
+                cfld = document.getElementById(domId);
+                if (cfld !== null) {
+                    if ((required == "1" && cfld.value == "" ) ||
+                        (cfld.value !== "" && isNaN(cfld.value))
+                        ) {
+                        alert("Please enter a numeric value for the field: "+fieldName);
+                        return false;
+                    }
+                }                   
+                } else if (fieldType == "Email") {
+                    domId = domIdPrefix+':'+fieldIndex+':customEmail';
+                cfld = document.getElementById(domId);
+                if (cfld !== null) {
+                    if ((required == "1" && cfld.value == "" ) ||
+                        (cfld.value !== "" && !isValidEmailAddress_1(cfld.value))
+                        ) {
+                        alert("Please enter an email address the field: "+fieldName);
+                        return false;
+                    }
+                }                   
+                } else if (fieldType == "Checkbox") {
+                    domId = domIdPrefix+':'+fieldIndex+':customCheckbox';
+                    cfld = document.getElementById(domId);
+                    if (cfld !== null) {
+                        if (required == "1" && cfld.checked == false) {
+                            alert("Please enter a value for the field: "+fieldName );
+                            return false;
+                        }
+                    }                   
+                } else if (fieldType == "Picklist") {
+                    domId = domIdPrefix+':'+fieldIndex+':customPicklist';
+                    cfld = document.getElementById(domId);
+                    if (cfld !== null) {
+                        if ((required == "1" && cfld.selectedIndex < 0) || 
+                            (cfld.selectedIndex >=0 && cfld.options[cfld.selectedIndex].value == '')
+                            ) {
+                            alert("Please select a value for the field: "+fieldName );
+                            return false;
+                        }
+                    }                   
+                } 
+                return true;  // true if field value ok
+          }
+          
+          
+          </script> 
+<apex:outputPanel layout="none" rendered="{!campaign.cmpgn__Show_Social_Links__c}">
+<div id="fb-root"></div>
+<script>(function(d, s, id) {
+// Facebook social link script
+  var js, fjs = d.getElementsByTagName(s)[0];
+  if (d.getElementById(id)) return;
+  js = d.createElement(s); js.id = id;
+  js.src = "//connect.facebook.net/en_US/all.js#xfbml=1";
+  fjs.parentNode.insertBefore(js, fjs);
+}(document, 'script', 'facebook-jssdk'));</script>
+
+</apex:outputPanel>
+          
+          
+          <div id="pc_contact_info_and_custom_fields">          
+          <div id="pc_contact_info">        
+             <apex:outputPanel layout="none" rendered="{!NOT(ISNULL(campaign.cmpgn__Address_Form_Heading__c))}">
+             <h2><apex:outputText value="{!IF(ISNULL(campaign.cmpgn__Address_Form_Heading__c),'Contact Information',campaign.cmpgn__Address_Form_Heading__c)}"/></h2>
+            </apex:outputPanel>
+             <apex:panelGrid columns="3" styleClass="pc_buyer_information_table" columnClasses="labelColumn,requiredFieldMarkerColumn,fieldColumn">
+                <apex:outputText value="{!$Label.Label_FirstName}"/>
+                <apex:image value="/s.gif" styleClass="requiredFieldMarker"/>
+                <apex:inputText id="mailingfirstname" styleclass="pc_medium_input_field" value="{!contact.firstname}" />
+                
+                <apex:outputText value="{!$Label.Label_LastName}"/>
+                <apex:image value="/s.gif" styleClass="requiredFieldMarker"/>
+                <apex:inputText id="mailinglastname" styleclass="pc_medium_input_field" value="{!contact.lastname}" />
+                
+                <apex:outputText value="{!$Label.Label_Email}"/>
+                <apex:image value="/s.gif" styleClass="requiredFieldMarker"/>
+                <apex:inputText id="emailaddress" styleclass="pc_medium_input_field" value="{!contact.email}" />
+                
+                <apex:outputText value="{!$Label.Label_Company}"/>
+                <apex:image value="/s.gif" />
+                <apex:inputText styleclass="pc_medium_input_field" value="{!companyName}" />
+                
+                <apex:outputText value="{!$Label.Label_StreetAddress}"/>
+                <apex:image value="/s.gif" styleClass="requiredFieldMarker"/>
+                <apex:inputText id="mailingstreet" styleclass="pc_long_input_field" value="{!contact.mailingstreet}" />
+                
+                <apex:outputText value="{!$Label.Label_City}"/>
+                <apex:image value="/s.gif" styleClass="requiredFieldMarker"/>
+                <apex:inputText id="mailingcity" styleclass="pc_medium_input_field" value="{!contact.mailingcity}" />
+                
+                <apex:outputText value="{!$Label.Label_StateProvince}"/>
+                <apex:image value="/s.gif" styleClass="requiredFieldMarker"/>
+                <apex:inputText id="mailingstate" styleclass="pc_short_input_field" value="{!contact.mailingstate}" />
+                
+                <apex:outputText value="{!$Label.Label_PostalCode}"/>
+                <apex:image value="/s.gif" styleClass="requiredFieldMarker"/>
+                <apex:inputText id="mailingpostalcode" styleclass="pc_medium_input_field" value="{!contact.mailingpostalcode}" />
+                
+                <apex:outputText value="{!$Label.Label_Country}"/>
+                <apex:image value="/s.gif" styleClass="requiredFieldMarker"/>
+                <apex:inputText id="mailingcountry" styleclass="pc_short_input_field" value="{!contact.mailingcountry}" />
+                
+                
+                
+             </apex:panelGrid>
+            </div> 
+                        
+            <div id="pc_custom_fields">
+             <apex:outputPanel layout="none" rendered="{!NOT(ISNULL(campaign.cmpgn__Custom_Fields_Heading__c))}">
+             <h2><apex:outputText value="{!IF(ISNULL(campaign.cmpgn__Custom_Fields_Heading__c),'',campaign.cmpgn__Custom_Fields_Heading__c)}"/></h2>
+            </apex:outputPanel>
+            <apex:dataTable id="customFieldTable" value="{!customFields}" var="customField" styleClass="pc_custom_fields_table" columnClasses="labelColumn,requiredFieldMarkerColumn,fieldColumn">
+                <apex:column rendered="{!NOT(customField.mapping.cmpgn__Hidden__c)}">
+                    <apex:outputField value="{!customField.mapping.Name}" rendered="{!(customField.mapping.cmpgn__Type__c <> 'Checkbox' && customField.mapping.cmpgn__Type__c <> 'Blank Space')}"/>
+                </apex:column>
+                <apex:column rendered="{!NOT(customField.mapping.cmpgn__Hidden__c)}">
+                <apex:image value="/s.gif" styleClass="{!IF(customField.mapping.cmpgn__Required__c,'requiredFieldMarker','')}"/>
+                </apex:column>
+                <apex:column rendered="{!NOT(customField.mapping.cmpgn__Hidden__c)}">
+                        <apex:inputText id="customText" value="{!customField.stringVal}" rendered="{!customField.mapping.cmpgn__Type__c == 'Text'}"  title="{!customField.mapping.cmpgn__Long_Label__c}"/>
+                        <apex:inputText id="customEmail" value="{!customField.emailVal}" rendered="{!customField.mapping.cmpgn__Type__c == 'Email'}"  title="{!customField.mapping.cmpgn__Long_Label__c}"/>
+                        <apex:inputText id="customNumber" value="{!customField.numVal}" rendered="{!customField.mapping.cmpgn__Type__c == 'Number'}"  title="{!customField.mapping.cmpgn__Long_Label__c}"/>
+                        <apex:inputCheckbox id="customCheckbox" value="{!customField.booleanVal}" rendered="{!customField.mapping.cmpgn__Type__c == 'Checkbox'}"/>
+                        <apex:outputText value="{!customField.mapping.cmpgn__Long_Label__c}" rendered="{!customField.mapping.cmpgn__Type__c == 'Checkbox'}"/>
+                        <apex:outputText rendered="{!customField.mapping.cmpgn__Type__c == 'Blank Space'}">&nbsp;</apex:outputText>
+                        <apex:selectList id="customPicklist" rendered="{!customField.mapping.cmpgn__Type__c == 'Picklist'}" multiselect="{!customField.multiselect}" size="{!customField.size}"
+                                    value="{!customField.stringVal}" title="{!customField.mapping.cmpgn__Long_Label__c}">
+                            <apex:selectOptions value="{!customField.options}"/>
+                        </apex:selectList>
+                </apex:column>
+            
+            </apex:dataTable>
+
+           
+            </div>
+            </div>
+
+        <apex:outputPanel id="nocaptcha"  rendered="{!NOT(campaign.cmpgn__Show_Captcha__c = true)}">
+	            <script type="text/javascript">
+	            function captureResponse(ele) {
+	            }
+	            </script>
+        </apex:outputPanel>
+            
+        <apex:outputPanel id="captcha" rendered="{!campaign.cmpgn__Show_Captcha__c = true}">
+				<apex:inputhidden value="{!recaptcha.challenge}" id="challenge" />
+	            <apex:inputhidden value="{!recaptcha.response}" id="response" />
+	            <script type="text/javascript">
+	            function captureResponse(ele) {
+	                document.getElementById('{!$Component.challenge}').value =
+	                    document.getElementById('recaptcha_challenge_field').value;
+	                 
+	                document.getElementById('{!$Component.response}').value =
+	                    document.getElementById('recaptcha_response_field').value;
+	            }
+	            </script>
+			<apex:panelGrid columns="3" columnClasses="labelColumn,requiredFieldMarkerColumn,fieldColumn" id="captcha_panel_grid" styleClass="pc_captcha_panel_grid">
+				<apex:outputText value=""/>
+				<apex:image url="/s.gif"/>
+				<apex:outputPanel layout="inline">	 
+	            	<div id="dynamic_recaptcha_1"></div>
+	            	<br />
+					<!--  display the image using the reCAPTCHA AJAX API -->
+				</apex:outputPanel>
+			</apex:panelGrid>
+	        <script type="text/javascript">showRecaptcha('dynamic_recaptcha_1');</script>
+        </apex:outputPanel>  
+        
+        <apex:outputPanel id="buttons">
+        <apex:panelGrid columns="3" columnClasses="labelColumn,requiredFieldMarkerColumn,fieldColumn" id="button_panel_grid" styleClass="pc_button_panel_grid">
+            <apex:outputText value=""/>
+            <apex:image url="/s.gif"/>
+            <apex:outputPanel layout="inline">
+
+            <apex:commandButton id="ccButton" value="{!$Label.Subscriptions_CheckoutButton}"
+                action="{!creditCardPayment}"
+                rendered="{!IF(AND(viewState =='get_customer_info',OR(processorName =='paypal',processorName =='authorize.net')),true,false)}" 
+            	onclick="captureResponse(this);enableValidation=true;"                                
+                status="formActionStatus" 
+                />
+                                       
+                <apex:actionStatus id="formActionStatus">
+                        <apex:facet name="start">
+                            <apex:outputPanel >&nbsp;
+                                <apex:image value="{!URLFOR($Resource.pymt__PaymentConnect, 'images/icon-spinner.gif')}"
+                                    style="vertical-align:middle;" alt="" />
+                                    &nbsp;Processing...
+                            </apex:outputPanel>
+                        </apex:facet>
+                        <apex:facet name="stop">
+                            <apex:image value="{!URLFOR('/s.gif')}" alt="" style="height:17px;" /> 
+                        </apex:facet> 
+                </apex:actionStatus>
+            
+            </apex:outputPanel>
+        </apex:panelGrid>
+        </apex:outputPanel>  
+        
+        </apex:form>
+    </apex:outputPanel>
+    
+<apex:outputPanel layout="none" rendered="{!campaign.cmpgn__Show_Social_Links__c}">
+<div class="cmpgn_social_links" >
+<div class="linkedin-share"  >
+<script src=" {!IF(BEGINS(LOWER($Site.CurrentSiteUrl),'https'),'https','http')}://platform.linkedin.com/in.js" type="text/javascript"></script>
+<script type="IN/Share" data-counter="right"></script>
+</div>
+<div class="twitter-share" >
+<a href="https://twitter.com/share" class="twitter-share-button">Tweet</a>
+<script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="//platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
+</div>
+<div class="facebook-share" >
+<div class="fb-like"  data-send="true" data-layout="button_count" data-width="250" data-show-faces="true" data-action="recommend"></div>
+</div>
+</div>
+</apex:outputPanel>    
+
+    </div>  <!-- end pc_page_content_inner div -->
+    </div>  <!-- end pc_page_content div -->
+    </apex:define>
+    </apex:composition>
+</apex:page>

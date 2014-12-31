@@ -1,0 +1,462 @@
+<apex:page showheader="false" sidebar="false" controller="myJSAprofileController" action="{!initPage}">
+<head>
+
+<title>MyJSA</title>
+
+<apex:stylesheet value="{!URLFOR($Resource.RefreshCSS)}"/>
+<apex:stylesheet value="{!URLFOR($Resource.ContactFormCSS)}"/>
+
+
+
+<link rel="stylesheet" type="text/css" href="{!URLFOR($Resource.JSAPortal, 'style.css')}" />
+<link rel="stylesheet" type="text/css" href="{!URLFOR($Resource.JSAPortal, 'style-theme.css')}" />
+<link rel="stylesheet" type="text/css" href="{!URLFOR($Resource.JSAPortal, 'style-home.css')}" />
+<apex:stylesheet value="{!URLFOR($Resource.jquery_ui_css)}"/>
+<style>
+#clearSchool {
+    background-color : lightgray;
+    width : 6em;
+    height: 2em;
+    font-size: 10px;
+}
+
+.highSchoolId {
+    display:none;
+}
+
+</style>
+
+<script>
+var _gaq = _gaq || [];
+_gaq.push(['_setAccount', 'UA-1376727-1']);
+_gaq.push(['_setDomainName', 'force.com']);
+_gaq.push(['_setAllowLinker', true]);
+_gaq.push(['_trackPageview']);
+</script>
+</head>
+
+<body>
+
+<apex:form >
+
+    <div class="mainBox">
+        <div class="topHeaderBox">
+            <div class="topLogoBox">
+                <img src="{!$Resource.jsf_cap_logo_png}" width="155px" height="20px"/>
+            </div>
+        </div>
+        <div class="headerBox" id="headerBox">
+            <img src="{!$Resource.jsf_header_logo_png}" width="484px" height="176px"/>
+            <div style="float:right; padding:15px">
+                <a style="color:white" href="/secur/logout.jsp?retUrl=/portalLogin">Logout</a>
+            </div>
+        </div>
+        <div class="midBox" id="midBoxHome">
+            <ul id="nav2" class="menu">
+                <li id="menu-item-472" class="menu-item">
+                    <a href="/apex/myJSAhome" >MyJSA Home</a>
+                </li>
+                <li class="menu-item">
+                    <a href="/apex/myJSAchapter">My Chapter</a>
+                </li>
+                <li class="menu-item">
+                    <a href="https://myjsa.force.com/_ui/core/chatter/ui/ChatterPage">My Chatter</a>
+                </li>
+                <apex:outputText >
+                    <li id="menu-item-482" class="menu-item">
+                        <a href="/apex/myJSAEventSummary">My Events</a>
+                    </li>
+                </apex:outputText>
+                <li class="selectedMenu">
+                    <a id="selectedMenuBtn" href="/apex/myJSAProfile">My Personal Data</a>
+                </li>
+            </ul>
+
+<apex:pageMessages id="messages"/>
+        <div id="columns">
+            <div class="breadcrumb"></div>
+            <div class="col1">
+                <div id="archivebox">
+                    <h2>My Personal Data</h2>
+                </div>
+                <div id="StudentRegistration" class="contactForm">
+                    <h3>My Information</h3>
+                    <p class="spacer">Fields marked with * are required. Fields marked with ** are required for Summer School applicants.<br></br>
+                    *** Mobile Phone is required for accepted Summer School students. By entering this number, you agree to allow us to send you text reminders; message and data rates apply.</p>
+                    <table class="contactFormTable">
+                        <tr>
+                            <td>
+                                <span class="questionTitle">First Name <span class="req">*</span></span>
+                                <div id="wwgrp_firstname" class="wwgrp">
+                                    <div id="wwctrl_firstname" class="wwctrl">
+                                        <apex:inputText value="{!contact.FirstName}" size="30" maxlength="40" tabindex="1"/>
+                                    </div>                                   
+                                </div>
+                            </td>
+                            <td>
+                                <span class="questionTitle">Last Name <span class="req">*</span></span>
+                                <div id="wwgrp_lastname" class="wwgrp">
+                                    <div id="wwctrl_lastname" class="wwctrl">
+                                        <apex:inputText value="{!contact.LastName}" size="30" maxlength="40" tabindex="2"/>
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <span class="questionTitle">Mailing Street <span class="req">*</span></span>
+                                <div id="wwgrp_mailingstreet" class="wwgrp">
+                                    <div id="wwctrl_mailingstreet" class="wwctrl">
+                                        <apex:inputText value="{!contact.MailingStreet}" size="68" maxlength="60" tabindex="1"/>
+                                    </div>
+                                </div>
+                            </td>
+                            <td>
+                                <span class="questionTitle">Mailing Country <span class="req">*</span></span>
+                                <div id="wwgrp_mailingstreet" class="wwgrp">
+                                    <div id="wwctrl_billingCountry" class="wwctrl">
+                                        <apex:inputField value="{!contact.account.Countries__c}" required="true" /> 
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <span class="questionTitle">Mailing City <span class="req">*</span></span>
+                                <div id="wwgrp_mailingcity" class="wwgrp">
+                                    <div id="wwctrl_mailingcity" class="wwctrl">
+                                        <apex:inputText value="{!contact.MailingCity}" size="30" maxlength="40" tabindex="2"/>
+                                    </div>
+                                </div>
+                            </td>
+                            <td>
+                                <span class="questionTitle">Mailing State/Province <span class="req">*</span></span>
+                                <div id="wwgrp_mailingstate" class="wwgrp">
+                                    <div id="wwctrl_mailingstate" class="wwctrl">
+                                        <apex:inputField value="{!contact.account.US_States__c}" required="true" />
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td >
+                                <span class="questionTitle">Mailing Zip/Postal Code <span class="req">*</span></span>
+                                <div id="wwgrp_mailingpostalcode" class="wwgrp">
+                                    <div id="wwctrl_mailingpostalcode" class="wwctrl">
+                                        <apex:inputText value="{!contact.MailingPostalCode}" size="30" maxlength="20" tabindex="4"/>
+                                    </div>
+                                </div>
+                            </td>
+                            <td>
+                                <span class="questionTitle">Mobile Phone***</span>
+                                <div id="wwgrp_mobilephone" class="wwgrp">
+                                    <div id="wwctrl_mobilephone" class="wwctrl">
+                                        <apex:inputText value="{!contact.MobilePhone}" size="20" maxlength="20" tabindex="6"/>
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            
+                            <td>
+                                <span class="questionTitle">Home Phone **</span>
+                                <div id="wwgrp_homephone" class="wwgrp">
+                                    <div id="wwctrl_homephone" class="wwctrl">
+                                        <apex:inputText value="{!contact.Phone}" size="20" maxlength="20" tabindex="7"/>
+                                    </div>
+                                </div>
+                            </td>
+                            
+                            <td>
+                                <span class="questionTitle">Gender <span class="req">*</span></span>
+                                <div id="wwgrp_profileHomeAction_contact_gender" class="wwgrp">
+                                    <div id="wwctrl_profileHomeAction_contact_gender" class="wwctrl">
+                                        <apex:selectList value="{!contact.Gender__c}" size="1" styleClass="select" style="width:150px;" tabindex="8">
+                                            <apex:selectOption itemValue="" itemLabel="-- Gender --"/>
+                                            <apex:selectOptions value="{!genderOptions}"/>
+                                        </apex:selectList>
+                                    </div>
+                                </div>
+                            </td>
+                            
+                        </tr>
+                        <tr>
+                            
+                            <td>
+                                <span class="questionTitle">Category <span class="vfHelpText"><apex:outputLink value="javascript:return false;"><img src="{!URLFOR($Resource.help2)}" /><span>{!$ObjectType.Contact.fields.Category__c.inlineHelpText}</span></apex:outputLink></span></span>
+                                <div id="wwgrp_profileHomeAction_contact_jsaRole" class="wwgrp">
+                                    <div id="wwctrl_profileHomeAction_contact_jsaRole" class="wwctrl">
+                                        <apex:inputField value="{!contact.Category__c}" styleClass="category" id="category" />
+                                    </div>
+                                </div>
+                            </td>
+                            
+                            <td>
+                                <span class="questionTitle">JSA Role <span class="vfHelpText"><apex:outputLink value="javascript:return false;"><img src="{!URLFOR($Resource.help2)}" /><span>{!$ObjectType.Contact.fields.JSA_Role__c.inlineHelpText}</span></apex:outputLink></span></span>
+                                <div id="wwgrp_profileHomeAction_contact_jsaRole" class="wwgrp">
+                                    <div id="wwctrl_profileHomeAction_contact_jsaRole" class="wwctrl">
+                                        <apex:inputField value="{!contact.JSA_Role__c}"  id="jsaRole" />
+                                        
+                                    </div>
+                                </div>
+                            </td>
+                            
+                        </tr>
+                        <tr>
+                            <td>
+                                <span class="questionTitle">High School State <span class="req">*</span></span>
+                                <div id="wwgrp_highSchoolZip" class="wwgrp">
+                                    <div id="wwctrl_highSchoolState" class="wwctrl">
+                                        <apex:selectList value="{!highSchoolState}" size="1" styleClass="select highSchoolState" style="width:150px;">
+                                            <apex:selectOption itemValue="" itemLabel="-- State --"/>
+                                            <apex:selectOptions value="{!highSchoolStateOptions}"/>
+                                        </apex:selectList>
+                                    </div>
+                                </div>
+                            </td>
+                            <td>
+                                <span class="questionTitle">High School <button id="clearSchool">change</button></span>
+                                <div id="wwgrp_highSchool" class="wwgrp">
+                                    <div id="wwctrl_highSchool" class="wwctrl">
+                                        <apex:inputText required="true" styleClass="highSchoolName" value="{!contact.High_School_Text__c}" size="20" maxlength="20" tabindex="7"/>
+                                        <apex:inputText styleClass="highSchoolId" value="{!contact.High_School__c}" size="20" maxlength="20" tabindex="7"/>
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+                <div id="studentsOnly" class="contactForm">
+                    <table class="contactFormTable">
+                        <tr>
+                            <td colspan="2">
+                                <h3>Students Only</h3>
+                                <p class="spacer">Students, please fill out the following additional information.</p>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <span class="questionTitle">High School Graduation Year <span class="vfHelpText"><apex:outputLink value="javascript:return false;"><img src="{!URLFOR($Resource.help2)}"/><span>{!$ObjectType.Contact.fields.High_School_Graduation_Year__c.inlineHelpText}</span></apex:outputLink><span class="req">*</span></span></span>
+                                <br/>
+                                <input type="text" name="date7" value="{!contact.High_School_Graduation_Year__c}" size="15" readonly="" style="background: #FAFAFA;" class="noborder"/>
+                                <a href="#" onclick="cal7.showCalendar('anchor7'); return false;" name="anchor7" id="anchor7"></a>
+                            </td>
+                            <td>
+                                Birthdate <span class="req">*</span>
+                                <br/>
+                                <apex:inputField styleClass="birthdayAlt" value="{!contact.birthdate}"/>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <span class="questionTitle">Parent/Guardian First Name <span class="vfHelpText"><apex:outputLink value="javascript:return false;"><img src="{!URLFOR($Resource.help2)}"/><span>{!$ObjectType.Contact.fields.Parent_Guardian_First_Name__c.inlineHelpText}</span></apex:outputLink><span class="req">*</span></span></span>
+                                <div id="wwgrp_parentGuardianFirstName" class="wwgrp">
+                                    <div id="wwctrl_parentGuardianFirstName" class="wwctrl">
+                                        <apex:inputText value="{!contact.Parent_Guardian_First_Name__c}" size="30" maxlength="40"/>
+                                    </div>
+                                </div>
+                            </td>
+                            <td>
+                                <span class="questionTitle">Parent/Guardian Last Name <span class="vfHelpText"><apex:outputLink value="javascript:return false;"><img src="{!URLFOR($Resource.help2)}"/><span>{!$ObjectType.Contact.fields.Parent_Guardian_Last_Name__c.inlineHelpText}</span></apex:outputLink><span class="req">*</span></span></span>
+                                <div id="wwgrp_parentGuardianLastName" class="wwgrp">
+                                    <div id="wwctrl_parentGuardianLastName" class="wwctrl">
+                                        <apex:inputText value="{!contact.Parent_Guardian_Last_Name__c}" size="30" maxlength="40"/>
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <span class="questionTitle">Parent or Guardian's Email *<span class="vfHelpText"><apex:outputLink value="javascript:return false;"><img src="{!URLFOR($Resource.help2)}"/><span>{!$ObjectType.Contact.fields.Parent_or_Guardian_s_Email__c.inlineHelpText}</span></apex:outputLink></span></span>
+                                <div id="wwgrp_parentOrGuardianSEmail" class="wwgrp">
+                                    <div id="wwctrl_parentOrGuardianSEmail" class="wwctrl">
+                                        <apex:inputText value="{!contact.Parent_or_Guardian_s_Email__c}" size="35" maxlength="50" tabindex="15"/>
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>               
+                    </table>
+                </div>
+                * Required
+                ** Required for Summer School applicants 
+                <div align="right" id="wwctrl_profileHomeAction_0"><apex:commandButton value="Update Information" action="{!save}" styleClass="button2" tabindex="22"/><!--input type="submit" id="profileHomeAction_0" value="Update Information" class="button2" tabindex="22"/--></div> 
+            </div>
+        
+            <div class="col2">
+            
+            <!-- <div class="widget">
+              <h3>JSA Program Details</h3>
+              <ul class="menu">
+                <li class="menu-item"> <a target="_blank" href="http://summer.jsa.org/programs/summer-school/">JSA Summer School</a> </li>
+                <li class="menu-item"> <a target="_blank" href="http://summer.jsa.org/programs/jsa-summer-institutes/">JSA Institutes</a> </li>
+                <li class="menu-item"> <a target="_blank" href="http://summer.jsa.org/programs/summer-school/diplomat-program-beijing-china/">JSA International</a> </li>
+              </ul>
+            </div> -->
+            <div class="widget">
+              <h3>JSA News and Updates</h3>
+              <script language="JavaScript" src="https://feed2js.org//feed2js.php?src=http%3A%2F%2Fjsa.org%2Fcategory%2Fmyjsa%2Ffeed%2F&num=3&desc=140>1&targ=y&utf=y"  charset="UTF-8" type="text/javascript"></script> 
+            </div>
+            <div class="widget">
+              <h3>JSA Event Calendar</h3>
+              <script language="JavaScript" src="https://feed2js.org//feed2js.php?src=http%3A%2F%2Fevents.jsa.org%2Fevents%2Frss%2F&num=5&targ=y&utf=y"  charset="UTF-8" type="text/javascript"></script>
+              <div class="moreEvents"> <a href="http://events.jsa.org/events/">View more events</a> </div>
+            </div> 
+             
+             
+            </div>
+        </div>
+
+        </div>
+
+
+        <div class="footerShadow">
+            <div class="footerBox" id="footerBox">
+                <div class="row" id="footer">
+                    <span>
+                        <div class="leftCell">
+                            <h3>Junior Statesmen Foundation</h3>
+                            <p></p>
+                            <strong>National Headquarters in California</strong>
+                            <br/>
+                            800 S. Claremont St., Suite 202, San Mateo, CA 94402
+                            <br></br>
+                            (800) 334-5353
+                            <p></p>
+                            <strong>Washington, D.C. Office</strong>
+                            <br/>
+                            1411 K St. NW, Suite 200, Washington, DC 20005<br/>
+                            (800) 317-9338
+                        </div>
+                        <div class="midCell">
+                        <h3>About JSA</h3>
+                        <br/>
+                        <p>The mission of the Junior State of America and the Junior Statesmen Foundation is to strengthen American democracy by educating and preparing high school students for life-long involvement and responsible leadership in a democratic society.</p>
+                        </div>
+                        <div class="rightCell">
+                            <h3>Additional Resources</h3><br/>
+                            <ul class="footerList">
+                                <li class="li-item-left">
+                                    <a href="http://jsa.org/contact-jsa/">Contact Us</a>
+                                </li>
+                                <li class="li-item-left">
+                                    <a href="http://jsa.org/about/">About JSA</a>
+                                </li>
+                                <li class="li-item-left">
+                                    <a href="http://jsa.org/downloads/">Downloads</a>
+                                </li>
+                                <li class="li-item-right reset">
+                                    <a href="http://summer.jsa.org">Summer Programs</a>
+                                </li>
+                                <li class="li-item-right">
+                                    <a href="http://jsa.org/portal">MyJSA</a>
+                                </li>
+                                <li class="li-item-right">
+                                    <a href="http://jsa.org/bethepeople">Be the People</a>
+                                </li>
+                            </ul>
+                        </div>
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="footer-bottom-container">
+        <h4><a href="http://jsa.org">www.jsa.org</a></h4>
+JSA is a <a href="http://jsa.org/about/the-junior-statesmen-foundation/" target="_blank">non-profit 501(c)(3) educational organization</a><br/>
+© <!--?php echo date('Y') ?--> JSA. <a href="http://jsa.org/terms-of-use-and-privacy-policy/" target="_blank">Terms of Use and Privacy Policy</a>
+    </div>
+
+</apex:form>
+    
+
+<apex:includeScript value="{!$Resource.jquery_js}"/> 
+<apex:includeScript value="{!$Resource.jquery_ui_js}"/>
+
+<script>
+$(document).ready(function(){
+    
+    var JSA_Role = $('.JSA_Role').val(),
+        highSchoolState = $('.highSchoolState').val(),
+        clearSchoolFields = function(){
+            $('.highSchoolId').val('');
+            $('.highSchoolName').val('').removeAttr('disabled').focus().attr({'placeholder':'start typing and select from list'});      
+        };
+        
+    
+    if(JSA_Role == 'JSA Advisor' || JSA_Role == 'JSA Affiliate'){
+        $('#studentsOnly').hide();
+    }
+    
+    $('.highSchoolState').on('change', function(){
+        highSchoolState = $(this).val();
+        clearSchoolFields();
+    });
+    
+    $('#clearSchool').button().on('click', function(event){
+        event.preventDefault();
+        clearSchoolFields();
+    });
+    
+    $('.highSchoolName').autocomplete({
+        //point the autocomplete at JSR method
+        delay: 500,
+        source: function( request, response ) {
+            
+            //JSRemoting method fetches the data
+            myJSAprofileController.findSchools(request.term,$('.highSchoolState').val(),function(results,event){
+                //feeds it to the autocompleter
+                response(results);
+            });
+        },
+        //make sure that the user only sees the label instead of ugly ID
+        focus: function(event, ui){
+            
+            //don't display the id
+            event.preventDefault();
+            
+            //show the label instead
+            this.value = ui.item.label;
+        
+        },
+        //display only the label and stash the value in our hidden ID field
+            select: function( event, ui ) {
+                
+                //make sure we don't display id 
+                event.preventDefault();
+                
+                //show the label instead
+            this.value = ui.item.label;
+            
+            //stash the value 
+            $('.highSchoolId').val(ui.item.value);
+            
+            //lock the field from user now
+            $('.highSchoolName').attr({'disabled':'disabled'});
+
+        }
+        
+    });
+    //what to do if user leaves the field (with tab or mouse)
+    $(document).on('blur', 'input.highSchoolName', function(){
+        //if the user hasn't selected a school from the list, clear it out when exiting
+        if($('.highSchoolId').val() == ''){
+            $('.highSchoolName').val('');
+        }
+    });
+
+    
+    $('span.dateFormat').remove();
+    $('#calYearPicker').html('');
+    var select = document.getElementById('calYearPicker');
+    var startYear = new Date().getFullYear() - 30;
+    for (var year = startYear; year < startYear + 30; year++) {
+      select.options[select.options.length] = new Option(year, year);
+    }
+
+    
+});
+</script>
+
+    
+</body>
+</apex:page>

@@ -1,0 +1,322 @@
+<apex:page showHeader="false" sidebar="false" controller="JSAApplicationController">
+    <title>My Application</title>
+
+    <c:NeatHeader events="active" />
+
+    <!-- Breadcrumbs - START -->
+    <div class="background-clouds breadcrumbs-container">
+      <div class="container">
+        <ol class="breadcrumb">
+          <li><a href="/JSAHome">My JSA Home</a></li>
+          <li class="active">My Event Summary</li>
+          <li class="active">My Application</li>
+        </ol>
+      </div>
+    </div>
+    <!-- Breadcrumbs - END -->
+
+   <section>
+      <div class="container">
+        <div class="row">
+          <div class="col-md-8">
+            <div class="content">
+                <h1><span>{!opName}</span></h1>
+                <ul class="nav nav-tabs" id="myTab">
+                    <li><a data-toggle="tab" href="#sectionOverview">1. Overview</a></li>
+                    <apex:outputText rendered="{!IsSSApplication}">
+                        <li><a data-toggle="tab" href="#sectionRecommendation">2. Recommendation</a></li>
+                    </apex:outputText>
+                    <apex:outputText rendered="{!IsSympApplication}">
+                        <li><a data-toggle="tab" href="#sectionRecommendation">2. School</a></li>
+                    </apex:outputText>
+                    <li><a data-toggle="tab" href="#sectionEssay">3. Essay</a></li>
+                    <li><a data-toggle="tab" href="#sectionNextSteps">4. Next Steps</a></li>
+                </ul>
+                <div class="tab-content">
+                    <div id="sectionOverview" class="tab-pane fade in active">
+                        <apex:outputPanel rendered="{!IsSSApplication}">
+                            Note: Your application will be reviewed once you have selected a course, completed your personal information online, submitted your essay, and we have received your teacher recommendation and school transcript. Once Application Status changes to "Complete" you will not be able to make further changes to your application. <br /><br />
+                            For your "Personal Data Complete?" status to be marked as True, all fields in the "My Personal Data" section must be complete. <br /><br />
+                        </apex:outputPanel>
+                        <apex:outputPanel rendered="{!IsSympApplication}" >
+                            You have now successfully created your online application. You can either continue filling out the application, or click the ‘Save for Later’ link at the bottom of the application. If you save it for later, you will find your application under the ‘My Events’ tab when you login to your MyJSA account. <br /><br />
+                            In order to complete your application, you must fill out the ‘My Personal Data’ tab as well as complete or submit all the application requirements. Once you have completed and submitted the application, JSA will notify you of your application status within two weeks. <br /><br />
+                        </apex:outputPanel>
+                        <apex:form >
+                            <apex:outputPanel rendered="{!IsSSApplication}" >
+                                <b>Course Selection*</b><br/>
+                                <div class="contactdropdown">
+                                    <apex:selectList id="course" disabled="{!submitted}" value="{!SelectedSSCourse}" multiselect="false" size="1" styleClass="col-xs-12 form-control">
+                                        <apex:selectOptions value="{!SSCourses}"/>
+                                    </apex:selectList>
+                                </div>
+                                <br/><br/>
+                                <b>Would you like to make online payments?</b>                
+                                &nbsp;&nbsp;<apex:inputCheckbox id="OnlineInvoiceFlag"  disabled="{!submitted}" value="{!IsInvoiceNeeded}" /><br />
+                                If checked, you will be emailed an online payment link after your application is accepted.
+                            </apex:outputPanel>
+                            <table class="table">
+                                <apex:repeat value="{!OverviewContentKeys}" var="key">
+                                    <tr>
+                                        <td>{!key}</td>
+                                        <td>{!OverviewContent[key]}</td>
+                                    </tr>
+                                </apex:repeat>
+                            </table>
+                            <div class="bootbutton">
+                                <apex:outputLink value="/JSAEventSummary" styleClass="btn btn-primary btn-lg">Cancel</apex:outputLink>
+                                <apex:commandButton rendered="{!NOT(submitted)}" value="Save For Later" action="{!SaveOpp}" styleClass="btn btn-primary btn-lg" />
+                                <apex:commandButton value="Next" id="goToAcademics" styleClass="btn btn-primary btn-lg" />
+                            </div>
+                        </apex:form>
+                    </div>
+                    <div id="sectionRecommendation" class="tab-pane fade">
+                        Please confirm your high school below. If your high school is not listed, please type in the name of your high school below.
+                        <apex:form >
+                            <div class="col-md-6 contactdropdown">
+                                <b>High School State *</b><br/>
+                                <apex:selectList value="{!highSchoolState}" disabled="{!submitted}" size="1" styleClass="col-xs-12 highSchoolState form-control">
+                                    <apex:selectOption itemValue="" itemLabel="-- State --"  />
+                                    <apex:selectOptions value="{!highSchoolStateOptions}"/>
+                                 </apex:selectList>
+                            </div>
+                            <div id="highschoolarea" class="col-md-6">
+                                <b>High School *</b><br/>
+                                <apex:inputText disabled="{!submitted}" styleClass="col-xs-12 highSchoolName typeahead form-control" value="{!HighSchoolText}" />
+                                <apex:inputText disabled="{!submitted}" styleClass="highSchoolId" value="{!HighSchool}" style="display: none;" />
+                            </div>
+                            <apex:outputPanel rendered="{!IsSSApplication}">
+                                <div class="col-md-6">
+                                    <b>Reference Teacher Name *</b><br/>
+                                    <apex:inputText disabled="{!submitted}" value="{!RefTeacherName}" styleClass="col-xs-12 form-control" />
+                                </div>
+                                <div class="col-md-6">
+                                    <b>Reference Teacher Email *</b><br/>
+                                    <apex:inputText disabled="{!submitted}" value="{!RefTeacherEmail}" styleClass="col-xs-12 form-control" />
+                                </div>
+                                <div class="col-md-6">
+                                    <b>Reference Teacher Phone *</b><br/>
+                                    <apex:inputText disabled="{!submitted}" value="{!RefTeacherPhone}" styleClass="col-xs-12 form-control" />
+                                </div>                              
+                            </apex:outputPanel>
+                            
+                            <div class="col-md-6">
+                                    <b>Honor Student Code </b><br/>
+                                    <apex:inputText disabled="{!submitted}" value="{!HonorStudentCode}" styleClass="col-xs-12 form-control" maxlength="6"/>
+                                </div>
+                            
+                            <div class="col-md-12 bootbutton" style="margin-top: 10px">
+                                <apex:commandButton value="Previous" id="goToOverview" styleClass="btn btn-primary btn-lg" />
+                                <apex:outputLink value="/JSAEventSummary" styleClass="btn btn-primary btn-lg">Cancel</apex:outputLink>
+                                <apex:commandButton rendered="{!NOT(submitted)}" value="Save For Later" action="{!SaveOpp}" styleClass="btn btn-primary btn-lg" />
+                                <apex:commandButton value="Next" id="goToEssay" styleClass="btn btn-primary btn-lg" />
+                            </div>
+                        </apex:form>
+                    </div>
+                    <div id="sectionEssay" class="tab-pane fade">
+                        See application <a target="_blank" href="http://summer.jsa.org/apply/application-steps/">instructions</a> for detailed guidelines.
+                        <br/><br/>
+                        <apex:form >
+                            <apex:outputPanel rendered="{!IsSSApplication}">
+                                Describe your extracurricular activities and any leadership positions. (150 words max.)<br/>
+                                <apex:inputTextarea disabled="{!submitted}" value="{!extracurricularActivities}" styleClass="col-xs-12 form-control" />
+                                <br/><br/>
+                                What political issue are you passionate about? (500 words min.; 750 words max.)<br/>
+                                <apex:inputTextarea disabled="{!submitted}" value="{!personalEssay}" styleClass="col-xs-12 form-control" />
+                            </apex:outputPanel>
+                            <apex:outputPanel rendered="{!IsSympApplication}">
+                                Describe your leadership positions.<br/>
+                                <apex:inputTextarea disabled="{!submitted}" value="{!LeadershipPositions}" styleClass="col-xs-12 form-control" />
+                                <br/><br/>
+                                Most important issue / solution?<br/>
+                                <apex:inputTextarea disabled="{!submitted}" value="{!MostImportantIssue}" styleClass="col-xs-12 form-control" />
+                            </apex:outputPanel>
+                            <br clear="both" />
+                            <div class="bootbutton" style="margin-top: 10px">
+                                <apex:commandButton value="Previous" id="goBackAcademics" styleClass="btn btn-primary btn-lg" />
+                                <apex:outputLink value="/JSAEventSummary" styleClass="btn btn-primary btn-lg">Cancel</apex:outputLink>
+                                <apex:commandButton rendered="{!NOT(submitted)}" value="Save For Later" action="{!SaveOpp}" styleClass="btn btn-primary btn-lg" />
+                                <apex:commandButton rendered="{!NOT(submitted)}" value="Next" action="{!Submit}" styleClass="btn btn-primary btn-lg" />
+                                <apex:commandButton rendered="{!submitted}" value="Next" id="goToPayment" styleClass="btn btn-primary btn-lg" />
+                            </div>
+                        </apex:form>
+                    </div>
+                    <div id="sectionNextSteps" class="tab-pane fade">
+                        <apex:outputPanel rendered="{!IsSSApplication}">
+                            Thank you for starting an application.  You have taken the first step on a journey to the best summer experience of your life.  An incredible faculty, amazing new friends, stimulating political discussions and much more will be waiting for you at the program.<br />
+                            <br />
+                            Next steps to complete your application:
+                            <ul>
+                                <li>Send an official transcript from your high school. Faxed or electronic copies are acceptable.</li>
+                                <li>Ask a school teacher or counselor to fill out a <a target="_blank" href="https://jsa.wufoo.com/forms/teachercounselor-recommendation-form/">recommendation form</a>. A form is automatically emailed to a teacher if you provide an email address in the academics section of the online application, but it is always best to personally follow up with your teacher or counselor.</li>
+                                <li>If you have not done so, complete the Essay section and all other required fields OR email your essay if you have any problems sending using this online application.</li>
+                            </ul>
+                            Our rolling admissions process will let us respond to you within two weeks of receiving your completed application. No payment is due until you are accepted to the program. If you are accepted, you will receive information about payment schedule and scholarship options, and the payment section below will be updated periodically.
+                            <h3>After Acceptance</h3>
+                            Once you've been accepted to the program, parents and students find themselves filling out the necessary forms in the orientation guide and gathering together the tuition payment. Below is a link to make your deposit payment online and a link to your campus orientation guide.
+                        </apex:outputPanel>
+                        <apex:outputPanel rendered="{!IsSympApplication}">
+                            Next steps to complete your application:
+                            <ul>
+                                <li>If you have not done so, complete the Essay section and all other required fields OR email your essay if you have any problems sending using this online application.</li>
+                            </ul>
+                            Our rolling admissions process will let us respond to you within two weeks of receiving your completed application. No payment is due until you are accepted to the program. If you are accepted, you will receive information about payment schedule and scholarship options, and the payment section below will be updated periodically.
+                        </apex:outputPanel>
+                        <br/><br/>
+                        <apex:outputPanel rendered="{!(OnlinePaymentLink!=null)&&(!OnlinePaymentLink.empty)}">
+                            <a href="{!OnlinePaymentLink}" target="_blank">Make a Payment Online</a>
+                            <a rel="popover" id="paymentPopover" data-content="{!$ObjectType.Opportunity.fields.Online_Payment_Link__c.inlineHelpText}"><img src="{!URLFOR($Resource.help2)}" style="display: inline; margin-left: 5px;" /></a>
+                        </apex:outputPanel>
+                        <br/><br/>
+                        Orientation Guide Link
+                        <br/>
+                        <apex:outputPanel rendered="{!(OrientationGuide!=null)&&(!OrientationGuide.empty)}">
+                            <a href="{!OrientationGuide}" target="_blank">2015 JSA Summer School Orientation Guide</a>
+                            <a rel="popover" id="orientationPopover" data-content="{!$ObjectType.Opportunity.fields.Orientation_Guide__c.inlineHelpText}"><img src="{!URLFOR($Resource.help2)}" style="display: inline; margin-left: 5px;" /></a>
+                        </apex:outputPanel>
+                        <h2>
+                            Invoice Summary
+                            <span class="printroster">
+                                <a href="/apex/JSAAppPrintInvoice?opId={!OpId}" target="_blank">Print Invoice</a>
+                            </span>
+                        </h2>
+                        <table class="table">
+                            <tr>
+                                <td>Sales Order Number</td>
+                                <td class="text-right">{!SalesOrderNumber}</td>
+                            </tr>
+                            <tr>
+                                <td>Invoice Number</td>
+                                <td class="text-right">{!OppInvoiceNumber}</td>
+                            </tr>
+                            <tr>
+                                <td>Total Amount</td>
+                                <td class="text-right">${!TotalAmount}</td>
+                            </tr>
+                        </table>
+                        <h3>Payments</h3>
+                        <table class="table">
+                            <apex:repeat value="{!PaymentDetails.QuickbookPayments}" var="p">
+                                <tr>
+                                    <td>{!p.PaymentDate}</td>
+                                    <td>{!p.PaymentMethod}</td>
+                                    <td class="text-right">
+                                        <apex:outputText value="{0, number, currency}">
+                                            <apex:param value="{!p.PaymentAmount}" />
+                                        </apex:outputText>
+                                    </td>
+                                </tr>
+                            </apex:repeat>
+                        </table>
+                        <h3>Credit Memos</h3>
+                        <table class="table">
+                            <apex:repeat value="{!PaymentDetails.QBCreditMemoLineItems}" var="memli">
+                                <tr>
+                                    <td>{!memli.CreditMemoNumbersDate}</td>
+                                    <td>{!memli.LineDescription}</td>
+                                    <td class="text-right">
+                                        <apex:outputText value="{0, number, currency}" >
+                                            <apex:param value="{!memli.LineAmount}" />
+                                        </apex:outputText>
+                                    </td>
+                                </tr>
+                            </apex:repeat>
+                        </table>
+                        <table class="table">
+                            <tr>
+                                <td><b>Remaining Balance Due</b></td>
+                                <td class="text-right"><b>${!TotalBalance}</b></td>
+                            </tr>
+                        </table>
+                        <h3>Additional Information</h3>
+                        Please email our office at jsa@jsa.org for additional payment and balance information.
+                    </div>
+                </div>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <h3>JSA News and Updates</h3>
+            <script language="JavaScript" src="https://feed2js.org//feed2js.php?src=http%3A%2F%2Fjsa.org%2Fcategory%2Fmyjsa%2Ffeed%2F&num=3&desc=140>1&targ=y&utf=y"  charset="UTF-8" type="text/javascript"></script>
+            <h3>JSA Event Calendar</h3>
+            <script language="JavaScript" src="https://feed2js.org//feed2js.php?src=http%3A%2F%2Fevents.jsa.org%2Fevents%2Frss%2F&num=5&targ=y&utf=y"  charset="UTF-8" type="text/javascript"></script>
+            <a href="http://events.jsa.org/events/">View more events</a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <c:NeatFooter />
+
+    <script src="{!$Resource.typeahead_js}"></script>
+
+<script>
+
+$(document).ready(function() {
+
+    var submittedValue = {!submitted};
+    var submittedApp = {!SubmittedForApproval};
+
+    if ((submittedValue == true) || (submittedApp == true)) {
+        $("#myTab li:eq(3) a").tab('show');
+    } else {
+        for (i = 1;i < 4;i++) {
+            $("#myTab li:eq(" + i + ")").attr('class', 'disabled');
+            $("#myTab li:eq(" + i + ") a").attr('data-toggle', '');
+        }
+    }
+    
+    $('[id$=goToOverview]').click(function(e) {
+        e.preventDefault();
+        $("#myTab li:eq(0) a").tab('show');
+    });
+    $('[id$=goBackAcademics]').click(function(e) {
+        e.preventDefault();
+        $("#myTab li:eq(1) a").tab('show');
+    });
+    $('[id$=goToAcademics]').click(function(e) {
+        e.preventDefault();
+        $("#myTab li:eq(1)").attr('class', '');
+        $("#myTab li:eq(1) a").attr('data-toggle', 'tab');
+        $("#myTab li:eq(1) a").tab('show');
+    });
+    $('[id$=goToEssay]').click(function(e) {
+        e.preventDefault();
+        $("#myTab li:eq(2)").attr('class', '');
+        $("#myTab li:eq(2) a").attr('data-toggle', 'tab');
+        $("#myTab li:eq(2) a").tab('show');
+    });
+    $('[id$=goToPayment]').click(function(e) {
+        e.preventDefault();
+        $("#myTab li:eq(3)").attr('class', '');
+        $("#myTab li:eq(3) a").attr('data-toggle', 'tab');
+        $("#myTab li:eq(3) a").tab('show');
+    });
+
+    $("#paymentPopover").popover();
+    $("#orientationPopover").popover();
+
+    $(".highSchoolName").attr('placeholder', 'Start typing and select from list...');
+    $(".highSchoolName").typeahead({
+        /*hint: false*/
+    }, {
+        source: function(query, cb) {
+            JSAApplicationController.findSchools(query, $(".highSchoolState").val(), function(results, event){
+                cb(results);
+            });
+        },
+        name: 'value',
+        displayKey: 'label'
+    }).on('typeahead:selected', function(e, suggestion, name) {
+        $(".highSchoolId").val(suggestion.value);
+    });
+
+    $(".highSchoolState").on('change', function(){
+        $(".highSchoolId").val('');
+        $(".highSchoolName").val('');
+    })
+
+});
+
+</script>
+
+</apex:page>

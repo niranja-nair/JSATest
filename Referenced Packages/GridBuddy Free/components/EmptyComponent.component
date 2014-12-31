@@ -1,0 +1,6 @@
+<!-- Copyright © 2010-2013 Primal Cause, Inc. All rights reserved. -->
+<apex:component >
+	<!-- use this component if you want to conditionally display something, 
+	but can't use the rendered tag on what you want to conditionally display, for example a table tag -->
+	<apex:componentBody />
+</apex:component>

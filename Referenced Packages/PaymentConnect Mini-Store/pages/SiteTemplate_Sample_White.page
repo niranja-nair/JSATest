@@ -1,0 +1,251 @@
+<apex:page showHeader="false" id="SiteTemplate" standardStylesheets="false" language="{!$CurrentPage.Parameters.lang}">
+<link rel="stylesheet" type="text/css" href="{!URLFOR($Resource.pymt__PaymentConnect,'styles/sites_basic.css')}" />
+<link rel="stylesheet" type="text/css" href="{!URLFOR($Resource.cmpgn__LinvioCampaignsResources,'styles/sites_basic.css')}" />
+<style>
+body 
+{
+/* font-family: "Trebuchet MS",Trebuchet,sans-serif; */
+font-family: Arial,Helvetica,sans-serif;
+font-size: 90%;
+color: #666666;
+font-weight: normal;
+line-height: 1.6em;
+word-wrap: break-word;
+}
+
+h1 {
+    font-family: 'Trebuchet MS',Arial,sans-serif;
+    padding-bottom: 5px;
+    font-size: 24px;
+    margin-top:10px;
+}
+h2 {
+    font-family: 'Trebuchet MS',Arial,sans-serif;
+    font-size: 22px;
+    color: #2eb4f1;
+    color: steelblue;
+    margin-top:10px;
+}
+.clearfix:after {
+    content: ".";
+    display: block;
+    clear: both;
+    visibility: hidden;
+    line-height: 0;
+    height: 0;
+}
+ 
+.clearfix {
+    display: inline-block;
+}
+ 
+html[xmlns] .clearfix {
+    display: block;
+}
+ 
+* html .clearfix {
+    height: 1%;
+}
+a {
+text-decoration: none;
+}
+
+a:hover 
+{
+text-decoration: underline;
+}
+
+a {
+   color: steelblue;
+}
+
+#divHeaderWrapper {
+    border-bottom: 2px solid #e8e8e8;
+    width:100%;
+}
+
+#divHeader {
+    margin:0px auto 0px auto;
+    width:960px;
+}
+
+#divHeaderNavigation {
+   
+}
+
+.pc_page_content table {
+    border-collapse: collapse;
+    margin-top: 5px;
+
+}
+.donationOptionsHorizontal {
+  
+    }
+.pc_donation_amount_horiz {
+   
+}
+.pc_donation_option_list_horiz {
+    }
+.pc_page_content table td {
+  padding:2px;
+}
+
+.pc_frame {
+    margin-left: auto;
+    margin-right: auto;
+    margin-bottom: 0px;
+    margin-top:20px;
+    width: 960px;
+    display:block;
+}
+
+.pc_frame_inner {
+    padding:15px 25px 15px 25px;
+}
+
+.box {
+border: 2px solid #dddddd;
+}
+
+.rounded-corners-5 {
+    border-radius: 5px;
+    -moz-border-radius: 5px;
+    -webkit-border-radius: 5px;
+}
+
+#divFooter {
+border-top: solid 0px #e8e8e8;
+padding-top: 0px;
+width: 100%;
+}
+
+#divFooter address a
+{
+font-weight: bold;
+text-decoration: none;
+}
+
+#divFooter address span.links a, #divFooterSimple address span.links a 
+{
+margin: 0px 10px 0px 10px;
+}
+
+
+#divFooter address {
+font-size: 0.9em;
+}
+
+#divFooter address, #divFooterSimple address {
+color: #949494;
+}
+
+address {
+font-style: normal;
+font-weight: normal;
+}
+
+#divFooter address, #divFooterSimple address {
+margin-top: 20px;
+margin-right: auto;
+margin-bottom: -20px;
+margin-left: auto;
+padding:10px 0px 10px 0px;
+position: relative;
+width: 940px;
+
+}
+
+.pc_frame .message {
+    background-color:#EAF3F5;
+    border-color:#99ccff;
+    background-color:#ffffcc;
+    border-color:#ffcc00; 
+}
+
+.labelColumn {
+    width:150px;
+    font-weight:bold;
+    text-align:right;
+    padding-right:6px;
+}
+
+img.requiredFieldMarker {
+    width:12px;
+    /* background-image: url({!URLFOR($Resource.pymt__PaymentConnect, 'images/required15.gif')}); */
+    background-image: url("{!URLFOR($Resource.pymt__PaymentConnect, 'images/required14.gif')}");
+    background-repeat: no-repeat;
+}
+.requiredFieldMarkerColumn {
+    width:12px;
+    }
+
+.pc_cart_item_table th {
+    background-color:#e8e8e8;
+    background-color:steelblue; 
+    border-bottom: 1px solid #e9e9e9;
+    color: #666666;
+    color: #ffffff;
+}
+
+.fieldColumn {margin-left:0px;padding-left:2px;}
+.fieldColumn input {margin-left:0px;margin-right:4px;}
+.totalsLabelColumn {
+    font-weight:bold;
+    padding-right:10px;
+}
+    
+.evenRow {
+
+}
+
+.oddRow {
+     background-color:#e8e8e8;
+}
+
+
+
+</style>
+
+
+<body id="htmlBody" >
+<div id="divHeaderWrapper" class="clearfix">
+    <div id="divHeader" >
+        <div id="divHeaderLogo">
+            <div style="color:#b0b0b0;font-size:3.5em;font-weight:bold;padding:25px 10px 10px 0px;">{!$Organization.Name}</div>
+        </div>
+        <div id="divHeaderNavigation">
+        <!-- Start of Header navigation content (breadcrumb trail, links, etc.) -->
+            <a href="{!$Site.currentSiteURL}">Home</a> | <a href="{!$Site.currentSiteURL}cmpgn__MiniStore">Products</a> | <a href="{!$Site.currentSiteURL}cmpgn__Subscriptions">Subscriptions</a> | <a href="{!$Site.currentSiteURL}cmpgn__Donations">Donations</a> 
+        </div>
+
+    </div>
+</div>
+
+    <div class="pc_frame box rounded-corners-5">
+    <div class="pc_frame_inner">
+    
+    <apex:insert name="body"/>
+   
+    </div><!--  end pc_frame_inner -->
+    </div><!--  end pc_frame -->
+
+<div id="divFooter" class="clearfix">
+    <div class="no-padding clearfix"></div>
+    <div id="divCompanyInfo">
+
+    <address>
+        <span class="links">
+
+            <a href="#" id="aTC">Terms &amp; conditions</a>
+
+            <a href="#" id="aPrivacy">Privacy policy</a>
+        </span>
+        <span class="address">&copy; {!$Organization.Name}</span>, {!$Organization.Street},&nbsp;{!$Organization.City}&nbsp;{!$Organization.State}&nbsp;  {!$Organization.PostalCode}&nbsp;  
+        <span class="poweredBy" style="float:right;"><a href="https://www.linvio.com">{!$Label.site.powered_by} Linvio PaymentConnect</a></span>               
+    </address>
+
+    </div>
+</div>
+
+</body>
+</apex:page>

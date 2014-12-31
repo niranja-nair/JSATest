@@ -1,0 +1,146 @@
+<apex:page showheader="false">
+	<html class="ext-strict" xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en"><head>
+
+		<link rel="stylesheet" type="text/css" href="{!URLFOR($Resource.AppxTemplateResources, 'appxtemplatefiles/all.css')}">
+		
+
+		
+		<title>Force.com AppExchange - Software-as-a-Service Business Applications from salesforce.com</title>
+
+		
+		</head>
+		
+		<body class="ext-gecko ext-gecko3">
+		
+
+<form id="j_id0:j_id20" name="j_id0:j_id20" method="post" action="/appexchange/apex/gettingStarted" enctype="application/x-www-form-urlencoded">
+<input name="j_id0:j_id20" value="j_id0:j_id20" type="hidden">
+
+        <div id="page"><span id="j_id0:j_id20:j_id22">     
+      
+  <div id="header">
+  
+    <div class="header-top">
+      <h1><a id="j_id0:j_id20:j_id22:pageHeaderComp:force" name="j_id0:j_id20:j_id22:pageHeaderComp:force" href="http://sites.force.com/appexchange/home"><span id="j_id0:j_id20:j_id22:pageHeaderComp:force2">force.com appexchange</span></a>
+      </h1>
+
+      <div class="top-right">
+        <div class="top">
+          <ul>
+            <li><a id="j_id0:j_id20:j_id22:pageHeaderComp:salesforce" name="j_id0:j_id20:j_id22:pageHeaderComp:salesforce" href="http://www.salesforce.com/">Salesforce CRM</a>
+            </li>
+            <li><a id="j_id0:j_id20:j_id22:pageHeaderComp:community" name="j_id0:j_id20:j_id22:pageHeaderComp:community" href="http://www.salesforce.com/community/">Community</a>
+            </li>
+            <li><a id="j_id0:j_id20:j_id22:pageHeaderComp:devforce" name="j_id0:j_id20:j_id22:pageHeaderComp:devforce" href="http://developer.force.com/">Developer Force</a>
+            </li>
+
+          </ul>          
+          <div id="multi-lang-2">         	 
+           <a class="link-main" href="javascript:void(0);" id="cur-lang-2" onclick="showLanguageOptions();" onmouseout="startLanguageHide();" onmouseover="stopLanguageHide();">Choose Your Language</a>         
+          </div>                  
+  		 </div>          
+        <div class="bottom">
+           <div class="bottom-left"><span id="j_id0:j_id20:j_id22:pageHeaderComp:customize"></span>
+           </div>
+           <div class="bottom-left">
+          </div>
+          <h2><a id="j_id0:j_id20:j_id22:pageHeaderComp:salesforce1" name="j_id0:j_id20:j_id22:pageHeaderComp:salesforce1" href="http://www.salesforce.com/">Salesforce.com</a>            
+          </h2>
+
+        </div>
+      </div>
+    </div>
+    <div class="header-bottom">
+      <ul id="nav">
+     	 <li class="navHome">
+       	  <a href="http://sites.force.com/appexchange/home" id="homePage">Home</a>
+     	 </li>
+     	 <li class="">
+       	  <a href="http://sites.force.com/appexchange/browseApps" id="appPage">App</a>
+     	 </li>
+     	 <li class="active">
+       	  <a href="http://sites.force.com/appexchange/gettingStarted" id="startedPage">Getting Started</a>
+     	 </li>
+     	 <li class="nexton">
+       	  <a href="https://login.salesforce.com/?lt=appexchange&amp;retURL=https%3A%2F%2Fsites.secure.force.com%2Fappexchange%2FpublisherHome&amp;qs=promo" id="pubHomePage">Publishing</a>
+     	 </li>    	         
+      </ul>
+        <div class="login"><span id="j_id0:j_id20:j_id22:pageHeaderComp:register">
+                <a href="https://login.salesforce.com/?lt=appexchange&amp;retURL=https%3A%2F%2Fsites.secure.force.com%2Fappexchange%2FgettingStarted&amp;qs=promo">Login or Register</a></span>
+        </div>
+    </div>
+  </div></span>
+          
+          
+          <div id="main">
+            
+            <div class="main-left">
+              <div class="find">
+    				<h2>Find Apps</h2><span id="j_id0:j_id20:keySearchComp">
+    <div class="form">
+      <div class="search-holder"><input id="j_id0:j_id20:keySearchComp:j_id43:searchInputTxt" name="j_id0:j_id20:keySearchComp:j_id43:searchInputTxt" class="text" alt="search keywords" maxlength="50" onkeydown="onSearchKeyDown('j_id0:j_id20:keySearchComp:j_id43:searchInputTxt',event);" type="text"><script type="text/javascript">function keySearch(){ if (typeof jsfcljs == 'function') { jsfcljs(document.forms['j_id0:j_id20'], 'j_id0:j_id20:keySearchComp:j_id43:j_id46, j_id0:j_id20:keySearchComp:j_id43:j_id46', ''); } return false }</script>
+          
+      	<a class="search" href="#" id="refreshButton" onclick="keywordSearch('j_id0:j_id20:keySearchComp:j_id43:searchInputTxt');" tabindex="1"></a>
+      </div>
+
+      <div class="link"><a id="j_id0:j_id20:keySearchComp:j_id43:newsearchLink" name="j_id0:j_id20:keySearchComp:j_id43:newsearchLink" href="http://sites.force.com/appexchange/browseApps">Or Browse by Categories</a>
+      </div>
+    </div></span>
+  				</div><span id="j_id0:j_id20:j_id52">
+	<div class="apps">
+	  <div class="apps-inner">
+	    <div class="apps-container">
+	      <h2>Browse Contents</h2>
+	      <div class="app">
+	        <div class="app-inner">
+	          <div class="app-container">
+				
+					<!-- Left panel container -->
+					<c:contentblock name="sidebar"/>
+					
+	          </div>
+	        </div>
+	      </div>
+	    </div>
+	  </div>
+	</div></span>
+            </div>
+            
+            <div class="main-right"><img src="appxtemplatefiles/getting-started-banner.gif"><br>
+              <div id="specs">
+                <div class="specs-holder-2">
+                  <!-- <div class="specs-top">
+                    <h2 class="inner">Welcome to Force.com AppExchange!</h2>
+                  </div> -->
+			            <div class="main-right-cont">
+							<!-- CONTENT BLOCK INSERTED HERE -->
+							<c:contentblock name="main-right"/>
+			            </div>
+                </div>
+                <div class="specs-holder-bottom">
+			          </div>
+			        </div>
+			      </div>
+			    </div>
+			  </div><input id="com.salesforce.visualforce.ViewState" name="com.salesforce.visualforce.ViewState" value="" type="hidden">
+</form><span id="j_id0:j_id81"><div id="j_id0:j_id81:pageFooterComp:panel2">
+	    <div id="footer">
+    <ul>
+      <li>1-800-NO-SOFTWARE</li>
+      <li><a id="j_id0:j_id81:pageFooterComp:fhome" name="j_id0:j_id81:pageFooterComp:fhome" href="http://sites.force.com/appexchange/home">Home</a></li>
+      <li><a id="j_id0:j_id81:pageFooterComp:fprivacy" name="j_id0:j_id81:pageFooterComp:fprivacy" href="http://www.salesforce.com/statements.jsp?file=privacy&amp;src=web" target="_blank">Privacy Statement</a></li>
+      <li><a id="j_id0:j_id81:pageFooterComp:ftandc" name="j_id0:j_id81:pageFooterComp:ftandc" href="http://www.salesforce.com/appexchange/inc/terms.jsp" target="_blank">Terms of Use</a></li>
+    </ul>
+    <p>© 2000-2009, salesforce.com, inc.</p>
+  </div></div>
+
+  <div id="fader"></div>
+  <ul style="top: -1000px; left: -1000px;" class="link-list" id="lang-list-2" onmouseout="startLanguageHide();" onmouseover="stopLanguageHide();">
+     <li>
+		       <a href="https://login.salesforce.com/AppExchange?retURL=http%3A%2F%2Fsites.force.com%2Fappexchange" id="a0O30000000ou5QEAQ">English</a>
+     </li>
+ </ul></span>
+    </body>
+</html>
+
+</apex:page>

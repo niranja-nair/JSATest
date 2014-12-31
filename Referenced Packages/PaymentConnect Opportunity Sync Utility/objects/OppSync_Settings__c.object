@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
+    <customSettingsType>Hierarchy</customSettingsType>
+    <customSettingsVisibility>Protected</customSettingsVisibility>
+    <description>Settings for the PaymentConnect Opportunity Sync utility.</description>
+    <enableEnhancedLookup>false</enableEnhancedLookup>
+    <enableFeeds>false</enableFeeds>
+    <fields>
+        <fullName>Batch_Script_LastNDays__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <inlineHelpText>Number of days back to look for records to process with the batch script.</inlineHelpText>
+        <label>Batch Script LastNDays</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Build_Line_Items__c</fullName>
+        <defaultValue>false</defaultValue>
+        <deprecated>false</deprecated>
+        <description>Check to have the sync utility create opportunity line items from Shopping Cart Items on the Payment being mapped.</description>
+        <externalId>false</externalId>
+        <inlineHelpText>Check to have the sync utility create opportunity line items from Shopping Cart Items on the Payment being mapped.</inlineHelpText>
+        <label>Build Line Items</label>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>Clear_History_After__c</fullName>
+        <defaultValue>7</defaultValue>
+        <deprecated>false</deprecated>
+        <description>Clear batch history (completed items) after N days.</description>
+        <externalId>false</externalId>
+        <inlineHelpText>Clear batch history (completed items) after N days.</inlineHelpText>
+        <label>Clear History After</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Default_Product_Id__c</fullName>
+        <deprecated>false</deprecated>
+        <description>Default Salesforce Product to use when creating opportunity line items, if the Shopping Cart Item being mapped is not linked to a product record.</description>
+        <externalId>false</externalId>
+        <inlineHelpText>Default Salesforce Product to use when creating opportunity line items, if the Shopping Cart Item being mapped is not linked to a product record.</inlineHelpText>
+        <label>Default Product Id</label>
+        <length>18</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Disable_Contact_Role_Creation__c</fullName>
+        <defaultValue>false</defaultValue>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <label>Disable Contact Role Creation</label>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>Discount_Product_Id__c</fullName>
+        <deprecated>false</deprecated>
+        <description>Product to use when adding a discount opportunity line item.</description>
+        <externalId>false</externalId>
+        <inlineHelpText>Product to use when adding a discount opportunity line item.</inlineHelpText>
+        <label>Discount Product Id</label>
+        <length>18</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Opportunity_Name__c</fullName>
+        <deprecated>false</deprecated>
+        <description>Merge string to use in naming opportunities as they are built from Payment records.</description>
+        <externalId>false</externalId>
+        <inlineHelpText>Merge string to use in naming opportunities as they are built from Payment records.</inlineHelpText>
+        <label>Opportunity Name</label>
+        <length>255</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Opportunity_Stage_Name__c</fullName>
+        <deprecated>false</deprecated>
+        <description>Stage Name to use when creating new Opportunities from completed Payments.</description>
+        <externalId>false</externalId>
+        <inlineHelpText>Stage Name to use when creating new Opportunities from completed Payments.</inlineHelpText>
+        <label>Opportunity Stage Name</label>
+        <length>255</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Pricebook_Id__c</fullName>
+        <deprecated>false</deprecated>
+        <description>Pricebook to use when creating opportunity line items.</description>
+        <externalId>false</externalId>
+        <inlineHelpText>Pricebook to use when creating opportunity line items.</inlineHelpText>
+        <label>Pricebook Id</label>
+        <length>18</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Scheduled_Batch_Job_Id__c</fullName>
+        <deprecated>false</deprecated>
+        <description>Scheduled Apex job id from the last job scheduling request. Used to find the job so it can be canceled later.</description>
+        <externalId>false</externalId>
+        <inlineHelpText>Scheduled Apex job id from the last job scheduling request. Used to find the job so it can be canceled later.</inlineHelpText>
+        <label>Scheduled Batch Job Id</label>
+        <length>18</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <label>OppSync Settings</label>
+</CustomObject>

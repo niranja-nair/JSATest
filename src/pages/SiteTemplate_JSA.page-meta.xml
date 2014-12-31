@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ApexPage xmlns="http://soap.sforce.com/2006/04/metadata">
+    <apiVersion>25.0</apiVersion>
+    <availableInTouch>false</availableInTouch>
+    <confirmationTokenRequired>false</confirmationTokenRequired>
+    <description>Site template to use with Linvio Mini-Store</description>
+    <label>SiteTemplate_JSA</label>
+    <packageVersions>
+        <majorNumber>3</majorNumber>
+        <minorNumber>45</minorNumber>
+        <namespace>cmpgn</namespace>
+    </packageVersions>
+    <packageVersions>
+        <majorNumber>4</majorNumber>
+        <minorNumber>306</minorNumber>
+        <namespace>pymt</namespace>
+    </packageVersions>
+    <packageVersions>
+        <majorNumber>1</majorNumber>
+        <minorNumber>0</minorNumber>
+        <namespace>res18</namespace>
+    </packageVersions>
+</ApexPage>

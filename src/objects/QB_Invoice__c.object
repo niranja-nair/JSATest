@@ -1,0 +1,230 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
+    <actionOverrides>
+        <actionName>Accept</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>CancelEdit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Clone</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Delete</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Edit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Follow</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>List</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>New</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>SaveEdit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Tab</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>View</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <compactLayoutAssignment>SYSTEM</compactLayoutAssignment>
+    <deploymentStatus>Deployed</deploymentStatus>
+    <description>The QuickBooks invoices that were issued against sales order sent from Salesforce opportunities.</description>
+    <enableActivities>false</enableActivities>
+    <enableBulkApi>true</enableBulkApi>
+    <enableFeeds>false</enableFeeds>
+    <enableHistory>false</enableHistory>
+    <enableReports>true</enableReports>
+    <enableSharing>true</enableSharing>
+    <enableStreamingApi>true</enableStreamingApi>
+    <fields>
+        <fullName>Applied_Amount__c</fullName>
+        <description>The amount applied to date against this invoice.</description>
+        <externalId>false</externalId>
+        <formula>Total_Credit_Memos__c  +   Total_Payments__c</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <inlineHelpText>The amount applied to date against this invoice.</inlineHelpText>
+        <label>Applied Amount</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackTrending>false</trackTrending>
+        <type>Currency</type>
+    </fields>
+    <fields>
+        <fullName>Invoice_Amount__c</fullName>
+        <description>The total amount of the invoice.</description>
+        <externalId>false</externalId>
+        <inlineHelpText>The total amount of the invoice.</inlineHelpText>
+        <label>Invoice Amount</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackTrending>false</trackTrending>
+        <type>Currency</type>
+    </fields>
+    <fields>
+        <fullName>Invoice_Date__c</fullName>
+        <description>The date the invoice was created.</description>
+        <externalId>false</externalId>
+        <inlineHelpText>The date the invoice was created.</inlineHelpText>
+        <label>Invoice Date</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Date</type>
+    </fields>
+    <fields>
+        <fullName>Memo__c</fullName>
+        <description>The memo field available in the QuickBooks invoice.</description>
+        <externalId>false</externalId>
+        <inlineHelpText>The memo field available in the QuickBooks invoice.</inlineHelpText>
+        <label>Memo</label>
+        <length>32000</length>
+        <trackTrending>false</trackTrending>
+        <type>LongTextArea</type>
+        <visibleLines>3</visibleLines>
+    </fields>
+    <fields>
+        <fullName>OpportunityID__c</fullName>
+        <description>The name of the opportunity/sales order the invoice was issued against.</description>
+        <externalId>false</externalId>
+        <inlineHelpText>The name of the opportunity/sales order the invoice was issued against.</inlineHelpText>
+        <label>Opportunity Name</label>
+        <referenceTo>Opportunity</referenceTo>
+        <relationshipLabel>QuickBooks Invoices</relationshipLabel>
+        <relationshipName>R00N40000001rOomEAE</relationshipName>
+        <relationshipOrder>0</relationshipOrder>
+        <reparentableMasterDetail>false</reparentableMasterDetail>
+        <trackTrending>false</trackTrending>
+        <type>MasterDetail</type>
+        <writeRequiresMasterRead>false</writeRequiresMasterRead>
+    </fields>
+    <fields>
+        <fullName>QB_Invoice_TXN_ID__c</fullName>
+        <description>The internal ID of the invoice in QuickBooks.</description>
+        <externalId>false</externalId>
+        <inlineHelpText>The internal ID of the invoice in QuickBooks.</inlineHelpText>
+        <label>QuickBooks Invoice TXN ID</label>
+        <length>36</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Remaining_Balance__c</fullName>
+        <description>The remaining amount to be paid.</description>
+        <externalId>false</externalId>
+        <formula>Invoice_Amount__c  -   Applied_Amount__c</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <inlineHelpText>The remaining amount to be paid.</inlineHelpText>
+        <label>Remaining Balance</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackTrending>false</trackTrending>
+        <type>Currency</type>
+    </fields>
+    <fields>
+        <fullName>Sales_Order_Amount__c</fullName>
+        <description>The total amount of the sales order this invoice applies to.</description>
+        <externalId>false</externalId>
+        <inlineHelpText>The total amount of the sales order this invoice applies to.</inlineHelpText>
+        <label>Sales Order Amount</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackTrending>false</trackTrending>
+        <type>Currency</type>
+    </fields>
+    <fields>
+        <fullName>Sales_Order_Number__c</fullName>
+        <description>The sales order number of the sales order the invoice was issued against.</description>
+        <externalId>false</externalId>
+        <inlineHelpText>The sales order number of the sales order the invoice was issued against.</inlineHelpText>
+        <label>Sales Order Number</label>
+        <length>24</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Sales_Tax__c</fullName>
+        <description>The amount of sales tax charged on the invoice.</description>
+        <externalId>false</externalId>
+        <inlineHelpText>The amount of sales tax charged on the invoice.</inlineHelpText>
+        <label>Sales Tax</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackTrending>false</trackTrending>
+        <type>Currency</type>
+    </fields>
+    <fields>
+        <fullName>Total_Credit_Memos__c</fullName>
+        <description>The total of all credit memos for this invoice.</description>
+        <externalId>false</externalId>
+        <inlineHelpText>The total of all credit memos for this invoice.  This is not displayed as it is used to compute applied amount and remaining balance.</inlineHelpText>
+        <label>Total Credit Memos</label>
+        <summarizedField>QB_Credit_Memo__c.Credit_Memo_Applied_Amount__c</summarizedField>
+        <summaryForeignKey>QB_Credit_Memo__c.Invoice_Number__c</summaryForeignKey>
+        <summaryOperation>sum</summaryOperation>
+        <trackTrending>false</trackTrending>
+        <type>Summary</type>
+    </fields>
+    <fields>
+        <fullName>Total_Payments__c</fullName>
+        <description>The total of all payments against this invoice.</description>
+        <externalId>false</externalId>
+        <inlineHelpText>The total of all payments against this invoice.  This is not displayed as it is used to compute applied amount and remaining balance.</inlineHelpText>
+        <label>Total Payments</label>
+        <summarizedField>QB_Payment__c.Payment_Applied_Amount__c</summarizedField>
+        <summaryForeignKey>QB_Payment__c.Invoice_Number__c</summaryForeignKey>
+        <summaryOperation>sum</summaryOperation>
+        <trackTrending>false</trackTrending>
+        <type>Summary</type>
+    </fields>
+    <label>QuickBooks Invoice</label>
+    <listViews>
+        <fullName>All</fullName>
+        <filterScope>Everything</filterScope>
+        <label>All</label>
+    </listViews>
+    <nameField>
+        <label>Invoice Number</label>
+        <type>Text</type>
+    </nameField>
+    <pluralLabel>QuickBooks Invoices</pluralLabel>
+    <searchLayouts>
+        <searchFilterFields>NAME</searchFilterFields>
+        <searchFilterFields>OBJECT_ID</searchFilterFields>
+        <searchFilterFields>OpportunityID__c</searchFilterFields>
+        <searchFilterFields>Invoice_Amount__c</searchFilterFields>
+        <searchFilterFields>Total_Payments__c</searchFilterFields>
+    </searchLayouts>
+    <sharingModel>ControlledByParent</sharingModel>
+    <validationRules>
+        <fullName>No_Invoice_Deletes</fullName>
+        <active>false</active>
+        <errorConditionFormula>IF( $User.Username  &lt;&gt; &quot;rj@jsa.org&quot;, true, false)</errorConditionFormula>
+        <errorMessage>You cannot delete an invoice.</errorMessage>
+    </validationRules>
+</CustomObject>

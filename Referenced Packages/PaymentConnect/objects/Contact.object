@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fields>
+        <fullName>Google_Buyer_Id__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <inlineHelpText>Id assigned to the contact by Google.</inlineHelpText>
+        <label>Google Buyer Id</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>PayPal_Payer_Id__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <inlineHelpText>Id assigned by PayPal to this contact.</inlineHelpText>
+        <label>PayPal Payer Id</label>
+        <length>32</length>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <webLinks>
+        <fullName>AuthNet_ARB</fullName>
+        <availability>online</availability>
+        <description>Opens the PaymentConnect AuthNet ARB Terminal for creating recurring billing profiles.</description>
+        <displayType>button</displayType>
+        <linkType>javascript</linkType>
+        <masterLabel>AuthNet Recurring Payment</masterLabel>
+        <openType>onClickJavaScript</openType>
+        <protected>false</protected>
+        <url>var aidParm = &quot;&quot;;
+if (&apos;{!Account.Id}&apos; !== &apos;&apos;) {
+aidParm = &apos;aid={!Account.Id}&amp;&apos;;
+}
+window.location.href=&quot;/apex/pymt__AuthNetARBTerminal?&quot;+aidParm+&quot;cid={!Contact.Id}&amp;cancelURL=%2F{!Contact.Id}&quot;;</url>
+    </webLinks>
+    <webLinks>
+        <fullName>PayPal_Recurring_Payments</fullName>
+        <availability>online</availability>
+        <description>Opens the PaymentConnect PayPal Recurring Payments Terminal for creating recurring payment profiles.</description>
+        <displayType>button</displayType>
+        <linkType>javascript</linkType>
+        <masterLabel>PayPal Recurring Payment</masterLabel>
+        <openType>onClickJavaScript</openType>
+        <protected>false</protected>
+        <url>var aidParm = &quot;&quot;; 
+if (&apos;{!Account.Id}&apos; !== &apos;&apos;) { 
+aidParm = &apos;aid={!Account.Id}&amp;&apos;; 
+} 
+window.location.href=&quot;/apex/pymt__PayPalARBTerminal?&quot;+aidParm+&quot;cid={!Contact.Id}&amp;cancelURL=%2F{!Contact.Id}&quot;;</url>
+    </webLinks>
+    <webLinks>
+        <fullName>Payment_Terminal</fullName>
+        <availability>online</availability>
+        <description>Opens the PaymentConnect virtual terminal for credit card charges</description>
+        <displayType>button</displayType>
+        <linkType>javascript</linkType>
+        <masterLabel>Payment Terminal</masterLabel>
+        <openType>onClickJavaScript</openType>
+        <protected>false</protected>
+        <url>window.location.href=&quot;/apex/pymt__PaymentTerminal?csid={!Contact.Id}&amp;cancelURL=%2F{!Contact.Id}&quot;;</url>
+    </webLinks>
+</CustomObject>

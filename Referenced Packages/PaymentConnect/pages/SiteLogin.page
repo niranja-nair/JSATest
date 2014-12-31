@@ -1,0 +1,21 @@
+<apex:page id="loginPage" showHeader="false" title="{!$Label.site.site_login}" standardStylesheets="false">
+  <apex:composition template="{!$Site.Template}">
+ <apex:define name="body">
+  <div class="pc_page_content_top"></div>
+  <div class="pc_page_content"  id="pc_sitelogin_page">
+    <div class="pc_page_content_inner"> 
+
+      <apex:outputPanel styleclass="pc_sitelogin_panel">
+			<div class="pc_sitelogin_inner">
+			<apex:outputText styleclass="pc_sitelogin_title" value="{!$Label.site.login}"/>
+			      <c:SiteLogin id="siteLogin"/>
+			</div>
+      </apex:outputPanel>
+      <br/>
+
+    
+    </div>
+  </div>
+  </apex:define> 
+  </apex:composition>
+</apex:page>

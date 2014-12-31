@@ -1,0 +1,85 @@
+<apex:page showHeader="false" sidebar="false" controller="portalLoginController">
+    <title>My JSA</title>
+  
+    <c:NeatHeader login="true" />
+
+    <!-- Breadcrumbs - START -->
+    <div class="background-clouds breadcrumbs-container">
+      <div class="container">
+        <ol class="breadcrumb">
+          <li><a href="#">My JSA</a></li>
+        </ol>
+      </div>
+    </div>
+    <!-- Breadcrumbs - END -->
+
+    <section>
+      <div class="container">
+        <div class="row">
+          <div class="col-sm-6">
+            <!--<div class="flex-video widescreen"><iframe src="//www.youtube.com/embed/videoseries?list=PL0CB6AEED1D52E518&amp;hl=en_US" frameborder="0" allowfullscreen=""></iframe></div>-->
+            <div id="this-carousel-id" class="carousel slide"><!-- class of slide for animation -->
+              <div class="carousel-inner">
+                <div class="item active"><!-- class of active since it's the first item -->
+                  <img src="{!$Resource.ChatterPic1}" alt="" />
+                </div>
+                <div class="item">
+                  <img src="{!$Resource.ChatterPic2}" alt="" />
+                </div>
+              </div><!-- /.carousel-inner -->
+              <!--  Next and Previous controls below href values must reference the id for this carousel -->
+              <a class="carousel-control left" href="#this-carousel-id" data-slide="prev">&lsaquo;</a>
+              <a class="carousel-control right" href="#this-carousel-id" data-slide="next">&rsaquo;</a>
+            </div><!-- /.carousel -->
+          </div>
+          <div class="col-sm-6">
+            <div class="thumbnail info-thumbnail background-lead color-white">
+              <div class="caption">
+                <h3><span class="fa fa-user"></span> Login</h3>
+                <apex:form forceSSL="true">
+                  <a href="https://test.salesforce.com/services/auth/sso/00De0000001NOgcEAG/MyJSAdev={!URLENCODE('http://ccdev-myjsa.cs15.force.com/apex/JSAhome')}">
+                    <img src="{!$Resource.FBLogin}" />
+                  </a>
+                  <div class="form-group">
+                    <label for="exampleInputEmail2">Email address</label>
+                    <apex:inputText label="username" value="{!userName}" styleClass="form-control" />
+                  </div>
+                  <div class="form-group">
+                    <label for="exampleInputPassword2">Password</label>
+                    <apex:inputSecret label="password" value="{!pw}" styleClass="form-control" />
+                  </div>
+                  <div class="bootbutton">
+                    <apex:commandButton value="Login" action="{!portalLogin}" styleClass="btn btn-default" />
+                    <br/><br/>
+                    <a href="/secur/forgotpassword.jsp" class="btn btn-primary btn-xs">Forgot Username/Password?</a>
+                  </div>
+                </apex:form>
+              </div>
+            </div>
+            <br/><br/>
+            <div class="thumbnail info-thumbnail background-lead color-text">
+              <div class="special background-lead color-white">
+                <h3>Create a MyJSA Account</h3>
+              </div>
+              <div class="caption bordered background-white text-center">
+                It only takes a few minutes. <a title="Register New User" href="/apex/JSARegistration">Register now</a>
+                <br/><br/>
+                <strong>You'll need a MyJSA Account to:</strong><br/>
+                Apply to a JSA Summer Program<br/>
+                Start or join a JSA Chapter at your school
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <c:NeatFooter />
+
+<script>
+  $(document).ready(function(){
+    $('.carousel').carousel();
+  });
+</script>
+
+</apex:page>

@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fields>
+        <fullName>Convert_To_Person_Account__c</fullName>
+        <defaultValue>false</defaultValue>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <inlineHelpText>PaymentConnect checks this box when auto-creating a Contact and an &apos;Individual Account&apos; that should be converted to a PersonAccount using a batch converter.</inlineHelpText>
+        <label>Convert To Person Account</label>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <type>Checkbox</type>
+    </fields>
+    <webLinks>
+        <fullName>AuthNet_Recurring_Billing</fullName>
+        <availability>online</availability>
+        <description>Opens the AuthNet recurring billing terminal for person account record types.</description>
+        <displayType>button</displayType>
+        <linkType>javascript</linkType>
+        <masterLabel>AuthNet Recurring Payment</masterLabel>
+        <openType>onClickJavaScript</openType>
+        <protected>false</protected>
+        <url>{!REQUIRESCRIPT(&quot;/soap/ajax/17.0/connection.js&quot;)} 
+{!REQUIRESCRIPT(&quot;/soap/ajax/17.0/apex.js&quot;)} 
+// PayPal recurring billing terminal (for PersonAccounts)
+var accountId = &apos;{!Account.Id}&apos;;
+var contactId = &apos;{!Contact.Id}&apos;;
+var cidParm = &quot;&quot;;
+var aidParm = &quot;&quot;;
+if (contactId == &apos;&apos;) {
+    contactId = checkForPersonContactId(accountId);
+}
+if (contactId !== &apos;&apos;) {
+cidParm = &apos;cid=&apos;+contactId+&apos;&amp;&apos;;
+}
+if (accountId !== &apos;&apos;) {
+aidParm = &apos;aid=&apos;+accountId+&apos;&amp;&apos;;
+} 
+
+if (cidParm == &quot;&quot;) {
+   alert(&apos;This button is configured to work with Person Accounts only.  Please navigate to a Contact under this Account and open the terminal from there.&apos;);
+} else {
+window.location.href=&quot;/apex/pymt__AuthNetARBTerminal?&quot;+cidParm+aidParm+&quot;oid=&amp;cancelURL=%2F&quot;+contactId+&quot;&amp;initialAmount=&amp;amount=&amp;period=&amp;frequency=&amp;occurrences=&amp;invNum=&quot;;
+}
+
+function checkForPersonContactId(aid) {
+    if (aid == null || aid == &apos;&apos;) return &apos;&apos;;
+    try {
+        var connection = sforce.connection; 
+        var q = &quot;Select Id, IsPersonAccount, PersonContactId from Account where Id = &apos;&quot;+aid+&quot;&apos; and IsPersonAccount = true&quot;;
+        var queryResult = sforce.connection.query(q); 
+        var records = queryResult.getArray(&apos;records&apos;); 
+        return records[0].get(&quot;PersonContactId&quot;);
+    } catch(err) {
+         // PersonAccounts not supported or invalid account Id
+    }
+    return &apos;&apos;;
+}</url>
+    </webLinks>
+    <webLinks>
+        <fullName>PayPal_Recurring_Billing</fullName>
+        <availability>online</availability>
+        <description>Opens the PayPal recurring billing terminal on Person Accounts</description>
+        <displayType>button</displayType>
+        <linkType>javascript</linkType>
+        <masterLabel>PayPal Recurring Payment</masterLabel>
+        <openType>onClickJavaScript</openType>
+        <protected>false</protected>
+        <url>{!REQUIRESCRIPT(&quot;/soap/ajax/17.0/connection.js&quot;)} 
+{!REQUIRESCRIPT(&quot;/soap/ajax/17.0/apex.js&quot;)} 
+// PayPal recurring billing terminal (for PersonAccounts)
+var accountId = &apos;{!Account.Id}&apos;;
+var contactId = &apos;{!Contact.Id}&apos;;
+var cidParm = &quot;&quot;;
+var aidParm = &quot;&quot;;
+if (contactId == &apos;&apos;) {
+    contactId = checkForPersonContactId(accountId);
+}
+if (contactId !== &apos;&apos;) {
+cidParm = &apos;cid=&apos;+contactId+&apos;&amp;&apos;;
+}
+if (accountId !== &apos;&apos;) {
+aidParm = &apos;aid=&apos;+accountId+&apos;&amp;&apos;;
+} 
+
+if (cidParm == &quot;&quot;) {
+   alert(&apos;This button is configured to work with Person Accounts only.  Please navigate to a Contact under this Account and open the terminal from there.&apos;);
+} else {
+window.location.href=&quot;/apex/pymt__PayPalARBTerminal?&quot;+cidParm+aidParm+&quot;oid=&amp;cancelURL=%2F&quot;+contactId+&quot;&amp;initialAmount=&amp;amount=&amp;period=&amp;frequency=&amp;occurrences=&amp;invNum=&quot;;
+}
+
+function checkForPersonContactId(aid) {
+    if (aid == null || aid == &apos;&apos;) return &apos;&apos;;
+    try {
+        var connection = sforce.connection; 
+        var q = &quot;Select Id, IsPersonAccount, PersonContactId from Account where Id = &apos;&quot;+aid+&quot;&apos; and IsPersonAccount = true&quot;;
+        var queryResult = sforce.connection.query(q); 
+        var records = queryResult.getArray(&apos;records&apos;); 
+        return records[0].get(&quot;PersonContactId&quot;);
+    } catch(err) {
+         // PersonAccounts not supported or invalid account Id
+    }
+    return &apos;&apos;;
+}</url>
+    </webLinks>
+    <webLinks>
+        <fullName>Payment_Terminal</fullName>
+        <availability>online</availability>
+        <description>Opens the PaymentConnect virtual terminal for credit card charges</description>
+        <displayType>button</displayType>
+        <linkType>javascript</linkType>
+        <masterLabel>Payment Terminal</masterLabel>
+        <openType>onClickJavaScript</openType>
+        <protected>false</protected>
+        <url>{!REQUIRESCRIPT(&quot;/soap/ajax/17.0/connection.js&quot;)} 
+{!REQUIRESCRIPT(&quot;/soap/ajax/17.0/apex.js&quot;)} 
+var cid = &apos;&apos;;
+var contactId = &apos;{!Contact.Id}&apos;;
+if (contactId == &apos;&apos;) {
+    contactId = checkForPersonContactId(&apos;{!Account.Id}&apos;);
+}
+if (contactId !== &apos;&apos;) {
+   cid= &apos;&amp;csid=&apos;+contactId;
+}
+window.location.href=&quot;/apex/pymt__PaymentTerminal?aid={!Account.Id}&quot;+cid;
+
+function checkForPersonContactId(aid) {
+    if (aid == null || aid == &apos;&apos;) return &apos;&apos;;
+    try {
+        var connection = sforce.connection; 
+        var q = &quot;Select Id, IsPersonAccount, PersonContactId from Account where Id = &apos;&quot;+aid+&quot;&apos; and IsPersonAccount = true&quot;;
+        var queryResult = sforce.connection.query(q); 
+        var records = queryResult.getArray(&apos;records&apos;); 
+        return records[0].get(&quot;PersonContactId&quot;);
+    } catch(err) {
+         // PersonAccounts not supported or invalid account Id
+    }
+    return &apos;&apos;;
+}</url>
+    </webLinks>
+</CustomObject>

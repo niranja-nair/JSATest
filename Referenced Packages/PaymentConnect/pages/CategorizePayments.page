@@ -1,0 +1,251 @@
+<apex:page controller="pymt.CategorizePaymentsController" sidebar="false" tabStyle="pymt__PaymentX__c">
+<script src="https://www.google.com/jsapi?key=ABQIAAAAC7Ltv_3xEtJuuoY0LLIU0BQLNlfCSZsNWrNrjOuv5jQjg1XmWxTBmlNjfmUYoQnNBdSSobucYtoG8A" type="text/javascript"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.16/jquery-ui.min.js"></script>
+<script src="{!URLFOR($Resource.PaymentConnect, 'includes/tooltip/wz_tooltip.js')}"></script>
+<apex:stylesheet value="https://ajax.googleapis.com/ajax/libs/jqueryui/1.8/themes/smoothness/jquery-ui.css"  />
+<script>
+	   $j = jQuery.noConflict();
+	   $j(document).ready(function() {
+	    	$j("#modalDialog").dialog({ autoOpen: false, modal: true, position: 'center', width: '800px'  });
+			$j("#{!SUBSTITUTE($Component.mainform.mainPageBlock.filtersPBSection.filtersPBSI.fromDate,':','\\\\:')}").datepicker();
+			$j("#{!SUBSTITUTE($Component.mainform.mainPageBlock.filtersPBSection.filtersPBSI.toDate,':','\\\\:')}").datepicker();
+	   });
+	    
+	   function showDialog(name){
+	      $j("#modalDialog").dialog("open");
+	      $j('#modalDialog').dialog("option" , "title" , name);
+	      $j('#modalDialog').dialog('option', 'position', 'center');
+	      return false;
+	   }
+	   
+	   
+	   
+</script>
+<style>
+.tooltipdiv {
+	font-size:10px;
+}
+.tooltipdiv table {
+	font-size:1.14em;
+	width:200px;
+	border-collapse:collapse;
+}
+.tooltipdiv td {
+	vertical-align:top;	
+}
+.tooltipdiv  .currencyColumn {
+	text-align:right;
+	}
+
+.transaction_table {
+	border-collapse:collapse;
+	width:100%;
+	border:1px solid;
+	border-color:#787878 !important;
+}
+
+.transaction_table td {
+	padding:4px;
+	border:1px solid;
+	border-color:#787878 !important;
+}
+
+.oddRowTop {
+	background:#CAE1FF;
+}
+.oddRowBottom {
+	background:white;
+}
+.evenRowTop {
+	background:#CAE1FF;
+}
+.evenRowBottom {
+	background:white;
+}
+</style>
+<apex:sectionHeader title="Linvio PaymentConnect" subtitle="Categorize Payments" help="{!$Page.pymt__Help}"/>
+<apex:form id="mainform">
+<apex:pageMessages id="messages"/>
+<apex:pageBlock mode="maindetail" id="mainPageBlock">
+<apex:pageBlockSection title="Filters" collapsible="true" id="filtersPBSection" columns="1">
+<apex:pageBlockSectionItem id="filtersPBSI">
+<apex:outputPanel id="filterControlPanel"> 
+Keyword&nbsp;<apex:inputText value="{!keywordStr}" />&nbsp;with&nbsp;
+<apex:selectList value="{!processorFilter}" size="1" id="processorFilterOptions" >
+	<apex:selectOptions value="{!processorFilterOptions}"/>
+</apex:selectList>&nbsp;
+From&nbsp;<apex:inputText value="{!fromDateStr}"  id="fromDate"/>&nbsp;to&nbsp;<apex:inputText value="{!toDateStr}" id="toDate"/> <apex:commandButton value="Refresh" action="{!refreshQueryResults}" rerender="messages, transactionTable"/>
+
+
+</apex:outputPanel>
+</apex:pageBlockSectionItem>
+</apex:pageBlockSection>
+<apex:pageBlockSection title="Payments" collapsible="false" columns="1">
+<apex:outputPanel >
+<apex:commandLink action="{!previous}" value="Previous Page"/>&nbsp;|&nbsp;
+<apex:commandLink action="{!next}" value="Next Page"/><br/><br/>
+<apex:outputPanel id="transactionTable">
+<div id="transaction_table_div">
+<table class="transaction_table">
+<apex:repeat value="{!pageRecords}" var="pgRec">
+<tr class="{!IF(pgRec.oddRow,'oddRowTop','evenRowTop')}">
+    <td style="width:60px;"><apex:outputField value="{!pgRec.payment.pymt__Date__c}"/>
+    </td>
+    <td style="width:10%px;">
+        <apex:outputText value="{!pgRec.payment.pymt__Transaction_Type__c}"/>:<apex:outputText value="{!pgRec.payment.pymt__Payment_Type__c}"/>
+    </td>
+    <td style="width:20%;">
+        <apex:outputField value="{!pgRec.payment.pymt__Contact__c}"/>
+    </td>
+    <td style="width:40%;">
+        <apex:outputLink value="/{!pgRec.payment.Id}"><apex:outputField value="{!pgRec.payment.Name}"/></apex:outputLink>
+    </td>
+    <td style="width:20%;">
+        <apex:outputField value="{!pgRec.payment.pymt__Memo__c}"/>
+    </td>
+    <td style="width:10%;text-align:right;">
+        <apex:outputField value="{!pgRec.payment.pymt__Amount__c}"/>&nbsp;
+        <apex:outputText value="{!pgRec.payment.pymt__Currency_ISO_Code__c}"/>
+    </td>
+</tr>
+<tr class="{!IF(pgRec.oddRow,'oddRowBottom','evenRowBottom')}">
+    <td>&nbsp;
+    </td>
+    <td style="padding-bottom:5px;">
+        <apex:outputText value="{!pgRec.payment.pymt__Status__c}"/>
+    </td>
+    <td >
+        <apex:outputField value="{!pgRec.payment.pymt__Account__c}"/>
+    </td>
+
+    <td>
+        Tax: <apex:outputText value="{0, number, 0.00}"><apex:param value="{!pgRec.payment.pymt__Tax__c}"/></apex:outputText>&nbsp;
+        Shipping: <apex:outputText value="{0, number, 0.00}"><apex:param value="{!pgRec.payment.pymt__Shipping__c}"/></apex:outputText>&nbsp;
+        Discount: <apex:outputText value="{0, number, 0.00}"><apex:param value="{!pgRec.payment.pymt__Discount__c}"/></apex:outputText>&nbsp;
+    </td>
+    <td>
+    <apex:commandLink action="{!editSplits}" oncomplete="showDialog('Category Split Details');" rerender="modalDialogPanel" 
+    	onmouseover="Tip('{!pgRec.tooltip}', FOLLOWMOUSE, false, SHADOW, true, OFFSETX, 10 , OFFSETY, 10, WIDTH, 200, BGCOLOR, '#FAFAD2' , BORDERCOLOR, '#607B8B');" onmouseout="UnTip();">
+    	<apex:image url="{!URLFOR($Resource.pymt__PaymentConnect, 'images/note.png')}"  style="margin-right:2px;vertical-align:text-top;" rendered="{!NOT(pgRec.needsSplitAdjustment)}" />
+    	<apex:image url="{!URLFOR($Resource.pymt__PaymentConnect, 'images/exclamation.png')}"  style="margin-right:2px;vertical-align:text-top;" rendered="{!pgRec.needsSplitAdjustment}"/>
+    	<apex:param name="selectedRecord" value="{!pgRec.payment.Id}" assignTo="{!selectedPaymentId}" />
+    </apex:commandLink>
+    <apex:outputText value="--Split--" rendered="{!pgRec.hasMultipleSplits}"/> 
+    <apex:outputText value="{!pgRec.singleCategory.Name}" rendered="{!pgRec.hasCategory}"/>
+    </td>
+    <td>&nbsp;</td>
+</tr>
+</apex:repeat>
+</table>
+</div>
+
+</apex:outputPanel>
+
+</apex:outputPanel> 
+</apex:pageBlockSection>
+
+
+
+</apex:pageBlock>
+</apex:form>
+
+<div id="modalDialog">
+<apex:form >
+<apex:outputPanel id="modalDialogPanel">
+<apex:pageMessages id="dialogMessages"/>
+<apex:outputPanel layout="none" id="dialogControls">
+<apex:outputPanel >
+<script>
+var showDialogFlag = {!showDialog};
+</script>
+</apex:outputPanel>
+</apex:outputPanel>
+
+<apex:pageBlock mode="maindetail" id="dialogDetailBlock">
+<apex:pageBlockButtons >
+	<apex:commandButton value="Cancel" action="{!cancelEdit}" rerender="dialogMessages" oncomplete="$j('#modalDialog').dialog('close');"/>
+	<apex:commandButton value="Save" action="{!saveChanges}" rerender="dialogMessages, dialogControls, transactionTable" oncomplete="if (showDialogFlag===false) $j('#modalDialog').dialog('close');"/>
+	
+</apex:pageBlockButtons>
+
+<apex:pageBlockSection >
+	<apex:pageBlockSectionItem >
+		<apex:outputText value="Name"/>
+		<apex:outputPanel layout="inline">
+			<apex:outputLink value="/{!selectedPageRecord.payment.Id}"><apex:outputField value="{!selectedPageRecord.payment.Name}"/></apex:outputLink>
+		</apex:outputPanel>
+	</apex:pageBlockSectionItem>
+	
+	<apex:outputField value="{!selectedPageRecord.payment.pymt__Contact__c}"/>
+	<apex:outputField value="{!selectedPageRecord.payment.pymt__Account__c}"/>
+	<apex:outputField value="{!selectedPageRecord.payment.pymt__Opportunity__c}"/>
+	<apex:pageBlockSectionItem >
+		<apex:outputText value="Payment Profile"/>
+		<apex:outputField value="{!selectedPageRecord.payment.pymt__Payment_Profile__c}"/>
+	</apex:pageBlockSectionItem>
+	<apex:pageBlockSectionItem >
+		<apex:outputText value="Processor Connection"/>
+		<apex:outputField value="{!selectedPageRecord.payment.pymt__Processor_Connection__c}"/>
+	</apex:pageBlockSectionItem>
+	<apex:pageBlockSectionItem >
+		<apex:outputText value="Amount"/>
+		<apex:outputField value="{!selectedPageRecord.payment.pymt__Amount__c}"/>
+	</apex:pageBlockSectionItem>
+	<apex:pageBlockSectionItem >
+		<apex:outputText value="Tax"/>
+		<apex:outputField value="{!selectedPageRecord.payment.pymt__Tax__c}"/>
+	</apex:pageBlockSectionItem>
+	<apex:pageBlockSectionItem >
+		<apex:outputText value="Shipping"/>
+		<apex:outputField value="{!selectedPageRecord.payment.pymt__Shipping__c}"/>
+	</apex:pageBlockSectionItem>
+	<apex:pageBlockSectionItem >
+		<apex:outputText value="Discount"/>
+		<apex:outputField value="{!selectedPageRecord.payment.pymt__Discount__c}"/>
+	</apex:pageBlockSectionItem>
+	<apex:pageBlockSectionItem >
+		<apex:outputText value="Transaction Fee"/>
+		<apex:outputField value="{!selectedPageRecord.payment.pymt__Transaction_Fee__c}"/>
+	</apex:pageBlockSectionItem>
+
+</apex:pageBlockSection>
+
+<apex:pageBlockTable value="{!currentSplitList}" var="split" id="transactionsTable">
+	<apex:column headerValue="Category">
+		<apex:selectList value="{!split.pymt__Category__c}" size="1">
+			<apex:selectOptions value="{!categoryOptions}"/>
+			<apex:actionSupport event="onchange" action="{!addNewCategoryLine}"  rerender="transactionsTable"  />
+		</apex:selectList>
+	</apex:column>
+	<apex:column headerValue="Memo">
+		<apex:inputText value="{!split.pymt__Memo__c}" style="width:350px;margin-right:5px;margin-left:5px;"/>
+	</apex:column>
+	<apex:column headerValue="Amount">
+		<apex:inputField value="{!split.pymt__Amount__c}"/>
+	</apex:column>
+	
+</apex:pageBlockTable>
+
+<apex:commandLink value="Clear Splits" action="{!clearSplits}" rerender="dialogMessages, dialogDetailBlock" status="splitActionStatus"/>
+&nbsp;|&nbsp;<apex:commandLink value="Auto-Split" action="{!autoSplit}" rerender="dialogMessages, dialogDetailBlock" status="splitActionStatus"/>
+&nbsp;<apex:actionStatus id="splitActionStatus">
+<apex:facet name="start">
+    <apex:outputPanel >&nbsp;
+              <apex:image value="{!URLFOR($Resource.pymt__PaymentConnect, 'images/icon-spinner.gif')}"
+                            style="vertical-align:middle;" alt="busy..." />
+              &nbsp;Updating...</apex:outputPanel>
+                </apex:facet>
+                <apex:facet name="stop">
+                    <apex:image value="{!URLFOR('/s.gif')}" alt="" style="height:15px;" />
+                </apex:facet>
+</apex:actionStatus>
+<br/>
+</apex:pageBlock>
+</apex:outputPanel>
+</apex:form>
+</div>
+
+
+
+</apex:page>

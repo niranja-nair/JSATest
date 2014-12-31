@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
+    <customSettingsType>Hierarchy</customSettingsType>
+    <customSettingsVisibility>Protected</customSettingsVisibility>
+    <description>PaymentConnect application settings.</description>
+    <enableEnhancedLookup>false</enableEnhancedLookup>
+    <enableFeeds>false</enableFeeds>
+    <fields>
+        <fullName>Categorize_Payments_Job_Id__c</fullName>
+        <deprecated>false</deprecated>
+        <description>Job Id for the scheduled BatchCategorizePayments script. Used to find the job so it can be canceled later through the visualforce admin page.</description>
+        <externalId>false</externalId>
+        <inlineHelpText>Job Id for the scheduled BatchCategorizePayments script. Used to find the job so it can be canceled later through the visualforce admin page.</inlineHelpText>
+        <label>Categorize Payments Job Id</label>
+        <length>18</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Check_Subscriptions_Job_Id__c</fullName>
+        <deprecated>false</deprecated>
+        <description>Job Id for the scheduled CheckNativeSubscriptions script. Used to find the job so it can be canceled later through the visualforce admin page.</description>
+        <externalId>false</externalId>
+        <inlineHelpText>Job Id for the scheduled CheckNativeSubscriptions script. Used to find the job so it can be canceled later through the visualforce admin page.</inlineHelpText>
+        <label>Check Subscriptions Job Id</label>
+        <length>18</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Default_Portal_Account_Id__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <inlineHelpText>Default account Id to use when registering portal users with the SiteRegister page included with PaymentConnect.  You need to add the account owner into the role hierarchy for registrations to work. See Customer Portal Setup help for more information</inlineHelpText>
+        <label>Default Portal Account Id</label>
+        <length>18</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Enable_Sharing_Restrictions__c</fullName>
+        <defaultValue>false</defaultValue>
+        <deprecated>false</deprecated>
+        <description>Enables/disables restrictions on which related objects can be loaded into the payment terminal based on Salesforce sharing settings.</description>
+        <externalId>false</externalId>
+        <inlineHelpText>Enables/disables restrictions on which related objects can be loaded into the payment terminal based on Salesforce sharing settings.</inlineHelpText>
+        <label>Enable Sharing Restrictions</label>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>Enabled_Processors__c</fullName>
+        <deprecated>false</deprecated>
+        <description>Payment processors enabled in this instance of PaymentConnect</description>
+        <externalId>false</externalId>
+        <inlineHelpText>Payment processors enabled in this instance of PaymentConnect</inlineHelpText>
+        <label>Enabled Processors</label>
+        <length>255</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Process_Scheduled_Payments_Job_Id__c</fullName>
+        <deprecated>false</deprecated>
+        <description>Job Id for the scheduled BatchProcessScheduledPayments script. Used to find the job so it can be canceled later through the visualforce admin page.</description>
+        <externalId>false</externalId>
+        <inlineHelpText>Job Id for the scheduled BatchProcessScheduledPayments script. Used to find the job so it can be canceled later through the visualforce admin page.</inlineHelpText>
+        <label>Process Scheduled Payments Job Id</label>
+        <length>18</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Process_Scheduled_Payments_LastNDays__c</fullName>
+        <deprecated>false</deprecated>
+        <description>Size of window (in days) that this script should be using to search for &quot;Scheduled&quot; Payments when processing  scheduled payments.</description>
+        <externalId>false</externalId>
+        <inlineHelpText>Size of window (in days) that this script should be using to search for &quot;Scheduled&quot; Payments when processing  scheduled payments.</inlineHelpText>
+        <label>Process Scheduled Payments LastNDays</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Verify_Access_Keys__c</fullName>
+        <defaultValue>false</defaultValue>
+        <deprecated>false</deprecated>
+        <description>If checked, instructs public Sites checkout pages to verify the payment or profile record access key before displaying payment details.</description>
+        <externalId>false</externalId>
+        <inlineHelpText>If checked, instructs public Sites checkout pages to verify the payment or profile record access key before displaying payment details.</inlineHelpText>
+        <label>Verify Access Keys</label>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <label>Application Settings</label>
+</CustomObject>

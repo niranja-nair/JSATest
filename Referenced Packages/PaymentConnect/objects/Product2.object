@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fields>
+        <fullName>Category__c</fullName>
+        <deleteConstraint>SetNull</deleteConstraint>
+        <deprecated>false</deprecated>
+        <description>PaymentConnect Category this product is associated with.</description>
+        <externalId>false</externalId>
+        <inlineHelpText>PaymentConnect Category this product is associated with.</inlineHelpText>
+        <label>Category</label>
+        <referenceTo>Category__c</referenceTo>
+        <relationshipLabel>Products</relationshipLabel>
+        <relationshipName>Products</relationshipName>
+        <required>false</required>
+        <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>On_Payment_Completed__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <inlineHelpText>PaymentConnect Action to perform after this product has been paid for.</inlineHelpText>
+        <label>On Payment Completed</label>
+        <length>255</length>
+        <required>false</required>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Tangible__c</fullName>
+        <defaultValue>false</defaultValue>
+        <deprecated>false</deprecated>
+        <description>Check if the product is a physical product (ie requires shipping).</description>
+        <externalId>false</externalId>
+        <inlineHelpText>Check if the product is a physical product (ie requires shipping).</inlineHelpText>
+        <label>Tangible</label>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>Taxable__c</fullName>
+        <defaultValue>false</defaultValue>
+        <deprecated>false</deprecated>
+        <description>Check if the item is taxable.</description>
+        <externalId>false</externalId>
+        <inlineHelpText>Check if the item is taxable.</inlineHelpText>
+        <label>Taxable</label>
+        <type>Checkbox</type>
+    </fields>
+</CustomObject>

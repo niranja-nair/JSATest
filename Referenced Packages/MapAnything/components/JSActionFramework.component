@@ -1,0 +1,145 @@
+<apex:component >
+<script type='text/javascript'>
+
+	var MAActionFramework = {
+		availableButtons: [
+			{ Label: 'Section', Type: 'Section' },
+			{ Label: 'Blank Space', Type: 'Blank' }, 
+			{ 
+				Label: 'Add to Trip', Type: 'StandardButton', Requirements: [], Action: 'Run Javascript', ActionValue: function (options) {
+					var record = options.record;
+			    	var marker = options.marker;
+			    	
+			    	AddMarkerToTrip(options.marker);
+			        ShowDirectionsTab();
+			        HideBubbles();
+           		}
+           	}, 
+           	{ 
+           		Label: 'Set Proximity Center', Type: 'StandardButton', Requirements: [], Action: 'Run Javascript', ActionValue: function (options) {
+           			var record = options.record;
+			    	var marker = options.marker;
+			    	
+			    	addProximityLayer({ proximityType: 'Circle', latitude: marker.Lat, longitude: marker.Long, address: record.markerAddress });
+			        HideBubbles();
+           		} 
+           	},
+           	{ 
+           		Label: 'Remove Marker', Type: 'StandardButton', Requirements: [], Action: 'Run Javascript', ActionValue: function (options) {
+           			var record = options.record;
+			    	var marker = options.marker;
+           			
+           			RemoveMarker(marker);
+                	HideBubbles();
+           		} 
+           	},
+           	{ 
+           		Label: 'Set Verified Location', Type: 'StandardButton', Requirements: ['VerifiedLocationSupport'], Action: 'Run Javascript', ActionValue: function (options) {
+           			var record = options.record;
+			    	var marker = options.marker;
+			         	
+			        HideBubbles();
+			         	
+			       	//store the current marker color so we can set it back later
+			       	var currentMarkerColor = (marker.brush && marker.brush.color) ? marker.brush.color : '#000000';
+			         	
+			        //make the marker draggable and listen for drag events
+					marker.set({draggable: true, brush: 'yellow'});
+					marker.addListener('dragend', function (evt) {
+					var mapDragType = evt.dataTransfer.getData("application/map-drag-type"); 
+					var marker = evt.dataTransfer.getData("application/map-drag-object");
+					var offset = evt.dataTransfer.getData("application/map-drag-object-offset");
+					
+					//reset the marker to non-draggable
+					marker.set({
+						draggable: false,
+						brush: currentMarkerColor
+					});
+					
+					//get coordinates where the marker was dropped
+					var dropCoordinate = map.pixelToGeo(evt.displayX - offset.x + marker.anchor.x, evt.displayY - offset.y + marker.anchor.y);
+					
+					//send request to update the verified lat/long for this record
+					var requestData = {
+						action			: 'set_verified_location',
+						baseObjectId	: marker.record.plottedQuery.data('BaseObjectId'),
+						recordId		: marker.record.record.Id,
+						latitude		: dropCoordinate.latitude,
+						longitude		: dropCoordinate.longitude
+					};
+					$.getJSON("/apex/MATooltipAJAXResources", requestData, function(response)
+				    { 
+				        if(response.success)
+				        {
+				        	//update the verified latitude and longitude on this marker
+				        	marker.Lat = marker.record.markerLatitude = marker.record.verifiedLatitude = dropCoordinate.latitude;
+				        	marker.Long = marker.record.markerLongitude = marker.record.verifiedLongitude = dropCoordinate.longitude;  
+				        }
+				        else
+				        {
+				        	//show error and move marker back to where it was
+				        	growlError($('#growl-wrapper'), 'Unable to set verified location', 3000);
+				        	marker.set('coordinate', new nokia.maps.geo.Coordinate(marker.Lat, marker.Long));
+				        }
+				    })
+				    .error(function() { 
+				    	growlError($('#growl-wrapper'), 'Unable to set verified location', 3000);
+				    	marker.set('coordinate', new nokia.maps.geo.Coordinate(marker.Lat, marker.Long)); 
+					    });
+					});
+           		} 
+           	},
+           	{ 
+           		Label: 'Add to Campaign', Type: 'StandardButton', Requirements: ['ContactOrLead'], Action: 'Run Javascript', ActionValue: function (options) {
+           			var record = options.record;
+			    	var marker = options.marker;
+			    	
+			    	AddVisibleToCampaign(record.record.Id);
+			        HideBubbles();
+           		} 
+           	},
+           	{ 
+           		Label: 'Change Owner', Type: 'StandardButton', Requirements: [], Action: 'Run Javascript', ActionValue: function (options) {
+           			var record = options.record;
+			    	var marker = options.marker;
+			    	
+			    	ChangeOwner([record.record.Id]);
+			        HideBubbles();
+           		} 
+           	},
+           	{ 
+           		Label: 'Send Email', Type: 'StandardButton', Requirements: ['ActivitySupport'], Action: 'Run Javascript', ActionValue: function (options) {           		
+           			var record = options.record;
+			    	var marker = options.marker;
+			    	
+           			var EmailURL = "/_ui/core/email/author/EmailAuthor?p2_lkid=" + record.record.Id + "&rtype=" + record.record.Id.substring(0,3) + "&retURL=%2F" + record.record.Id;
+		            if(record.record.Id.substring(0,3) === "001")
+		            {
+		                EmailURL = "/_ui/core/email/author/EmailAuthor?p3_lkid=" + record.record.Id + "&retURL=%2F" + record.record.Id;
+		            }
+		            window.open(EmailURL);
+           		}
+           	},
+           	{ 
+           		Label: 'Log a Call', Type: 'StandardButton', Requirements: ['ActivitySupport'], Action: 'Run Javascript', ActionValue: function (options) {
+           			var record = options.record;
+			    	var marker = options.marker;
+           		
+           			var redirectURL = '/apex/MapActions?action=log_call&id=' + record.record.Id;
+           			window.open(redirectURL);
+           		}
+           	},
+           	{ 
+           		Label: 'New Task', Type: 'StandardButton', Requirements: ['ActivitySupport'], Action: 'Run Javascript', ActionValue: function (options) {
+           			var record = options.record;
+			    	var marker = options.marker;
+			    	
+			    	var redirectURL = '/apex/MapActions?action=new_task&id=' + record.record.Id;
+           			window.open(redirectURL);
+           		}
+           	}
+        ]
+	};
+
+</script>
+</apex:component>

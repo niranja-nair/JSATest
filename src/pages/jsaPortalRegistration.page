@@ -1,0 +1,662 @@
+<apex:page sidebar="false" showheader="false" controller="portalRegistrationController" >
+    
+    <head>
+        <title>MyJSA</title>
+
+        <apex:stylesheet value="{!URLFOR($Resource.jquery_ui_css)}" /> 
+        <apex:stylesheet value="{!URLFOR($Resource.myJsaPortalCSs,'Refresh.css')}"></apex:stylesheet>
+        <apex:stylesheet value="{!URLFOR($Resource.myJsaPortalCSs,'bt.css')}"></apex:stylesheet>
+        <apex:stylesheet value="{!URLFOR($Resource.myJsaPortalCSs,'wpStyle.css')}"></apex:stylesheet>
+        <apex:stylesheet value="{!URLFOR($Resource.myJsaPortalCSs,'wpDarkblue.css')}"></apex:stylesheet>
+        <apex:stylesheet value="{!URLFOR($Resource.myJsaPortalCSs,'wpCustom.css')}"></apex:stylesheet>
+        <link rel="stylesheet" type="text/css" href="{!URLFOR($Resource.JSAPortal, 'style.css')}" />
+        
+        <style type="text/css">
+            .errorMessage 
+            {
+                color:#003e7e;
+                font-weight:bold;
+                "src/pages/PageBrowser.page-meta.xml"   padding:8px 10px;
+                background-color:#f79779;
+                border:solid 1px #ae0c1b;
+                display:block;
+                margin-bottom:10px;
+            }
+            
+            ul
+            {
+                list-style:none;
+            }
+        </style>
+        
+    <script>
+var _gaq = _gaq || [];
+_gaq.push(['_setAccount', 'UA-1376727-1']);
+_gaq.push(['_setDomainName', 'force.com']);
+_gaq.push(['_setAllowLinker', true]);
+_gaq.push(['_trackPageview']);
+</script>
+    </head>
+    
+    <body>
+    
+        
+        
+        <style type="text/css">
+            .errorMessage 
+            {
+                color:#003e7e;
+                font-weight:bold;
+                "src/pages/PageBrowser.page-meta.xml"   padding:8px 10px;
+                background-color:#f79779;
+                border:solid 1px #ae0c1b;
+                display:block;
+                margin-bottom:10px;
+            }
+            
+            ul
+            {
+                list-style:none;
+            }
+        </style>
+        
+        <div id="page">
+            <div id="logo-top"></div>
+            <div id="header">
+                <div id="logo">
+                    <a href="/portalLogin" title="Be the people.">
+                        <img src="{!URLFOR($Resource.myJsaPortalImages,'jsa_header.jpg')}" alt="MyJSA &#8211; Junior State of America" />
+                    </a>
+        
+                        <h1 class="site-title"><a href="http://jsa.org">JSA &#8211; Junior State of America</a></h1>
+                        <span class="site-description">Be the people.</span>
+                </div>
+        
+                <div style="clear:left"></div>
+        
+            </div>
+        
+            <div style="clear:left;"></div>
+        
+            <div id="columns">
+                <div class="breadcrumb"></div>
+            
+                <style type="text/css">
+                    span.dateFormat{
+                        display:none;
+                    }
+                    #sidebar 
+                    {
+                        display:none;
+                    }
+                    
+                    #main 
+                    {
+                        width:850px;
+                    }
+                    
+                    form 
+                    {
+                        background:none;
+                        border:none;
+                        margin:0;
+                        padding:0;
+                    }
+                    
+                    .well
+                    {
+                        min-height: 20px;
+                        padding: 19px;
+                        margin-bottom: 20px;
+                        background-color: #f5f5f5;
+                        border: 1px solid #e3e3e3;
+                        -webkit-border-radius: 4px;
+                        -moz-border-radius: 4px;
+                        border-radius: 4px;
+                        -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.05);
+                        -moz-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.05);
+                        box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.05);
+                    }
+                    
+                    .alert
+                    {
+                        min-height: 20px;
+                        padding: 19px;
+                        margin-bottom: 20px;
+                        background-color: #fba4a4;
+                        border: 1px solid #e3e3e3;
+                        -webkit-border-radius: 4px;
+                        -moz-border-radius: 4px;
+                        border-radius: 4px;
+                        -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.05);
+                        -moz-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.05);
+                        box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.05);
+                    }
+                    
+                    .regheader
+                    {
+                        text-align: center;
+                        font-size: 18px;
+                        width: 50%;
+                        margin: auto;
+                        margin-bottom: 20px;
+                        margin-top: 20px;
+                    }
+                    
+                    .alertheader
+                    {
+                        text-align: left;
+                        font-size: 12px;
+                        width: 75%;
+                        margin: auto;
+                        margin-bottom: 20px;
+                        margin-top: 20px;
+                    }
+                    
+                    .redButton
+                    {
+                        margin-top: 15px;
+                        width: 100px;
+                        height: 32px;
+                        background-color: #FF0000
+                    }
+                    .zipCodeDataBox{
+                        visibility: hidden;
+                        display: none;
+                        height: 0px;
+                        width: 0px;
+                    }
+                    .alreadyExists{
+                        border:2px solid red;
+                    }
+                </style>
+                <apex:pageMessages id="messages"/>
+                <div class="zipCodeDataBox"></div>
+                <apex:outputPanel rendered="{!AND(NOT(isDisabled),NOT(secondPhase))}" id="main">
+                
+                    <div>
+                        <div class="well regheader">
+                            <b>Sign Up</b> - step 1 of 2        
+                        </div>
+                        
+                        <div class="alert alertheader">
+                            <em>We recommend using Chrome/Firefox/Safari rather than Internet Explorer when registering with MyJSA.</em>
+                            <br>
+                            </br>
+                            <em>We are currently experiencing a bug with IE that will prevent some users from entering high school name on Step 2. We're working to resolve this issue and apologize for the inconvenience. If you have any questions, please call us at 1-800-317-9338.</em>
+                            </div>
+                        
+                        <apex:form id="stage1">
+                            <apex:pageBlock >
+                                <apex:pageBlockSection >
+                                    <apex:pageBlockSectionItem >
+                                        <apex:outputLabel >First Name</apex:outputLabel>
+                                        <apex:inputField value="{!c.firstName}" required="true"/>
+                                    </apex:pageBlockSectionItem>
+                                    
+                                    <apex:pageBlockSectionItem >
+                                        <apex:outputLabel >Last Name</apex:outputLabel>
+                                        <apex:inputField value="{!c.lastName}" required="true" />
+                                    </apex:pageBlockSectionItem>
+                                                
+                                    <apex:pageBlockSectionItem >
+                                        <apex:outputLabel >Email </apex:outputLabel>
+                                        <apex:inputField styleClass="emaiId" value="{!c.email}" required="true" />
+                                    </apex:pageBlockSectionItem>
+                                    
+                                    <apex:pageBlockSectionItem >
+                                        <apex:outputLabel >Phone Number</apex:outputLabel>
+                                        <apex:inputField value="{!c.phone}" required="true" />
+                                    </apex:pageBlockSectionItem>
+                                    
+                                    <apex:pageBlockSectionItem >
+                                        <apex:outputLabel >Mailing Street</apex:outputLabel>
+                                        <apex:inputField value="{!a.BillingStreet}" style="width:119px; height:15px; background-color:#e4e4e4;" />
+                                    </apex:pageBlockSectionItem>
+                                    
+                                    <apex:pageBlockSectionItem >
+                                        <apex:outputLabel >Gender</apex:outputLabel>
+                                        <apex:inputField value="{!c.Gender__c}"  required="true"/>
+                                    </apex:pageBlockSectionItem>
+                                    
+                                    <apex:pageBlockSectionItem >
+                                        <apex:outputLabel >Mailing City</apex:outputLabel>
+                                        <apex:inputField value="{!a.billingCity}" />
+                                    </apex:pageBlockSectionItem>
+                                    
+                                    <apex:pageBlockSectionItem >
+                                        <apex:outputLabel >Mailing Country</apex:outputLabel>
+                                        <apex:inputField value="{!a.Countries__c}" />                                     
+                                    </apex:pageBlockSectionItem>
+                                    
+                                    <apex:pageBlockSectionItem >
+                                        <apex:outputLabel >Mailing State</apex:outputLabel>
+                                        <apex:inputField value="{!a.US_States__c}" />                                        
+                                    </apex:pageBlockSectionItem>
+                                    
+                                    <apex:pageBlockSectionItem >
+                                        <apex:outputLabel >Mailing ZipCode</apex:outputLabel>
+                                        <apex:inputField value="{!a.billingPostalCode}" styleClass="zipValue" id="zipCode"/>
+                                    </apex:pageBlockSectionItem>
+                                    
+
+                                    
+                                    <apex:commandLink styleClass="" action="{!goToSecondPhase}" >
+                                        <button type="button">Next</button>
+                                    </apex:commandLink>
+                                </apex:pageBlockSection>
+                            </apex:pageBlock>
+                        </apex:form>
+                    </div>
+                </apex:outputPanel>
+                
+                <apex:outputPanel rendered="{!AND(NOT(isDisabled),secondPhase)}" id="panel2">
+                    <div class="well regheader">
+                        <b>Sign Up</b> - step 2 of 2        
+                    </div>
+                    
+                    <div class="alert alertheader">
+                            <em>If your high school does not appear in the dropdown list when you type in your high school's name, please type "Not Listed" and select the "Not Listed" option that appears in the dropdown list.</em>
+                            </div>
+                            
+                    <apex:form >
+                        <apex:pageBlock rendered="{!secondPhase}" id="stage2">
+                            
+                            <apex:pageBlockSection >
+                                
+                                <apex:pageBlockSectionItem >
+                                    <apex:outputLabel styleClass="category" >1. Are you a student or teacher?</apex:outputLabel>
+                                   <apex:actionRegion >
+                                        <apex:inputField value="{!newContact.Category__c}" styleClass="category" id="category" >
+                                        
+                                            <apex:actionSupport event="onchange" action="{!categoryChange}" reRender="stage2" />
+                                        </apex:inputField>
+                                   </apex:actionRegion>
+                                </apex:pageBlockSectionItem>
+                                
+                                <apex:pageBlockSectionItem >
+                                    <apex:outputLabel >2. JSA Role<span class="vfHelpText"><apex:outputLink value="javascript:return false;"><img src="{!URLFOR($Resource.help2)}" /><span>{!$ObjectType.Contact.fields.JSA_Role__c.inlineHelpText}</span></apex:outputlink></span></apex:outputLabel>
+                                    <apex:inputField value="{!newContact.JSA_Role__c}" styleClass="category"  required="true"/>
+                                </apex:pageBlockSectionItem>
+
+                                <apex:pageBlockSectionItem >
+                                        <apex:outputLabel styleClass="studentField">3. Location of High School<span class="vfHelpText"><apex:outputLink value="javascript:return false;"><img src="{!URLFOR($Resource.help2)}" /><span>{!$ObjectType.Contact.fields.High_School_ZIP__c.inlineHelpText}</span></apex:outputlink></span></apex:outputLabel>
+                                        <!-- This is needed for non InputField Values within Apex -->
+                                        <apex:outputPanel layout="block" styleClass="requiredInput">
+                                        <apex:outputPanel layout="block" styleClass="requiredBlock"/>
+                                        <!-- This is needed for non InputField Values within Apex -->
+                                        <apex:selectList value="{!highSchoolState}" size="1" styleClass="highSchoolState studentField" required="true">
+                                            <apex:selectOption itemValue=" Select a State "/>
+                                            <apex:selectOption itemValue="International" itemLabel="XX - International " />
+                                            <apex:selectOption itemValue="Alaska" itemLabel="AK - Alaska " />
+                                            <apex:selectOption itemValue="Alabama" itemLabel="AL - Alabama " />
+                                            <apex:selectOption itemValue="Arkansas" itemLabel="AR - Arkansas " />
+                                            <apex:selectOption itemValue="American Samoa" itemLabel="AS - American Samoa " />
+                                            <apex:selectOption itemValue="Arizona" itemLabel="AZ - Arizona " />
+                                            <apex:selectOption itemValue="California" itemLabel="CA - California " />
+                                            <apex:selectOption itemValue="Colorado" itemLabel="CO - Colorado " />
+                                            <apex:selectOption itemValue="Connecticut" itemLabel="CT - Connecticut " />
+                                            <apex:selectOption itemValue="District of Columbia" itemLabel="DC - District of Columbia " />
+                                            <apex:selectOption itemValue="Delaware" itemLabel="DE - Delaware " />
+                                            <apex:selectOption itemValue="Florida" itemLabel="FL - Florida " />
+                                            <apex:selectOption itemValue="Federated States of Micronesia" itemLabel="FM - Federated States of Micronesia " />
+                                            <apex:selectOption itemValue="Georgia" itemLabel="GA - Georgia " />
+                                            <apex:selectOption itemValue="Guam" itemLabel="GU - Guam " />
+                                            <apex:selectOption itemValue="Hawaii" itemLabel="HI - Hawaii " />
+                                            <apex:selectOption itemValue="Iowa" itemLabel="IA - Iowa " />
+                                            <apex:selectOption itemValue="Idaho" itemLabel="ID - Idaho " />
+                                            <apex:selectOption itemValue="Illinois" itemLabel="IL - Illinois " />
+                                            <apex:selectOption itemValue="Indiana" itemLabel="IN - Indiana " />
+                                            <apex:selectOption itemValue="Kansas" itemLabel="KS - Kansas " />
+                                            <apex:selectOption itemValue="Kentucky" itemLabel="KY - Kentucky " />
+                                            <apex:selectOption itemValue="Louisiana" itemLabel="LA - Louisiana " />
+                                            <apex:selectOption itemValue="Massachusetts" itemLabel="MA - Massachusetts " />
+                                            <apex:selectOption itemValue="Maryland" itemLabel="MD - Maryland " />
+                                            <apex:selectOption itemValue="Maine" itemLabel="ME - Maine " />
+                                            <apex:selectOption itemValue="Marshall Islands" itemLabel="MH - Marshall Islands " />
+                                            <apex:selectOption itemValue="Michigan" itemLabel="MI - Michigan " />
+                                            <apex:selectOption itemValue="Minnesota" itemLabel="MN - Minnesota " />
+                                            <apex:selectOption itemValue="Missouri" itemLabel="MO - Missouri " />
+                                            <apex:selectOption itemValue="Northern Mariana Islands" itemLabel="MP - Northern Mariana Islands " />
+                                            <apex:selectOption itemValue="Mississippi" itemLabel="MS - Mississippi " />
+                                            <apex:selectOption itemValue="Montana" itemLabel="MT - Montana " />
+                                            <apex:selectOption itemValue="North Carolina" itemLabel="NC - North Carolina " />
+                                            <apex:selectOption itemValue="North Dakota" itemLabel="ND - North Dakota " />
+                                            <apex:selectOption itemValue="Nebraska" itemLabel="NE - Nebraska " />
+                                            <apex:selectOption itemValue="New Hampshire" itemLabel="NH - New Hampshire " />
+                                            <apex:selectOption itemValue="New Jersey" itemLabel="NJ - New Jersey " />
+                                            <apex:selectOption itemValue="New Mexico" itemLabel="NM - New Mexico " />
+                                            <apex:selectOption itemValue="Nevada" itemLabel="NV - Nevada " />
+                                            <apex:selectOption itemValue="New York" itemLabel="NY - New York " />
+                                            <apex:selectOption itemValue="Ohio" itemLabel="OH - Ohio " />
+                                            <apex:selectOption itemValue="Oklahoma" itemLabel="OK - Oklahoma " />
+                                            <apex:selectOption itemValue="Oregon" itemLabel="OR - Oregon " />
+                                            <apex:selectOption itemValue="Pennsylvania" itemLabel="PA - Pennsylvania " />
+                                            <apex:selectOption itemValue="Puerto Rico" itemLabel="PR - Puerto Rico " />
+                                            <apex:selectOption itemValue="Palau" itemLabel="PW - Palau " />
+                                            <apex:selectOption itemValue="Rhode Island" itemLabel="RI - Rhode Island " />
+                                            <apex:selectOption itemValue="South Carolina" itemLabel="SC - South Carolina " />
+                                            <apex:selectOption itemValue="South Dakota" itemLabel="SD - South Dakota " />
+                                            <apex:selectOption itemValue="Tennessee" itemLabel="TN - Tennessee " />
+                                            <apex:selectOption itemValue="Texas" itemLabel="TX - Texas " />
+                                            <apex:selectOption itemValue="Utah" itemLabel="UT - Utah " />
+                                            <apex:selectOption itemValue="Virginia" itemLabel="VA - Virginia " />
+                                            <apex:selectOption itemValue="U.S. Virgin Islands" itemLabel="VI - U.S. Virgin Islands " />
+                                            <apex:selectOption itemValue="Vermont" itemLabel="VT - Vermont " />
+                                            <apex:selectOption itemValue="Washington" itemLabel="WA - Washington " />
+                                            <apex:selectOption itemValue="Wisconsin" itemLabel="WI - Wisconsin " />
+                                            <apex:selectOption itemValue="West Virginia" itemLabel="WV - West Virginia " />
+                                            <apex:selectOption itemValue="Wyoming" itemLabel="WY - Wyoming " />
+                                        </apex:selectList>
+                                        </apex:outputPanel>
+                                    </apex:pageBlockSectionItem>
+                                
+                                <apex:pageBlockSectionItem >
+                                    <apex:outputLabel styleClass="studentField" >4. High School <span class="vfHelpText"><apex:outputLink value="javascript:return false;"><img src="{!URLFOR($Resource.help2)}" /><span>{!$ObjectType.Contact.fields.High_School__c.inlineHelpText}</span></apex:outputlink></span></apex:outputLabel>
+                                        <div class="requiredInput">
+                                            <div class="requiredBlock"></div>
+                                            <span id="autocom">
+                                                <input id="highSchools"  class="studentField" placeholder="Select State first" type="text" disabled="disabled" value="{!highSchoolName}" style="width:175px;"/>
+                                                <button id="resetHighSchool" style="display:none;">clear</button>                                                
+                                            </span>                                            
+                                    </div>                                                                            
+                                </apex:pageBlockSectionItem>
+                                                                                                                                
+                                <!-- <br /> -->
+                                
+                                <apex:pageBlockSectionItem >
+                                    <apex:outputLabel id="parent1" rendered="{!isRequired}" styleClass="studentField notParent" >5. Parent/Guardian First Name</apex:outputLabel>
+                                    <apex:inputField id="parent2"  styleClass="studentField notParent" rendered="{!isRequired}" value="{!newContact.Parent_Guardian_First_Name__c}" />
+                                </apex:pageBlockSectionItem>
+                                
+                                <apex:pageBlockSectionItem >
+                                    <apex:outputLabel styleClass="studentField notParent"  rendered="{!isRequired}">6. Parent/Guardian Last Name</apex:outputLabel>
+                                    <apex:inputField styleClass="studentField notParent" rendered="{!isRequired}" value="{!newContact.Parent_Guardian_Last_Name__c}" />
+                                </apex:pageBlockSectionItem>
+                                
+                                <apex:pageBlockSectionItem >
+                                    <apex:outputLabel styleClass="studentField notParent" rendered="{!isRequired}">7. Graduation Year</apex:outputLabel>
+                                    <apex:inputField styleClass="studentField notParent" required="{!isRequired}" rendered="{!isRequired}" value="{!newContact.High_School_Graduation_Year__c}" />
+                                </apex:pageBlockSectionItem>
+                                
+                                <apex:pageBlockSectionItem >
+                                    <apex:outputLabel styleClass="studentField notParent" rendered="{!isRequired}">8. Birthdate</apex:outputLabel>
+                                    <apex:inputField styleClass="studentField notParent" required="{!isRequired}" rendered="{!isRequired}" value="{!newContact.Birthdate}" />
+                                </apex:pageBlockSectionItem>
+                                
+                                <apex:pageBlockSectionItem >
+                                    <apex:inputText style="display:none;" rendered="true" styleClass="highSchoolId" value="{!newContact.High_School__c}" />
+                                    <apex:inputText style="display:none;" rendered="true" styleClass="highSchoolName" value="{!newContact.High_School_Text__c}" />
+                                </apex:pageBlockSectionItem>
+                                
+                                <div>
+                                    <apex:commandLink styleClass="studentField" action="{!createPortaluser}" >
+                                        <button type="button">Sign Up</button>
+                                    </apex:commandLink>
+                                    <script>                                        
+                                        //autoCom();                                        
+                                    </script>
+                                </div>                                
+                            </apex:pageBlockSection>
+                        </apex:pageBlock>
+                    <!--<apex:outputPanel rendered="{!isDisabled}" id="success">
+                    <div class="confirm">
+                        <apex:outputPanel rendered="{!NOT(userExists)}" >
+                        <h3>Thank you for signing up!</h3>
+                        <p>You should have received an email with a username and temporary password. Click the login link below to access MyJSA with your new account.</p>
+                        </apex:outputPanel>
+                        <div class="confirm-login"><a href="/portalLogin">Click Here to Login</a></div>
+                    </div>
+                </apex:outputPanel>-->
+                    </apex:form>
+                        
+                </apex:outputPanel>
+                
+                <apex:outputPanel rendered="{!isDisabled}" id="success">
+                    <div class="confirm">
+                        <apex:outputPanel rendered="{!NOT(userExists)}" >
+                        <h3>Thank you for signing up!</h3>
+                        <p>You should have received an email with a username and temporary password. Click the login link below to access MyJSA with your new account.</p>
+                        </apex:outputPanel>
+                        <div class="confirm-login"><a href="/portalLogin">Click Here to Login</a></div>
+                    </div>
+                </apex:outputPanel>
+            </div>
+        </div>
+        
+        <div id="footer">
+            <div class="footer-columns-container">
+
+                <div class="col-left">
+                    <h3>Junior Statesmen Foundation</h3><br />
+
+                    <strong>National Headquarters in California</strong><br />
+                    800 S. Claremont St., Suite 202, San Mateo, CA 94402<br />
+                    (800) 334-5353<br /><br />
+                    <strong>Washington, D.C. Office</strong><br />
+                    1411 K St. NW, Suite 200, Washington, DC 20005<br />
+                    (800) 317-9338
+                </div>
+                <div class="col-middle">
+                    <h3>About JSA</h3><br />
+    
+                    <p>The mission of the Junior State of America and the Junior Statesmen Foundation is to strengthen American democracy by educating and preparing high school students for life-long involvement and responsible leadership in a democratic society.</p></div>
+                    <div class="col-right">
+                        <h3>Additional Resources</h3><br />
+                        <ul class="additionalResources">
+                            <li class="li-item-left"><a href="http://jsa.org/contact-jsa/">Contact Us</a></li>
+                            <li class="li-item-left"><a href="http://jsa.org/about/">About JSA</a></li>
+                            <li class="li-item-left"><a href="http://jsa.org/downloads/">Downloads</a></li>
+
+                            <li class="li-item-right reset"><a href="http://summer.jsa.org">Summer Programs</a></li>
+                            <li class="li-item-right"><a href="http://jsa.org/portal">MyJSA</a></li>
+                            <li class="li-item-right"><a href="http://jsa.org/bethepeople">Be the People</a></li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <div class="footer-bottom-container">
+                    <h4><a href="http://jsa.org">www.jsa.org</a></h4>
+                    JSA is a <a href="http://jsa.org/about/the-junior-statesmen-foundation/" target="_blank">non-profit 501(c)(3) educational organization</a><br />
+                    &copy; <?php echo date('Y') ?> JSA. <a href="http://jsa.org/terms-of-use-and-privacy-policy/" target="_blank">Terms of Use and Privacy Policy</a>
+                </div>
+            </div>
+
+        <apex:includeScript value="{!URLFOR($Resource.jquery_js)}"/> 
+        <apex:includeScript value="{!URLFOR($Resource.jquery_ui_js)}"/>
+
+<script>
+function parseBool(val)
+{
+    if ((typeof val === 'string' && (val.toLowerCase() === 'true' || val.toLowerCase() === 'yes')) || val === 1)
+        return true;
+    else if ((typeof val === 'string' && (val.toLowerCase() === 'false' || val.toLowerCase() === 'no')) || val === 0)
+        return false;
+    return null;
+}
+$(document).ready(function() {  
+    var autoCom = function(){        
+        //the value of the state field
+        var highSchoolState = $('select.highSchoolState').val(),
+        
+        //the autocomplete field wrapped in jquery 
+        $highSchoolNameField = $('input#highSchools'),
+        
+        //the hidden field for salesforce id wrapped in jquery
+        $highSchoolIdField = $('.highSchoolId');                                   
+        console.log('highSchoolState',highSchoolState);
+            
+        //no State selected (this is the default state of page)
+        if(highSchoolState === ' Select a State '){
+            
+            //reset the autocomplete and related ui
+            $highSchoolNameField.val('')
+            .attr({'disabled':'disabled'})
+            .attr({'placeholder':'Select a state'});
+            
+            //clear the hidden field
+            $highSchoolIdField.val('');
+            $highSchoolName.val('');
+            
+            //hide the reset button (if showing)
+            $('#resetHighSchool').hide();
+        
+        //The user has chosen a state from the list
+        }else{                        
+            
+            //hide the reset button (if showing)
+            $('#resetHighSchool').hide();
+            
+            //clear the name
+            $highSchoolName.val('');
+            $highSchoolNameField.val('')
+            
+            //enable user input
+            .removeAttr('disabled')
+            
+            //add a hint to user
+            .attr({'placeholder':'start typing...'})
+            
+            //select input automatically
+            .focus()
+            
+            //respond to user keystrokes
+            .autocomplete({
+                
+                minLength : 2,
+                //point the autocomplete at JSR method
+                source: function( request, response ) {            
+                    //JSRemoting method fetches the data
+                    portalRegistrationController.findSchools(request.term,highSchoolState,function(results,event){
+                        console.log(results);
+                        //feeds it to the autocompleter
+                        response(results);
+                    });
+                },
+                
+                //make sure that the user only sees the label instead of ugly ID
+                focus: function(event, ui){
+                    
+                    //don't display the id
+                    event.preventDefault();
+                    
+                    //show the label instead
+                    this.value = ui.item.label;
+                
+                },
+                
+                //display only the label and stash the value in our hidden ID field
+                select: function( event, ui ) {
+                    
+                    //make sure we don't display id 
+                    event.preventDefault();
+                    
+                    //show the label instead
+                    this.value = ui.item.label;
+                    $('.highSchoolName').val(ui.item.label);
+                    //stash the value 
+                    $('.highSchoolId').val(ui.item.value);
+                    
+                    //lock the field from user now
+                    $highSchoolNameField.attr({'disabled':'disabled'});
+                    
+                    //display the reset button in case the picked the wrong school
+                    $('#resetHighSchool').button().show();
+        
+                }
+            
+            });
+            
+            //what to do if user leaves the field (with tab or mouse)
+            $(document).on('blur', 'input#highSchools', function(){
+                //if the user hasn't selected a school from the list, clear it out when exiting
+                if($('.highSchoolId').val() == ''){
+                    $highSchoolNameField.val('');
+                }
+            });
+            
+        }
+    }    
+    var userExists = parseBool('{!userExists}');    
+    if(userExists){        
+        var $emailId = $('input.emaiId');
+        $emailId.addClass('alreadyExists');
+        $emailId.focus();
+    }
+    //hide inputs until user selects category    
+    if($("select[id$='category'] option:selected").text()=='--None--')
+        $('.studentField,.dateFormat,.highSchoolId').hide();
+        
+    $highSchoolName = $('.highSchoolName');
+    $highSchoolAttr = $('input#highSchools');     
+    //If highshcool name is previously selected then restore it.
+    if($highSchoolName.val()!=''){
+        //lock the field from user now
+        $highSchoolAttr.attr({'disabled':'disabled'});
+        
+        //restore the value.
+        $highSchoolAttr.val($highSchoolName.val());
+                
+    }else if(parseBool('{!flag}')){
+        $('#autocom').after('<div class="errorMsg"><strong>Error:</strong> You must enter a value</div>');
+    }           
+      
+    if($('select.highSchoolState option:selected').text().trim()!='Select a State'){
+        
+        //add a hint to user
+        $highSchoolAttr.removeAttr('disabled')
+        .attr({'placeholder':'start typing...'}).val('');
+        autoCom();      
+        $highSchoolName.val('');
+        //display the reset button in case the picked the wrong school
+        $('#resetHighSchool').button().hide();
+    }       
+    
+    //only allow autocomplete of school name if user has selected a State
+    $(document).on('change','select.highSchoolState', autoCom );        
+    
+    //clear and enable the locked school autocomplete field
+    
+    $(document).on('click', '#resetHighSchool',function(event){
+        
+        //make sure we don't trigger a form submission
+        event.preventDefault();
+        //reset the fields for School Id             
+        //reset the hidden id field
+        $('.highSchoolId').val('');
+        $highSchoolName.val('');
+        
+        //reset the autocomplete field 
+        $('#highSchools').val('')
+        //re-enable user input
+        .removeAttr('disabled')
+        //put the user hint back
+        .attr({'placeholder':'start typing...'})
+        //focus the input so user can start typing
+        .focus();
+        
+        //hide the reset button
+        $(this).hide();
+        
+    });
+    
+    
+    $('#calYearPicker').html('');
+    var select = document.getElementById('calYearPicker');
+    var startYear = new Date().getFullYear() - 30;
+    for (var year = startYear; year < startYear + 30; year++) {
+      select.options[select.options.length] = new Option(year, year);
+    }
+    $('span.dateFormat').remove();
+    $(document).on('span.dateFormat',function(){
+        $(this).remove();
+    });
+    
+});
+
+</script>
+        
+    </body>
+    
+
+</apex:page>

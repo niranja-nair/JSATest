@@ -1,0 +1,58 @@
+<messaging:emailTemplate subject="A payment request from {!$Organization.Name}" recipientType="Contact" relatedToType="pymt__PaymentX__c">
+<messaging:htmlEmailBody >
+<html>
+<body>
+         <STYLE type="text/css">
+               TH {font-size: 11px; font-face: arial;background: #CCCCCC;   text-align: left; } 
+               TD  {font-size: 11px; font-face: verdana;  } 
+               TABLE { border: none; }
+               TR { }
+         </STYLE>
+
+<font size="6" face="arial" color="#e0e0e0">{!$Organization.Name}</font>
+<font face="arial" size="3">
+<hr/>
+    <h2>Payment Request</h2>
+    <p>For: {!relatedTo.Name}<br/>
+    <apex:outputPanel rendered="{!relatedTo.pymt__Invoice_Number__c <> ''}">Invoice Number: {!relatedTo.pymt__Invoice_Number__c}<br/></apex:outputPanel>
+    Date: {!MONTH(TODAY())}/{!DAY(TODAY())}/{!YEAR(TODAY())}
+    </p>
+    <p>Amount Requested:&nbsp;<apex:outputText value="{!relatedTo.pymt__Amount__c}"/>&nbsp;{!relatedTo.pymt__Currency_ISO_Code__c}<br/>
+    <apex:outputPanel rendered="{!NOT(ISNULL(relatedTo.pymt__Scheduled_Payment_Date__c))}">
+    Scheduled Payment Date: {!relatedTo.pymt__Scheduled_Payment_Date__c}
+    </apex:outputPanel></p>
+    
+    <p>To pay online, please visit:<br/><br/> https://mydomain.secure.salesforce.com/pmtx/pymt__SiteCheckout?pid={!relatedTo.Id}&amp;key={!relatedTo.pymt__Key__c}</p>     
+     <p>
+    If you have questions about this payment request, please contact us at {!$Organization.Phone}.
+    </p>
+    <p>Best Regards</p>
+    <p>&nbsp;</p>
+    <p>{!$Organization.Name}</p>
+</font>
+</body>
+</html>
+</messaging:htmlEmailBody>
+<messaging:plainTextEmailBody >
+    Payment Request
+    ===============
+    
+    For: {!relatedTo.Name}
+    Invoice Number: {!relatedTo.Invoice_Number__c}
+    Date: {!MONTH(TODAY())}/{!DAY(TODAY())}/{!YEAR(TODAY())}
+    
+    Amount Requested: {!relatedTo.pymt__Amount__c} {!relatedTo.Currency_ISO_Code__c}
+    Scheduled Payment Date: {!relatedTo.pymt__Scheduled_Payment_Date__c}
+            
+    To pay online, please visit:
+    
+        https://mydomain.secure.salesforce.com/pmtx/pymt__SiteCheckout?pid={!relatedTo.Id}&amp;key={!relatedTo.pymt__Key__c}     
+
+    If you have questions about this payment request, please contact us at {!$Organization.Phone}.
+    
+    Regards,
+    The {!$Organization.Name} Team
+
+
+</messaging:plainTextEmailBody>
+</messaging:emailTemplate>

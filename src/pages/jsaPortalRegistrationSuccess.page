@@ -1,0 +1,229 @@
+<apex:page sidebar="false" showheader="false" controller="portalRegistrationController" >
+    
+    <head>
+        <title>MyJSA</title>
+
+        <apex:stylesheet value="{!URLFOR($Resource.jquery_ui_css)}" /> 
+        <apex:stylesheet value="{!URLFOR($Resource.myJsaPortalCSs,'Refresh.css')}"></apex:stylesheet>
+        <apex:stylesheet value="{!URLFOR($Resource.myJsaPortalCSs,'bt.css')}"></apex:stylesheet>
+        <apex:stylesheet value="{!URLFOR($Resource.myJsaPortalCSs,'wpStyle.css')}"></apex:stylesheet>
+        <apex:stylesheet value="{!URLFOR($Resource.myJsaPortalCSs,'wpDarkblue.css')}"></apex:stylesheet>
+        <apex:stylesheet value="{!URLFOR($Resource.myJsaPortalCSs,'wpCustom.css')}"></apex:stylesheet>
+        <link rel="stylesheet" type="text/css" href="{!URLFOR($Resource.JSAPortal, 'style.css')}" />
+        
+        <style type="text/css">
+            .errorMessage 
+            {
+                color:#003e7e;
+                font-weight:bold;
+                "src/pages/PageBrowser.page-meta.xml"   padding:8px 10px;
+                background-color:#f79779;
+                border:solid 1px #ae0c1b;
+                display:block;
+                margin-bottom:10px;
+            }
+            
+            ul
+            {
+                list-style:none;
+            }
+        </style>
+        
+    <script>
+var _gaq = _gaq || [];
+_gaq.push(['_setAccount', 'UA-1376727-1']);
+_gaq.push(['_setDomainName', 'force.com']);
+_gaq.push(['_setAllowLinker', true]);
+_gaq.push(['_trackPageview']);
+</script>
+    </head>
+    
+    <body>
+    
+        
+        
+        <style type="text/css">
+            .errorMessage 
+            {
+                color:#003e7e;
+                font-weight:bold;
+                "src/pages/PageBrowser.page-meta.xml"   padding:8px 10px;
+                background-color:#f79779;
+                border:solid 1px #ae0c1b;
+                display:block;
+                margin-bottom:10px;
+            }
+            
+            ul
+            {
+                list-style:none;
+            }
+        </style>
+        
+        <div id="page">
+            <div id="logo-top"></div>
+            <div id="header">
+                <div id="logo">
+                    <a href="/portalLogin" title="Be the people.">
+                        <img src="{!URLFOR($Resource.myJsaPortalImages,'jsa_header.jpg')}" alt="MyJSA &#8211; Junior State of America" />
+                    </a>
+        
+                        <h1 class="site-title"><a href="http://jsa.org">JSA &#8211; Junior State of America</a></h1>
+                        <span class="site-description">Be the people.</span>
+                </div>
+        
+                <div style="clear:left"></div>
+        
+            </div>
+        
+            <div style="clear:left;"></div>
+        
+            <div id="columns">
+                <div class="breadcrumb"></div>
+            
+                <style type="text/css">
+                    span.dateFormat{
+                        display:none;
+                    }
+                    #sidebar 
+                    {
+                        display:none;
+                    }
+                    
+                    #main 
+                    {
+                        width:850px;
+                    }
+                    
+                    form 
+                    {
+                        background:none;
+                        border:none;
+                        margin:0;
+                        padding:0;
+                    }
+                    
+                    .well
+                    {
+                        min-height: 20px;
+                        padding: 19px;
+                        margin-bottom: 20px;
+                        background-color: #f5f5f5;
+                        border: 1px solid #e3e3e3;
+                        -webkit-border-radius: 4px;
+                        -moz-border-radius: 4px;
+                        border-radius: 4px;
+                        -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.05);
+                        -moz-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.05);
+                        box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.05);
+                    }
+                    
+                    .alert
+                    {
+                        min-height: 20px;
+                        padding: 19px;
+                        margin-bottom: 20px;
+                        background-color: #bdfba4;
+                        border: 1px solid #e3e3e3;
+                        -webkit-border-radius: 4px;
+                        -moz-border-radius: 4px;
+                        border-radius: 4px;
+                        -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.05);
+                        -moz-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.05);
+                        box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.05);
+                    }
+                    
+                    .regheader
+                    {
+                        text-align: center;
+                        font-size: 18px;
+                        width: 50%;
+                        margin: auto;
+                        margin-bottom: 20px;
+                        margin-top: 20px;
+                    }
+                    
+                    .alertheader
+                    {
+                        text-align: left;
+                        font-size: 12px;
+                        width: 75%;
+                        margin: auto;
+                        margin-bottom: 20px;
+                        margin-top: 20px;
+                    }
+                    
+                    .redButton
+                    {
+                        margin-top: 15px;
+                        width: 100px;
+                        height: 32px;
+                        background-color: #FF0000
+                    }
+                    .zipCodeDataBox{
+                        visibility: hidden;
+                        display: none;
+                        height: 0px;
+                        width: 0px;
+                    }
+                    
+                </style>
+                
+                <apex:pageMessages id="messages"/>
+                <div class="zipCodeDataBox"></div>
+                    <div class="alert alertheader">
+                            <em>
+                            <h3>Thank you for signing up!</h3>
+                        <p>You should have received an email with a username and temporary password. Click the login link below to access MyJSA with your new account.</p>
+                        <div class="confirm-login"><a href="/apex/portalLogin">Click Here to Login</a></div>
+                            
+                            </em>
+                            <br/>
+                           </div>
+                        
+                        
+        
+        <div id="footer">
+            <div class="footer-columns-container">
+
+                <div class="col-left">
+                    <h3>Junior Statesmen Foundation</h3><br />
+
+                    <strong>National Headquarters in California</strong><br />
+                    800 S. Claremont St., Suite 202, San Mateo, CA 94402<br />
+                    (800) 334-5353<br /><br />
+                    <strong>Washington, D.C. Office</strong><br />
+                    1411 K St. NW, Suite 200, Washington, DC 20005<br />
+                    (800) 317-9338
+                </div>
+                <div class="col-middle">
+                    <h3>About JSA</h3><br />
+    
+                    <p>The mission of the Junior State of America and the Junior Statesmen Foundation is to strengthen American democracy by educating and preparing high school students for life-long involvement and responsible leadership in a democratic society.</p></div>
+                    <div class="col-right">
+                        <h3>Additional Resources</h3><br />
+                        <ul class="additionalResources">
+                            <li class="li-item-left"><a href="http://jsa.org/contact-jsa/">Contact Us</a></li>
+                            <li class="li-item-left"><a href="http://jsa.org/about/">About JSA</a></li>
+                            <li class="li-item-left"><a href="http://jsa.org/downloads/">Downloads</a></li>
+
+                            <li class="li-item-right reset"><a href="http://summer.jsa.org">Summer Programs</a></li>
+                            <li class="li-item-right"><a href="http://jsa.org/portal">MyJSA</a></li>
+                            <li class="li-item-right"><a href="http://jsa.org/bethepeople">Be the People</a></li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <div class="footer-bottom-container">
+                    <h4><a href="http://jsa.org">www.jsa.org</a></h4>
+                    JSA is a <a href="http://jsa.org/about/the-junior-statesmen-foundation/" target="_blank">non-profit 501(c)(3) educational organization</a><br />
+                    &copy; <?php echo date('Y') ?> JSA. <a href="http://jsa.org/terms-of-use-and-privacy-policy/" target="_blank">Terms of Use and Privacy Policy</a>
+                </div>
+            </div>
+            </div>
+        </div>
+        
+    </body>
+    
+
+</apex:page>

@@ -1,0 +1,454 @@
+<apex:page standardController="pymt__PaymentX__c" extensions="pymt.PaymentManagementController" showHeader="true" sidebar="false" standardStyleSheets="true" >
+<style>
+    body {
+       font-size:.75em;
+    }
+    p {
+       margin:6px 0px 6px 0px;
+       padding:0;    
+    }
+    .pmt_mgt_inner {
+        padding:4px;
+    }
+    .pbBody {
+     /*   background:#f3f3ec; */
+    }
+    .reasonbox {
+        width:400px;
+    }
+    .pmt_mgt_button_bar {
+        background-color:#e0e0e0;
+        border: solid 1px #a4a4a4;
+        padding:4px;
+    }
+    
+	.modalProgressBox {
+		display: block;
+		position: absolute;
+		z-index: 999;
+		text-align: center; 
+		width: 100%;
+		height: 100%;
+		background-color: #FFF;
+		top: 0px;
+		left: 0px;
+		filter:alpha(opacity=50);
+		-moz-opacity:0.5;
+		-khtml-opacity: 0.5;
+		opacity: 0.5;
+		color: black;
+		font-size: 14pt;
+    }
+    
+
+</style>
+    <script type="text/javascript"> 
+
+    
+    function promptForCancel() {
+        var reason = prompt("Enter a reason (option) and click 'OK' to cancel this recurring payment:");
+    }
+
+
+    </script>
+<apex:form id="paymentManagementForm" styleClass="pmtMgtForm"> 
+
+<apex:pageBlock mode="default" title="Payment Management" helpTitle="PaymentConnect Help" helpURL="{!URLFOR($Page.pymt__Help)}">
+
+<apex:pageBlockButtons location="top" >
+    <apex:commandButton value="Capture"  action="{!payPalCapturePaymentView}" status="formActionStatus"  rendered="{!processor=='PayPal' && processorSupported }" disabled="{!IF(pymt__PaymentX__c.pymt__Status__c =='Authorized',false,true)}"  rerender="contentArea"/>
+    <apex:commandButton value="Capture"  action="{!authNetCapturePaymentView}" status="formActionStatus"  rendered="{!processor=='Authorize.Net' && processorSupported}" disabled="{!IF(pymt__PaymentX__c.pymt__Status__c =='Authorized',false,true)}"  rerender="contentArea"/>
+    <apex:commandButton value="Void"  action="{!authNetVoidPaymentView}" rendered="{!processor=='Authorize.Net' && processorSupported}" status="formActionStatus"  disabled="{!IF(pymt__PaymentX__c.pymt__Status__c =='Authorized' || pymt__PaymentX__c.pymt__Status__c =='Completed',false, true)}"  rerender="contentArea"/>
+    <apex:commandButton value="Refund"  action="{!eWayRefundPaymentView}" status="formActionStatus" rendered="{!processor=='eWay AU XML' && processorSupported}" disabled="{!IF(pymt__PaymentX__c.pymt__Status__c =='Completed' && pymt__PaymentX__c.pymt__Transaction_Type__c == 'Payment',false,true)}"  rerender="contentArea"/>
+    <apex:commandButton value="Void"  action="{!payPalVoidPaymentView}" rendered="{!processor=='PayPal' && processorSupported}" status="formActionStatus"  disabled="{!IF(pymt__PaymentX__c.pymt__Status__c =='Authorized' || pymt__PaymentX__c.pymt__Status__c =='Completed',false,true)}"  rerender="contentArea"/>
+    <apex:commandButton value="Authorize"  action="{!googleAuthorizePaymentView}" status="formActionStatus"  rendered="{!processor=='Google' && processorSupported}" disabled="{!IF(pymt__PaymentX__c.pymt__Status__c =='Chargeable' || pymt__PaymentX__c.pymt__Status__c =='Charged',false,true)}"  rerender="contentArea"/>
+    <apex:commandButton value="Charge"  action="{!googleChargePaymentView}" status="formActionStatus" rendered="{!processor=='Google' && processorSupported}" disabled="{!IF(pymt__PaymentX__c.pymt__Status__c =='Chargeable' || pymt__PaymentX__c.pymt__Status__c =='Charged',false,true)}"  rerender="contentArea"/>
+    <apex:commandButton value="Refund"  action="{!googleRefundPaymentView}" status="formActionStatus" rendered="{!processor=='Google' && processorSupported}" disabled="{!IF(pymt__PaymentX__c.pymt__Status__c =='Charged',false,true)}"  rerender="contentArea"/>
+    <apex:commandButton value="Refund"  action="{!payPalRefundPaymentView}" status="formActionStatus" rendered="{!processor=='PayPal' && processorSupported}" disabled="{!IF(pymt__PaymentX__c.pymt__Status__c =='Completed' && pymt__PaymentX__c.pymt__Transaction_Type__c == 'Payment',false,true)}"  rerender="contentArea"/>
+    <apex:commandButton value="Refund"  action="{!authNetRefundPaymentView}" status="formActionStatus" rendered="{!processor=='Authorize.Net' && processorSupported}" disabled="{!IF(pymt__PaymentX__c.pymt__Status__c =='Completed',false, true)}"  rerender="contentArea"/>
+    <apex:commandButton value="Cancel"  action="{!googleCancelPaymentView}" status="formActionStatus" rendered="{!processor=='Google' && processorSupported}" disabled="{!IF(pymt__PaymentX__c.pymt__Status__c =='Chargeable' || pymt__PaymentX__c.pymt__Status__c =='Payment Declined',false,true)}"  rerender="contentArea"/>
+    <apex:commandButton value="Payment Details"  action="{!payPalGetPaymentDetailsView}" status="formActionStatus" rendered="{!processor=='PayPal' && processorSupported}" disabled="{!IF(pymt__PaymentX__c.pymt__Transaction_Id__c =='',true,false)}"  rerender="contentArea"/>
+    <apex:commandButton value="Payment Details"  action="{!authNetGetPaymentDetailsView}" status="formActionStatus" rendered="{!processor=='Authorize.Net' && processorSupported}" disabled="{!IF(pymt__PaymentX__c.pymt__Transaction_Id__c =='',true,false)}"  rerender="contentArea"/>
+    <apex:actionStatus id="formActionStatus" > 
+         <apex:facet name="start" > 
+           <apex:outputPanel >&nbsp; 
+             <apex:image value="{!URLFOR($Resource.pymt__PaymentConnect, 'images/icon-spinner.gif')}"  style="vertical-align:top;" alt="busy..." />
+             &nbsp;Updating </apex:outputPanel>
+         </apex:facet> 
+         <apex:facet name="stop">
+           <apex:image value="{!URLFOR('/s.gif')}"  alt="" style="height:12px;" />
+         </apex:facet>
+    </apex:actionStatus>
+
+</apex:pageBlockButtons>
+
+    <apex:outputPanel id="contentArea" >
+    <div style="height:180px;overflow:auto;">
+    <div style="margin:4px;">
+    <apex:pageMessages /> 
+	</div>
+
+    <apex:actionStatus id="modalActionStatus" >
+         <apex:facet name="start" > 
+           <apex:outputPanel styleClass="modalProgressBox">&nbsp; 
+           <br/><br/><br/>
+             <apex:image value="{!URLFOR($Resource.pymt__PaymentConnect, 'images/spinner_med.gif')}"  style="vertical-align:middle;" alt="busy..." />
+             &nbsp;Sending Request </apex:outputPanel>
+         </apex:facet> 
+         <apex:facet name="stop">
+         </apex:facet>
+    </apex:actionStatus>
+    
+    <apex:outputPanel id="googleAuthorizePaymentView" rendered="{!IF(currentAction == 'GoogleAuthorizePayment',true,false)}">
+        <apex:pageBlockSection >
+                <apex:pageBlockSectionItem >
+                    <apex:outputText value="Authorize this payment?"/>
+                      <apex:commandButton value="OK" styleClass="btnImportant" action="{!googleAuthorizePayment}" status="modalActionStatus" rerender="contentArea" />
+                </apex:pageBlockSectionItem>
+
+                <apex:pageBlockSectionItem >
+                    <apex:outputText value=""/>
+                    <apex:outputText value=""/>
+                </apex:pageBlockSectionItem>
+        
+        </apex:pageBlockSection>
+    </apex:outputPanel>
+    
+    <apex:outputPanel id="googleChargePaymentView" rendered="{!IF(currentAction == 'GoogleChargePayment',true,false)}">
+        <apex:pageBlockSection >
+                <apex:pageBlockSectionItem >
+                    <apex:outputText value="Capture Amount" />
+                    <apex:inputText value="{!captureAmount}" />
+                </apex:pageBlockSectionItem>
+
+                <apex:pageBlockSectionItem >
+                    <apex:outputText value=""/>
+                    <apex:outputText value=""/>
+                </apex:pageBlockSectionItem>        
+        
+                <apex:pageBlockSectionItem > 
+                    <apex:outputText value="Approve this charge?"/>
+                    <apex:commandButton value="OK" styleClass="btnImportant" action="{!googleChargePayment}" status="modalActionStatus"  rerender="contentArea"/>
+                </apex:pageBlockSectionItem>
+ 
+                <apex:pageBlockSectionItem >
+                    <apex:outputText value=""/>
+                    <apex:outputText value=""/>
+                </apex:pageBlockSectionItem>
+        
+        </apex:pageBlockSection>
+    </apex:outputPanel>
+
+    <apex:outputPanel id="eWayRefundPaymentView" rendered="{!IF(currentAction == 'eWayRefundPayment',true,false)}">
+        <apex:pageBlockSection >
+                <apex:pageBlockSectionItem >
+                    <apex:outputText value="Refund Amount" />
+                    <apex:inputText value="{!refundAmount}" />
+                </apex:pageBlockSectionItem>
+
+                <apex:pageBlockSectionItem >
+                    <apex:outputText value=""/>
+                    <apex:outputText value=""/>
+                </apex:pageBlockSectionItem> 
+                
+                <apex:pageBlockSectionItem >
+                    <apex:outputText value="Card Expiration"/>
+					<apex:outputPanel layout="inline">
+					<apex:selectList value="{!expMonth}"  size="1">
+                    	<apex:selectOption itemLabel="01" itemValue="01"/>
+                    	<apex:selectOption itemLabel="02" itemValue="02"/>
+                    	<apex:selectOption itemLabel="03" itemValue="03"/>
+                    	<apex:selectOption itemLabel="04" itemValue="04"/>
+                    	<apex:selectOption itemLabel="05" itemValue="05"/>
+                    	<apex:selectOption itemLabel="06" itemValue="06"/>
+                    	<apex:selectOption itemLabel="07" itemValue="07"/>
+                    	<apex:selectOption itemLabel="08" itemValue="08"/>
+                    	<apex:selectOption itemLabel="09" itemValue="09"/>
+                    	<apex:selectOption itemLabel="10" itemValue="10"/>
+                    	<apex:selectOption itemLabel="11" itemValue="11"/>
+                    	<apex:selectOption itemLabel="12" itemValue="12"/>
+                    </apex:selectList>&nbsp;
+                    <apex:selectList value="{!expYear}" size="1">
+                    	<apex:selectOptions value="{!twoCharYearOptions}"/>
+                    	
+                    </apex:selectList>
+                    </apex:outputPanel>
+                    
+                </apex:pageBlockSectionItem>                
+
+                <apex:pageBlockSectionItem >
+                    <apex:outputText value=""/>
+                    <apex:outputText value=""/>
+                </apex:pageBlockSectionItem> 
+                
+
+                <apex:pageBlockSectionItem helptext="The password created by your organization for eWay refunds.">
+                    <apex:outputText value="Refund Password"/>
+                    <apex:inputSecret value="{!refundPassword}"/>
+                </apex:pageBlockSectionItem>
+
+                <apex:pageBlockSectionItem >
+                    <apex:outputText value=""/>
+                    <apex:outputText value=""/>
+                </apex:pageBlockSectionItem> 
+
+                <apex:pageBlockSectionItem >
+                    <apex:outputText value="" />
+                    <apex:commandButton value="Refund Payment" action="{!eWayRefundPayment}"  styleClass="btnImportant"  status="modalActionStatus" rerender="contentArea"/>
+                </apex:pageBlockSectionItem>
+        </apex:pageBlockSection>
+    </apex:outputPanel>
+        
+    <apex:outputPanel id="googleRefundPaymentView" rendered="{!IF(currentAction == 'GoogleRefundPayment',true,false)}">
+        <apex:pageBlockSection >
+                <apex:pageBlockSectionItem >
+                    <apex:outputText value="Refund Amount" />
+                    <apex:inputText value="{!refundAmount}" />
+                </apex:pageBlockSectionItem>
+                
+                <apex:pageBlockSectionItem >
+                    <apex:outputText value=""/>
+                    <apex:outputText value=""/>
+                </apex:pageBlockSectionItem>                
+
+                <apex:pageBlockSectionItem >
+                    <apex:outputText value="Reason"/>
+                    <apex:inputText value="{!reason}"/>
+                </apex:pageBlockSectionItem> 
+
+                <apex:pageBlockSectionItem >
+                    <apex:outputText value="Comment"/>
+                    <apex:inputText value="{!comments}"/>
+                </apex:pageBlockSectionItem>
+
+
+                <apex:pageBlockSectionItem >
+                    <apex:outputText value="" />
+                    <apex:commandButton value="Refund Payment" action="{!googleRefundPayment}"  styleClass="btnImportant"  status="modalActionStatus" rerender="contentArea"/>
+                </apex:pageBlockSectionItem>
+        </apex:pageBlockSection>
+    </apex:outputPanel>
+        
+    <apex:outputPanel id="googleCancelPaymentView" rendered="{!IF(currentAction == 'GoogleCancelPayment',true,false)}">    
+            <apex:pageBlockSection >
+                <apex:pageBlockSectionItem helpText="testing">
+                    <apex:outputText value="Reason"/>
+                    <apex:inputText value="{!reason}" />
+                </apex:pageBlockSectionItem>
+
+                <apex:pageBlockSectionItem helpText="testing">
+                    <apex:outputText value=""/>
+                    <apex:outputText value=""/>
+                </apex:pageBlockSectionItem>
+
+                <apex:pageBlockSectionItem >
+                    <apex:outputText value="Comments"/>
+                    <apex:inputText value="{!comments}" />
+                </apex:pageBlockSectionItem>
+
+                <apex:pageBlockSectionItem >
+                    <apex:outputText value=""/>
+                    <apex:outputText value=""/>
+                </apex:pageBlockSectionItem>
+
+                <apex:pageBlockSectionItem >
+                    <apex:outputText value=""/>
+                    <apex:commandButton value="Cancel Payment" styleClass="btnImportant" action="{!googleCancelPayment}" status="modalActionStatus"  rerender="contentArea"/>
+                </apex:pageBlockSectionItem>
+            </apex:pageBlockSection>
+    </apex:outputPanel>        
+
+    <apex:outputPanel id="authNetCapturePaymentView" rendered="{!IF(currentAction == 'AuthNetCapturePayment',true,false)}">
+        <apex:pageBlockSection >
+                <apex:pageBlockSectionItem >
+                    <apex:outputText value="Capture Amount" />
+                    <apex:inputText value="{!captureAmount}" />
+                </apex:pageBlockSectionItem>
+
+                <apex:pageBlockSectionItem >
+                    <apex:outputText value=""/>
+                    <apex:outputText value=""/>
+                </apex:pageBlockSectionItem>
+
+                <apex:pageBlockSectionItem > 
+                    <apex:outputText value="" />
+                    <apex:commandButton value="Capture Payment" styleClass="btnImportant" action="{!authNetCapturePayment}" status="modalActionStatus"  rerender="contentArea"/>
+                </apex:pageBlockSectionItem>
+
+        
+        </apex:pageBlockSection> 
+    </apex:outputPanel>
+    
+    
+    <apex:outputPanel id="authNetVoidPaymentView" rendered="{!IF(currentAction == 'AuthNetVoidPayment',true,false)}">
+         <apex:pageBlockSection >
+                <apex:pageBlockSectionItem >
+                    <apex:outputText value="Reason for void"/>
+                    <apex:inputText value="{!reason}"/>
+                </apex:pageBlockSectionItem> 
+                
+                <apex:pageBlockSectionItem >
+                    <apex:outputText value=""/>
+                    <apex:outputText value=""/>
+                </apex:pageBlockSectionItem>  
+
+                <apex:pageBlockSectionItem >
+                    <apex:outputText value=""/>
+              		<apex:commandButton value="Void Payment" styleClass="btnImportant" action="{!authNetVoidPayment}" status="modalActionStatus"  rerender="contentArea"/>
+                </apex:pageBlockSectionItem>  
+
+        </apex:pageBlockSection>        
+    </apex:outputPanel>
+    
+    <apex:outputPanel id="authNetRefundPaymentView" rendered="{!IF(currentAction == 'AuthNetRefundPayment',true,false)}">
+        <apex:pageBlockSection >
+                <apex:pageBlockSectionItem >
+                    <apex:outputText value="Refund Amount" />
+                    <apex:inputText value="{!refundAmount}" />
+                </apex:pageBlockSectionItem>
+                
+                <apex:pageBlockSectionItem >
+                    <apex:outputText value="Last 4 of Credit Card"/>
+                    <apex:inputText value="{!last4}"/>
+                </apex:pageBlockSectionItem>                
+
+                <apex:pageBlockSectionItem >
+                    <apex:outputText value="Reason"/>
+                    <apex:inputText value="{!reason}"/>
+                </apex:pageBlockSectionItem> 
+
+                <apex:pageBlockSectionItem >
+                    <apex:outputText value=""/>
+                    <apex:outputText value=""/>
+                </apex:pageBlockSectionItem>
+
+
+                <apex:pageBlockSectionItem >
+                    <apex:outputText value="" />
+                    <apex:commandButton value="Refund Payment" action="{!authNetRefundPayment}"  styleClass="btnImportant"  status="modalActionStatus" rerender="contentArea"/>
+                </apex:pageBlockSectionItem>
+        </apex:pageBlockSection>
+    </apex:outputPanel> 
+
+    <apex:outputPanel id="authNetPaymentDetailsView" rendered="{!IF(currentAction == 'AuthNetPaymentDetails',true,false)}">
+    <apex:outputText rendered="{!NOT(transactionDetailsExist)}" value="Click the button below to request and view current transaction details from your Authorize.Net account."/>
+		<apex:repeat value="{!transactionDetails}" var="value">
+			<div style="width:45%;float:left;margin-left:4px;">{!value}</div>
+		</apex:repeat>
+		<div style="height:5px;clear:both;"/>
+        <apex:commandButton value="Get Payment Details" action="{!authNetGetPaymentDetails}"   status="modalActionStatus" rerender="contentArea"/>
+    </apex:outputPanel>
+        
+    <apex:outputPanel id="payPalCapturePaymentView" rendered="{!IF(currentAction == 'PayPalCapturePayment',true,false)}">
+        <apex:pageBlockSection >
+                <apex:pageBlockSectionItem >
+                    <apex:outputText value="Capture Amount" />
+                    <apex:inputText value="{!captureAmount}" />
+                </apex:pageBlockSectionItem>
+
+                <apex:pageBlockSectionItem >
+                    <apex:outputText value=""/>
+                    <apex:outputText value=""/>
+                </apex:pageBlockSectionItem>
+
+                <apex:pageBlockSectionItem >
+                    <apex:outputText value="Notes"/>
+                    <apex:inputText value="{!comments}"/>
+                </apex:pageBlockSectionItem>
+
+                <apex:pageBlockSectionItem >
+                    <apex:outputText value=""/>
+                    <apex:outputText value=""/>
+                </apex:pageBlockSectionItem>
+
+                <apex:pageBlockSectionItem >
+                    <apex:outputText value="" />
+                    <apex:commandButton value="Capture Payment" styleClass="btnImportant" action="{!payPalCapturePayment}" status="modalActionStatus"  rerender="contentArea"/>
+                </apex:pageBlockSectionItem>
+
+         
+        </apex:pageBlockSection>
+    </apex:outputPanel>
+ 
+     <apex:outputPanel id="payPalVoidPaymentView" rendered="{!IF(currentAction == 'PayPalVoidPayment',true,false)}">
+         <apex:pageBlockSection >
+                <apex:pageBlockSectionItem >
+                    <apex:outputText value="Reason for void"/>
+                    <apex:inputText value="{!reason}"/>
+                </apex:pageBlockSectionItem> 
+                
+                <apex:pageBlockSectionItem >
+                    <apex:outputText value=""/>
+                    <apex:outputText value=""/>
+                </apex:pageBlockSectionItem>  
+
+                <apex:pageBlockSectionItem >
+                    <apex:outputText value=""/>
+              		<apex:commandButton value="Void Transaction" styleClass="btnImportant" action="{!payPalVoidPayment}" status="modalActionStatus"  rerender="contentArea"/>
+                </apex:pageBlockSectionItem>  
+
+        </apex:pageBlockSection>        
+    </apex:outputPanel>
+    
+    <apex:outputPanel id="payPalRefundPaymentView" rendered="{!IF(currentAction == 'PayPalRefundPayment',true,false)}">
+        <apex:pageBlockSection >
+                <apex:pageBlockSectionItem >
+                    <apex:outputText value="Refund Amount" />
+                    <apex:inputText value="{!refundAmount}" />
+                </apex:pageBlockSectionItem>
+                
+                <apex:pageBlockSectionItem >
+                    <apex:outputText value=""/>
+                    <apex:outputText value=""/>
+                </apex:pageBlockSectionItem>                
+
+                <apex:pageBlockSectionItem >
+                    <apex:outputText value="Reason"/>
+                    <apex:inputText value="{!reason}"/>
+                </apex:pageBlockSectionItem> 
+
+                <apex:pageBlockSectionItem >
+                    <apex:outputText value=""/>
+                    <apex:outputText value=""/>
+                </apex:pageBlockSectionItem>
+
+
+                <apex:pageBlockSectionItem >
+                    <apex:outputText value="" />
+                    <apex:commandButton value="Refund Payment" action="{!payPalRefundPayment}"  styleClass="btnImportant"  status="modalActionStatus" rerender="contentArea"/>
+                </apex:pageBlockSectionItem>
+        </apex:pageBlockSection>
+    </apex:outputPanel>
+ 
+    <apex:outputPanel id="payPalPaymentDetailsView" rendered="{!IF(currentAction == 'PayPalPaymentDetails',true,false)}">
+    <apex:outputText rendered="{!NOT(transactionDetailsExist)}" value="Click the button below to request and view current transaction details from your PayPal account."/>
+		<apex:repeat value="{!transactionDetails}" var="value">
+			<div style="width:45%;float:left;margin-left:4px;">{!value}</div>
+		</apex:repeat>
+		<div style="height:5px;clear:both;"/>
+        <apex:commandButton value="Get Payment Details" action="{!payPalGetPaymentDetails}"   status="modalActionStatus" rerender="contentArea"/>
+    </apex:outputPanel>
+                   
+    <apex:outputPanel id="introView" rendered="{!IF(currentAction == '',true,false)}">
+        <div class="pmt_mgt_inner">
+        <div style="text-align:center;padding-top:25px;width:100%;">
+        <apex:outputText value="Payment management features are not currently supported for the Processor Connection assigned to this transaction." rendered="{!processorSupported==false}"/>
+        <apex:outputText value="Use the button(s) above to manage this Payment, or log into your payment processor account for more options." rendered="{!processorSupported==true}"/>
+        </div>
+        </div>
+ 
+    </apex:outputPanel>
+    
+    <apex:outputPanel id="reloadView" rendered="{!IF(currentAction == 'ReloadPage',true,false)}">
+        <div class="pmt_mgt_inner">
+        <p>It may be necessary to reload the current page to see the latest updates to this payment record.</p><br/>
+        <apex:commandButton value="Reload Page" action="{!clearCurrentAction}" status="modalActionStatus" oncomplete="window.parent.location='/{!Id}'" />
+        </div>
+    </apex:outputPanel>
+    
+    </div>
+    </apex:outputPanel>
+</apex:pageBlock>
+</apex:form>
+
+</apex:page>

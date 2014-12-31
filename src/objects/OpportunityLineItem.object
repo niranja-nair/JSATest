@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
+    <actionOverrides>
+        <actionName>AddProduct</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>CancelEdit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>ChoosePricebook</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Delete</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Edit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>EditAllProduct</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>SaveEdit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>View</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <compactLayoutAssignment>SYSTEM</compactLayoutAssignment>
+    <enableFeeds>false</enableFeeds>
+    <fields>
+        <fullName>Description</fullName>
+    </fields>
+    <fields>
+        <fullName>Discount</fullName>
+    </fields>
+    <fields>
+        <fullName>ListPrice</fullName>
+    </fields>
+    <fields>
+        <fullName>OpportunityId</fullName>
+        <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>Product2Id</fullName>
+        <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>ProductCode</fullName>
+    </fields>
+    <fields>
+        <fullName>QB_OPPORTUNIRTYLINEITEM_TXNLIN__c</fullName>
+        <description>The internal ID of the sales order line this opportunity line item is in QuickBooks.</description>
+        <externalId>false</externalId>
+        <inlineHelpText>The internal ID of the sales order line this opportunity line item is in QuickBooks.</inlineHelpText>
+        <label>QuickBooks Opportunity Line Item TXN ID</label>
+        <length>36</length>
+        <required>false</required>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Quantity</fullName>
+    </fields>
+    <fields>
+        <fullName>QuickBooks__c</fullName>
+        <defaultValue>false</defaultValue>
+        <description>Indicates whether or not the opportunity line has been accepted in QuickBooks.</description>
+        <externalId>false</externalId>
+        <inlineHelpText>Indicates whether or not the opportunity line has been accepted in QuickBooks.</inlineHelpText>
+        <label>QB?</label>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>ServiceDate</fullName>
+    </fields>
+    <fields>
+        <fullName>Student_Flag__c</fullName>
+        <externalId>false</externalId>
+        <formula>IF (CONTAINS(PricebookEntry.Product2.Name, &quot;Student&quot;), &quot;TRUE&quot;, &quot;FALSE&quot;)</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <inlineHelpText>TRUE if student product, else FALSE</inlineHelpText>
+        <label>Student Flag</label>
+        <required>false</required>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Subtotal</fullName>
+    </fields>
+    <fields>
+        <fullName>Teacher_Flag__c</fullName>
+        <externalId>false</externalId>
+        <formula>IF (CONTAINS(PricebookEntry.Product2.Name, &quot;Teacher&quot;), &quot;TRUE&quot;, &quot;FALSE&quot;)</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <inlineHelpText>TRUE if product name contains &quot;Teacher&quot;, else FALSE.</inlineHelpText>
+        <label>Teacher Flag</label>
+        <required>false</required>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>TotalPrice</fullName>
+    </fields>
+    <fields>
+        <fullName>UnitPrice</fullName>
+    </fields>
+    <validationRules>
+        <fullName>Only_noninvoice_opportunities</fullName>
+        <active>false</active>
+        <description>Opportunity products cannot be changed or added if the opportunity has been invoiced in QuickBooks.</description>
+        <errorConditionFormula>Opportunity.Invoice_Count__c &lt;&gt; 0</errorConditionFormula>
+        <errorMessage>Opportunity products cannot be changed or added if the opportunity has been invoiced in QuickBooks.</errorMessage>
+    </validationRules>
+</CustomObject>

@@ -1,0 +1,90 @@
+<messaging:emailTemplate subject="Your Receipt - Thank You!" recipientType="Contact" relatedToType="Opportunity">
+<messaging:htmlEmailBody >
+<html>
+<body>
+         <STYLE type="text/css">
+               TH {font-size: 11px; font-face: arial;background: #CCCCCC;   text-align: left; } 
+               TD  {font-size: 11px; font-face: verdana;  } 
+               TABLE { border: none; }
+               TR { }
+         </STYLE>
+
+<font size="6" face="arial" color="#e0e0e0">{!$Organization.Name}</font>
+<font face="arial" size="3">
+<hr/>
+    <h2>Receipt</h2>
+    <p>For: {!relatedTo.Name}</p>
+    <p>Invoice Total Amount: <apex:outputText value="{!relatedTo.pymt__Total_Amount__c}"/></p>
+    <p>Payments Received:&nbsp;<apex:outputText value="{!relatedTo.pymt__Payments_Made__c}"/></p>
+    <p>Amount Due:&nbsp;<apex:outputText value="{!relatedTo.pymt__Balance__c}"/></p>
+
+    <p>    Received From:<br/><br/>
+     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{!relatedTo.Account.Name}<br/>
+     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{!relatedTo.Account.BillingStreet}<br/>
+     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{!relatedTo.Account.BillingCity}<br/>
+     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{!relatedTo.Account.BillingState}<br/>
+     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{!relatedTo.Account.BillingCountry}</p>
+     
+
+    <apex:outputPanel rendered="{!relatedTo.HasOpportunityLineItem}" layout="block">
+    <p>Items:</p>
+    <table cellpadding="2" cellspacing="0" width="600px">
+        <tr>
+           <th>Qty</th>
+           <th>Description</th>
+           <th style="text-align:right;">Price Each</th>
+           <th style="text-align:right;">Total</th>
+        </tr>
+    <apex:repeat var="item" value="{!relatedTo.OpportunityLineItems}">
+       <tr>
+           <td>{!item.Quantity}</td>
+           <td>{!item.PricebookEntry.Name}</td>
+           <td style="text-align:right;">${!IF(CONTAINS(TEXT(item.UnitPrice),"."),RPAD(TEXT(item.UnitPrice),FIND('.',TEXT(item.UnitPrice))+2,'0'),TEXT(item.UnitPrice)+'.00')}</td>
+           <td style="text-align:right;">${!IF(CONTAINS(TEXT(item.TotalPrice),"."),RPAD(TEXT(item.TotalPrice),FIND('.',TEXT(item.TotalPrice))+2,'0'),TEXT(item.TotalPrice)+'.00')}</td>
+       </tr>
+    </apex:repeat>  
+    </table>
+    </apex:outputPanel>  
+    
+    <p>Thank you for your business!</p>
+   
+     <p>
+    If you have questions about this order, please contact us at sales@linvio.com.
+    </p>
+    <p>Best Regards,<br/>
+    The Linvio Team</p>
+    <p>&nbsp;</p>
+    <p>www.linvio.com<br/>
+       760-635-1045</p>
+</font>
+</body>
+</html>
+</messaging:htmlEmailBody>
+<messaging:plainTextEmailBody >
+    Receipt
+    =======
+    
+    For: {!relatedTo.Name}
+    Invoice Number: {!relatedTo.pymt__Invoice_Number__c}
+    Invoice Total Amount: ${!IF(CONTAINS(TEXT(relatedTo.pymt__Total_Amount__c),"."),RPAD(TEXT(relatedTo.pymt__Total_Amount__c),FIND('.',TEXT(relatedTo.pymt__Total_Amount__c))+2,'0'),TEXT(relatedTo.pymt__Total_Amount__c)+'.00')}
+    Payments Received: ${!IF(CONTAINS(TEXT(relatedTo.pymt__Payments_Made__c),"."),RPAD(TEXT(relatedTo.pymt__Payments_Made__c),FIND('.',TEXT(relatedTo.pymt__Payments_Made__c))+2,'0'),TEXT(relatedTo.pymt__Payments_Made__c)+'.00')}
+    Amount Due: ${!IF(CONTAINS(TEXT(relatedTo.pymt__Balance__c),"."),RPAD(TEXT(relatedTo.pymt__Balance__c),FIND('.',TEXT(relatedTo.pymt__Balance__c))+2,'0'),TEXT(relatedTo.pymt__Balance__c)+'.00')}
+
+    Received From: {!relatedTo.Account.Name}
+                   {!relatedTo.Account.BillingStreet}
+                   {!relatedTo.Account.BillingCity}
+                   {!relatedTo.Account.BillingState}
+                   {!relatedTo.Account.BillingCountry}
+  
+
+    
+    Thank you for your business.  
+        
+    If you have questions about this order, please contact us at sales@linvio.com
+    
+    Best Regards,
+    The Linvio Team
+
+
+</messaging:plainTextEmailBody>
+</messaging:emailTemplate>

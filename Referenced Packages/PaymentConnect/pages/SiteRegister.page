@@ -1,0 +1,38 @@
+<apex:page id="Registration" showHeader="false" controller="pymt.SiteRegisterController" title="{!$Label.site.register}" standardStylesheets="false">
+  <apex:composition template="{!$Site.Template}">
+    <apex:define name="body">  
+  	<div class="pc_page_content_top"></div>
+  	<div class="pc_page_content"  id="pc_siteregister_page">
+  	  <div class="pc_page_content_inner"> 
+
+  	    <apex:outputPanel styleclass="pc_siteregister_panel">
+				<div class="pc_siteregister_inner">
+				<apex:pagemessages />
+				<apex:outputText styleClass="pc_siteregister_title" value="{!$Label.site.user_registration}"/>
+                  <apex:form id="theForm" forceSSL="true">
+                    <apex:panelGrid columns="2" >
+                      <apex:outputLabel value="{!$Label.site.username}" for="username"/>
+                      <apex:inputText required="true" id="username" value="{!username}"/>
+                      <apex:outputLabel value="{!$Label.site.community_nickname}" for="communityNickname"/>
+                      <apex:inputText required="true" id="communityNickname" required="true" value="{!communityNickname}"/>
+                      <apex:outputLabel value="{!$Label.site.email}" for="email"/>
+                      <apex:inputText required="true" id="email" required="true" value="{!email}"/>
+                      <apex:outputLabel value="{!$Label.site.password}" for="password"/>
+                      <apex:inputSecret id="password" value="{!password}"/>
+                      <apex:outputLabel value="{!$Label.site.confirm_password}" for="confirmPassword"/>
+                      <apex:inputSecret id="confirmPassword" value="{!confirmPassword}"/>
+                      <apex:outputText value=""/>
+                      <apex:commandButton action="{!registerUser}" value="{!$Label.site.submit}" id="submit"/>
+                    </apex:panelGrid> 
+                    </apex:form>                   
+				</div>
+    	  </apex:outputPanel>
+
+    
+    	</div>
+  	</div>
+  
+      <br/>    
+    </apex:define>
+  </apex:composition>
+</apex:page>

@@ -1,0 +1,298 @@
+<apex:page standardController="pymt__Payment_Profile__c" extensions="pymt.PaymentProfileExtAuthNetController" showHeader="false" sidebar="false" >
+<style>
+    body {
+       font-size:.75em;
+    }
+    p {
+	   margin:6px 0px 6px 0px;
+	   padding:0;    
+    }
+	.ppc_inner {
+		padding:4px;
+	}
+    .pbBody {
+     /*   background:#f3f3ec; */
+    }
+    .reasonbox {
+        width:400px;
+    }
+    .ppc_button_bar {
+    	background-color:#e0e0e0;
+    	/* background: url({!URLFOR($Resource.PaymentConnect,'/images/btnBarBkgd.png')}); 
+    	background-position: 0px -25px; */
+    	border: solid 1px #a4a4a4;
+    	padding:4px 12px 4px 12px;
+    	-moz-border-radius: 8px;
+		border-radius: 8px;
+    }
+    
+
+.message {
+	border: 1px solid #e8e8e8;
+	padding: 4px;
+}
+
+.messageCell h4 {
+	display:inline;
+	
+}
+
+.errorM3 .msgIcon {
+	height:16px;
+	width: 16px;
+	margin-right:4px;
+	background-image: url('{!URLFOR($Resource.PaymentConnect, "images/exclamation.png")}');
+}
+
+.infoM3 .msgIcon {
+	height:16px;
+	width: 16px;
+	margin-right:4px;
+	background-image: url('{!URLFOR($Resource.PaymentConnect, "images/help.png")}');
+}
+
+.confirmM3 .msgIcon {
+	height:16px;
+	width: 16px;
+	margin-right:4px;
+	background-image: url('{!URLFOR($Resource.PaymentConnect, "images/accept.png")}');
+}
+
+.warningM3 .msgIcon {
+	height:16px;
+	width: 16px;
+	margin-right:4px;
+	background-image: url('{!URLFOR($Resource.PaymentConnect, "images/error.png")}');
+}    
+td {
+	vertical-align:top;
+	}
+</style>
+    <script type="text/javascript">
+
+    
+    function promptForCancel() {
+        var reason = prompt("Enter a reason (option) and click 'OK' to cancel this recurring payment profile:");
+    }
+
+
+    </script>
+<body>
+<script type="text/javascript" src="{!URLFOR($Resource.PaymentConnect, 'includes/tooltip/wz_tooltip.js')}"></script>
+    
+<apex:form id="profileControlForm" style="height:250px">
+<div class="ppc_button_bar">
+    <apex:commandButton value="Activate Subscription" onclick="parent.location.replace('{!URLFOR($Page.pymt__AuthNetARBTerminal)}?ppid={!pymt__Payment_Profile__c.Id}&cancelURL=%2F{!pymt__Payment_Profile__c.Id}');" status="formActionStatus"  disabled="{!IF(pymt__Payment_Profile__c.pymt__Subscription_Status__c =='Not Activated',false,true)}" />
+    <apex:commandButton value="Cancel"  action="{!cancelRecurringPaymentConfirm}" status="formActionStatus"  disabled="{!IF(pymt__Payment_Profile__c.pymt__Subscription_Status__c =='Active',false,true)}"  rerender="contentArea, cancelRecurringView"/>
+    <apex:commandButton value="Update Billing Info"  action="{!UpdateBillingInfoConfirm}" status="formActionStatus" rendered="{!IF(NOT(pymt__Payment_Profile__c.pymt__Subscription_Status__c =='Suspended'),true,false)}" disabled="{!IF(pymt__Payment_Profile__c.pymt__Subscription_Status__c =='Active',false,true)}"  rerender="contentArea, updateBillingView"/>
+    <apex:commandButton value="Reactivate Subscription"  action="{!UpdateBillingInfoConfirm}" status="formActionStatus"  rendered="{!IF(pymt__Payment_Profile__c.pymt__Subscription_Status__c =='Suspended',true,false)}"  rerender="contentArea, updateBillingInfoView"/>
+    <apex:commandButton value="Update Subscription Amount"  action="{!UpdateAmountConfirm}" status="formActionStatus"  disabled="{!IF(pymt__Payment_Profile__c.pymt__Subscription_Status__c =='Active',false,true)}"  rerender="contentArea, updateAmountView"/>
+    <apex:actionStatus id="formActionStatus" >
+         <apex:facet name="start" >
+           <apex:outputPanel >&nbsp; 
+             <apex:image value="{!URLFOR($Resource.pymt__PaymentConnect, 'images/loadingAnimation.gif')}"  style="vertical-align:middle;" alt="busy..." />
+             &nbsp;</apex:outputPanel>
+         </apex:facet>
+         <apex:facet name="stop">
+           <apex:image value="{!URLFOR('/s.gif')}"  alt="" style="height:12px;" />
+         </apex:facet>
+    </apex:actionStatus>
+</div>
+    <apex:outputPanel id="contentArea">
+    <apex:messages id="pageMessages" styleClass="message" style="margin-top:15px;"/> 
+    <apex:outputPanel id="cancelRecurringView" rendered="{!IF(currentAction == 'CancelRecurringPayment',true,false)}">
+		<div class="ppc_inner">
+        <p>Enter a reason for canceling this recurring payment profile (optional) and click the button below to complete this action:</p>
+        <apex:inputText styleclass="reasonbox" value="{!reason}" /><br/><br/>
+        <apex:commandButton value="Cancel Recurring Payment" styleClass="btnImportant" action="{!cancelRecurringPaymentExecute}" status="formActionStatus" />
+		</div>
+    </apex:outputPanel>
+    <apex:outputPanel id="updateBillingInfoView" rendered="{!IF(currentAction == 'UpdateBillingInfo',true,false)}">
+		<div class="ppc_inner">
+        <apex:panelGrid columns="3" id="updateProfileGrid">
+		<apex:panelGroup >
+		<p><apex:inputCheckbox value="{!updateBillingAddress}" />&nbsp;Update billing address</p>
+		<apex:panelGrid columns="2" id="updateProfileAddressGrid">
+		 	
+		 	<apex:outputText value="First/Last Name" />			
+			<apex:panelGroup >
+				<apex:inputText value="{!profile.pymt__Billing_First_Name__c}"  style="width:125px;"/>&nbsp;			
+				<apex:inputText value="{!profile.pymt__Billing_Last_Name__c}"  style="width:125px;"/>			
+		 	
+		 	</apex:panelGroup>
+			<apex:outputText value="Street" />			
+			<apex:inputText value="{!profile.pymt__Billing_Street__c}" style="width:220px;"/>			
+			<apex:outputText value="City" />			
+			<apex:inputText value="{!profile.pymt__Billing_City__c}"  style="width:220px;"/>	
+			<apex:outputText value="State/Province" />			
+			<apex:panelGroup >
+			<apex:inputText value="{!profile.pymt__Billing_State__c}"  style="width:50px;"/>			
+			&nbsp;<apex:outputText value="Zip" />&nbsp;		
+			<apex:inputText value="{!profile.pymt__Billing_Postal_Code__c}"  style="width:75px;"/>			
+			</apex:panelGroup>		
+			<apex:outputText value="Country Code" />			
+			<apex:inputText value="{!profile.pymt__Billing_Country__c}" style="width:50px;"/>			
+
+		</apex:panelGrid>
+        </apex:panelGroup>
+        
+        <apex:panelGroup >
+		<p><apex:inputCheckbox value="{!updateBillingInfo}" />&nbsp;Update payment information</p>
+        <apex:panelGrid columns="2" id="updateBillingInfoGrid">
+        
+        	<apex:outputText value="Payment Method:"/>
+			<apex:panelGroup >
+        	<apex:selectList value="{!selectedPaymentMethod}" size="1">
+        		<apex:selectOptions value="{!paymentMethodOptions}"/>
+        		<apex:actionSupport event="onchange" rerender="updateBillingInfoGrid"  action="{!nullAction}"/>
+        	</apex:selectList> 
+        	</apex:panelGroup>
+
+        	<apex:outputText value="Card Type:"/>
+			<apex:panelGroup >
+        	<apex:selectList value="{!selectedCardType}" size="1">
+        		<apex:selectOptions value="{!cardTypeOptions}"/>
+        	</apex:selectList> 
+        	</apex:panelGroup>
+        	        
+        	<apex:outputText value="Card Number:" rendered="{!(selectedPaymentMethod == 'credit card')}"/>
+			<apex:panelGroup rendered="{!selectedPaymentMethod == 'credit card'}">
+        	<apex:inputText value="{!cardNumber}" />&nbsp;
+       		</apex:panelGroup>
+
+			<apex:outputText value="Expiration:" rendered="{!(selectedPaymentMethod == 'credit card')}"/>        
+			<apex:panelGroup rendered="{!selectedPaymentMethod == 'credit card'}">
+			    <apex:selectList value="{!expMonth}" size="1">
+               		<apex:selectOptions value="{!monthList}"/> 
+        		</apex:selectList>
+        
+        		&nbsp;<apex:selectList value="{!expYear}" size="1">
+                        <apex:selectOptions value="{!yearList}"/>
+                 </apex:selectList>
+			
+			</apex:panelGroup>
+
+			<apex:outputLabel rendered="{!(selectedPaymentMethod == 'credit card')}">CVV:
+				<span id="cvv_help" class="helpbutton" onMouseover="Tip('Card Verification Value. Your Merchant Account settings determine
+whether this field is required. Character length for Visa, MasterCard, and Discover: exactly three digits. Character length for American Express: exactly four digits.', WIDTH, -240);" 
+								onMouseout="UnTip();" ><apex:image url="/s.gif" styleClass="helpOrb" />
+				</span>                        
+			</apex:outputLabel>        
+			<apex:panelGroup rendered="{!(selectedPaymentMethod == 'credit card')}">
+		       	<apex:inputText value="{!cardCode}" style="width:50px;"/>
+			
+			</apex:panelGroup>
+			
+			<apex:outputLabel rendered="{!(selectedPaymentMethod == 'eCheck')}">Account Type:
+			</apex:outputLabel>
+			<apex:panelGroup rendered="{!(selectedPaymentMethod == 'eCheck')}">
+	        	<apex:selectList value="{!bankAccountType}" size="1">
+	        		<apex:selectOption itemValue="checking" itemLabel="Checking"/>
+	        		<apex:selectOption itemValue="business checking" itemLabel="Business Checking"/>
+	        		<apex:selectOption itemValue="savings" itemLabel="Savings"/>
+	        	</apex:selectList> 
+			</apex:panelGroup>
+          
+			<apex:outputLabel rendered="{!(selectedPaymentMethod == 'eCheck')}">Routing Number:
+		       	<span id="echeck_type_help" class="helpbutton" onMouseover="Tip('The 9 digit routing number of the bank.', WIDTH, -240);" 
+								onMouseout="UnTip();" ><apex:image url="/s.gif" styleClass="helpOrb" />
+				</span>  
+			</apex:outputLabel>
+			<apex:panelGroup rendered="{!(selectedPaymentMethod == 'eCheck')}">
+		       	<apex:inputText value="{!bankRoutingNumber}" />
+			</apex:panelGroup>
+
+			<apex:outputLabel rendered="{!(selectedPaymentMethod == 'eCheck')}">Account Number:
+			</apex:outputLabel>
+			<apex:panelGroup rendered="{!(selectedPaymentMethod == 'eCheck')}">
+		       	<apex:inputText value="{!bankAccountNumber}" />
+			</apex:panelGroup>
+          
+			<apex:outputLabel rendered="{!(selectedPaymentMethod == 'eCheck')}">Name on Account:
+			  	<span id="bank_name_on_acct_help" class="helpbutton" onMouseover="Tip('The full name of the individual associated with the bank account number.', WIDTH, -240);" 
+								onMouseout="UnTip();" ><apex:image url="/s.gif" styleClass="helpOrb" />
+				</span>  
+			</apex:outputLabel>
+			<apex:panelGroup rendered="{!(selectedPaymentMethod == 'eCheck')}">
+		       	<apex:inputText value="{!bankNameOnAccount}" />
+			</apex:panelGroup>
+          
+			<apex:outputLabel rendered="{!(selectedPaymentMethod == 'eCheck')}">eCheck Type:
+		       	<span id="echeck_type_help" class="helpbutton" onMouseover="Tip('The type of electronic check transaction used for the subscription.  For checking or savings accounts, PPD, TEL, or WEB.  For business checking accounts, CCD.', WIDTH, -240);" 
+								onMouseout="UnTip();" ><apex:image url="/s.gif" styleClass="helpOrb" />
+				</span>  
+			</apex:outputLabel>
+			<apex:panelGroup rendered="{!(selectedPaymentMethod == 'eCheck')}">
+	        	<apex:selectList value="{!eCheckType}" size="1">
+	        		<apex:selectOption itemValue="PPD" itemLabel="PPD"/>
+	        		<apex:selectOption itemValue="TEL" itemLabel="TEL"/>
+	        		<apex:selectOption itemValue="WEB" itemLabel="WEB"/>
+	        		<apex:selectOption itemValue="CCD" itemLabel="CCD"/>
+	        	</apex:selectList> 
+
+			</apex:panelGroup>
+          
+			<apex:outputLabel rendered="{!(selectedPaymentMethod == 'eCheck')}">Bank Name:
+			</apex:outputLabel>
+			<apex:panelGroup rendered="{!(selectedPaymentMethod == 'eCheck')}">
+		       	<apex:inputText value="{!bankName}" />
+			</apex:panelGroup>
+          
+          
+				
+        </apex:panelGrid>
+		</apex:panelGroup>
+
+        <apex:panelGroup >
+		<p><apex:inputCheckbox value="{!updateStartDate}" />&nbsp;Update subscription start date
+		<span id="update_start_date_help" class="helpbutton" onMouseover="Tip('Subscription start date can only be updated before a subscription has started (e.g. the ARB profile has 0 successful charges).  When reactivating a profile, be sure to set the start date to the current date plus 1 or more days.', WIDTH, -240);" 
+								onMouseout="UnTip();" ><apex:image url="/s.gif" styleClass="helpOrb" />
+				</span>  
+		</p>
+        <apex:panelGrid columns="2" id="updateStartDateGrid">
+        
+        	<apex:outputText value="Start Date:"/>
+			<apex:inputField value="{!profile.pymt__Subscription_Start_Date__c}"/>
+
+		</apex:panelGrid> 
+		</apex:panelGroup> 
+
+			<apex:outputText value="" />			
+	        <apex:commandButton value="Submit Changes" action="{!updateBillingInfoExecute}"  status="formActionStatus" rerender="formActionStatus, contentArea"/>
+        
+        </apex:panelGrid>
+		</div>
+    </apex:outputPanel>
+ 
+    <apex:outputPanel id="updateAmountView" rendered="{!IF(currentAction == 'UpdateAmount',true,false)}">
+		<div class="ppc_inner">
+        <p>Enter a new subscription amount for this profile:</p>
+        <table>
+        <tr>
+        <td><p>Amount:</p></td>
+        <td><apex:inputText value="{!profile.pymt__Amount__c}" /></td> 
+        </tr>
+        <tr><td>&nbsp;</td>
+        <td>
+        <apex:commandButton value="Update Subscription" action="{!updateAmountExecute}"  status="formActionStatus"/>
+        </td>
+        </tr>
+        </table>
+		</div>
+    </apex:outputPanel>    
+    <apex:outputPanel id="introView" rendered="{!IF(currentAction == 'intro',true,false)}">
+		<div class="ppc_inner">
+        <p>Use the button(s) above to manage this AuthNet Subscription Profile, or log into your <a  href="https://www.authorize.net" target="_blank">Authorize.Net account</a> for more options.</p>
+		</div>
+
+    </apex:outputPanel>
+    <apex:outputPanel id="reloadView" rendered="{!IF(currentAction == 'ReloadPage',true,false)}">
+		<div class="ppc_inner">
+        <p>It may be necessary to reload the current page to see the latest updates to this payment profile.</p>
+        <apex:commandButton value="Reload Page" action="{!clearCurrentAction}" status="formActionStatus" oncomplete="window.parent.location='{!URLFOR($Action.Payment_Profile__c.View, pymt__Payment_Profile__c.Id)}'" />
+		</div>
+    </apex:outputPanel>
+    </apex:outputPanel>
+</apex:form>
+</body>
+</apex:page>

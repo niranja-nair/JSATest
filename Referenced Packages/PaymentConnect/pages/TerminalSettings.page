@@ -1,0 +1,17 @@
+<apex:page controller="pymt.TerminalSettingsController">
+<apex:form >
+<apex:pageBlock title="PaymentConnect Terminal Page Settings" mode="Edit" >
+<div style="padding:5px;">Use the form below to manage your personal PaymentConnect terminal page settings:</div>
+<apex:pageBlockSection title="Payment Terminal">
+</apex:pageBlockSection>
+<apex:pageBlockSection title="PayPal Recurring Billing Terminal">
+<apex:inputField value="{!userSettings.pymt__Hide_PayPal_Trial_Fields__c}"/>
+</apex:pageBlockSection>
+<apex:pageBlockSection title="AuthNet Recurring Billing Terminal">
+<apex:inputField value="{!userSettings.pymt__Hide_AuthNet_Trial_Fields__c}"/>
+</apex:pageBlockSection>
+</apex:pageBlock>
+<apex:commandButton value="Cancel" action="{!cancel}" />
+<apex:commandButton value="Save" action="{!save}" />
+</apex:form>
+</apex:page>

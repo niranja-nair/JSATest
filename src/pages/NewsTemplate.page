@@ -1,0 +1,87 @@
+<apex:page showheader="false">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+<title>News Paper Company</title>
+<link href="{!URLFOR($Resource.NewsTemplateResources, 'css.css')}" rel="stylesheet" type="text/css" />
+</head>
+
+<body>
+<table width="709" border="0" align="center" cellpadding="0" cellspacing="0">
+  <tr>
+    <td valign="top">
+    	<table width="709" border="0" cellspacing="0" cellpadding="0">
+	      <tr>
+	        <td width="374" valign="top"><img src="{!URLFOR($Resource.NewsTemplateResources, 'images/index_02.gif')}" width="374" height="73" alt="" /></td>
+	        <td width="335">
+	           <form id="form1" name="form1" method="post" action="" style="margin:auto;">
+	          		<table width="315" border="0" align="center" cellpadding="0" cellspacing="0">
+	            		<tr>
+				              <td width="58" class="search">Search : </td>
+				              <td width="195"><input name="textfield" type="text" class="field" style="width:185px;" /></td>
+				              <td width="62"><input type="image" name="imageField" src="{!URLFOR($Resource.NewsTemplateResources, 'images/index_06.gif')}" /></td>
+				        </tr>
+          			</table>
+                </form>
+        	  </td>
+      		</tr>
+    	</table>
+    </td>
+  </tr>
+  <tr>
+    <td valign="top"><img src="{!URLFOR($Resource.NewsTemplateResources, 'images/index_09.gif')}" width="470" height="220" alt="" /><img src="{!URLFOR($Resource.NewsTemplateResources, 'images/index_10.gif')}" width="239" height="220" alt="" /></td>
+  </tr>
+  <tr>
+    <td height="38" style="background-image:url({!URLFOR($Resource.NewsTemplateResources, 'images/index_13.gif')}); background-repeat:no-repeat; padding-bottom:8px;">
+		
+			<c:contentblock name="menu"/>
+		
+	</td>
+  </tr>
+  <tr>
+    <td valign="top" style="padding-top:28px; padding-bottom:20px;">
+    	<table width="709" border="0" cellspacing="0" cellpadding="0">
+	      <tr>
+	        <td width="497" valign="top">
+	        
+	        
+	        <c:contentblock name="main"/>
+	        
+	        </td>
+	        <td width="212" valign="top" style="padding-top:60px;">
+		        <table width="212" border="0" cellspacing="0" cellpadding="0">
+		          <tr>
+		            <td><img src="{!URLFOR($Resource.NewsTemplateResources, 'images/index_22.gif')}" width="212" height="64" alt="" /></td>
+		          </tr>
+		          <tr>
+		            <td valign="top" style="background-image:url({!URLFOR($Resource.NewsTemplateResources, 'images/index_23.gif')}); background-repeat:repeat-y;">
+					<div style="width:155px; margin:0 auto;" class="news">
+					
+						<c:contentblock name="news"/>
+					
+					</div>
+					</td>
+		          </tr>
+		          <tr>
+		            <td valign="top"><img src="{!URLFOR($Resource.NewsTemplateResources, 'images/index_35.gif')}" width="212" height="34" alt="" /></td>
+		          </tr>
+		        </table>
+	        </td>
+	      </tr>
+    	</table>
+    </td>
+  </tr>
+  <tr>
+    <td height="59" style="background-image:url({!URLFOR($Resource.NewsTemplateResources, 'images/index_40.gif')}); background-repeat:no-repeat;">
+    	
+    	<c:contentblock name="footer"/>
+    	
+    </td>
+  </tr>
+  <tr>
+    <td height="12"> </td>
+  </tr>
+</table>
+</body>
+</html>
+</apex:page>

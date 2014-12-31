@@ -1,0 +1,55 @@
+<apex:page controller="sma.MapAnythingExport" readOnly="true"  contentType="application/vnd.ms-excel" cache="true">
+    <apex:stylesheet value="{!URLFOR($Resource.sma__MapAnything, 'AlertBoxes/AlertBoxes.css')}"/>
+    <apex:outputPanel rendered="{!PermissionsCheck}" >
+        <table>
+            <tr>
+                <td><b>Export Name:</b></td>
+                <td><apex:outputText value="{!MAE.Name}"/></td>
+            </tr>
+        </table>
+        
+        <table>
+            <tr>
+            	<th>Record Id</th>
+                <th>Saved Query Name</th>
+                <th>Street</th>
+                <th>City</th>
+                <th>State</th>
+                <th>Zip</th>
+                <th>Country</th>
+                <th>Object Type</th>
+                <th>Tooltip One</th>
+                <th>Tooltip Two</th>
+                <th>Tooltip Three</th>
+                <th>Tooltip Four</th>
+                <th>Tooltip Five</th>
+                <th>Tooltip Six</th>
+                <th>Tooltip Seven</th>
+            </tr>
+            <apex:repeat value="{!MAExportRows}" var="row">
+                <tr>
+                	<td>{!row.sma__RecordId__c}</td>
+                    <td>{!row.sma__SavedQueryName__c}</td>
+                    <td>{!row.sma__Street__c}</td>
+                    <td>{!row.sma__City__c}</td>
+                    <td>{!row.sma__State__c}</td>
+                    <td>{!row.sma__Zip__c}</td>
+                    <td>{!row.sma__Country__c}</td>
+                    <td>{!row.sma__ObjectType__c}</td>
+                    <td>{!row.sma__Tooltip1__c}</td>
+                    <td>{!row.sma__Tooltip2__c}</td>
+                    <td>{!row.sma__Tooltip3__c}</td>
+                    <td>{!row.sma__Tooltip4__c}</td>
+                    <td>{!row.sma__Tooltip5__c}</td>
+                    <td>{!row.sma__Tooltip6__c}</td>
+                    <td>{!row.sma__Tooltip7__c}</td>
+                </tr>
+            </apex:repeat>
+        </table>
+    </apex:outputPanel>
+    
+    <apex:outputPanel rendered="{!NOT(PermissionsCheck)}" >
+        <apex:pageMessages ></apex:pageMessages>
+    </apex:outputPanel>
+  
+</apex:page>

@@ -1,0 +1,166 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
+    <actionOverrides>
+        <actionName>Accept</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>CancelEdit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Clone</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Delete</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Edit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Follow</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>List</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>New</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>SaveEdit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Tab</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>View</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <compactLayoutAssignment>SYSTEM</compactLayoutAssignment>
+    <deploymentStatus>Deployed</deploymentStatus>
+    <description>The lines in a credit memo.</description>
+    <enableActivities>false</enableActivities>
+    <enableBulkApi>true</enableBulkApi>
+    <enableFeeds>false</enableFeeds>
+    <enableHistory>false</enableHistory>
+    <enableReports>true</enableReports>
+    <enableSharing>true</enableSharing>
+    <enableStreamingApi>true</enableStreamingApi>
+    <fields>
+        <fullName>Credit_Memo_Number__c</fullName>
+        <description>The number of the credit memo the line belongs to.</description>
+        <externalId>false</externalId>
+        <inlineHelpText>The number of the credit memo the line belongs to.</inlineHelpText>
+        <label>Credit Memo Number</label>
+        <referenceTo>QB_Credit_Memo__c</referenceTo>
+        <relationshipLabel>Credit Memo Lines</relationshipLabel>
+        <relationshipName>R00N40000001rPCPEA2</relationshipName>
+        <relationshipOrder>0</relationshipOrder>
+        <reparentableMasterDetail>false</reparentableMasterDetail>
+        <trackTrending>false</trackTrending>
+        <type>MasterDetail</type>
+        <writeRequiresMasterRead>false</writeRequiresMasterRead>
+    </fields>
+    <fields>
+        <fullName>InvoiceID__c</fullName>
+        <description>The SFDC ID of the invoice the credit memo was attributed to.  This is required because a credit memo can be used against multiple invoices.</description>
+        <externalId>false</externalId>
+        <inlineHelpText>The SFDC ID of the invoice the credit memo was attributed to.  This is required because a credit memo can be used against multiple invoices.</inlineHelpText>
+        <label>InvoiceID</label>
+        <length>18</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Line_Amount__c</fullName>
+        <description>The amount of the credit memo line,</description>
+        <externalId>false</externalId>
+        <inlineHelpText>The amount of the credit memo line,</inlineHelpText>
+        <label>Line Amount</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackTrending>false</trackTrending>
+        <type>Currency</type>
+    </fields>
+    <fields>
+        <fullName>Line_Description__c</fullName>
+        <description>The description on a credit memo line.</description>
+        <externalId>false</externalId>
+        <inlineHelpText>The description on a credit memo line.</inlineHelpText>
+        <label>Line Description</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>TextArea</type>
+    </fields>
+    <fields>
+        <fullName>Price__c</fullName>
+        <description>The price of the product credited.</description>
+        <externalId>false</externalId>
+        <inlineHelpText>The price of the product credited.</inlineHelpText>
+        <label>Price</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackTrending>false</trackTrending>
+        <type>Currency</type>
+    </fields>
+    <fields>
+        <fullName>Product__c</fullName>
+        <deleteConstraint>SetNull</deleteConstraint>
+        <description>The item/product the credit is issued against.</description>
+        <externalId>false</externalId>
+        <inlineHelpText>The item/product the credit is issued against.</inlineHelpText>
+        <label>Product</label>
+        <referenceTo>Product2</referenceTo>
+        <relationshipLabel>QuickBooks Credit Memo Lines</relationshipLabel>
+        <relationshipName>R00N40000001rRdSEAU</relationshipName>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>QB_Credit_Memo_LINE_ID__c</fullName>
+        <description>The internal ID of the credit memo line in QuickBooks.</description>
+        <externalId>false</externalId>
+        <inlineHelpText>The internal ID of the credit memo line in QuickBooks.</inlineHelpText>
+        <label>QuickBooks Credit Memo LINE ID</label>
+        <length>36</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Quantity__c</fullName>
+        <description>The number of products credited on this line.</description>
+        <externalId>false</externalId>
+        <inlineHelpText>The number of products credited on this line.</inlineHelpText>
+        <label>Quantity</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <label>QuickBooks Credit Memo Line</label>
+    <nameField>
+        <displayFormat>{000000}</displayFormat>
+        <label>Credit Memo Line ID</label>
+        <type>AutoNumber</type>
+    </nameField>
+    <pluralLabel>QuickBooks Credit Memo Lines</pluralLabel>
+    <searchLayouts/>
+    <sharingModel>ControlledByParent</sharingModel>
+</CustomObject>

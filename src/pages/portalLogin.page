@@ -1,0 +1,177 @@
+<apex:page sidebar="false" showHeader="false" contentType="text/html" controller="portalLoginController">
+
+    <head>
+        <title>MyJSA</title>
+        <apex:stylesheet value="{!URLFOR($Resource.myJsaPortalCSs,'Refresh.css')}"></apex:stylesheet>
+        <apex:stylesheet value="{!URLFOR($Resource.myJsaPortalCSs,'bt.css')}"></apex:stylesheet>
+        <apex:stylesheet value="{!URLFOR($Resource.myJsaPortalCSs,'wpStyle.css')}"></apex:stylesheet>
+        <apex:stylesheet value="{!URLFOR($Resource.myJsaPortalCSs,'wpDarkblue.css')}"></apex:stylesheet>
+        <apex:stylesheet value="{!URLFOR($Resource.myJsaPortalCSs,'wpCustom.css')}"></apex:stylesheet>
+        <apex:stylesheet value="{!URLFOR($Resource.myJsaPortalCSs,'wpStyles.css')}"></apex:stylesheet>
+        <link rel="stylesheet" type="text/css" href="{!URLFOR($Resource.JSAPortal, 'style.css')}" />
+    
+    <script>
+var _gaq = _gaq || [];
+_gaq.push(['_setAccount', 'UA-1376727-1']);
+_gaq.push(['_setDomainName', 'force.com']);
+_gaq.push(['_setAllowLinker', true]);
+_gaq.push(['_trackPageview']);
+</script>
+    </head>
+
+    <body>
+    
+        
+        
+        <style type="text/css">
+            .errorMessage 
+            {
+                color:#003e7e;
+                font-weight:bold;
+            "src/pages/PageBrowser.page-meta.xml"   padding:8px 10px;
+                background-color:#f79779;
+                border:solid 1px #ae0c1b;
+                display:block;
+                margin-bottom:10px;
+            }
+            
+            ul
+            {
+                list-style:none;
+            }
+            
+        
+        </style>
+        
+        <div id="page">
+            <div id="logo-top">
+                <img src="{!$Resource.jsf_cap_logo_png}" width="155px" height="20px" style="padding-left:5px;"/>
+            </div>
+            <div id="header">
+                <div id="logo">
+                    <a href="/portalLogin" title="Be the people.">
+                        <img src="{!URLFOR($Resource.myJsaPortalImages,'jsa_header.jpg')}" alt="MyJSA &#8211; Junior State of America" />
+                    </a>
+        
+                        <h1 class="site-title"><a href="http://jsa.org">JSA &#8211; Junior State of America</a></h1>
+                        <span class="site-description">Be the people.</span>
+                
+                </div>
+                <div style="clear:left"></div>
+        
+            </div>
+            
+            <div style="clear:left;"></div>
+    
+            <div id="columns">
+                <div class="breadcrumb"></div>
+                
+                <apex:pageMessages id="messages"/>
+            
+                <style type="text/css">
+                    #sidebar 
+                    {
+                        display:none;
+                    }
+                    
+                    #main 
+                    {
+                        width:850px;
+                    }
+                    
+                    form 
+                    {
+                        background:none;
+                        border:none;
+                        margin:0;
+                        padding:0;
+                    }
+                    .FBLogin a
+                    {
+                      padding: 5px 100px 5px 0px;
+                    }
+                    
+                </style>    
+ 
+                <div class="flash">
+                    <iframe width="420" height="310" src="http://www.youtube.com/embed/videoseries?list=PL0CB6AEED1D52E518&amp;hl=en_US" frameborder="0"></iframe>
+                </div>
+ 
+                <div class="login">
+                  <div class="FBLogin">
+                    <a href="https://test.salesforce.com/services/auth/sso/00De0000001NOgcEAG/MyJSA?Site= {!URLENCODE('http://ccdev-myjsa.cs15.force.com/apex/myJSAhome')}">
+                        <img src="{!$Resource.FBLogin}" />
+                        <!-- <apex:includeScript value="{!$Resource.FBLogin}"/> -->
+                        <!-- <apex:image url="{!$Resource.FBLogin}" width="50" height="50"/> -->
+                    </a>
+                  </div>
+                <fieldset>      
+                    <apex:form forceSSL="true">
+                        <span>Email address</span><div id="wwgrp_loginSubmitAction_username" class="wwgrp">
+                                           <div id="wwctrl_loginSubmitAction_username" class="wwctrl">
+                                                <apex:inputText label="username" value="{!userName}"></apex:inputText>
+                                           </div>
+                                       </div>
+                         <span>Password</span><div id="wwgrp_loginSubmitAction_password" class="wwgrp">
+                                                   <div id="wwctrl_loginSubmitAction_password" class="wwctrl">
+                                                       <apex:inputSecret label="password" value="{!pw}"></apex:inputSecret>
+                                                   </div> 
+                                               </div>
+                                                   
+                                    <div class="login-button" id="wwctrl_loginSubmitAction_0">
+                                        <apex:commandButton value="Login" action="{!portalLogin}" styleClass="btn blue"></apex:commandButton>
+                                    </div>
+                                    <a class="right" title="Forgot Password" href="/secur/forgotpassword.jsp">Forgot your username/password?</a>
+                    </apex:form>
+                    </fieldset>
+                    </div>
+                    <div class="register">
+                        <h3>Need an account?</h3>
+                        <span>It only takes a few minutes. 
+                        <a title="Register New User" href="/apex/jsaPortalRegistration">Register now</a></span>                      
+                    </div>
+                    <div class="register">
+                         <p><h3>Applying to JSA Summer Programs?</h3></p>
+                         <P> <a target="_blank" href="http://summer.jsa.org">Click here for three easy application steps</a></p>
+                    </div>                          
+             </div>
+        </div>
+
+        <div id="footer">
+            <div class="footer-columns-container">
+
+                <div class="col-left">
+                    <h3>Junior Statesmen Foundation</h3><br />
+
+                    <strong>National Headquarters in California</strong><br />
+                    800 S. Claremont St., Suite 202, San Mateo, CA 94402<br />
+                    (800) 334-5353<br /><br />
+                    <strong>Washington, D.C. Office</strong><br />
+                    1411 K St. NW, Suite 200, Washington, DC 20005<br />
+                    (800) 317-9338
+                </div>
+                <div class="col-middle">
+                    <h3>About JSA</h3><br />
+    
+                    <p>The mission of the Junior State of America and the Junior Statesmen Foundation is to strengthen American democracy by educating and preparing high school students for life-long involvement and responsible leadership in a democratic society.</p></div>
+                    <div class="col-right">
+                        <h3>Additional Resources</h3><br />
+                        <ul class="additionalResources">
+                            <li class="li-item-left"><a href="http://jsa.org/contact-jsa/">Contact Us</a></li>
+                            <li class="li-item-left"><a href="http://jsa.org/about/">About JSA</a></li>
+                            <li class="li-item-left"><a href="http://jsa.org/downloads/">Downloads</a></li>
+
+                            <li class="li-item-right reset"><a href="http://summer.jsa.org">Summer Programs</a></li>
+                            <li class="li-item-right"><a href="http://jsa.org/portal">MyJSA</a></li>
+                            <li class="li-item-right"><a href="http://jsa.org/bethepeople">Be the People</a></li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="footer-bottom-container">
+                    <h4><a href="http://jsa.org">www.jsa.org</a></h4>
+                    JSA is a <a href="http://jsa.org/about/the-junior-statesmen-foundation/" target="_blank">non-profit 501(c)(3) educational organization</a><br />
+                    &copy; <?php echo date('Y') ?> JSA. <a href="http://jsa.org/terms-of-use-and-privacy-policy/" target="_blank">Terms of Use and Privacy Policy</a>
+                </div>
+            </div>
+    </body>
+</apex:page>

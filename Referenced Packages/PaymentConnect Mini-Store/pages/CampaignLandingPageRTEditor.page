@@ -1,0 +1,11 @@
+<apex:page standardcontroller="Campaign" extensions="cmpgn.CampaignLandingPageController">
+<style>
+body { 
+   background:#f3f3ec;
+   }
+</style>
+<apex:form >
+<c:richeditor value="{!Campaign.cmpgn__LP_HTML_Content__c}" height="300" />
+<apex:commandButton action="{!saveRecord}" value="Save"/>
+</apex:form>
+</apex:page>

@@ -1,0 +1,13 @@
+<apex:page controller="pymt.ExportController"  ContentType="text/iif#export.iif"  >
+{!errorMessages}
+!TRNS&#09;DATE&#09;ACCNT&#09;NAME&#09;CLASS&#09;AMOUNT&#09;MEMO
+!SPL&#09;DATE&#09;ACCNT&#09;NAME&#09;AMOUNT&#09;MEMO
+!ENDTRNS
+<apex:repeat value="{!IIFTransactionList}" var="txn" id="txnList">
+TRNS&#09;"{!MONTH(txn.transDate)}/{!DAY(txn.transDate)}/{!YEAR(txn.transDate)}"&#09;"{!txn.account}"&#09;"{!txn.name}"&#09;"{!txn.className}"&#09;{!txn.amount}&#09;"{!txn.memo}"
+<apex:repeat value="{!txn.splList}" var="spl" id="splList">
+SPL&#09;"{!MONTH(spl.transDate)}/{!DAY(spl.transDate)}/{!YEAR(spl.transDate)}"&#09;"{!spl.account}"&#09;"{!spl.name}"&#09;{!spl.amount}&#09;"{!spl.memo}"
+</apex:repeat>
+ENDTRNS&#09;
+</apex:repeat>
+</apex:page>
